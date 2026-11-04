@@ -1,0 +1,66 @@
+"""Manual invalid-input controls; no shared source/tool/fixture bytes are changed.
+
+Run at repository root with Python 3. Four private query-output faults use the
+real pinned SDK/source query, then alter only its returned bytes in this process.
+"""
+import importlib.machinery
+import importlib.util
+import json
+from pathlib import Path
+import subprocess
+import sys
+
+sys.dont_write_bytecode = True
+path = Path(__file__).with_name("cli-source-inventory.py.txt")
+loader = importlib.machinery.SourceFileLoader("inventory", str(path))
+spec = importlib.util.spec_from_loader(loader.name, loader)
+module = importlib.util.module_from_spec(spec)
+loader.exec_module(module)
+original = module.run
+cache = Path(".cache/worker-cli-tools")
+outcomes = {}
+expected = {"unowned_vendor_package": "unowned vendored package: unowned.invalid/package",
+            "incomplete_graph": "incomplete package graph", "missing_actual_command": "missing actual CLI command",
+            "missing_dependency": "dependency graph is not closed over CLI Deps"}
+for fault, diagnostic in expected.items():
+    def intercepted(args, env=None):
+        data = original(args, env)
+        if "list" not in args:
+            return data
+        rows = module.decode_graph(data)
+        if fault == "unowned_vendor_package":
+            row = next(r for r in rows if "/vendor/" in r["Dir"])
+            row["Dir"] = str(cache.resolve() / "cli-source/src/github.com/docker/cli/vendor/unowned.invalid/package")
+        elif fault == "incomplete_graph":
+            rows[0]["Incomplete"] = True
+        elif fault == "missing_actual_command":
+            rows = [r for r in rows if r["ImportPath"] != "github.com/docker/cli/cmd/docker"]
+        else:
+            removed = next(r for r in rows if "/vendor/" in r["Dir"])
+            rows.remove(removed)
+        return b"\n".join(json.dumps(r).encode() for r in rows)
+    module.run = intercepted
+    try:
+        module.collect(cache)
+    except ValueError as error:
+        assert str(error) == diagnostic, (fault, str(error))
+        outcomes[fault] = str(error)
+    else:
+        raise AssertionError("invalid graph accepted: " + fault)
+    finally:
+        module.run = original
+for name, data in {"replacement": b"# x v1.0.0 => y v2.0.0\nx\n",
+                   "duplicate_package": b"# x v1.0.0\nx\nx\n"}.items():
+    try:
+        module.vendor_index(data)
+    except ValueError as error:
+        outcomes[name] = str(error)
+    else:
+        raise AssertionError("invalid vendor metadata accepted: " + name)
+observation = Path("planning/deployment-foundation/cli-source-inventory-observation.v1.json")
+before = observation.read_bytes()
+result = subprocess.run([sys.executable, str(path), "--output", str(observation)], capture_output=True, timeout=120)
+assert result.returncode != 0 and b"refuse to overwrite existing observation" in result.stderr
+assert observation.read_bytes() == before
+outcomes["existing_output"] = "refused; exact bytes unchanged"
+print(json.dumps(outcomes, sort_keys=True, indent=2))

@@ -1,0 +1,2523 @@
+{
+  "cgo": [
+    {
+      "declared_inputs": {
+        "CgoFiles": [
+          "params.go",
+          "pkcs11.go",
+          "types.go"
+        ],
+        "CgoLDFLAGS": [
+          "-ldl"
+        ],
+        "GoFiles": [
+          "error.go",
+          "vendor.go",
+          "zconst.go"
+        ],
+        "HFiles": [
+          "pkcs11.h",
+          "pkcs11f.h",
+          "pkcs11go.h",
+          "pkcs11t.h"
+        ]
+      },
+      "native_source_files": {
+        "params.go": {
+          "bytes": 5914,
+          "sha256": "9d47d2c17e9f740494ac53d6591e09d323d2a55161ef64dbd269d1e19f613571"
+        },
+        "pkcs11.go": {
+          "bytes": 48783,
+          "sha256": "5526f04171876c4a5cbe8e0791cbbd91ec0680581a19c1e1b8e45383b17b93b5"
+        },
+        "pkcs11.h": {
+          "bytes": 8002,
+          "sha256": "8bb7aa1aeaa328b6a39913070d6f3d2bdeb9f2c92baf27f714fbb4cbefdf4054"
+        },
+        "pkcs11f.h": {
+          "bytes": 27337,
+          "sha256": "a85adad038bfc9dad9c71377f3ed3b049ba2ac9b3f37198a372f211d210c6057"
+        },
+        "pkcs11go.h": {
+          "bytes": 975,
+          "sha256": "264876981b3074540b8d198cdc2f0a8d9cedd663ad699e6832c535ca92c77504"
+        },
+        "pkcs11t.h": {
+          "bytes": 74214,
+          "sha256": "c7c9b49add3f53d77ebcd0e23b37bbd63388f610b02e68d185bc37f4b37c344e"
+        },
+        "types.go": {
+          "bytes": 7580,
+          "sha256": "b8b02829c01f19cc3244773da445f05c19ab13e1a76272a48d42f891a2230f6f"
+        }
+      },
+      "owner": "github.com/miekg/pkcs11",
+      "package": "github.com/docker/cli/vendor/github.com/miekg/pkcs11"
+    },
+    {
+      "declared_inputs": {
+        "CgoCFLAGS": [
+          "-fno-stack-protector"
+        ],
+        "CgoFiles": [
+          "cgo_linux.go",
+          "cgo_resnew.go",
+          "cgo_socknew.go",
+          "cgo_unix_cgo.go",
+          "cgo_unix_cgo_res.go"
+        ],
+        "CgoLDFLAGS": [
+          "-lresolv"
+        ],
+        "GoFiles": [
+          "addrselect.go",
+          "cgo_unix.go",
+          "conf.go",
+          "dial.go",
+          "dnsclient.go",
+          "dnsclient_unix.go",
+          "dnsconfig.go",
+          "dnsconfig_unix.go",
+          "error_posix.go",
+          "error_unix.go",
+          "fd_posix.go",
+          "fd_unix.go",
+          "file.go",
+          "file_unix.go",
+          "hook.go",
+          "hook_unix.go",
+          "hosts.go",
+          "interface.go",
+          "interface_linux.go",
+          "ip.go",
+          "iprawsock.go",
+          "iprawsock_posix.go",
+          "ipsock.go",
+          "ipsock_posix.go",
+          "lookup.go",
+          "lookup_unix.go",
+          "mac.go",
+          "mptcpsock_linux.go",
+          "net.go",
+          "netcgo_off.go",
+          "netgo_off.go",
+          "nss.go",
+          "parse.go",
+          "pipe.go",
+          "port.go",
+          "port_unix.go",
+          "rawconn.go",
+          "rlimit_unix.go",
+          "sendfile_linux.go",
+          "sock_cloexec.go",
+          "sock_linux.go",
+          "sock_posix.go",
+          "sockaddr_posix.go",
+          "sockopt_linux.go",
+          "sockopt_posix.go",
+          "sockoptip_linux.go",
+          "sockoptip_posix.go",
+          "splice_linux.go",
+          "tcpsock.go",
+          "tcpsock_posix.go",
+          "tcpsock_unix.go",
+          "tcpsockopt_posix.go",
+          "tcpsockopt_unix.go",
+          "udpsock.go",
+          "udpsock_posix.go",
+          "unixsock.go",
+          "unixsock_posix.go",
+          "unixsock_readmsg_cmsg_cloexec.go",
+          "writev_unix.go"
+        ]
+      },
+      "native_source_files": {
+        "cgo_linux.go": {
+          "bytes": 642,
+          "sha256": "f4fd072f69752ab9cd08f3117edf2b0b18bb1860030b78c02e740c6f0b1da643"
+        },
+        "cgo_resnew.go": {
+          "bytes": 580,
+          "sha256": "effefda66ef7cd9ddbbe2afd0f0866afd383c1c8a7d97abfb154bd6110091f9f"
+        },
+        "cgo_socknew.go": {
+          "bytes": 753,
+          "sha256": "7cf6c80df52eb48299bdf38c80d45bcba058a34a11e863a19b33557fd276d92f"
+        },
+        "cgo_unix_cgo.go": {
+          "bytes": 2482,
+          "sha256": "3beda011e6a0c1dcd5b0c1d1c99518dfd9cb9747487118504faae19237d2dc87"
+        },
+        "cgo_unix_cgo_res.go": {
+          "bytes": 892,
+          "sha256": "5814ebb62a461d257956c789b0284f9b27efe32836557dc1869db32b29bd5ba8"
+        }
+      },
+      "owner": "go",
+      "package": "net"
+    },
+    {
+      "declared_inputs": {
+        "CFiles": [
+          "gcc_context.c",
+          "gcc_fatalf.c",
+          "gcc_libinit.c",
+          "gcc_linux_amd64.c",
+          "gcc_mmap.c",
+          "gcc_setenv.c",
+          "gcc_sigaction.c",
+          "gcc_stack_unix.c",
+          "gcc_traceback.c",
+          "gcc_util.c",
+          "linux_syscall.c"
+        ],
+        "CgoCFLAGS": [
+          "-Wall",
+          "-Werror",
+          "-fno-stack-protector",
+          "-Wdeclaration-after-statement"
+        ],
+        "CgoFiles": [
+          "cgo.go"
+        ],
+        "CgoLDFLAGS": [
+          "-lpthread"
+        ],
+        "GoFiles": [
+          "callbacks.go",
+          "callbacks_traceback.go",
+          "handle.go",
+          "iscgo.go",
+          "linux.go",
+          "mmap.go",
+          "setenv.go",
+          "sigaction.go"
+        ],
+        "HFiles": [
+          "abi_amd64.h",
+          "abi_ppc64x.h",
+          "libcgo.h",
+          "libcgo_unix.h"
+        ],
+        "SFiles": [
+          "asm_amd64.s",
+          "gcc_amd64.S"
+        ]
+      },
+      "native_source_files": {
+        "abi_amd64.h": {
+          "bytes": 2795,
+          "sha256": "7832f3b0a3d91852a53705f3df6d16d69e1e785cfd1d733ee33229411cd26717"
+        },
+        "abi_ppc64x.h": {
+          "bytes": 6709,
+          "sha256": "c805863eed3ec9d923afa76fb1948b6a3206cc55169ac9286537149671122d29"
+        },
+        "asm_amd64.s": {
+          "bytes": 1384,
+          "sha256": "4592d4cfe237e01561d7a6329fdfe5c384a247afb0ff2da7a5ef2a355ac23db8"
+        },
+        "cgo.go": {
+          "bytes": 1189,
+          "sha256": "619406c7dc9470188f820c53ff02e6372459e533b7cb75c717dd2ba6b17dd4fd"
+        },
+        "gcc_amd64.S": {
+          "bytes": 1156,
+          "sha256": "47427e195996d98726efea5dfb4093c8ef8887e96067095f0053f5adb62485a9"
+        },
+        "gcc_context.c": {
+          "bytes": 466,
+          "sha256": "5e7e6d031bd63b00fcddc755e2823ef38afcb561587b12e4e45c68bddbfd07fe"
+        },
+        "gcc_fatalf.c": {
+          "bytes": 526,
+          "sha256": "d407340597efac27ac1f308b5cbf11f2381f25cd944e6fd609319054d8c70fd2"
+        },
+        "gcc_libinit.c": {
+          "bytes": 5987,
+          "sha256": "9cb51f63bd53a55e473f34b556efa45e26cac1afcd846b35e952d8e85bb0c30d"
+        },
+        "gcc_linux_amd64.c": {
+          "bytes": 2410,
+          "sha256": "d0f3b6f018c336e521368acc74c64d9aa8788f7587d434cb24d7ff9df73197ad"
+        },
+        "gcc_mmap.c": {
+          "bytes": 916,
+          "sha256": "d8ece6e6a4385bf0449ab50c51887946e39c49bd6d43b3a5f3757a7546c73c96"
+        },
+        "gcc_setenv.c": {
+          "bytes": 487,
+          "sha256": "120a9a088f87be81a95270eff8dc431fc112a1d1b803c72176c469379eb0f96f"
+        },
+        "gcc_sigaction.c": {
+          "bytes": 2132,
+          "sha256": "2feadadb5a4a51c085f661417dc2d9bbf69a90c59b687919dd5fc77a26b81e95"
+        },
+        "gcc_stack_unix.c": {
+          "bytes": 1490,
+          "sha256": "342b71a48decef1f94306fac076375cd0e0290cd34d134ddea09effe22a93877"
+        },
+        "gcc_traceback.c": {
+          "bytes": 1561,
+          "sha256": "1a51727ac7da836a98eb4987c897a1e1f7c73922c0de1a74b93add8ec0ddece7"
+        },
+        "gcc_util.c": {
+          "bytes": 1894,
+          "sha256": "04d353f36b280597753a7c4a013d4b19b906227775f4ba7b2c54ec297ecfb504"
+        },
+        "libcgo.h": {
+          "bytes": 3605,
+          "sha256": "639358e72aa7eff34d9457854cdb7944e9f45c02d7537b2356424c5657e0c5da"
+        },
+        "libcgo_unix.h": {
+          "bytes": 684,
+          "sha256": "56cd53ecb0c17ac9152d1a2a807d9e64224e5f608c74ff1f0916e52d38822f54"
+        },
+        "linux_syscall.c": {
+          "bytes": 1925,
+          "sha256": "fb53e53bc37d5ba8f8df641e4f6e0abd705e3eae7815ccc87f55911d20c36133"
+        }
+      },
+      "owner": "go",
+      "package": "runtime/cgo"
+    }
+  ],
+  "cli_binary": {
+    "bytes": 43556144,
+    "sha256": "27f239f97492c434e091a70b41b8796c698f0aa2b6052c6f9c28da4ee7ae888b"
+  },
+  "distribution_approved": false,
+  "exclusions": [],
+  "failures": [],
+  "guard_exhausted": false,
+  "inspection_complete": true,
+  "license_classification_complete": false,
+  "limitations": [
+    "Source graph is not a published-binary compiler/link map or vendor-patch correspondence proof",
+    "CGO flags declare link requests, not exact static library versions or covered native source",
+    "Named scoped license/NOTICE candidates are not a legal applicability or distribution decision",
+    "Inline source/header terms require separate review; named-file collection cannot replace them",
+    "No CLI execution, native-host conformance, final delivery, shipping tool selection or SP1 adoption"
+  ],
+  "native_link_closure_proven": false,
+  "owners": {
+    "dario.cat/mergo": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 1536,
+          "kind": "license_candidate",
+          "owner": "dario.cat/mergo",
+          "path": "LICENSE",
+          "sha256": "cb7684632b729955293cab8a0bbf4134d53d9532a30761c33c8a4878302a7bd3"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/dario.cat/mergo"
+      ],
+      "version": "v1.0.2"
+    },
+    "github.com/beorn7/perks": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 1058,
+          "kind": "license_candidate",
+          "owner": "github.com/beorn7/perks",
+          "path": "LICENSE",
+          "sha256": "0db7c9ebb3717e526f34f87dd1ee8bc77d36846e29cb0cec9246f7138fbe962b"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/beorn7/perks/quantile"
+      ],
+      "version": "v1.0.1"
+    },
+    "github.com/cenkalti/backoff/v4": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 1077,
+          "kind": "license_candidate",
+          "owner": "github.com/cenkalti/backoff/v4",
+          "path": "LICENSE",
+          "sha256": "5c0476add4c38b55d0ed5ac11b85e00c38f26e1caee20dfe3ab58190103d1fbc"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/cenkalti/backoff/v4"
+      ],
+      "version": "v4.3.0"
+    },
+    "github.com/cespare/xxhash/v2": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 1068,
+          "kind": "license_candidate",
+          "owner": "github.com/cespare/xxhash/v2",
+          "path": "LICENSE.txt",
+          "sha256": "f566a9f97bacdaf00d9f21dd991e81dc11201c4e016c86b470799429a1c9a79c"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/cespare/xxhash/v2"
+      ],
+      "version": "v2.3.0"
+    },
+    "github.com/containerd/errdefs": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 10765,
+          "kind": "license_candidate",
+          "owner": "github.com/containerd/errdefs",
+          "path": "LICENSE",
+          "sha256": "4bbe3b885e8cd1907ab4cf9a41e862e74e24b5422297a4f2fe524e6a30ada2b4"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/containerd/errdefs"
+      ],
+      "version": "v1.0.0"
+    },
+    "github.com/containerd/errdefs/pkg": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 10765,
+          "kind": "license_candidate",
+          "owner": "github.com/containerd/errdefs/pkg",
+          "path": "LICENSE",
+          "sha256": "4bbe3b885e8cd1907ab4cf9a41e862e74e24b5422297a4f2fe524e6a30ada2b4"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/containerd/errdefs/pkg/errhttp",
+        "github.com/docker/cli/vendor/github.com/containerd/errdefs/pkg/internal/cause"
+      ],
+      "version": "v0.3.0"
+    },
+    "github.com/containerd/log": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 10765,
+          "kind": "license_candidate",
+          "owner": "github.com/containerd/log",
+          "path": "LICENSE",
+          "sha256": "4bbe3b885e8cd1907ab4cf9a41e862e74e24b5422297a4f2fe524e6a30ada2b4"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/containerd/log"
+      ],
+      "version": "v0.1.0"
+    },
+    "github.com/containerd/platforms": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 10765,
+          "kind": "license_candidate",
+          "owner": "github.com/containerd/platforms",
+          "path": "LICENSE",
+          "sha256": "4bbe3b885e8cd1907ab4cf9a41e862e74e24b5422297a4f2fe524e6a30ada2b4"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/containerd/platforms"
+      ],
+      "version": "v1.0.0-rc.1"
+    },
+    "github.com/distribution/reference": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 11325,
+          "kind": "license_candidate",
+          "owner": "github.com/distribution/reference",
+          "path": "LICENSE",
+          "sha256": "cb5e8e7e5f4a3988e1063c142c60dc2df75605f4c46515e776e3aca6df976e14"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/distribution/reference"
+      ],
+      "version": "v0.6.0"
+    },
+    "github.com/docker/cli": {
+      "kind": "first_party",
+      "notices": [
+        {
+          "bytes": 10765,
+          "kind": "license_candidate",
+          "owner": "github.com/docker/cli",
+          "path": "LICENSE",
+          "sha256": "2d81ea060825006fc8f3fe28aa5dc0ffeb80faf325b612c955229157b8c10dc0"
+        },
+        {
+          "bytes": 635,
+          "kind": "notice",
+          "owner": "github.com/docker/cli",
+          "path": "NOTICE",
+          "sha256": "a8c869fbda819afb8d80e0ac19bac52e766bc6c19cb38cf94f52d64c4be2aab6"
+        },
+        {
+          "bytes": 1488,
+          "kind": "license_candidate",
+          "owner": "github.com/docker/cli",
+          "path": "cli/connhelper/internal/syntax/LICENSE",
+          "sha256": "ce63850f77649f00d1394045e2794ffb09a5596beabac51c9548edd958845d7c"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/cli",
+        "github.com/docker/cli/cli-plugins/hooks",
+        "github.com/docker/cli/cli-plugins/manager",
+        "github.com/docker/cli/cli-plugins/metadata",
+        "github.com/docker/cli/cli-plugins/socket",
+        "github.com/docker/cli/cli/command",
+        "github.com/docker/cli/cli/command/builder",
+        "github.com/docker/cli/cli/command/checkpoint",
+        "github.com/docker/cli/cli/command/commands",
+        "github.com/docker/cli/cli/command/completion",
+        "github.com/docker/cli/cli/command/config",
+        "github.com/docker/cli/cli/command/container",
+        "github.com/docker/cli/cli/command/context",
+        "github.com/docker/cli/cli/command/formatter",
+        "github.com/docker/cli/cli/command/formatter/tabwriter",
+        "github.com/docker/cli/cli/command/idresolver",
+        "github.com/docker/cli/cli/command/image",
+        "github.com/docker/cli/cli/command/image/build",
+        "github.com/docker/cli/cli/command/image/build/internal/git",
+        "github.com/docker/cli/cli/command/image/build/internal/urlutil",
+        "github.com/docker/cli/cli/command/inspect",
+        "github.com/docker/cli/cli/command/manifest",
+        "github.com/docker/cli/cli/command/network",
+        "github.com/docker/cli/cli/command/node",
+        "github.com/docker/cli/cli/command/plugin",
+        "github.com/docker/cli/cli/command/registry",
+        "github.com/docker/cli/cli/command/secret",
+        "github.com/docker/cli/cli/command/service",
+        "github.com/docker/cli/cli/command/service/progress",
+        "github.com/docker/cli/cli/command/stack",
+        "github.com/docker/cli/cli/command/stack/formatter",
+        "github.com/docker/cli/cli/command/stack/loader",
+        "github.com/docker/cli/cli/command/stack/options",
+        "github.com/docker/cli/cli/command/stack/swarm",
+        "github.com/docker/cli/cli/command/swarm",
+        "github.com/docker/cli/cli/command/swarm/progress",
+        "github.com/docker/cli/cli/command/system",
+        "github.com/docker/cli/cli/command/task",
+        "github.com/docker/cli/cli/command/trust",
+        "github.com/docker/cli/cli/command/volume",
+        "github.com/docker/cli/cli/compose/convert",
+        "github.com/docker/cli/cli/compose/interpolation",
+        "github.com/docker/cli/cli/compose/loader",
+        "github.com/docker/cli/cli/compose/schema",
+        "github.com/docker/cli/cli/compose/template",
+        "github.com/docker/cli/cli/compose/types",
+        "github.com/docker/cli/cli/config",
+        "github.com/docker/cli/cli/config/configfile",
+        "github.com/docker/cli/cli/config/credentials",
+        "github.com/docker/cli/cli/config/memorystore",
+        "github.com/docker/cli/cli/config/types",
+        "github.com/docker/cli/cli/connhelper",
+        "github.com/docker/cli/cli/connhelper/commandconn",
+        "github.com/docker/cli/cli/connhelper/internal/syntax",
+        "github.com/docker/cli/cli/connhelper/ssh",
+        "github.com/docker/cli/cli/context",
+        "github.com/docker/cli/cli/context/docker",
+        "github.com/docker/cli/cli/context/store",
+        "github.com/docker/cli/cli/debug",
+        "github.com/docker/cli/cli/flags",
+        "github.com/docker/cli/cli/hints",
+        "github.com/docker/cli/cli/manifest/store",
+        "github.com/docker/cli/cli/manifest/types",
+        "github.com/docker/cli/cli/streams",
+        "github.com/docker/cli/cli/trust",
+        "github.com/docker/cli/cli/version",
+        "github.com/docker/cli/cmd/docker",
+        "github.com/docker/cli/cmd/docker/internal/signals",
+        "github.com/docker/cli/internal/jsonstream",
+        "github.com/docker/cli/internal/lazyregexp",
+        "github.com/docker/cli/internal/logdetails",
+        "github.com/docker/cli/internal/oauth",
+        "github.com/docker/cli/internal/oauth/api",
+        "github.com/docker/cli/internal/oauth/manager",
+        "github.com/docker/cli/internal/prompt",
+        "github.com/docker/cli/internal/registry",
+        "github.com/docker/cli/internal/registryclient",
+        "github.com/docker/cli/internal/tui",
+        "github.com/docker/cli/internal/volumespec",
+        "github.com/docker/cli/opts",
+        "github.com/docker/cli/opts/swarmopts",
+        "github.com/docker/cli/pkg/kvfile",
+        "github.com/docker/cli/templates"
+      ],
+      "version": "v28.4.0"
+    },
+    "github.com/docker/cli-docs-tool": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 11358,
+          "kind": "license_candidate",
+          "owner": "github.com/docker/cli-docs-tool",
+          "path": "LICENSE",
+          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/docker/cli-docs-tool/annotation"
+      ],
+      "version": "v0.10.0"
+    },
+    "github.com/docker/distribution": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 11325,
+          "kind": "license_candidate",
+          "owner": "github.com/docker/distribution",
+          "path": "LICENSE",
+          "sha256": "cb5e8e7e5f4a3988e1063c142c60dc2df75605f4c46515e776e3aca6df976e14"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/docker/distribution",
+        "github.com/docker/cli/vendor/github.com/docker/distribution/manifest",
+        "github.com/docker/cli/vendor/github.com/docker/distribution/manifest/manifestlist",
+        "github.com/docker/cli/vendor/github.com/docker/distribution/manifest/ocischema",
+        "github.com/docker/cli/vendor/github.com/docker/distribution/manifest/schema2",
+        "github.com/docker/cli/vendor/github.com/docker/distribution/metrics",
+        "github.com/docker/cli/vendor/github.com/docker/distribution/registry/api/errcode",
+        "github.com/docker/cli/vendor/github.com/docker/distribution/registry/api/v2",
+        "github.com/docker/cli/vendor/github.com/docker/distribution/registry/client",
+        "github.com/docker/cli/vendor/github.com/docker/distribution/registry/client/auth",
+        "github.com/docker/cli/vendor/github.com/docker/distribution/registry/client/auth/challenge",
+        "github.com/docker/cli/vendor/github.com/docker/distribution/registry/client/transport",
+        "github.com/docker/cli/vendor/github.com/docker/distribution/registry/storage/cache",
+        "github.com/docker/cli/vendor/github.com/docker/distribution/registry/storage/cache/memory",
+        "github.com/docker/cli/vendor/github.com/docker/distribution/uuid"
+      ],
+      "version": "v2.8.3+incompatible"
+    },
+    "github.com/docker/docker": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 10765,
+          "kind": "license_candidate",
+          "owner": "github.com/docker/docker",
+          "path": "LICENSE",
+          "sha256": "7c87873291f289713ac5df48b1f2010eb6963752bbd6b530416ab99fc37914a8"
+        },
+        {
+          "bytes": 642,
+          "kind": "notice",
+          "owner": "github.com/docker/docker",
+          "path": "NOTICE",
+          "sha256": "b40ec5b16182103ef1cd69d42a21c98369e35bd483b3973902da4807c0755446"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/docker/docker/api",
+        "github.com/docker/cli/vendor/github.com/docker/docker/api/types",
+        "github.com/docker/cli/vendor/github.com/docker/docker/api/types/auxprogress",
+        "github.com/docker/cli/vendor/github.com/docker/docker/api/types/blkiodev",
+        "github.com/docker/cli/vendor/github.com/docker/docker/api/types/build",
+        "github.com/docker/cli/vendor/github.com/docker/docker/api/types/checkpoint",
+        "github.com/docker/cli/vendor/github.com/docker/docker/api/types/common",
+        "github.com/docker/cli/vendor/github.com/docker/docker/api/types/container",
+        "github.com/docker/cli/vendor/github.com/docker/docker/api/types/events",
+        "github.com/docker/cli/vendor/github.com/docker/docker/api/types/filters",
+        "github.com/docker/cli/vendor/github.com/docker/docker/api/types/image",
+        "github.com/docker/cli/vendor/github.com/docker/docker/api/types/mount",
+        "github.com/docker/cli/vendor/github.com/docker/docker/api/types/network",
+        "github.com/docker/cli/vendor/github.com/docker/docker/api/types/registry",
+        "github.com/docker/cli/vendor/github.com/docker/docker/api/types/storage",
+        "github.com/docker/cli/vendor/github.com/docker/docker/api/types/strslice",
+        "github.com/docker/cli/vendor/github.com/docker/docker/api/types/swarm",
+        "github.com/docker/cli/vendor/github.com/docker/docker/api/types/swarm/runtime",
+        "github.com/docker/cli/vendor/github.com/docker/docker/api/types/system",
+        "github.com/docker/cli/vendor/github.com/docker/docker/api/types/time",
+        "github.com/docker/cli/vendor/github.com/docker/docker/api/types/versions",
+        "github.com/docker/cli/vendor/github.com/docker/docker/api/types/volume",
+        "github.com/docker/cli/vendor/github.com/docker/docker/client",
+        "github.com/docker/cli/vendor/github.com/docker/docker/pkg/jsonmessage",
+        "github.com/docker/cli/vendor/github.com/docker/docker/pkg/progress",
+        "github.com/docker/cli/vendor/github.com/docker/docker/pkg/stdcopy",
+        "github.com/docker/cli/vendor/github.com/docker/docker/pkg/streamformatter"
+      ],
+      "version": "v28.4.0-rc.2.0.20250903202849-249d679a6baf+incompatible"
+    },
+    "github.com/docker/docker-credential-helpers": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 1058,
+          "kind": "license_candidate",
+          "owner": "github.com/docker/docker-credential-helpers",
+          "path": "LICENSE",
+          "sha256": "a6c2a5fdf40879f644bdb0da9042f245e7e263237d623264aafcf2470610ad8c"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/docker/docker-credential-helpers/client",
+        "github.com/docker/cli/vendor/github.com/docker/docker-credential-helpers/credentials"
+      ],
+      "version": "v0.9.3"
+    },
+    "github.com/docker/go": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 1479,
+          "kind": "license_candidate",
+          "owner": "github.com/docker/go",
+          "path": "LICENSE",
+          "sha256": "dd26a7abddd02e2d0aba97805b31f248ef7835d9e10da289b22e3b8ab78b324d"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/docker/go/canonical/json"
+      ],
+      "version": "v1.5.1-1.0.20160303222718-d30aec9fd63c"
+    },
+    "github.com/docker/go-connections": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 10760,
+          "kind": "license_candidate",
+          "owner": "github.com/docker/go-connections",
+          "path": "LICENSE",
+          "sha256": "ba3065d2f4b11bb42a0f7b708b021d1c28fa45d097b3eab3e7db9ab4745040d1"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/docker/go-connections/nat",
+        "github.com/docker/cli/vendor/github.com/docker/go-connections/sockets",
+        "github.com/docker/cli/vendor/github.com/docker/go-connections/tlsconfig"
+      ],
+      "version": "v0.5.0"
+    },
+    "github.com/docker/go-events": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 11342,
+          "kind": "license_candidate",
+          "owner": "github.com/docker/go-events",
+          "path": "LICENSE",
+          "sha256": "4877c33a9fc4c30c39a7589846703cf97ac28930c0e2b685e72b7d91612ca951"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/docker/go-events"
+      ],
+      "version": "v0.0.0-20250114142523-c867878c5e32"
+    },
+    "github.com/docker/go-metrics": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 10765,
+          "kind": "license_candidate",
+          "owner": "github.com/docker/go-metrics",
+          "path": "LICENSE",
+          "sha256": "22ac082c11f13250065aff718a5584c26108d046375dd8809031ad3005f95b66"
+        },
+        {
+          "bytes": 20004,
+          "kind": "license_candidate",
+          "owner": "github.com/docker/go-metrics",
+          "path": "LICENSE.docs",
+          "sha256": "a1d1adec3ba691ef6e377a78bbe9e9e2501f2f4a1723d08857da1ac6564e4fed"
+        },
+        {
+          "bytes": 519,
+          "kind": "notice",
+          "owner": "github.com/docker/go-metrics",
+          "path": "NOTICE",
+          "sha256": "03f0b4bcaecfdb491ef5a7d320e2c2adf886c732d34e3fff87d52dbaec64d8c3"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/docker/go-metrics"
+      ],
+      "version": "v0.0.1"
+    },
+    "github.com/docker/go-units": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 10760,
+          "kind": "license_candidate",
+          "owner": "github.com/docker/go-units",
+          "path": "LICENSE",
+          "sha256": "ba3065d2f4b11bb42a0f7b708b021d1c28fa45d097b3eab3e7db9ab4745040d1"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/docker/go-units"
+      ],
+      "version": "v0.5.0"
+    },
+    "github.com/felixge/httpsnoop": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 1101,
+          "kind": "license_candidate",
+          "owner": "github.com/felixge/httpsnoop",
+          "path": "LICENSE.txt",
+          "sha256": "8108e14b5cb2b6bcd51583d3849ef0c2b5c4de61758256c20308bc70d1775dbb"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/felixge/httpsnoop"
+      ],
+      "version": "v1.0.4"
+    },
+    "github.com/fvbommel/sortorder": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 1079,
+          "kind": "license_candidate",
+          "owner": "github.com/fvbommel/sortorder",
+          "path": "LICENSE",
+          "sha256": "6818272dbe7bfdc4b8ff59aa6b52c191b42a40fca26340a722e1f207bd4c8355"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/fvbommel/sortorder"
+      ],
+      "version": "v1.1.0"
+    },
+    "github.com/go-jose/go-jose/v4": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 11358,
+          "kind": "license_candidate",
+          "owner": "github.com/go-jose/go-jose/v4",
+          "path": "LICENSE",
+          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+        },
+        {
+          "bytes": 1479,
+          "kind": "license_candidate",
+          "owner": "github.com/go-jose/go-jose/v4",
+          "path": "json/LICENSE",
+          "sha256": "dd26a7abddd02e2d0aba97805b31f248ef7835d9e10da289b22e3b8ab78b324d"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/go-jose/go-jose/v4",
+        "github.com/docker/cli/vendor/github.com/go-jose/go-jose/v4/cipher",
+        "github.com/docker/cli/vendor/github.com/go-jose/go-jose/v4/json",
+        "github.com/docker/cli/vendor/github.com/go-jose/go-jose/v4/jwt"
+      ],
+      "version": "v4.0.5"
+    },
+    "github.com/go-logr/logr": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 11357,
+          "kind": "license_candidate",
+          "owner": "github.com/go-logr/logr",
+          "path": "LICENSE",
+          "sha256": "b40930bbcf80744c86c46a12bc9da056641d722716c378f5659b9e555ef833e1"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/go-logr/logr",
+        "github.com/docker/cli/vendor/github.com/go-logr/logr/funcr"
+      ],
+      "version": "v1.4.2"
+    },
+    "github.com/go-logr/stdr": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 11357,
+          "kind": "license_candidate",
+          "owner": "github.com/go-logr/stdr",
+          "path": "LICENSE",
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/go-logr/stdr"
+      ],
+      "version": "v1.2.2"
+    },
+    "github.com/go-viper/mapstructure/v2": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 1085,
+          "kind": "license_candidate",
+          "owner": "github.com/go-viper/mapstructure/v2",
+          "path": "LICENSE",
+          "sha256": "22adc4abdece712a737573672f082fd61ac2b21df878efb87ffcff4354a07f26"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/go-viper/mapstructure/v2",
+        "github.com/docker/cli/vendor/github.com/go-viper/mapstructure/v2/internal/errors"
+      ],
+      "version": "v2.2.1"
+    },
+    "github.com/gogo/protobuf": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 1681,
+          "kind": "license_candidate",
+          "owner": "github.com/gogo/protobuf",
+          "path": "LICENSE",
+          "sha256": "3f571768c0ba2f330e5fee90de89bfe5141f48c1939be8008fa61461c30ca07f"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/gogo/protobuf/gogoproto",
+        "github.com/docker/cli/vendor/github.com/gogo/protobuf/proto",
+        "github.com/docker/cli/vendor/github.com/gogo/protobuf/protoc-gen-gogo/descriptor",
+        "github.com/docker/cli/vendor/github.com/gogo/protobuf/sortkeys",
+        "github.com/docker/cli/vendor/github.com/gogo/protobuf/types"
+      ],
+      "version": "v1.3.2"
+    },
+    "github.com/golang/protobuf": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 1480,
+          "kind": "license_candidate",
+          "owner": "github.com/golang/protobuf",
+          "path": "LICENSE",
+          "sha256": "8778a9fc1eaffb03ab873caae251df2d224f6b5502be8777d3cd573a4dd43903"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/golang/protobuf/proto"
+      ],
+      "version": "v1.5.4"
+    },
+    "github.com/google/shlex": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 11358,
+          "kind": "license_candidate",
+          "owner": "github.com/google/shlex",
+          "path": "COPYING",
+          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/google/shlex"
+      ],
+      "version": "v0.0.0-20191202100458-e7afc7fbc510"
+    },
+    "github.com/google/uuid": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 1480,
+          "kind": "license_candidate",
+          "owner": "github.com/google/uuid",
+          "path": "LICENSE",
+          "sha256": "0a8d61ed3cbfd5312326e8126c31ce9c627a283adc99131b56896d29ada04b2d"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/google/uuid"
+      ],
+      "version": "v1.6.0"
+    },
+    "github.com/gorilla/mux": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 1481,
+          "kind": "license_candidate",
+          "owner": "github.com/gorilla/mux",
+          "path": "LICENSE",
+          "sha256": "0b77fdea862f869ef4f201ac5649bdbd38ccb055c7f6454dffae9e2adb4941c1"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/gorilla/mux"
+      ],
+      "version": "v1.8.1"
+    },
+    "github.com/grpc-ecosystem/grpc-gateway/v2": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 1511,
+          "kind": "license_candidate",
+          "owner": "github.com/grpc-ecosystem/grpc-gateway/v2",
+          "path": "LICENSE",
+          "sha256": "a15b1d1b168954c92ff7fb1620382418f7c72f4f4d251ee791d1098ad68ab0c4"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/grpc-ecosystem/grpc-gateway/v2/internal/httprule",
+        "github.com/docker/cli/vendor/github.com/grpc-ecosystem/grpc-gateway/v2/runtime",
+        "github.com/docker/cli/vendor/github.com/grpc-ecosystem/grpc-gateway/v2/utilities"
+      ],
+      "version": "v2.26.1"
+    },
+    "github.com/klauspost/compress": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 16733,
+          "kind": "license_candidate",
+          "owner": "github.com/klauspost/compress",
+          "path": "LICENSE",
+          "sha256": "0d9e582ee4bff57bf1189c9e514e6da7ce277f9cd3bc2d488b22fbb39a6d87cf"
+        },
+        {
+          "bytes": 1486,
+          "kind": "license_candidate",
+          "owner": "github.com/klauspost/compress",
+          "path": "internal/snapref/LICENSE",
+          "sha256": "f69f157b0be75da373605dbc8bbf142e8924ee82d8f44f11bcaf351335bf98cf"
+        },
+        {
+          "bytes": 1068,
+          "kind": "license_candidate",
+          "owner": "github.com/klauspost/compress",
+          "path": "zstd/internal/xxhash/LICENSE.txt",
+          "sha256": "f566a9f97bacdaf00d9f21dd991e81dc11201c4e016c86b470799429a1c9a79c"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/klauspost/compress",
+        "github.com/docker/cli/vendor/github.com/klauspost/compress/fse",
+        "github.com/docker/cli/vendor/github.com/klauspost/compress/huff0",
+        "github.com/docker/cli/vendor/github.com/klauspost/compress/internal/cpuinfo",
+        "github.com/docker/cli/vendor/github.com/klauspost/compress/internal/le",
+        "github.com/docker/cli/vendor/github.com/klauspost/compress/internal/snapref",
+        "github.com/docker/cli/vendor/github.com/klauspost/compress/zstd",
+        "github.com/docker/cli/vendor/github.com/klauspost/compress/zstd/internal/xxhash"
+      ],
+      "version": "v1.18.0"
+    },
+    "github.com/mattn/go-runewidth": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 1085,
+          "kind": "license_candidate",
+          "owner": "github.com/mattn/go-runewidth",
+          "path": "LICENSE",
+          "sha256": "88a2379b3ca34bf5c57127aff9dcb802bbb60ece0805cdbda65b3bd115f971d9"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/mattn/go-runewidth"
+      ],
+      "version": "v0.0.16"
+    },
+    "github.com/miekg/pkcs11": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 1476,
+          "kind": "license_candidate",
+          "owner": "github.com/miekg/pkcs11",
+          "path": "LICENSE",
+          "sha256": "8e069cdd54eff0e36fc8d9aa5d945b3f00a0ea349c8ef2c7f4b88f6e2be75fe8"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/miekg/pkcs11"
+      ],
+      "version": "v1.1.1"
+    },
+    "github.com/moby/docker-image-spec": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 11357,
+          "kind": "license_candidate",
+          "owner": "github.com/moby/docker-image-spec",
+          "path": "LICENSE",
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/moby/docker-image-spec/specs-go/v1"
+      ],
+      "version": "v1.3.1"
+    },
+    "github.com/moby/go-archive": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 11358,
+          "kind": "license_candidate",
+          "owner": "github.com/moby/go-archive",
+          "path": "LICENSE",
+          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/moby/go-archive",
+        "github.com/docker/cli/vendor/github.com/moby/go-archive/compression",
+        "github.com/docker/cli/vendor/github.com/moby/go-archive/tarheader"
+      ],
+      "version": "v0.1.0"
+    },
+    "github.com/moby/patternmatcher": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 10765,
+          "kind": "license_candidate",
+          "owner": "github.com/moby/patternmatcher",
+          "path": "LICENSE",
+          "sha256": "7c87873291f289713ac5df48b1f2010eb6963752bbd6b530416ab99fc37914a8"
+        },
+        {
+          "bytes": 519,
+          "kind": "notice",
+          "owner": "github.com/moby/patternmatcher",
+          "path": "NOTICE",
+          "sha256": "7a3adb8e71d95e4536be8dab1aab2c21eedecf3ee45d2c968d034ee594d7b144"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/moby/patternmatcher",
+        "github.com/docker/cli/vendor/github.com/moby/patternmatcher/ignorefile"
+      ],
+      "version": "v0.6.0"
+    },
+    "github.com/moby/swarmkit/v2": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 11346,
+          "kind": "license_candidate",
+          "owner": "github.com/moby/swarmkit/v2",
+          "path": "LICENSE",
+          "sha256": "00a1d1e630271c4f4b8631a3f4433bbffb7586aa473f7f61627e5e0164a5d6ce"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/moby/swarmkit/v2/api",
+        "github.com/docker/cli/vendor/github.com/moby/swarmkit/v2/api/deepcopy",
+        "github.com/docker/cli/vendor/github.com/moby/swarmkit/v2/api/defaults",
+        "github.com/docker/cli/vendor/github.com/moby/swarmkit/v2/api/genericresource",
+        "github.com/docker/cli/vendor/github.com/moby/swarmkit/v2/manager/raftselector",
+        "github.com/docker/cli/vendor/github.com/moby/swarmkit/v2/protobuf/plugin"
+      ],
+      "version": "v2.0.0"
+    },
+    "github.com/moby/sys/atomicwriter": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 11358,
+          "kind": "license_candidate",
+          "owner": "github.com/moby/sys/atomicwriter",
+          "path": "LICENSE",
+          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/moby/sys/atomicwriter"
+      ],
+      "version": "v0.1.0"
+    },
+    "github.com/moby/sys/capability": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 1357,
+          "kind": "license_candidate",
+          "owner": "github.com/moby/sys/capability",
+          "path": "LICENSE",
+          "sha256": "c6639b5c4f30dcfe52def6d0d85c92fe5948ee99eb0d26d0de8858c97973c79e"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/moby/sys/capability"
+      ],
+      "version": "v0.4.0"
+    },
+    "github.com/moby/sys/sequential": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 11358,
+          "kind": "license_candidate",
+          "owner": "github.com/moby/sys/sequential",
+          "path": "LICENSE",
+          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/moby/sys/sequential"
+      ],
+      "version": "v0.6.0"
+    },
+    "github.com/moby/sys/signal": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 11358,
+          "kind": "license_candidate",
+          "owner": "github.com/moby/sys/signal",
+          "path": "LICENSE",
+          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/moby/sys/signal"
+      ],
+      "version": "v0.7.1"
+    },
+    "github.com/moby/sys/symlink": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 11358,
+          "kind": "license_candidate",
+          "owner": "github.com/moby/sys/symlink",
+          "path": "LICENSE",
+          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+        },
+        {
+          "bytes": 10763,
+          "kind": "license_candidate",
+          "owner": "github.com/moby/sys/symlink",
+          "path": "LICENSE.APACHE",
+          "sha256": "e6abacaae15d29c132fc8688f098a3b9c89088bc434ea33992261e19e34e6723"
+        },
+        {
+          "bytes": 1493,
+          "kind": "license_candidate",
+          "owner": "github.com/moby/sys/symlink",
+          "path": "LICENSE.BSD",
+          "sha256": "81205fa54813e578a0d361c671c21ae35ca5b1b575f39e82f5cdab68b8539a1d"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/moby/sys/symlink"
+      ],
+      "version": "v0.3.0"
+    },
+    "github.com/moby/sys/user": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 11358,
+          "kind": "license_candidate",
+          "owner": "github.com/moby/sys/user",
+          "path": "LICENSE",
+          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/moby/sys/user"
+      ],
+      "version": "v0.4.0"
+    },
+    "github.com/moby/sys/userns": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 11358,
+          "kind": "license_candidate",
+          "owner": "github.com/moby/sys/userns",
+          "path": "LICENSE",
+          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/moby/sys/userns"
+      ],
+      "version": "v0.1.0"
+    },
+    "github.com/moby/term": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 10765,
+          "kind": "license_candidate",
+          "owner": "github.com/moby/term",
+          "path": "LICENSE",
+          "sha256": "7c87873291f289713ac5df48b1f2010eb6963752bbd6b530416ab99fc37914a8"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/moby/term"
+      ],
+      "version": "v0.5.2"
+    },
+    "github.com/morikuni/aec": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 1082,
+          "kind": "license_candidate",
+          "owner": "github.com/morikuni/aec",
+          "path": "LICENSE",
+          "sha256": "54c5e52725ae21a2a815b875b6000ce5a5c1c5e829b11fb05425235932bf8968"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/morikuni/aec"
+      ],
+      "version": "v1.0.0"
+    },
+    "github.com/munnerz/goautoneg": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 1546,
+          "kind": "license_candidate",
+          "owner": "github.com/munnerz/goautoneg",
+          "path": "LICENSE",
+          "sha256": "aa1376b9bc5dea6f30cdefde40c176a254f247d2814d0a9929395138631b2ae0"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/munnerz/goautoneg"
+      ],
+      "version": "v0.0.0-20191010083416-a7dc8b61c822"
+    },
+    "github.com/opencontainers/go-digest": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 10801,
+          "kind": "license_candidate",
+          "owner": "github.com/opencontainers/go-digest",
+          "path": "LICENSE",
+          "sha256": "aceb55133c41c50c2e170c5918e301fe74f592d0f28724bf2f7a7bfdcff1fc5f"
+        },
+        {
+          "bytes": 20004,
+          "kind": "license_candidate",
+          "owner": "github.com/opencontainers/go-digest",
+          "path": "LICENSE.docs",
+          "sha256": "a1d1adec3ba691ef6e377a78bbe9e9e2501f2f4a1723d08857da1ac6564e4fed"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/opencontainers/go-digest"
+      ],
+      "version": "v1.0.0"
+    },
+    "github.com/opencontainers/image-spec": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 10767,
+          "kind": "license_candidate",
+          "owner": "github.com/opencontainers/image-spec",
+          "path": "LICENSE",
+          "sha256": "b0a3f39513927db306adabea11d14c23f079d4febcea241d123a68d1a0d45418"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/opencontainers/image-spec/specs-go",
+        "github.com/docker/cli/vendor/github.com/opencontainers/image-spec/specs-go/v1"
+      ],
+      "version": "v1.1.1"
+    },
+    "github.com/pkg/browser": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 1312,
+          "kind": "license_candidate",
+          "owner": "github.com/pkg/browser",
+          "path": "LICENSE",
+          "sha256": "4801bb0c5d70b980b3e1f63d1d2df8d84fec22548e3d73f03a68df1fb808791f"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/pkg/browser"
+      ],
+      "version": "v0.0.0-20240102092130-5ac0b6a4141c"
+    },
+    "github.com/pkg/errors": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 1312,
+          "kind": "license_candidate",
+          "owner": "github.com/pkg/errors",
+          "path": "LICENSE",
+          "sha256": "8d427fd87bc9579ea368fde3d49f9ca22eac857f91a9dec7e3004bdfab7dee86"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/pkg/errors"
+      ],
+      "version": "v0.9.1"
+    },
+    "github.com/prometheus/client_golang": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 1479,
+          "kind": "license_candidate",
+          "owner": "github.com/prometheus/client_golang",
+          "path": "internal/github.com/golang/gddo/LICENSE",
+          "sha256": "dfffb9ec737eaba985243e95a549bd8c3a4d462032cfe603e2a6704c346427b6"
+        },
+        {
+          "bytes": 11357,
+          "kind": "license_candidate",
+          "owner": "github.com/prometheus/client_golang",
+          "path": "LICENSE",
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+        },
+        {
+          "bytes": 631,
+          "kind": "notice",
+          "owner": "github.com/prometheus/client_golang",
+          "path": "NOTICE",
+          "sha256": "8548bfb2bc1913396df38c548a6ec60b8dbcac3b0800485a40569c8bdd184471"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/prometheus/client_golang/internal/github.com/golang/gddo/httputil",
+        "github.com/docker/cli/vendor/github.com/prometheus/client_golang/internal/github.com/golang/gddo/httputil/header",
+        "github.com/docker/cli/vendor/github.com/prometheus/client_golang/prometheus",
+        "github.com/docker/cli/vendor/github.com/prometheus/client_golang/prometheus/internal",
+        "github.com/docker/cli/vendor/github.com/prometheus/client_golang/prometheus/promhttp",
+        "github.com/docker/cli/vendor/github.com/prometheus/client_golang/prometheus/promhttp/internal"
+      ],
+      "version": "v1.22.0"
+    },
+    "github.com/prometheus/client_model": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 11357,
+          "kind": "license_candidate",
+          "owner": "github.com/prometheus/client_model",
+          "path": "LICENSE",
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+        },
+        {
+          "bytes": 167,
+          "kind": "notice",
+          "owner": "github.com/prometheus/client_model",
+          "path": "NOTICE",
+          "sha256": "6c79faa15168885fb88a316ae0df18f486deafddefdc16826cdc56dfbd421e24"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/prometheus/client_model/go"
+      ],
+      "version": "v0.6.1"
+    },
+    "github.com/prometheus/common": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 11357,
+          "kind": "license_candidate",
+          "owner": "github.com/prometheus/common",
+          "path": "LICENSE",
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+        },
+        {
+          "bytes": 178,
+          "kind": "notice",
+          "owner": "github.com/prometheus/common",
+          "path": "NOTICE",
+          "sha256": "600244c8052c8c1d307043fafacbc83b429c171dd8e08f5a537c0a54014585ee"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/prometheus/common/expfmt",
+        "github.com/docker/cli/vendor/github.com/prometheus/common/model"
+      ],
+      "version": "v0.62.0"
+    },
+    "github.com/prometheus/procfs": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 11357,
+          "kind": "license_candidate",
+          "owner": "github.com/prometheus/procfs",
+          "path": "LICENSE",
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+        },
+        {
+          "bytes": 237,
+          "kind": "notice",
+          "owner": "github.com/prometheus/procfs",
+          "path": "NOTICE",
+          "sha256": "497fcdb9fae55924c12f55f05cbe83a096662e5c591d79b74e4a8f23bab5ffee"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/prometheus/procfs",
+        "github.com/docker/cli/vendor/github.com/prometheus/procfs/internal/fs",
+        "github.com/docker/cli/vendor/github.com/prometheus/procfs/internal/util"
+      ],
+      "version": "v0.15.1"
+    },
+    "github.com/rivo/uniseg": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 1072,
+          "kind": "license_candidate",
+          "owner": "github.com/rivo/uniseg",
+          "path": "LICENSE.txt",
+          "sha256": "a59885f5f0f3b3c07cf9444db5fe399b6f0791eac82055f7b85cc65500551039"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/rivo/uniseg"
+      ],
+      "version": "v0.2.0"
+    },
+    "github.com/sirupsen/logrus": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 1082,
+          "kind": "license_candidate",
+          "owner": "github.com/sirupsen/logrus",
+          "path": "LICENSE",
+          "sha256": "51a0c9ec7f8b7634181b8d4c03e5b5d204ac21d6e72f46c313973424664b2e6b"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/sirupsen/logrus"
+      ],
+      "version": "v1.9.3"
+    },
+    "github.com/spf13/cobra": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 10140,
+          "kind": "license_candidate",
+          "owner": "github.com/spf13/cobra",
+          "path": "LICENSE.txt",
+          "sha256": "5e3400b93bbb099e83e52bab885e7441750673c21f97988ca3f1240639b63283"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/spf13/cobra"
+      ],
+      "version": "v1.9.1"
+    },
+    "github.com/spf13/pflag": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 1531,
+          "kind": "license_candidate",
+          "owner": "github.com/spf13/pflag",
+          "path": "LICENSE",
+          "sha256": "b8514c577c1c4b46cee454d5a882b15fa411e72c5bd7f801f241591789fce61a"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/spf13/pflag"
+      ],
+      "version": "v1.0.6"
+    },
+    "github.com/theupdateframework/notary": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 11342,
+          "kind": "license_candidate",
+          "owner": "github.com/theupdateframework/notary",
+          "path": "LICENSE",
+          "sha256": "296e44db2812533f75a406a174f56fb7af2efed9dc6b84b3c43f64bf237c78c3"
+        },
+        {
+          "bytes": 1533,
+          "kind": "license_candidate",
+          "owner": "github.com/theupdateframework/notary",
+          "path": "tuf/LICENSE",
+          "sha256": "f5d767421352422c0134775c0ac16511a684cbc9e4c5589435d1c3de24c0dc63"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/theupdateframework/notary",
+        "github.com/docker/cli/vendor/github.com/theupdateframework/notary/client",
+        "github.com/docker/cli/vendor/github.com/theupdateframework/notary/client/changelist",
+        "github.com/docker/cli/vendor/github.com/theupdateframework/notary/cryptoservice",
+        "github.com/docker/cli/vendor/github.com/theupdateframework/notary/passphrase",
+        "github.com/docker/cli/vendor/github.com/theupdateframework/notary/storage",
+        "github.com/docker/cli/vendor/github.com/theupdateframework/notary/trustmanager",
+        "github.com/docker/cli/vendor/github.com/theupdateframework/notary/trustmanager/yubikey",
+        "github.com/docker/cli/vendor/github.com/theupdateframework/notary/trustpinning",
+        "github.com/docker/cli/vendor/github.com/theupdateframework/notary/tuf",
+        "github.com/docker/cli/vendor/github.com/theupdateframework/notary/tuf/data",
+        "github.com/docker/cli/vendor/github.com/theupdateframework/notary/tuf/signed",
+        "github.com/docker/cli/vendor/github.com/theupdateframework/notary/tuf/utils",
+        "github.com/docker/cli/vendor/github.com/theupdateframework/notary/tuf/validation"
+      ],
+      "version": "v0.7.1-0.20210315103452-bf96a202a09a"
+    },
+    "github.com/tonistiigi/go-rosetta": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 1060,
+          "kind": "license_candidate",
+          "owner": "github.com/tonistiigi/go-rosetta",
+          "path": "LICENSE",
+          "sha256": "46e374942924c9ff142d01749c99e97843ee96f2bab779441f5cb2cdd472a0f7"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/tonistiigi/go-rosetta"
+      ],
+      "version": "v0.0.0-20220804170347-3f4430f2d346"
+    },
+    "github.com/xeipuuv/gojsonpointer": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 11338,
+          "kind": "license_candidate",
+          "owner": "github.com/xeipuuv/gojsonpointer",
+          "path": "LICENSE-APACHE-2.0.txt",
+          "sha256": "745f8f53e61ad2f8463a27b77aac1636dc3a121ed8bd841e82397226fdcb4bae"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/xeipuuv/gojsonpointer"
+      ],
+      "version": "v0.0.0-20190905194746-02993c407bfb"
+    },
+    "github.com/xeipuuv/gojsonreference": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 11338,
+          "kind": "license_candidate",
+          "owner": "github.com/xeipuuv/gojsonreference",
+          "path": "LICENSE-APACHE-2.0.txt",
+          "sha256": "745f8f53e61ad2f8463a27b77aac1636dc3a121ed8bd841e82397226fdcb4bae"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/xeipuuv/gojsonreference"
+      ],
+      "version": "v0.0.0-20180127040603-bd5ef7bd5415"
+    },
+    "github.com/xeipuuv/gojsonschema": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 11338,
+          "kind": "license_candidate",
+          "owner": "github.com/xeipuuv/gojsonschema",
+          "path": "LICENSE-APACHE-2.0.txt",
+          "sha256": "745f8f53e61ad2f8463a27b77aac1636dc3a121ed8bd841e82397226fdcb4bae"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/github.com/xeipuuv/gojsonschema"
+      ],
+      "version": "v1.2.0"
+    },
+    "go": {
+      "kind": "standard",
+      "notices": [
+        {
+          "bytes": 1453,
+          "kind": "license_candidate",
+          "owner": "go",
+          "path": "LICENSE",
+          "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad"
+        },
+        {
+          "bytes": 9714,
+          "kind": "license_candidate",
+          "owner": "go",
+          "path": "src/crypto/internal/boring/LICENSE",
+          "sha256": "56210f826b8f0fbac3160dfe55c97f4019eb6cdda3963b5a0eab8a8bdb62360e"
+        },
+        {
+          "bytes": 1453,
+          "kind": "license_candidate",
+          "owner": "go",
+          "path": "src/vendor/golang.org/x/crypto/LICENSE",
+          "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad"
+        },
+        {
+          "bytes": 1453,
+          "kind": "license_candidate",
+          "owner": "go",
+          "path": "src/vendor/golang.org/x/net/LICENSE",
+          "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad"
+        },
+        {
+          "bytes": 1453,
+          "kind": "license_candidate",
+          "owner": "go",
+          "path": "src/vendor/golang.org/x/sys/LICENSE",
+          "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad"
+        },
+        {
+          "bytes": 1453,
+          "kind": "license_candidate",
+          "owner": "go",
+          "path": "src/vendor/golang.org/x/text/LICENSE",
+          "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad"
+        }
+      ],
+      "packages": [
+        "archive/tar",
+        "archive/zip",
+        "bufio",
+        "bytes",
+        "cmp",
+        "compress/bzip2",
+        "compress/flate",
+        "compress/gzip",
+        "container/list",
+        "context",
+        "crypto",
+        "crypto/aes",
+        "crypto/cipher",
+        "crypto/des",
+        "crypto/dsa",
+        "crypto/ecdh",
+        "crypto/ecdsa",
+        "crypto/ed25519",
+        "crypto/elliptic",
+        "crypto/hmac",
+        "crypto/internal/boring",
+        "crypto/internal/boring/bbig",
+        "crypto/internal/boring/sig",
+        "crypto/internal/entropy",
+        "crypto/internal/fips140",
+        "crypto/internal/fips140/aes",
+        "crypto/internal/fips140/aes/gcm",
+        "crypto/internal/fips140/alias",
+        "crypto/internal/fips140/bigmod",
+        "crypto/internal/fips140/check",
+        "crypto/internal/fips140/drbg",
+        "crypto/internal/fips140/ecdh",
+        "crypto/internal/fips140/ecdsa",
+        "crypto/internal/fips140/ed25519",
+        "crypto/internal/fips140/edwards25519",
+        "crypto/internal/fips140/edwards25519/field",
+        "crypto/internal/fips140/hkdf",
+        "crypto/internal/fips140/hmac",
+        "crypto/internal/fips140/mlkem",
+        "crypto/internal/fips140/nistec",
+        "crypto/internal/fips140/nistec/fiat",
+        "crypto/internal/fips140/rsa",
+        "crypto/internal/fips140/sha256",
+        "crypto/internal/fips140/sha3",
+        "crypto/internal/fips140/sha512",
+        "crypto/internal/fips140/subtle",
+        "crypto/internal/fips140/tls12",
+        "crypto/internal/fips140/tls13",
+        "crypto/internal/fips140deps/byteorder",
+        "crypto/internal/fips140deps/cpu",
+        "crypto/internal/fips140deps/godebug",
+        "crypto/internal/fips140hash",
+        "crypto/internal/fips140only",
+        "crypto/internal/hpke",
+        "crypto/internal/impl",
+        "crypto/internal/randutil",
+        "crypto/internal/sysrand",
+        "crypto/md5",
+        "crypto/rand",
+        "crypto/rc4",
+        "crypto/rsa",
+        "crypto/sha1",
+        "crypto/sha256",
+        "crypto/sha3",
+        "crypto/sha512",
+        "crypto/subtle",
+        "crypto/tls",
+        "crypto/tls/internal/fips140tls",
+        "crypto/x509",
+        "crypto/x509/pkix",
+        "database/sql/driver",
+        "embed",
+        "encoding",
+        "encoding/asn1",
+        "encoding/base64",
+        "encoding/binary",
+        "encoding/csv",
+        "encoding/hex",
+        "encoding/json",
+        "encoding/pem",
+        "errors",
+        "expvar",
+        "flag",
+        "fmt",
+        "go/token",
+        "hash",
+        "hash/crc32",
+        "hash/fnv",
+        "html",
+        "html/template",
+        "internal/abi",
+        "internal/asan",
+        "internal/bisect",
+        "internal/bytealg",
+        "internal/byteorder",
+        "internal/chacha8rand",
+        "internal/coverage/rtcov",
+        "internal/cpu",
+        "internal/filepathlite",
+        "internal/fmtsort",
+        "internal/goarch",
+        "internal/godebug",
+        "internal/godebugs",
+        "internal/goexperiment",
+        "internal/goos",
+        "internal/itoa",
+        "internal/msan",
+        "internal/nettrace",
+        "internal/oserror",
+        "internal/poll",
+        "internal/profilerecord",
+        "internal/race",
+        "internal/reflectlite",
+        "internal/runtime/atomic",
+        "internal/runtime/exithook",
+        "internal/runtime/maps",
+        "internal/runtime/math",
+        "internal/runtime/sys",
+        "internal/runtime/syscall",
+        "internal/singleflight",
+        "internal/stringslite",
+        "internal/sync",
+        "internal/syscall/execenv",
+        "internal/syscall/unix",
+        "internal/testlog",
+        "internal/unsafeheader",
+        "io",
+        "io/fs",
+        "io/ioutil",
+        "iter",
+        "log",
+        "log/internal",
+        "log/slog",
+        "log/slog/internal",
+        "log/slog/internal/buffer",
+        "maps",
+        "math",
+        "math/big",
+        "math/bits",
+        "math/rand",
+        "math/rand/v2",
+        "mime",
+        "mime/multipart",
+        "mime/quotedprintable",
+        "net",
+        "net/http",
+        "net/http/httptrace",
+        "net/http/httputil",
+        "net/http/internal",
+        "net/http/internal/ascii",
+        "net/mail",
+        "net/netip",
+        "net/textproto",
+        "net/url",
+        "os",
+        "os/exec",
+        "os/signal",
+        "os/user",
+        "path",
+        "path/filepath",
+        "reflect",
+        "regexp",
+        "regexp/syntax",
+        "runtime",
+        "runtime/cgo",
+        "runtime/debug",
+        "runtime/metrics",
+        "runtime/trace",
+        "slices",
+        "sort",
+        "strconv",
+        "strings",
+        "sync",
+        "sync/atomic",
+        "syscall",
+        "text/scanner",
+        "text/tabwriter",
+        "text/template",
+        "text/template/parse",
+        "time",
+        "unicode",
+        "unicode/utf16",
+        "unicode/utf8",
+        "unique",
+        "unsafe",
+        "vendor/golang.org/x/crypto/chacha20",
+        "vendor/golang.org/x/crypto/chacha20poly1305",
+        "vendor/golang.org/x/crypto/cryptobyte",
+        "vendor/golang.org/x/crypto/cryptobyte/asn1",
+        "vendor/golang.org/x/crypto/internal/alias",
+        "vendor/golang.org/x/crypto/internal/poly1305",
+        "vendor/golang.org/x/net/dns/dnsmessage",
+        "vendor/golang.org/x/net/http/httpguts",
+        "vendor/golang.org/x/net/http/httpproxy",
+        "vendor/golang.org/x/net/http2/hpack",
+        "vendor/golang.org/x/net/idna",
+        "vendor/golang.org/x/sys/cpu",
+        "vendor/golang.org/x/text/secure/bidirule",
+        "vendor/golang.org/x/text/transform",
+        "vendor/golang.org/x/text/unicode/bidi",
+        "vendor/golang.org/x/text/unicode/norm",
+        "weak"
+      ],
+      "version": "go1.24.7"
+    },
+    "go.etcd.io/etcd/raft/v3": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 11358,
+          "kind": "license_candidate",
+          "owner": "go.etcd.io/etcd/raft/v3",
+          "path": "LICENSE",
+          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/go.etcd.io/etcd/raft/v3/raftpb"
+      ],
+      "version": "v3.5.16"
+    },
+    "go.opentelemetry.io/auto/sdk": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 11357,
+          "kind": "license_candidate",
+          "owner": "go.opentelemetry.io/auto/sdk",
+          "path": "LICENSE",
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/go.opentelemetry.io/auto/sdk",
+        "github.com/docker/cli/vendor/go.opentelemetry.io/auto/sdk/internal/telemetry"
+      ],
+      "version": "v1.1.0"
+    },
+    "go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 11357,
+          "kind": "license_candidate",
+          "owner": "go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp",
+          "path": "LICENSE",
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp",
+        "github.com/docker/cli/vendor/go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp/internal/request",
+        "github.com/docker/cli/vendor/go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp/internal/semconv",
+        "github.com/docker/cli/vendor/go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp/internal/semconvutil"
+      ],
+      "version": "v0.60.0"
+    },
+    "go.opentelemetry.io/otel": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 11357,
+          "kind": "license_candidate",
+          "owner": "go.opentelemetry.io/otel",
+          "path": "LICENSE",
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/go.opentelemetry.io/otel",
+        "github.com/docker/cli/vendor/go.opentelemetry.io/otel/attribute",
+        "github.com/docker/cli/vendor/go.opentelemetry.io/otel/baggage",
+        "github.com/docker/cli/vendor/go.opentelemetry.io/otel/codes",
+        "github.com/docker/cli/vendor/go.opentelemetry.io/otel/internal",
+        "github.com/docker/cli/vendor/go.opentelemetry.io/otel/internal/attribute",
+        "github.com/docker/cli/vendor/go.opentelemetry.io/otel/internal/baggage",
+        "github.com/docker/cli/vendor/go.opentelemetry.io/otel/internal/global",
+        "github.com/docker/cli/vendor/go.opentelemetry.io/otel/propagation",
+        "github.com/docker/cli/vendor/go.opentelemetry.io/otel/semconv/v1.20.0",
+        "github.com/docker/cli/vendor/go.opentelemetry.io/otel/semconv/v1.26.0"
+      ],
+      "version": "v1.35.0"
+    },
+    "go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 11357,
+          "kind": "license_candidate",
+          "owner": "go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc",
+          "path": "LICENSE",
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc",
+        "github.com/docker/cli/vendor/go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc/internal",
+        "github.com/docker/cli/vendor/go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc/internal/envconfig",
+        "github.com/docker/cli/vendor/go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc/internal/oconf",
+        "github.com/docker/cli/vendor/go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc/internal/retry",
+        "github.com/docker/cli/vendor/go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc/internal/transform"
+      ],
+      "version": "v1.35.0"
+    },
+    "go.opentelemetry.io/otel/exporters/otlp/otlptrace": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 11357,
+          "kind": "license_candidate",
+          "owner": "go.opentelemetry.io/otel/exporters/otlp/otlptrace",
+          "path": "LICENSE",
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/go.opentelemetry.io/otel/exporters/otlp/otlptrace",
+        "github.com/docker/cli/vendor/go.opentelemetry.io/otel/exporters/otlp/otlptrace/internal/tracetransform"
+      ],
+      "version": "v1.35.0"
+    },
+    "go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 11357,
+          "kind": "license_candidate",
+          "owner": "go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc",
+          "path": "LICENSE",
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc",
+        "github.com/docker/cli/vendor/go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc/internal",
+        "github.com/docker/cli/vendor/go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc/internal/envconfig",
+        "github.com/docker/cli/vendor/go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc/internal/otlpconfig",
+        "github.com/docker/cli/vendor/go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc/internal/retry"
+      ],
+      "version": "v1.35.0"
+    },
+    "go.opentelemetry.io/otel/metric": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 11357,
+          "kind": "license_candidate",
+          "owner": "go.opentelemetry.io/otel/metric",
+          "path": "LICENSE",
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/go.opentelemetry.io/otel/metric",
+        "github.com/docker/cli/vendor/go.opentelemetry.io/otel/metric/embedded",
+        "github.com/docker/cli/vendor/go.opentelemetry.io/otel/metric/noop"
+      ],
+      "version": "v1.35.0"
+    },
+    "go.opentelemetry.io/otel/sdk": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 11357,
+          "kind": "license_candidate",
+          "owner": "go.opentelemetry.io/otel/sdk",
+          "path": "LICENSE",
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/go.opentelemetry.io/otel/sdk",
+        "github.com/docker/cli/vendor/go.opentelemetry.io/otel/sdk/instrumentation",
+        "github.com/docker/cli/vendor/go.opentelemetry.io/otel/sdk/internal/env",
+        "github.com/docker/cli/vendor/go.opentelemetry.io/otel/sdk/internal/x",
+        "github.com/docker/cli/vendor/go.opentelemetry.io/otel/sdk/resource",
+        "github.com/docker/cli/vendor/go.opentelemetry.io/otel/sdk/trace"
+      ],
+      "version": "v1.35.0"
+    },
+    "go.opentelemetry.io/otel/sdk/metric": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 11357,
+          "kind": "license_candidate",
+          "owner": "go.opentelemetry.io/otel/sdk/metric",
+          "path": "LICENSE",
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/go.opentelemetry.io/otel/sdk/metric",
+        "github.com/docker/cli/vendor/go.opentelemetry.io/otel/sdk/metric/exemplar",
+        "github.com/docker/cli/vendor/go.opentelemetry.io/otel/sdk/metric/internal",
+        "github.com/docker/cli/vendor/go.opentelemetry.io/otel/sdk/metric/internal/aggregate",
+        "github.com/docker/cli/vendor/go.opentelemetry.io/otel/sdk/metric/internal/x",
+        "github.com/docker/cli/vendor/go.opentelemetry.io/otel/sdk/metric/metricdata"
+      ],
+      "version": "v1.35.0"
+    },
+    "go.opentelemetry.io/otel/trace": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 11357,
+          "kind": "license_candidate",
+          "owner": "go.opentelemetry.io/otel/trace",
+          "path": "LICENSE",
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/go.opentelemetry.io/otel/trace",
+        "github.com/docker/cli/vendor/go.opentelemetry.io/otel/trace/embedded",
+        "github.com/docker/cli/vendor/go.opentelemetry.io/otel/trace/internal/telemetry",
+        "github.com/docker/cli/vendor/go.opentelemetry.io/otel/trace/noop"
+      ],
+      "version": "v1.35.0"
+    },
+    "go.opentelemetry.io/proto/otlp": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 11357,
+          "kind": "license_candidate",
+          "owner": "go.opentelemetry.io/proto/otlp",
+          "path": "LICENSE",
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/go.opentelemetry.io/proto/otlp/collector/metrics/v1",
+        "github.com/docker/cli/vendor/go.opentelemetry.io/proto/otlp/collector/trace/v1",
+        "github.com/docker/cli/vendor/go.opentelemetry.io/proto/otlp/common/v1",
+        "github.com/docker/cli/vendor/go.opentelemetry.io/proto/otlp/metrics/v1",
+        "github.com/docker/cli/vendor/go.opentelemetry.io/proto/otlp/resource/v1",
+        "github.com/docker/cli/vendor/go.opentelemetry.io/proto/otlp/trace/v1"
+      ],
+      "version": "v1.5.0"
+    },
+    "golang.org/x/crypto": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 1453,
+          "kind": "license_candidate",
+          "owner": "golang.org/x/crypto",
+          "path": "LICENSE",
+          "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/golang.org/x/crypto/ed25519",
+        "github.com/docker/cli/vendor/golang.org/x/crypto/pbkdf2"
+      ],
+      "version": "v0.37.0"
+    },
+    "golang.org/x/net": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 1453,
+          "kind": "license_candidate",
+          "owner": "golang.org/x/net",
+          "path": "LICENSE",
+          "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/golang.org/x/net/http/httpguts",
+        "github.com/docker/cli/vendor/golang.org/x/net/http2",
+        "github.com/docker/cli/vendor/golang.org/x/net/http2/hpack",
+        "github.com/docker/cli/vendor/golang.org/x/net/idna",
+        "github.com/docker/cli/vendor/golang.org/x/net/internal/httpcommon",
+        "github.com/docker/cli/vendor/golang.org/x/net/internal/timeseries",
+        "github.com/docker/cli/vendor/golang.org/x/net/trace"
+      ],
+      "version": "v0.39.0"
+    },
+    "golang.org/x/sync": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 1453,
+          "kind": "license_candidate",
+          "owner": "golang.org/x/sync",
+          "path": "LICENSE",
+          "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/golang.org/x/sync/errgroup"
+      ],
+      "version": "v0.16.0"
+    },
+    "golang.org/x/sys": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 1453,
+          "kind": "license_candidate",
+          "owner": "golang.org/x/sys",
+          "path": "LICENSE",
+          "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/golang.org/x/sys/unix"
+      ],
+      "version": "v0.33.0"
+    },
+    "golang.org/x/term": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 1453,
+          "kind": "license_candidate",
+          "owner": "golang.org/x/term",
+          "path": "LICENSE",
+          "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/golang.org/x/term"
+      ],
+      "version": "v0.31.0"
+    },
+    "golang.org/x/text": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 1453,
+          "kind": "license_candidate",
+          "owner": "golang.org/x/text",
+          "path": "LICENSE",
+          "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/golang.org/x/text/secure/bidirule",
+        "github.com/docker/cli/vendor/golang.org/x/text/transform",
+        "github.com/docker/cli/vendor/golang.org/x/text/unicode/bidi",
+        "github.com/docker/cli/vendor/golang.org/x/text/unicode/norm",
+        "github.com/docker/cli/vendor/golang.org/x/text/width"
+      ],
+      "version": "v0.24.0"
+    },
+    "golang.org/x/time": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 1453,
+          "kind": "license_candidate",
+          "owner": "golang.org/x/time",
+          "path": "LICENSE",
+          "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/golang.org/x/time/rate"
+      ],
+      "version": "v0.11.0"
+    },
+    "google.golang.org/genproto/googleapis/api": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 11358,
+          "kind": "license_candidate",
+          "owner": "google.golang.org/genproto/googleapis/api",
+          "path": "LICENSE",
+          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/google.golang.org/genproto/googleapis/api/httpbody"
+      ],
+      "version": "v0.0.0-20250218202821-56aae31c358a"
+    },
+    "google.golang.org/genproto/googleapis/rpc": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 11358,
+          "kind": "license_candidate",
+          "owner": "google.golang.org/genproto/googleapis/rpc",
+          "path": "LICENSE",
+          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/google.golang.org/genproto/googleapis/rpc/errdetails",
+        "github.com/docker/cli/vendor/google.golang.org/genproto/googleapis/rpc/status"
+      ],
+      "version": "v0.0.0-20250218202821-56aae31c358a"
+    },
+    "google.golang.org/grpc": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 11358,
+          "kind": "license_candidate",
+          "owner": "google.golang.org/grpc",
+          "path": "LICENSE",
+          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+        },
+        {
+          "bytes": 554,
+          "kind": "notice",
+          "owner": "google.golang.org/grpc",
+          "path": "NOTICE.txt",
+          "sha256": "693ff28ec216d5112ac1bbfe64ef539005867d1c7bd427b57d579683293b947f"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/google.golang.org/grpc",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/attributes",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/backoff",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/balancer",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/balancer/base",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/balancer/endpointsharding",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/balancer/grpclb/state",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/balancer/pickfirst",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/balancer/pickfirst/internal",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/balancer/pickfirst/pickfirstleaf",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/balancer/roundrobin",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/binarylog/grpc_binarylog_v1",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/channelz",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/codes",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/connectivity",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/credentials",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/credentials/insecure",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/encoding",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/encoding/gzip",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/encoding/proto",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/experimental/stats",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/grpclog",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/grpclog/internal",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/health/grpc_health_v1",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/internal",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/internal/backoff",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/internal/balancer/gracefulswitch",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/internal/balancerload",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/internal/binarylog",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/internal/buffer",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/internal/channelz",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/internal/credentials",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/internal/envconfig",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/internal/grpclog",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/internal/grpcsync",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/internal/grpcutil",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/internal/idle",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/internal/metadata",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/internal/pretty",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/internal/proxyattributes",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/internal/resolver",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/internal/resolver/delegatingresolver",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/internal/resolver/dns",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/internal/resolver/dns/internal",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/internal/resolver/passthrough",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/internal/resolver/unix",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/internal/serviceconfig",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/internal/stats",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/internal/status",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/internal/syscall",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/internal/transport",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/internal/transport/networktype",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/keepalive",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/mem",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/metadata",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/peer",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/resolver",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/resolver/dns",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/serviceconfig",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/stats",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/status",
+        "github.com/docker/cli/vendor/google.golang.org/grpc/tap"
+      ],
+      "version": "v1.72.2"
+    },
+    "google.golang.org/protobuf": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 1479,
+          "kind": "license_candidate",
+          "owner": "google.golang.org/protobuf",
+          "path": "LICENSE",
+          "sha256": "4835612df0098ca95f8e7d9e3bffcb02358d435dbb38057c844c99d7f725eb20"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/google.golang.org/protobuf/encoding/protodelim",
+        "github.com/docker/cli/vendor/google.golang.org/protobuf/encoding/protojson",
+        "github.com/docker/cli/vendor/google.golang.org/protobuf/encoding/prototext",
+        "github.com/docker/cli/vendor/google.golang.org/protobuf/encoding/protowire",
+        "github.com/docker/cli/vendor/google.golang.org/protobuf/internal/descfmt",
+        "github.com/docker/cli/vendor/google.golang.org/protobuf/internal/descopts",
+        "github.com/docker/cli/vendor/google.golang.org/protobuf/internal/detrand",
+        "github.com/docker/cli/vendor/google.golang.org/protobuf/internal/editiondefaults",
+        "github.com/docker/cli/vendor/google.golang.org/protobuf/internal/editionssupport",
+        "github.com/docker/cli/vendor/google.golang.org/protobuf/internal/encoding/defval",
+        "github.com/docker/cli/vendor/google.golang.org/protobuf/internal/encoding/json",
+        "github.com/docker/cli/vendor/google.golang.org/protobuf/internal/encoding/messageset",
+        "github.com/docker/cli/vendor/google.golang.org/protobuf/internal/encoding/tag",
+        "github.com/docker/cli/vendor/google.golang.org/protobuf/internal/encoding/text",
+        "github.com/docker/cli/vendor/google.golang.org/protobuf/internal/errors",
+        "github.com/docker/cli/vendor/google.golang.org/protobuf/internal/filedesc",
+        "github.com/docker/cli/vendor/google.golang.org/protobuf/internal/filetype",
+        "github.com/docker/cli/vendor/google.golang.org/protobuf/internal/flags",
+        "github.com/docker/cli/vendor/google.golang.org/protobuf/internal/genid",
+        "github.com/docker/cli/vendor/google.golang.org/protobuf/internal/impl",
+        "github.com/docker/cli/vendor/google.golang.org/protobuf/internal/order",
+        "github.com/docker/cli/vendor/google.golang.org/protobuf/internal/pragma",
+        "github.com/docker/cli/vendor/google.golang.org/protobuf/internal/protolazy",
+        "github.com/docker/cli/vendor/google.golang.org/protobuf/internal/set",
+        "github.com/docker/cli/vendor/google.golang.org/protobuf/internal/strs",
+        "github.com/docker/cli/vendor/google.golang.org/protobuf/internal/version",
+        "github.com/docker/cli/vendor/google.golang.org/protobuf/proto",
+        "github.com/docker/cli/vendor/google.golang.org/protobuf/protoadapt",
+        "github.com/docker/cli/vendor/google.golang.org/protobuf/reflect/protodesc",
+        "github.com/docker/cli/vendor/google.golang.org/protobuf/reflect/protoreflect",
+        "github.com/docker/cli/vendor/google.golang.org/protobuf/reflect/protoregistry",
+        "github.com/docker/cli/vendor/google.golang.org/protobuf/runtime/protoiface",
+        "github.com/docker/cli/vendor/google.golang.org/protobuf/runtime/protoimpl",
+        "github.com/docker/cli/vendor/google.golang.org/protobuf/types/descriptorpb",
+        "github.com/docker/cli/vendor/google.golang.org/protobuf/types/gofeaturespb",
+        "github.com/docker/cli/vendor/google.golang.org/protobuf/types/known/anypb",
+        "github.com/docker/cli/vendor/google.golang.org/protobuf/types/known/durationpb",
+        "github.com/docker/cli/vendor/google.golang.org/protobuf/types/known/fieldmaskpb",
+        "github.com/docker/cli/vendor/google.golang.org/protobuf/types/known/structpb",
+        "github.com/docker/cli/vendor/google.golang.org/protobuf/types/known/timestamppb",
+        "github.com/docker/cli/vendor/google.golang.org/protobuf/types/known/wrapperspb"
+      ],
+      "version": "v1.36.6"
+    },
+    "gopkg.in/yaml.v3": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 2151,
+          "kind": "license_candidate",
+          "owner": "gopkg.in/yaml.v3",
+          "path": "LICENSE",
+          "sha256": "d18f6323b71b0b768bb5e9616e36da390fbd39369a81807cca352de4e4e6aa0b"
+        },
+        {
+          "bytes": 560,
+          "kind": "notice",
+          "owner": "gopkg.in/yaml.v3",
+          "path": "NOTICE",
+          "sha256": "f6c2dd3a67b576eafb89b80200b8b1627230bf3821a0c14cb99a22ac19107d00"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/gopkg.in/yaml.v3"
+      ],
+      "version": "v3.0.1"
+    },
+    "tags.cncf.io/container-device-interface": {
+      "kind": "vendor",
+      "notices": [
+        {
+          "bytes": 11357,
+          "kind": "license_candidate",
+          "owner": "tags.cncf.io/container-device-interface",
+          "path": "LICENSE",
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+        }
+      ],
+      "packages": [
+        "github.com/docker/cli/vendor/tags.cncf.io/container-device-interface/pkg/parser"
+      ],
+      "version": "v0.8.0"
+    }
+  },
+  "package_counts": {
+    "first_party": 83,
+    "standard": 202,
+    "vendor": 338
+  },
+  "package_ownership_sha256": "6da9d0c32249e67e5e6f37ac455788778a1096211c231765bcfc4c71685f4fd8",
+  "probe": {
+    "bytes": 15342,
+    "sha256": "269905fa322c89d57ba593a28cc7c4eac8be0467e4349fdbe86889c533fd45df"
+  },
+  "published_binary_reproduced": false,
+  "query": {
+    "arguments": [
+      "list",
+      "-deps",
+      "-json",
+      "-tags=osusergo,pkcs11",
+      "-buildmode=pie",
+      "./cmd/docker"
+    ],
+    "exit_code": 0,
+    "target": {
+      "CGO_ENABLED": "1",
+      "GO111MODULE": "auto",
+      "GOAMD64": "v1",
+      "GOARCH": "amd64",
+      "GOEXPERIMENT": "",
+      "GOOS": "linux"
+    },
+    "timeout_seconds": 120
+  },
+  "schema_version": 1,
+  "sdk": {
+    "archive": {
+      "bytes": 76295172,
+      "sha256": "d06bad763f8820d3e29ee11f2c0c71438903c007e772a159c5760a300298302e"
+    },
+    "executed_go": {
+      "bytes": 13778704,
+      "sha256": "61e341bc772576dfd07452acd35096cc7d4a99e54278c32cf516c94b5925ba1e"
+    },
+    "host": "darwin/arm64",
+    "version": "go1.24.7"
+  },
+  "source": {
+    "revision": "d8eb465f86cfceeb57f8582e373d41a558d35503",
+    "selected_source_files": 3203,
+    "selected_source_manifest_sha256": "75c2a1a8bd726e62f7ddf694fc61d5ef76522a954dc97142fce34be957318427",
+    "tree": "c22925ab20127fcb06c19dff169e2547086d7c70",
+    "vendor_modules_txt": {
+      "bytes": 21519,
+      "sha256": "eff247c59add9064a61f7868c06297a4d566197b2a333181015be921431c0e75"
+    }
+  }
+}

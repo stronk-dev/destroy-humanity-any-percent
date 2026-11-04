@@ -10867,3 +10867,49 @@ external tools/MPL adoption, native profile/host/SP8, AC8/R-006 and whole1.0 rem
 OPEN. Next continue RP-759's concrete tool-source/notice delivery and remaining
 native prerequisites; do not turn zero function evidence into exclusion. No
 publication, deployment, archival, release approval or goal pause.
+
+## 2026-11-04 — Recover the pinned CLI's source dependency inventory
+
+Continue RP-759/SP1 research without selecting shipping tools or changing code,
+CI, licenses, hosts or the accepted deployment floor. Actual Docker CLI28.4.0
+fixture still has zero embedded dependency-module rows; that is not zero deps.
+The public source checkout resolves to d8eb465f86cfceeb57f8582e373d41a558d35503,
+tree c22925ab20127fcb06c19dff169e2547086d7c70, matching the tag/short revision.
+Normal clone DNS failed; narrow approved public Git clone completed separately.
+Go's published darwin/arm64 SDK1.24.7 checksum/size matches. The final manual
+probe verifies every extracted SDK entry and every inspected CLI/vendor blob
+against those pinned inputs; no global toolchain installation/settings change.
+
+Matching linux/amd64/v1, CGO1, osusergo/pkcs11, PIE and upstream GOPATH vendoring
+query succeeds:623 packages =83 CLI +338 vendor +202 stdlib. All338 map to89
+module/version owners. The graph must close over the command's622 dependencies;
+no unmapped/partial input is excluded. Selected-source manifest covers3,203
+files. Named scoped license/NOTICE candidates total116 files/760,643bytes,
+11 nested. First exploratory suffix matching missed three hyphenated Apache
+filenames; corrected before this retained observation, never license clearance.
+
+Final actual collector673650/42699→b91081 exits0. Observation92,006bytes,
+SHA25682759175c5c47e26971da16f53b1f51df49c3b925f25321bd5871c919641d773;
+probe15,342bytes, SHA256269905fa322c89d57ba593a28cc7c4eac8be0467e4349fdbe86889c533fd45df.
+Final private controls c108a7/73941→84cc8c pass all seven refusals: unowned
+vendor, incomplete graph, missing command, missing dependency, replacement,
+duplicate package, existing-output/no-overwrite. Four controls actually query
+the real SDK/source before altering only returned bytes in the private process.
+No shared files mutated. Commands are the two retained Python .txt probes from
+repository root; collector --output requires a new path. All handles terminal.
+
+Three declared CGO populations request pthread/resolv/dl. Selected miekg/pkcs11
+v1.1.1 headers pkcs11.h/f.h/t.h contain separate OASIS Open2016 IPR-policy terms;
+their exact hashes and other declared native-source hashes are retained. A root
+BSD filename does not resolve these references. Source selection/link requests
+do not prove published-binary correspondence, exact native libraries or rights.
+Collector is a manual research tool, not an eligibility/CI framework. No game
+tests run for this research-only batch. Dossier/plan/RP-759 updated; historical
+RP-761 diagnostic now accurately states the application omission is corrected.
+
+Next independent bounded research/tool review of the complete seven-path
+66625d7205f031625d6a5fc8834d5aedc28ef1f6..this checkpoint. RP-759 stays OPEN:
+inline/header and Compose scoped terms, complete final delivery, binary/source/
+native correspondence, applicable adoption, SP8/native-host and R-006 remain.
+No product status/acceptance promotion, push, deployment, archival or goal pause.
+Review by: Codex root, implementer first filter. Recorded by: Codex root.

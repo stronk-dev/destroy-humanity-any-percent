@@ -1,0 +1,272 @@
+"""Manual SP1 source inventory; run at repository root with Python 3.
+
+Uses the existing pinned public CLI checkout and checksum-verified host Go SDK.
+The query selects source inputs, NOT the published binary's compiler/link map.
+No CLI execution, compilation, installation, network access or shipping approval.
+Output is exclusively created only after the complete inspection succeeds.
+"""
+
+import argparse
+import collections
+import hashlib
+import json
+import os
+from pathlib import Path
+import subprocess
+import tarfile
+
+
+REVISION = "d8eb465f86cfceeb57f8582e373d41a558d35503"
+TREE = "c22925ab20127fcb06c19dff169e2547086d7c70"
+SDK_SHA = "d06bad763f8820d3e29ee11f2c0c71438903c007e772a159c5760a300298302e"
+CLI_SHA = "27f239f97492c434e091a70b41b8796c698f0aa2b6052c6f9c28da4ee7ae888b"
+TARGET = {"GOOS": "linux", "GOARCH": "amd64", "GOAMD64": "v1",
+          "CGO_ENABLED": "1", "GO111MODULE": "auto", "GOEXPERIMENT": ""}
+FILE_FIELDS = ("GoFiles", "CgoFiles", "CFiles", "CXXFiles", "MFiles", "HFiles",
+               "FFiles", "SFiles", "SwigFiles", "SwigCXXFiles", "SysoFiles", "EmbedFiles")
+
+
+def require(ok, message):
+    if not ok:
+        raise ValueError(message)
+
+
+def sha(data):
+    return hashlib.sha256(data).hexdigest()
+
+
+def digest(data):
+    return {"bytes": len(data), "sha256": sha(data)}
+
+
+def canonical(value):
+    return json.dumps(value, sort_keys=True, separators=(",", ":")).encode()
+
+
+def named(name, stems):
+    name = name.lower()
+    return any(name == stem or name.startswith(tuple(stem + c for c in ".-_")) for stem in stems)
+
+
+def run(args, env=None):
+    result = subprocess.run(args, capture_output=True, env=env, timeout=120, check=False)
+    require(result.returncode == 0, f"command failed {args}: {result.stderr.decode(errors='replace')}")
+    require(not result.stderr, f"unexpected command diagnostic: {result.stderr!r}")
+    return result.stdout
+
+
+def regular(path, root):
+    require(path.is_relative_to(root), f"outside source root: {path}")
+    require(path.resolve() == path and path.is_file(), f"nonregular/symlink source: {path}")
+    return path.read_bytes()
+
+
+def vendor_index(data):
+    modules, packages, current = {}, {}, None
+    for line in data.decode().splitlines():
+        require(bool(line.strip()), "empty vendor metadata line")
+        if line.startswith("## "):
+            require(current is not None, "orphan vendor metadata")
+        elif line.startswith("# "):
+            parts = line.split()
+            require(len(parts) == 3 and parts[2].startswith("v"), "unsupported vendor row/replacement")
+            current = parts[1]
+            require(current not in modules, "duplicate vendor module")
+            modules[current] = parts[2]
+        else:
+            require(current is not None and not any(c.isspace() for c in line), "invalid vendor package")
+            require(line not in packages and (line == current or line.startswith(current + "/")),
+                    "duplicate/outside vendor package")
+            packages[line] = current
+    require(bool(packages), "empty vendor inventory")
+    return modules, packages
+
+
+def decode_graph(data):
+    decoder, offset, rows = json.JSONDecoder(), 0, []
+    text = data.decode()
+    while offset < len(text):
+        while offset < len(text) and text[offset].isspace():
+            offset += 1
+        if offset == len(text):
+            break
+        row, offset = decoder.raw_decode(text, offset)
+        require(isinstance(row, dict) and row.get("ImportPath") and row.get("Dir"), "invalid package row")
+        require(not any(row.get(k) for k in ("Error", "DepsErrors", "Incomplete")), "incomplete package graph")
+        rows.append(row)
+    names = [r["ImportPath"] for r in rows]
+    require(bool(rows) and len(names) == len(set(names)), "empty/duplicate package graph")
+    require(sum(r["ImportPath"] == "github.com/docker/cli/cmd/docker" for r in rows) == 1,
+            "missing actual CLI command")
+    main = next(r for r in rows if r["ImportPath"] == "github.com/docker/cli/cmd/docker")
+    require(set(names) == set(main.get("Deps", [])) | {main["ImportPath"]},
+            "dependency graph is not closed over CLI Deps")
+    return rows
+
+
+def collect(cache):
+    cache = cache.resolve()
+    root = Path.cwd().resolve()
+    source = cache / "cli-source/src/github.com/docker/cli"
+    sdk = cache / "toolchains/go1.24.7-darwin-arm64/go"
+    archive = cache / "go1.24.7.darwin-arm64.tar.gz"
+    sdk_bytes = archive.read_bytes()
+    require(len(sdk_bytes) == 76295172 and sha(sdk_bytes) == SDK_SHA, "SDK publisher checksum/size mismatch")
+    cli = (cache / "docker").read_bytes()
+    require(sha(cli) == CLI_SHA and len(cli) == 43556144, "CLI fixture changed")
+    git = ["git", "-C", str(source)]
+    require(run(git + ["rev-parse", "HEAD"]).decode().strip() == REVISION, "wrong CLI revision")
+    require(run(git + ["rev-parse", "HEAD^{tree}"]).decode().strip() == TREE, "wrong CLI source tree")
+    require(not run(git + ["status", "--porcelain=v1", "--untracked-files=all"]), "dirty CLI source")
+    # Every inspected CLI/vendor byte must match a tracked blob in that exact tree.
+    tracked = {}
+    for entry in run(git + ["ls-tree", "-rz", "HEAD"]).split(b"\0"):
+        if entry:
+            metadata, name = entry.split(b"\t", 1)
+            mode, kind, oid = metadata.decode().split()
+            tracked[name.decode()] = (mode, kind, oid)
+    selected, ownership = {}, collections.Counter()
+    with tarfile.open(archive, "r:gz") as tar:
+        sdk_files, sdk_paths = {}, set()
+        for member in tar:
+            require(member.name not in sdk_paths, "duplicate SDK archive path")
+            sdk_paths.add(member.name)
+            relative = Path(member.name)
+            require(relative.parts[0] == "go" and not relative.is_absolute() and ".." not in relative.parts,
+                    "invalid SDK archive path")
+            path = sdk / Path(*relative.parts[1:])
+            if member.isdir():
+                require(path.resolve() == path and path.is_dir(), "SDK directory differs from archive")
+            else:
+                require(member.isfile(), "nonregular SDK archive entry")
+                identity = digest(tar.extractfile(member).read())
+                require(digest(regular(path, sdk)) == identity, "extracted SDK differs from archive")
+                sdk_files[path.relative_to(sdk).as_posix()] = identity
+        require({p.relative_to(sdk).as_posix() for p in sdk.rglob("*")} ==
+                {Path(n).relative_to("go").as_posix() for n in sdk_paths if n != "go"},
+                "extra/missing extracted SDK entries")
+
+        def bound_file(path, owner_root):
+            data = regular(path, owner_root)
+            if owner_root == sdk:
+                require(sdk_files.get(path.relative_to(sdk).as_posix()) == digest(data),
+                        "SDK input differs from pinned archive")
+            else:
+                rel = path.relative_to(source).as_posix()
+                row = tracked.get(rel)
+                require(row is not None and row[0] in ("100644", "100755") and row[1] == "blob",
+                        f"untracked/nonregular CLI input: {rel}")
+                oid = hashlib.sha1(b"blob " + str(len(data)).encode() + b"\0" + data).hexdigest()
+                require(oid == row[2], f"CLI input differs from pinned tree: {rel}")
+            return data
+
+        # Bind the executed host SDK binary before using it to select target source.
+        go_binary = bound_file(sdk / "bin/go", sdk)
+        require(run([str(sdk / "bin/go"), "version"]).decode().strip() == "go version go1.24.7 darwin/arm64",
+                "unexpected host SDK version")
+        index_bytes = bound_file(source / "vendor/modules.txt", source)
+        versions, package_owners = vendor_index(index_bytes)
+        env = dict(os.environ)
+        for key in (*TARGET, "GOPATH", "GOTOOLCHAIN", "GOFLAGS", "GOWORK", "GOENV", "GOROOT"):
+            env.pop(key, None)
+        env.update(TARGET, GOPATH=str(cache / "cli-source"), GOTOOLCHAIN="local", GOFLAGS="",
+                   GOWORK="off", GOENV="off", GOCACHE=str(root / ".cache/go-build"))
+        query = ["list", "-deps", "-json", "-tags=osusergo,pkcs11", "-buildmode=pie", "./cmd/docker"]
+        graph = run([str(sdk / "bin/go"), "-C", str(source), *query], env)
+        packages = decode_graph(graph)
+        groups, notices, cgo, input_files = {}, {}, [], {}
+        for package in sorted(packages, key=lambda p: p["ImportPath"]):
+            directory = Path(package["Dir"])
+            if package.get("Standard"):
+                require(directory.is_relative_to(sdk / "src"), "standard package outside selected SDK")
+                owner, owner_root, version, kind = "go", sdk, "go1.24.7", "standard"
+            elif directory.is_relative_to(source / "vendor"):
+                import_name = directory.relative_to(source / "vendor").as_posix()
+                require(import_name in package_owners, f"unowned vendored package: {import_name}")
+                require(package["ImportPath"] == "github.com/docker/cli/vendor/" + import_name,
+                        "vendor import/directory disagreement")
+                owner = package_owners[import_name]
+                owner_root, version, kind = source / "vendor" / owner, versions[owner], "vendor"
+            else:
+                require(directory.is_relative_to(source), "package outside selected CLI/vendor source")
+                import_name = directory.relative_to(source).as_posix()
+                require(package["ImportPath"] == "github.com/docker/cli/" + import_name,
+                        "CLI import/directory disagreement")
+                owner, owner_root, version, kind = "github.com/docker/cli", source, "v28.4.0", "first_party"
+            ownership[kind] += 1
+            selected[package["ImportPath"]] = {"kind": kind, "owner": owner, "version": version,
+                                               "directory": directory.relative_to(owner_root).as_posix()}
+            group = groups.setdefault(owner, {"version": version, "kind": kind, "packages": [], "notices": []})
+            require(group["version"] == version and group["kind"] == kind, "conflicting source owner")
+            group["packages"].append(package["ImportPath"])
+            for field in FILE_FIELDS:
+                for name in package.get(field, []):
+                    file = directory / name
+                    data = bound_file(file, sdk if kind == "standard" else source)
+                    key = kind + ":" + file.relative_to(sdk if kind == "standard" else source).as_posix()
+                    input_files[key] = digest(data)
+            if package.get("CgoFiles"):
+                cgo.append({"package": package["ImportPath"], "owner": owner,
+                            "declared_inputs": {k: v for k, v in package.items()
+                                                if k in FILE_FIELDS or k.startswith("Cgo")},
+                            "native_source_files": {name: digest(bound_file(directory / name,
+                                sdk if kind == "standard" else source)) for field in FILE_FIELDS
+                                if field not in ("GoFiles", "EmbedFiles") for name in package.get(field, [])}})
+            # Actual package ancestors only, stopping at each owner's root.
+            current = directory
+            while True:
+                require(current.is_relative_to(owner_root), "license scope escapes owner")
+                for file in sorted(current.iterdir()):
+                    license_name = named(file.name, ("license", "copying"))
+                    notice_name = named(file.name, ("notice",))
+                    if license_name or notice_name:
+                        data = bound_file(file, sdk if kind == "standard" else source)
+                        require(bool(data.strip()), "empty named license/notice")
+                        key = owner + ":" + file.relative_to(owner_root).as_posix()
+                        notices[key] = {"owner": owner, "path": file.relative_to(owner_root).as_posix(),
+                                        "kind": "license_candidate" if license_name else "notice",
+                                        **digest(data)}
+                if current == owner_root:
+                    break
+                current = current.parent
+        for row in notices.values():
+            groups[row["owner"]]["notices"].append(row)
+        # Detect concurrent selected-file edits; no changed bytes become a successful result.
+        for key, identity in input_files.items():
+            kind, rel = key.split(":", 1)
+            require(digest(bound_file((sdk if kind == "standard" else source) / rel,
+                                      sdk if kind == "standard" else source)) == identity,
+                    "selected source changed during inspection")
+        require(not run(git + ["status", "--porcelain=v1", "--untracked-files=all"]), "CLI source changed")
+    return {"schema_version": 1, "inspection_complete": True, "failures": [], "exclusions": [],
+            "guard_exhausted": False, "distribution_approved": False, "native_link_closure_proven": False,
+            "published_binary_reproduced": False, "license_classification_complete": False,
+            "cli_binary": digest(cli), "source": {"revision": REVISION, "tree": TREE,
+                "vendor_modules_txt": digest(index_bytes), "selected_source_files": len(input_files),
+                "selected_source_manifest_sha256": sha(canonical(input_files))},
+            "sdk": {"version": "go1.24.7", "host": "darwin/arm64", "archive": digest(sdk_bytes),
+                    "executed_go": digest(go_binary)},
+            "query": {"arguments": query, "target": TARGET, "exit_code": 0, "timeout_seconds": 120},
+            "package_counts": dict(sorted(ownership.items())), "package_ownership_sha256": sha(canonical(selected)),
+            "owners": dict(sorted(groups.items())), "cgo": cgo,
+            "limitations": ["Source graph is not a published-binary compiler/link map or vendor-patch correspondence proof",
+                "CGO flags declare link requests, not exact static library versions or covered native source",
+                "Named scoped license/NOTICE candidates are not a legal applicability or distribution decision",
+                "Inline source/header terms require separate review; named-file collection cannot replace them",
+                "No CLI execution, native-host conformance, final delivery, shipping tool selection or SP1 adoption"]}
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--cache", type=Path, default=Path(".cache/worker-cli-tools"))
+    parser.add_argument("--output", type=Path, required=True)
+    args = parser.parse_args()
+    require(not args.output.exists(), "refuse to overwrite existing observation")
+    result = collect(args.cache)
+    result["probe"] = digest(Path(__file__).read_bytes())
+    with args.output.open("x") as output:
+        json.dump(result, output, sort_keys=True, indent=2)
+        output.write("\n")
+    print(json.dumps({"packages": sum(result["package_counts"].values()),
+                      "counts": result["package_counts"], "owners": len(result["owners"]),
+                      "cgo": len(result["cgo"]), "output": str(args.output)}))

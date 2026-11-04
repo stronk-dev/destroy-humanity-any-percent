@@ -125,14 +125,73 @@ be presented as an exhaustive inventory of every potentially applicable MPL scop
 The37 filename candidates also include a workflow `license-check.yml` and
 `license.go` source: a filename/detector label is not a separate legal grant.
 
-A separate actual-application diagnostic finds a current DP1/AC8 omission:
+A separate actual-application diagnostic found a DP1/AC8 omission at the
+recorded pre-correction revision:
 the six-command compiler import graph includes
 `github.com/prometheus/client_golang/internal/github.com/golang/gddo/httputil`
 at modulev1.23.2, but the current generator's delivered attribution omits the
 copy's full nested BSD text and its2013 Go Authors copyright. This uses actual
 source/import and actual metadata/formatter, not a package assumed present merely
 because its module appears in an inventory. RP-761 owns the corrective route.
-The root-NOTICE correction RP-760 remains closed within its original scope.
+RP-761 is now independently corrected under957dfa6b..a8168b63; actual current
+metadata retains that scoped BSD text. The root-NOTICE correction RP-760 remains
+closed within its original scope. These application fixes do not cover tools.
+
+### CLI source/vendor inventory
+
+The [CLI source observation](cli-source-inventory-observation.v1.json) and
+[manual probe](probes/cli-source-inventory.py.txt) query the actual pinned public
+[v28.4.0 source](https://github.com/docker/cli/tree/d8eb465f86cfceeb57f8582e373d41a558d35503),
+tree`c22925ab20127fcb06c19dff169e2547086d7c70`. Every inspected CLI/vendor file
+matches a tracked blob in that tree. The checkout is clean before and after.
+This source commit matches the annotated tag and the binary's short revision;
+that correspondence still does not reproduce or authenticate the published build.
+
+The host SDK is Go1.24.7 darwin/arm64; its archive is76,295,172bytes,
+SHA256`d06bad763f8820d3e29ee11f2c0c71438903c007e772a159c5760a300298302e`,
+matching the cached [Go publisher metadata](https://go.dev/dl/?mode=json&include=all).
+The probe verifies the entire extracted SDK against that archive before invoking
+its Go executable. No global installation or toolchain setting changes.
+The upstream-required GOPATH source layout and `GO111MODULE=auto` preserve
+vendoring. Cross-target `go list -deps -json -tags=osusergo,pkcs11 -buildmode=pie
+./cmd/docker` selects Linux/amd64/v1, CGO1 and no extra Go experiments.
+
+The complete query exits0 without diagnostics:623 packages, comprising83 CLI,
+338 vendor and202 standard packages. All338 vendor packages map to89 exact
+module/version owners through the tree's `vendor/modules.txt`; no unmapped
+package is excluded. The observation retains every package identity, all116
+named scoped license/NOTICE candidates (760,643bytes,11 nested), and a hash of
+the3,203 selected source-file identities. Named candidates are not license
+classification or exhaustive inline-term review. The first exploratory filename
+rule omitted three `LICENSE-APACHE-2.0.txt` candidates; the final collector
+includes dot, hyphen and underscore suffixes. That first count is not clearance.
+
+Three packages declare CGO inputs: `runtime/cgo` requests`-lpthread`, `net`
+requests`-lresolv`, and vendored `github.com/miekg/pkcs11@v1.1.1` requests`-ldl`.
+These are source link requests, not an exact native-library version inventory.
+The actual pinned Dockerfile offers Alpine/musl and Debian build variants; its
+defaults cannot establish which native objects entered this published fixture.
+The observation retains hashes of each package's declared native source/header
+files. In particular, `pkcs11.h`, `pkcs11f.h` and `pkcs11t.h` contain a separate
+OASIS Open2016 copyright/IPR-policy reference; the module-root BSD license alone
+does not resolve that reference. No terms or redistribution rights are inferred.
+
+Reproduce from repository root with the existing public cache inputs:
+`python3 planning/deployment-foundation/probes/cli-source-inventory.py.txt
+--output /tmp/cli-source-inventory.json`. The output is deterministic and refuses
+an existing destination. The [private controls](probes/cli-source-inventory-controls.py.txt)
+execute the real query before injecting an unowned vendor package, incomplete
+graph, missing CLI command or removed dependency; all four refuse. The graph
+must close over the CLI command's complete declared dependency set.
+Replacement/duplicate vendor
+metadata and overwriting an existing observation also refuse, preserving bytes.
+No shared source/tool files are mutated. Review is pending for this batch.
+
+This completes a source-derived package/owner and named-file inventory, not the
+published binary's compiler/link map. Actual binary/source correspondence,
+inline/header terms, exact native linked components, final scoped delivery and
+tool adoption remain OPEN under RP-759. No CLI execution, native host, SP8,
+AC8 or R-006 result follows from `go list`.
 
 The existing `gen-release-metadata` discovers dependencies of six Cloud Clicker
 Go commands and the built browser client. It does not inspect external CLI/

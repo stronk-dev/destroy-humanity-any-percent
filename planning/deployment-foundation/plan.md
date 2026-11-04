@@ -47,8 +47,16 @@ retains237 scoped notice files, including37 nested. Actual current detector
 recognizes176 roots and refuses4 exact MPL2.0 roots; the manual diagnostic
 correctly exits nonzero. Complete ten-path4af4fe6b..9c90bc2e batch is independently
 APPROVED as research/tool; no license-policy widening or clearance.
-Next resolve covered-source/notices delivery, nested/main/stdlib scope and
-actual CLI Go/vendor/native closure before shipping/adoption readiness.
+The CLI source follow-up now executes the matching Go1.24.7 Linux/amd64/CGO1
+query:623 packages (83 CLI,338 vendor across89 exact modules,202 stdlib),3,203
+source files and116 named scoped notice candidates. Exact tree/SDK/source bytes
+are checked; private incomplete/unowned/missing-command controls refuse. Batch
+awaits independent research/tool review. This is source selection, not the
+published binary's compiler/link map. Three declared CGO packages and distinct
+inline OASIS header terms leave native/rights closure open; see the audit.
+Next resolve covered-source/notices delivery, Compose nested/main/stdlib scope,
+CLI inline/header terms, binary/source correspondence and exact native linked
+components before shipping/adoption readiness.
 
 Next complete the exact CLI/Compose provenance/rights/artifact inventory and
 DP7 projection/reboot-cache adoption evidence required by SP1/SP6; obtain explicit
