@@ -234,3 +234,72 @@ Direct diff review by the reviewer, all five ruled contracts verified in source:
 
 1f649e4 is a correctly-classified BALANCE-CHANGE baseline (v12 state encoding moved the hashes).
 **Guild Model archives. Run Genesis & Replay starts, RA/RB first.**
+
+## 2026-11-04 — Account deletion versus membership admission (RP-730)
+
+Corrective continuation under accepted archived GD4, not a new feature or policy.
+An account deletion can take its active-membership census while an open join or
+an officer's admission of that account is waiting to finish. The later account
+DELETE then attempts to anonymize a still-active membership, and the immutable
+history trigger refuses it. The database prevents invalid history, but the whole
+account-deletion transaction rolls back. This is a measured deletion failure,
+not a claim that an anonymous active member actually commits.
+
+Old-source61938 at0a9b0107, declared Linux/amd64/Postgres, exits Make2: both
+`TestGuildAccountDeletionOverlappingAdmissionIntegration` arms fail with
+`guild membership identity/history is immutable` / SQLSTATE P0001. Actual row-lock
+handshakes stop open join at the Guild row and target admission at its application
+UPDATE; named connections visibly reach database Lock waits before release. No
+sleep is used as proof that either transaction reached its boundary. Initial
+61501 is a fixture build error;47576 has a valid join failure but its admission
+fixture references a nonexistent column. Both setup mistakes were corrected;
+neither is credited as the complete old regression.
+
+The correction takes transaction advisory locks for the actor and any target
+account before the account-revision/Guild/membership locks, and takes the same
+account lock in the deletion participant BEFORE its census. Actual hashed keys
+are sorted and deduplicated before acquisition, including possible collisions.
+No account parent-row lock or target revision row is introduced. A transaction
+that wins admission first is observed and closed by deletion; if deletion wins,
+the later deleted actor fails its existing FK or an officer receives the existing
+`not_applicant` refusal. The tests cover both orders for both actors, exact closed
+anonymized membership/history counts, preserved leader, account removal, one
+departure event and application cleanup. A real KEY SHARE NOWAIT control preserves
+foreign-key access while deletion holds the membership mutex. Existing opposite-
+target role tests exercise shared lock ordering. This does not claim to repair
+unmeasured sweep/projector races or complete rights/retention semantics.
+
+Kernel0.3.224 honestly identifies the concurrent persistence correction in the
+watched Guild package; all three version identities move together. No balance
+artifact, epoch8, save schema, migration, wire DTO, permission, cap or authored
+copy changes. No historical guard exemption or correction entry is added.
+
+Root checks so far:
+
+-24096: focused SQL correction passes both original admission-first arms1.05s.
+-60812 exits0: complete cold Account/Guild/Gameserver population in the declared
+  Linux/amd64/Postgres environment; Guild1.691s, Gameserver93.866s. The reverse-order
+  and FK controls also pass, before their error oracle is narrowed to exact
+ 23503/`not_applicant` below. Composed SQL/HTTP/socket Guild cleanup, revocation,
+ first-hour and both minigame scaling populations execute; the opt-in one-minute
+ cleanup timer remains skipped. Some verbose tool output is truncated, so no
+ exhaustive leaf/skip census is claimed.
+-94349: native cold Guild0.230s/Kernel0.166s, with SQL skips expected.
+-84527: affected Account/Guild/Gameserver/Kernel vet passes.
+-73505: TypeScript/Svelte checks pass, zero errors/warnings.
+-82744: original kernel version/history guard exits1 at the known historical
+ 50a3a514 against0cf9f7a6, not green. Initial version parity passes before that
+ history walk; the historical failure still prevents the complete guard claim.
+
+Final67452 exits0: complete cold Guild suite WITH race detection against actual
+declared Linux/amd64/Postgres passes3.269s; the narrowed-oracle overlap/reverse-order
+regression passes1.12s. All existing lifecycle/history/rejection/leadership and
+opposite-target tests pass. Final Guild/Kernel vet also passes. Independent
+corrective review remains pending for the complete implementation range.
+The failed redirected race invocation cannot reach Docker's socket and runs no
+test; the ordinary declared Make invocation is retried with its narrow reusable
+Docker access permission. Root owns test DB
+`db6406a837c272526622b5d3aeda3cc483dd2fe6332f7cf0b287b4bf40db4732`
+and network`2512f88d4cdb5502ad41375293cc886de99d4896f8ec01b8cbe69c67ef2e7d59`;
+retain them for independent review, then verify sole ownership before cleanup.
+No push, archival, host deployment, full Account/Guild acceptance or release.

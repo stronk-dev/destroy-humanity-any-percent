@@ -25,7 +25,14 @@ hyphens removed, so separator padding cannot evade a protected term.
 Open joins, application admission, and invitation acceptance all take the same row lock and cap
 check. Officers may admit and invite. Only the leader changes roles; transferring leadership
 demotes the old leader to officer in the same transaction, with one event for each role mutation.
-Every authority check is repeated after the guild lock; the lock order is guild then membership.
+Every authority check is repeated after the guild lock. Before the account revision and Guild
+row locks, intents take transaction advisory locks for the actor and any target account, in
+sorted, deduplicated advisory-key order. Guild rows then precede membership rows. The deletion
+participant takes the same account membership lock before its membership census and holds it
+through account removal. An overlapping admission therefore either commits before that census
+and is closed by deletion, or waits until deletion commits and refuses. These locks do not lock
+account parent rows or create revision records for target accounts. Kernel0.3.224 records this
+concurrent persistence correction; cap, permission, prices and balance policy are unchanged.
 Manual disbanding requires the leader
 to be the sole member. A guild below two members records the first deficient instant and a sweep
 disbands it after seven complete days. Membership changes enter a claimed outbox and publish strict

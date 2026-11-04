@@ -11,6 +11,9 @@ func (service *Service) PrepareAccountDeletion(ctx context.Context, tx *sql.Tx, 
 	if service == nil || tx == nil || !uuidPattern.MatchString(accountID) || now.IsZero() {
 		return ErrInvalidIntent
 	}
+	if err := lockMembershipAccounts(ctx, tx, accountID); err != nil {
+		return err
+	}
 	rows, err := tx.QueryContext(ctx, `SELECT guild_id FROM guild_members WHERE account_id=$1 AND left_at IS NULL ORDER BY guild_id`, accountID)
 	if err != nil {
 		return err

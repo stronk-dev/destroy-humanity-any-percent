@@ -153,6 +153,9 @@ func (service *Service) Handle(ctx context.Context, actorAccount string, data []
 		return HandleResult{}, err
 	}
 	defer tx.Rollback()
+	if err := lockMembershipAccounts(ctx, tx, actorAccount, request.AccountID); err != nil {
+		return HandleResult{}, err
+	}
 	if _, err := tx.ExecContext(ctx, `INSERT INTO guild_account_revisions(account_id) VALUES($1) ON CONFLICT DO NOTHING`, actorAccount); err != nil {
 		return HandleResult{}, err
 	}
