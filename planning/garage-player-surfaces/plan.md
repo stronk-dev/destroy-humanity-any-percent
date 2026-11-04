@@ -23,8 +23,10 @@ or expand an uninformative diagnosis into another research campaign.
    corrective approvals in their owning logs. No repeat of those reviews;
    Fiscal's native Firefox startup gap and original reliability limits remain.
    API's five amendments still require adoption/new-descriptor/full workflow gates.
-3. Continue the genuinely unreviewed Reputation pending-Exit test correction
-   RP-397 under its owning plan/log; preserve its separate R9 author holds.
+3. Reputation pending-Exit test correction RP-397 is independently approved;
+   its owning log records current three-engine checks and separate R9 author holds.
+   Continue the Recovery detached-terminal/watchdog corrective review in its
+   owning lane; no new expiry, retry, reward or feature-acceptance contract.
 4. Keep RP-348/RP-351 causes open. R-013's report is reviewed, but the temporary
    profile is now absent and cannot be independently revalidated. No stall repair
    or cache/compiler/hosted-causality claim follows.

@@ -9967,3 +9967,29 @@ wrapped read errors and bounded escaped EOF/empty/binary contexts are confirmed.
 No repeated full H4/H5 study is claimed: recorded full H4 is still RED, six ties
 retained. This closes only the diagnostic defect/review, not balance, whole CI,
 the unadopted observation profile, feature acceptance, archival or release.
+
+## 2026-11-04 — Pending-Exit test correction independently approved
+
+Review by: fresh independent Codex `/root/reputation_pending_exit_corrective_review`.
+Recorded by: Codex root. APPROVED, no findings, complete three-path range
+`663976f1d88f23b83c421a47084ac16f4b1f70c3..c4ccd742fd776cb221f9610ec5b5fde14d55a561`
+(base exclusive, tip inclusive): test, backlog and owning log. Existing request,
+plan and privacy assertions stay; actual repeated native input cannot add a
+request while pending. Focus/feedback survive, and fresh consent after rejection
+uses a new UUID with the same visible plan. No production/copy/deadline/retry change.
+
+Fresh atcf1e53d9: Linux87072 terminal0,273 ordinary passes plus6 expected deadline
+controls,279 total/93 each Chromium, Firefox and WebKit,31.48s. All twenty plan
+combinations execute per engine. Types91983 terminal0, zero errors/warnings;
+exact-range whitespace passes. Initial restricted Docker refusal ran zero tests.
+Original39477's forty failures are REUSED implementer evidence, not fresh old
+execution: reviewer corroborates the exact old disabled assertion against GS0.8
+and current focus/single-flight checks. Later host/provider repairs remain separate.
+
+Affected app/server/main and Cosmetic composed drivers/Make/declared Compose
+diff from independently executeddf531b9b is empty. Full composed86769 is REUSED
+with its GarageNov3 review provenance, not rerun or claimed as this reviewer's
+execution. Both handles terminal; no tracked edits/commits/mutations. Shared
+networkb407c60b has peer browser/Postgres attachments and is preserved.
+This closes RP-397's test-correction review only: original B7, R9 author body,
+manual AT, full/hosted CI, content mint, archival and release remain separate.

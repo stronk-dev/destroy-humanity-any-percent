@@ -4,6 +4,13 @@ RFC: `rfc/reputation-tree-v1.md` (accepted 2026-09-25; every owner decision at i
 default). Fixture-first: no production epoch is minted by this plan (R11 is owner-gated; OD-2's
 threshold retune is measured and reported, then ratified by owner SHA).
 
+**Pending-Exit test review,2026-11-04:** complete three-path
+`663976f1..c4ccd742` (RP-397) is independently approved. Actual Linux native input
+proves single flight, preserved focus and fresh consent with the same selected
+plan in all three engines; types pass. The owning log separates historical old
+failures/reused composed evidence from fresh checks. R9 body and original B7
+acceptance, balance/content/mint and release gates remain open.
+
 **Corrective review checkpoint, 2026-11-01:** fresh independent Codex approves
 complete four-commit/24-path `1f533983..15d5d83d`, covering RP-627–RP-631. Real
 Linux-amd64/Postgres pin/Exit rollback and two-Exit career, client replay, migration,
