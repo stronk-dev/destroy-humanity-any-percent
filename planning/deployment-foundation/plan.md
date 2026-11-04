@@ -7,6 +7,22 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Native profile construction,2026-11-04:**
+[draft SP1–SP8](../../rfc/deployment-native-supervisor-profile.md) proposes the
+one-shot operator-owned native supervisor, retained original lock/daemon handle,
+isolated broker/gateway jobs and all eight typed work subjects/results. It covers
+the complete existing call map, including scheduler freeze/export, all seven
+services/four networks/five volume families, startup SQL and changed Postgres
+image handling. Source checking exposes the final-success metric ordering cycle;
+the draft removes the CLI writer and proposes a verified-ledger projector in the
+EXISTING backup service. That is an explicit reporting-contract change, not an
+already allowed move before Finished. New native/cgroup prerequisites, tool
+artifacts, cache and service control likewise require review/adoption and parent
+reconciliation. RP-757 records the open proposal. Next independent technical
+review of the whole profile and its integration boundaries, then actual native
+producer conformance/adoption under OP9; no production patch is authorized by
+this draft. RP-754/RP-756 and clean-host/R-006 remain open.
+
 **Carrier result,2026-11-04:** both native populations completed in the
 [source-bound observation](authority-carrier-observation.v1.json). The actual
 operator lock and original stream survive launcher exit in the separate

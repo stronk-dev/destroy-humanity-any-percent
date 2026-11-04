@@ -379,6 +379,13 @@ in-place successor mutation under CR6. No retry, new window or key reconstructio
 
 ## OP9 — Remaining profile and acceptance gates
 
+The [native supervisor profile](deployment-native-supervisor-profile.md) now
+proposes the concrete one-shot packaging, all eight typed subjects/results,
+stage mediation, native lock/daemon binding and scheduled-service handoff.
+It is a draft pending technical review, adoption and actual producer conformance;
+its existence does not satisfy the gates below. Its explicit cgroup/native-host,
+tool-artifact and release-metric projection changes require parent reconciliation.
+
 This RFC is **not acceptance-ready** without a concrete native producer/profile
 amendment. It must define exact plan/subject/native-receipt schemas and producer
 bindings for EVERY work kind, supervisor/daemon generation, admission isolation,

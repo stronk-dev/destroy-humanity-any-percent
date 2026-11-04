@@ -10246,3 +10246,48 @@ bootstrap durability, complete native supervisor/profile, OP9 adoption, supporte
 host, whole recovery/R-006 and release approval remain separate. Editorial
 closeout changes no source/criterion/observation, so no identical software rerun.
 Full nine-tier1.0 goal remains active; no push/deployment/archival or goal pause.
+
+
+## 2026-11-04 — Whole native supervisor profile proposed, not another mechanism census
+
+Previous goal turn made authoritative progress: carrier model committed and
+independently approved through695540b7, recordedc58f8e48. Current clean checkout
+190b21 confirms that baseline. This batch constructs the missing OP9 proposal:
+`rfc/deployment-native-supervisor-profile.md`, links in OP9/index and current plan,
+and RP-757. No production/test/CI/kernel/balance byte changes.
+
+SP1–SP8 define one-shot native operator-owned bootstrap (no new resident service),
+original daemon/lock handles, private attachment, broker/gateway containment,
+all eight typed work subjects/native results, finite stage/action families,
+complete retained inventory and install/release/rollback/abort acceptance. It
+explicitly includes scheduler freeze/handle export/restart/cache, Postgres image
+changes, dedicated startup SQL and publishers/deletions. Linux/cgroup-v2/native
+features, Docker/Compose artifact provenance and host floor are proposed extra
+bindings, not inferred support from the Desktop studies. Operator capabilities
+and secrets are not expanded silently; native feature tests remain mandatory.
+
+Source outcomes change the design: actual command output a3b6b4 shows the release
+metric means latest SUCCESS/FAILURE, not verification-in-progress. Existing outer
+runRelease/runInstall metric follows the controller; pre-publishing success
+before Finished would make a failed final append look successful. The proposed
+existing-service ledger projector removes that writer and follows only verified
+final decisions, with an explicit change for unadmitted CLI failures and a missing/
+stale-projector alert obligation. This is NOT implemented or adopted. Current
+16e795/9d6c1e source confirms Start excludes Postgres; target-image change gets an
+explicit post-checkpoint stop/start path, not an unchanged-call completeness claim.
+87ad12 confirms scheduled rounds also remove temporaries/apply retention; controller
+freeze/export covers those effects, not only dump sessions. Current startup uses
+save.Migrate in gameserver/composition.go; operation startup SQL cannot be silently
+retained as a steady pool to escape OP5's terminal requirement.
+
+Verification: inspected current contracts/call graph/template/textfile producer,
+complete eight-kind subject/result mapping and before/after finalization order.
+Existing carrier/SQL observations are reused only for unchanged mechanisms,
+not actual profile conformance. No software suite for a normative Markdown draft;
+new publishers, routing, cgroup authority, packaged Go producers and full journey
+have not executed and remain acceptance/adoption prerequisites. Designated
+technical review pending for this whole proposal range. RP-754/756/757 stay OPEN;
+no owner adoption, ready-to-ship profile, full recovery or1.0 promotion. No
+push/deployment/archival or goal pause.
+
+Review by: Codex root, specification author first filter. Recorded by: Codex root.
