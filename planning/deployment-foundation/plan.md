@@ -7,6 +7,20 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Recovery-contract review,2026-11-04:** independent review at c5419034 finds
+RP-741–744: universal healthy-current admission conflicts with partial-source
+rollback; Finished lacks whole-helper closure; cleanup has no lawful pre-fence
+phase; pending/retried ancestry closure is ambiguous. Forward draft amendment
+reconciles CR1–CR6 rather than appending a waiver: separate recovery ownership,
+predecessor/completion proof semantics, admitted cleanup→recovery_fenced→destructive
+execution, explicit recovery_of/derived recovery, authenticated surviving lock
+owner and native-job tracking if selected. This is source/contract work only.
+Full amended range needs independent technical review; exact proof/request-log
+schemas, first-install/v1 handoff and native producers remain named construction
+gates. No boolean/no-op substitute, legacy grandfathering, new OS service,
+runtime change, owner adoption or completion claim. Next complete those artifact/
+supervisor contracts and actual helper binding, not repeat the approved gateway.
+
 **Connection-owned cancellation experiment,2026-11-04:** test a transparent
 single-connection gateway between actual pg_dump/libpq and the pinned PostgreSQL16
 fixture. Register its in-memory connection BEFORE dialing; retain the protocol's

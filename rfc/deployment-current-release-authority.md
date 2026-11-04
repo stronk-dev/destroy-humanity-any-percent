@@ -61,7 +61,10 @@ observation. Candidate version must be strictly greater and migration nondecreas
 to that identity. Empty/missing history permits clean initial install only, not an ordinary
 release. Do not synthesize an install row, trust a supplied directory, or add an adoption override.
 
-Pre-backup failed release attempts leave the prior identity known. Once a release has reached
+Pre-backup failed release attempts leave the prior identity known only after
+whole-operation closure and preserved-prior identity are proved under CR3/CR6.
+An unfinished or unclosed failed helper remains in progress/uncertain even if
+its last completed database read was harmless. Once a release has reached
 the durable backup checkpoint, a failure makes ordinary release inadmissible until governed
 rollback succeeds. Failed rollback remains retryable against the exact same authority; successful
 rollback closes that authority and establishes its target as current. No newer/unrelated attempt
@@ -70,15 +73,28 @@ may reuse an older backup chain. Installation/recovery prerequisites remain the 
 ### CR2 — Observe the containers and release-owned bytes
 
 Add a mandatory current-observation capability to the release runtime. Absence is an admission
-failure, never a no-op adapter. Before accepting an operation, validate the current bundle and
-observe the existing project without image pull/load, service creation, `exec`, configuration
+failure, never a no-op adapter. Before accepting an ORDINARY RELEASE, validate the
+current bundle and observe the existing project without image pull/load, service creation, `exec`, configuration
 reload or database mutation.
 
-Enumerate the exact seven non-one-off `cloud-clicker` service containers. Require one distinct
+For that healthy-current observation, enumerate the exact seven non-one-off `cloud-clicker` service containers. Require one distinct
 full container ID per service, canonical project/service ownership, and image-config ID equality
 to the appropriate manifest entry. A registry tag, cached image inspection alone, name alone,
 or candidate manifest cannot supply this proof. Gameserver/Caddy/Postgres must be running;
 other service states are recorded and do not substitute for the parent's operations acceptance.
+
+This healthy-current test also verifies the preserved prior deployment at a
+pre-backup abort's conclusion and the restored target at successful rollback.
+It is NOT rollback admission: a failed source may have missing/stopped or mixed
+source/target containers. Recovery instead observes ownership against the exact
+governing source/target tuple and durable resource intents/bindings. Absence is
+recorded, not treated as a healthy service or invented ownership. Existing
+resources need exact admitted IDs and allowed bundle/config bindings; registered
+one-off jobs are checked through their operation ownership, not mistaken for
+extra steady-state service containers. Third/unowned resources refuse cleanup.
+Failure to pass the full healthy-current observation keeps ordinary release and
+success unavailable; it does not by itself forbid governed cleanup of owned
+failed resources. Exact recovery-observer/proof producers remain CR6 gates.
 
 Read these existing release-owned paths from those identified containers:
 
@@ -138,7 +154,12 @@ a second current pointer. Initial installation retains its current v1 terminal r
 rules, before any v2 history. New release/rollback writers emit only v2. Existing valid v1 prefixes
 remain readable with their existing grammar; after the first v2 event, a v1 append is invalid.
 A v1 successful terminal row can anchor
-CR1 only after exact bundle/image-reference matching and CR2. Legacy failed post-backup release
+CR1's identity only after exact bundle/image-reference matching and CR2; it is
+not a whole-helper completion proof. Before any new protected work, CR6's
+predecessor fence is mandatory even when the preceding history is v1 or Finished
+success. The governed first-install/v1 handoff proof producer remains an explicit
+acceptance blocker; this draft does not grandfather an unlocked historical helper.
+Legacy failed post-backup release
 or rollback is uncertain, not silently promoted. No-success legacy history cannot authorize release.
 
 Every v2 event has exactly these decoded keys; reject aliases, duplicates, unknown/missing keys
@@ -147,7 +168,7 @@ and unintended nulls. Fields nullable below must still be present.
 | Field | Rule |
 |---|---|
 | `schema_version` | literal2 |
-| `event` | `operation_started`, `backup_ready`, `operation_finished` |
+| `event` | `operation_started`, `backup_ready`, `recovery_fenced`, `operation_finished` |
 | `operation_id` | canonical UUIDv4, new per operation, never reused |
 | `action` | `release`, `rollback` |
 | `server_id`, `operator` | configured canonical server UUID and existing operator-ID grammar |
@@ -157,9 +178,12 @@ and unintended nulls. Fields nullable below must still be present.
 | `rollback_until` | UTC date or null under the event rules below |
 | `outcome`, `failure_stage` | null until finish; `succeeded`/`failed` and exact failure stage at finish |
 | `source_proof_sha256`, `target_proof_sha256` | SHA256-prefixed blob hashes or null under the rules below |
+| `recovery_of` | null for release; the immediate governing predecessor's operation UUID for rollback/retry, under CR4's ancestry rules |
+| `predecessor_fence_sha256` | CR6 proof hash; non-null on ordinary release Started and repeated thereafter; rollback null at Started, non-null from recovery_fenced onward |
+| `completion_proof_sha256` | CR6 whole-operation closure proof hash at Finished when closure is established; null on earlier events and permitted uncertain post-checkpoint failures/interrupted-rollback administrative finishes |
 
 The first v2 row follows the latest v1 completion strictly. Validate the complete prefix before
-effects; all subsequent rows keep operation/server/operator/source/target identical. Permit only
+effects; all subsequent rows OF THAT OPERATION keep operation/server/operator/source/target identical. Permit only
 one active transition chain: an unfinished release can have only its CR4 governed rollback as
 successor, never a competing release or two recovery attempts. Hold the existing operator lock
 through observation, writes and effects; append each event and fsync it before crossing its
@@ -167,13 +191,25 @@ protected boundary.
 
 - **Started:** release has known source and its source proof, with null backup/deadline/target
   proof. Rollback has the source/target and backup
-  of its governing release/checkpoint, null deadline/proofs; a damaged source need not look healthy.
+  of its governing release/checkpoint, null deadline/identity proofs and non-null
+  recovery_of; a damaged source need not look healthy. Rollback Started authorizes
+  only CR4's bounded fencing cleanup, not reset/restore/replacement startup.
 - **Backup ready:** release only, once, after actual host-byte backup validation. Carry its exact
   ID and pending deadline `occurred_at +7days`; target proof/outcome/stage remain null. No drain,
   candidate startup or database change may precede this durable row. An unrecorded produced
   backup remains protected under existing policy, not automatically resolved.
+- **Recovery fenced:** rollback only, exactly once after Started and CR4's cleanup,
+  before reset/restore/replacement startup. It has non-null predecessor_fence_sha256,
+  the same ancestry/identity/backup tuple, null deadline/outcome/stage/target proof/
+  completion proof. This proves predecessor closure, not completion of this recovery.
 - **Finished:** once, after the real outcome. Success requires the existing identity/smoke gates
-  and target binding proof. Successful release requires its checkpoint and repeats its backup ID,
+  and target binding proof AND non-null completion_proof_sha256. A successful
+  rollback also requires its earlier recovery_fenced row. A pre-backup failure
+  requires a completion proof and preserved-prior identity before Finished can
+  be appended; absent those, it stays unfinished and needs the governed abort
+  or separate recovery route. A post-checkpoint failed finish
+  without completion proof reports failure only and cannot authorize a successor's
+  protected work. Successful release requires its checkpoint and repeats its backup ID,
   with completed-release deadline `occurred_at +7days`. A failed post-checkpoint release has the
   same terminal seven-day origin as current completed failures. Pre-checkpoint failure has null
   backup/deadline. Rollback has null deadline and repeats its exact backup ID.
@@ -184,8 +220,13 @@ rollback. All outcomes/stages are null before Finished. Finished success has nul
 Finished failure has a non-null stage appropriate to its action and reached phase. Before Backup
 ready a release may fail only at supply_chain/preflight/preupgrade_backup or CR4's interruption;
 after it, only bounded_drain/startup_migration/epoch_artifact_identity/authenticated_smoke.
-Rollback permits its existing post-admission execution stages. No success is permitted without
-the referenced target proof and actual parent identity/smoke gates.
+Rollback permits its existing post-admission execution stages plus
+`recovery_fence` for failed cleanup before recovery_fenced and
+`interrupted_rollback` for CR4's administrative failed closure. No success is permitted without
+the referenced target/completion proofs and actual parent identity/smoke gates.
+All rows repeat recovery_of unchanged. Release predecessor_fence_sha256 is
+unchanged; rollback changes it only once, null to its recovery_fenced value,
+then repeats it. Completion proofs are never inferred from a failure result.
 
 Rejected requests before a valid Started row return a typed error without manufacturing a tuple
 or an operation record. Failed writes remain failures; no success, rollback authority, or backup
@@ -198,10 +239,17 @@ No ordinary install/release starts while an operation is unfinished or current s
 Do not automatically resume, retry, finish success, or treat an unlocked lockfile as completion.
 
 Manual `release-abort --operation-id` is permitted only for an unfinished release without Backup
-ready. Revalidate exact prior identity via CR2 and current database/epoch identity before appending
+ready. Read-only admission first validates the exact operation and its surviving
+supervisor or a proved sealed handoff. It may then seal worker admission and
+stop ONLY proven operation-owned jobs/connections/output writers. This cleanup
+may not stop/recreate the live game, Caddy or Postgres, remove persistent data,
+or modify gameplay state. Unknown ownership refuses without widening cleanup.
+After that cleanup, revalidate exact prior identity via CR2 and current database/epoch identity before appending
 Finished failed with `failure_stage:"interrupted_before_backup"`; no running-service/data mutation
 (the parent's read-only one-off database inspector is permitted). If
 identity cannot be established, refuse and require the separately governed recovery route.
+The inspector is itself tracked work and must finish before the CR6 completion
+proof; it cannot reopen general worker admission after the fence is sealed.
 Interrupted initial install or rollback is not covered by this abort command; it remains explicit
 recovery/rollback work, not authority for a clean-install bypass. Initial installation remains
 the parent's v1/clean-host workflow; this amendment creates no installation pending event.
@@ -216,12 +264,45 @@ or a mixture of the exact source/target attempt; a third/unowned release refuses
 
 A rollback Start event references the pending/failed release through its source/target/backup
 tuple; it is the only allowed successor to that recoverable unfinished release. A successful
-rollback closes both chains. A failed/interrupted rollback permits only exact governed retry.
+rollback gives its governing release a DERIVED `recovered` disposition; it does
+not fabricate that release's missing Finished row, mark it succeeded, or rewrite
+an existing failed result. The successful rollback retains its own complete
+event chain. CR5 readers must recognize this precise ancestral closure.
+A failed/interrupted rollback permits only exact governed retry.
 An unfinished rollback must first be explicitly closed as failed `interrupted_rollback` by that
 retry command, without claiming service recovery or changing its release deadline; never create
 two live recovery attempts. Its new attempt keeps the same tuple and receives a new operation ID.
-Before any abort/retry/rollback, prove prior helper/client actions quiescent; shared lock acquisition
-alone is insufficient. The supported-engine experiment below must settle this mechanism before
+Every rollback records recovery_of: the governing release for its first attempt,
+or the immediately preceding failed rollback for a retry. Following that ancestry
+must reach exactly one checkpointed release; source is that release's target,
+target is its source, and backup/deadline stay bound to THAT release. Reject
+cycles, unrelated parents, changed tuple/backup, overlapping recovery children
+and a second successful recovery of the same chain. A failed/interrupted child
+does not recover its ancestors or create a fresh seven-day window.
+
+Recovery has FOUR distinct permissions, in order:
+
+1. Read-only admission establishes ancestry, exact source/target/resource
+   ownership and the existing authenticated backup/key authority. It does not
+   stop services or create a replacement. A live lock-owning supervisor must
+   accept the authenticated manual request itself, or complete a proved sealed
+   handoff; a new CLI cannot recover by killing it merely to reacquire its lock.
+2. Durably append rollback Started, then seal old worker admission and perform
+   bounded fencing cleanup of PROVEN owned work. After a valid checkpoint/input
+   authority this may stop the failed application/database namespace while
+   retaining persistent volume bytes. It may not reset/delete the database
+   volume, restore data, or start replacement services. Waiting old requests
+   and native jobs remain tracked until actual terminal outcomes.
+3. Prove the predecessor fence under CR6 and durably append recovery_fenced.
+   No reset/restore/replacement startup is lawful before this boundary. A
+   Started row, client exit, delivered cancellation or empty census is not it.
+4. Execute the existing clean-volume reset/restore/forward-only startup and
+   identity/smoke sequence, then establish THIS recovery's completion proof
+   before Finished. Predecessor closure does not prove current-helper closure.
+
+Before protected successor work, prove prior helper/client actions quiescent;
+the narrow cleanup in step2 is how that fence is established, not permission to
+skip it. Shared lock acquisition alone is insufficient. The supported-engine experiment below must settle this mechanism before
 acceptance. No PID/lock-file heuristic or two stable metadata samples may substitute for that proof.
 Killing the helper and its Docker CLI is also insufficient: the bounded daemon experiment below
 observes an already-started command completing afterward. Recovery must account for daemon-side
@@ -303,14 +384,80 @@ No new backup decryption placement, protection-metadata resolution or deletion p
 
 One decoder/reducer in `deploymentrelease` serves the controller, CLI and rehearsal readers.
 R-006 consumes full v2 events and binding blobs, reducing them to the exact install→release→rollback
-operations; it must reject missing checkpoints/proofs, identity substitution, duplicate/unclosed
-operations and byte corruption. Three terminal summaries alone are not v2 evidence.
+operations; it must reject missing checkpoints/fences/completion proofs, identity
+substitution, duplicate/unclosed operations and byte corruption. A pending parent
+release is closed only by CR4's exact successful descendant recovery rule, not
+by ignoring an arbitrary unclosed row. Failed/interrupted recovery never closes
+that parent. Three terminal summaries alone are not v2 evidence.
 
 The exact candidate and predecessor helper artifacts used for this amended rehearsal must both
 support v2 reading/writing and the existing security floor. Do not claim pre-RP-556 helpers fail
 closed before effects or copy current helpers into a historical bundle without rebuilding its
 manifest/provenance. Unsupported helper combinations refuse; legacy journal bytes are preserved.
 This requirement does not settle the other previous-bundle-floor or producer-identity questions.
+
+### CR6 — Whole-operation closure and supervisor authority
+
+CR1's identity result and the operator lock are not whole-helper completion.
+Before EVERY successor's protected work, validate a predecessor fence bound to
+the exact accepted ledger prefix, identity/operation ancestry and supervised
+resource generation. Ordinary release needs it before Started/runtime preparation;
+governed rollback obtains it through CR4 before reset/restore/replacement startup.
+No successful Finished, apparent healthy deployment or v1 terminal record waives
+this gate. Initial install/v1 handoff needs a real governed producer, not an
+operator assertion; until specified/proved, that bootstrap remains blocked.
+
+The supervisor must outlive the invoking CLI and own the shared operator lock,
+controller, command descendants, admitted daemon/native jobs, operation SQL/HTTP
+streams and host publications/deletions. The runtime map includes the OUTER
+CLI outcome metric: publish it before the final completion proof/Finished, or
+include its whole lifetime in that proof. No protected writer remains outside
+the supervised scope just because Controller returned. Long-lived source/target
+services must have an explicit verified ownership disposition; they cannot be
+silently counted as vanished jobs or excluded unknown writers.
+
+Close worker admission monotonically before cleanup. Keep the authority that
+knows outstanding requests alive while collecting their actual terminal results,
+stopping/reaping owned jobs and finishing trusted read-only verification.
+Every side-effecting request needs durable intent BEFORE forwarding and an
+endpoint-specific terminal receipt AFTER completion. Native unit start/stop jobs
+are also asynchronous work if that packaging is selected. Native worker cgroup
+emptiness alone cannot erase queued native starts, Docker work or database
+streams. Prevent bypass of Engine/SQL/HTTP admission through real isolation;
+environment variables or a private socket name alone are not that guarantee.
+Secrets and cancellation keys never enter intents, receipts, logs or proof blobs.
+
+A predecessor fence and a completion proof must be separately typed, hash-bound
+private artifacts. Readers must verify exact producer/supervisor identity,
+covered ledger prefix/operations, sealed admission, complete work-log/receipt
+bindings, terminal operation actors/streams and explicit retained-service/output
+ownership. Neither counts, self-reported booleans, a label nor file presence is
+sufficient. Once completion is sealed, only its final ledger append and inert
+control-plane teardown may follow; no old metric writer or delayed protected
+request can run afterward. The proof is synced before its referring event.
+Its covered-prefix hash ends immediately BEFORE that referring event; it never
+hashes an event containing its own hash. Reusing an earlier completion proof at
+a later admission needs a verified predecessor-fence binding to the current
+prefix, not a circular hash or an unbound sidecar. Prefix changes, missing work
+receipts and any later unsealed protected intent refuse.
+
+**Not acceptance-ready:** the exact artifact/request-log schemas, native profile,
+first-install/v1 handoff and supported-host producers/readers still need complete
+specification and independent execution. These semantic fields are not permission
+to insert placeholder proofs, a no-op verifier, a fake certificate or a tracking
+validator as implementation. The existing prototype artifacts are research,
+never these new proof types. No new resident service, native-unit prerequisite
+or privilege is adopted by naming the supervisor. Selecting such packaging must
+reconcile this draft's no-service promise and the parent's host floor explicitly.
+
+If the supervisor/gateway or request authority is lost before a valid seal,
+missing processes/sockets or an unlocked file do NOT reconstruct it. Refuse
+in-place successor mutation, preserve pending/uncertain history and backup
+protection, and require the separately governed recovery route. A retained valid
+seal may support a proved handoff; a partially written artifact cannot. This is
+not automatic rollback, permission to reboot a host/daemon, or a disaster-recovery
+implementation. Clean-host/RPO/RTO and actual useful recovery paths remain gates;
+universal refusal cannot pass the successful-abort/rollback populations.
 
 ## Deviations and adoption
 
@@ -344,6 +491,16 @@ independent implementation reviews and all existing clean-host populations open.
    refusal, wrong mounted artifact and interrupted release recovery. Retain original AC1–AC10,
    RPO/RTO and manual/publication authority. Designated review covers code/tests/docs/records;
    no acceptance from these draft criteria or an isolated unit pass.
+6. Real supervision/reducer populations prove all ordering branches: an ordinary
+   successor refuses a finished-but-unsealed helper; a valid preserved-prior
+   abort completes without live-service/data mutation; a partial/mixed failed
+   source admits ONLY governed cleanup, then refuses reset until recovery_fenced;
+   correct rollback success derives ancestral recovery without fabricating a
+   parent Finished row. Failed recovery, wrong ancestry, changed deadline and
+   lost authority do not recover that parent. A late outer metric, queued native
+   start, Docker request or SQL stream must prevent the appropriate proof.
+   First-install/v1 handoff and successful real paths are mandatory, alongside
+   all refusal controls; a paper trace or a no-op verifier is not execution.
 
 ## Open questions
 
@@ -360,7 +517,10 @@ questions remain; the author must reconcile their results into CR2/CR4 before ac
   termination while an owned Docker client is active, and termination after a Docker request
   starts but before its response. Use an owned Linux test project, real child processes and
   real daemon observations. The recovery command must either establish that no earlier request
-  can mutate the project afterward, or fail without a new operation/data mutation. Test delayed
+  can mutate protected successor state afterward, or refuse that successor before
+  reset/restore/replacement startup. CR4's explicitly admitted fencing cleanup is
+  permitted to establish this boundary; it is not permission for successor data
+  mutation or unowned teardown. Test delayed
   old-request completion after the first stable observation as the negative control. Predeclare
   the actual supported Engine/Compose pair and retain process/request ordering, not an arbitrary
   sleep. Results authorize the exact supervisor/recovery mechanism, never automatic rollback or
@@ -386,6 +546,14 @@ questions remain; the author must reconcile their results into CR2/CR4 before ac
   versus literal quiescence explicitly, pre-backup non-destructive abort,
   packaged supervisor, all production resources and checkpoint authority before
   promoting the mechanism. Native supported-host execution remains required.
+- **Closure/protocol producers:** CR6 now closes the normative ordering gaps, not
+  its own construction gates. Specify exact fence/completion/work-log schemas,
+  initial-install/v1 handoff, supervisor ownership/lock attachment, non-bypassable
+  admission and native job receipts. Prove actual successful completion as well
+  as lost-authority refusal; neither the experimental booleans nor a universally
+  refusing implementation can satisfy this contract. If native services are
+  selected, reconcile both host prerequisites and the no-service promise before
+  adoption, not after product code is written.
 
 Docker documentation/source inspection is partial support for those instruments, not a runtime
 witness. Parent holds remain separate; no claim that every R-006 population has a producer.
@@ -507,3 +675,10 @@ mechanism, native-host proof and adoption remain open.
 - 2026-11-04: execute a combined controlled candidate with two discriminating
   weaker controls. Retain actual after-admission mutations/absence and explicitly
   distinguish generation isolation from this draft's unfulfilled quiescence rule.
+- 2026-11-04: independent review identifies four normative ordering/closure
+  contradictions. Scope healthy-current admission, require whole-helper proof,
+  separate admitted fencing cleanup from destructive execution, and define
+  explicit recovery ancestry/derived parent closure. Add semantic proof fields
+  and recovery_fenced; concrete schemas/first-install handoff/supervisor/native
+  producers remain explicit acceptance blockers. This is not implementation,
+  owner adoption, host-prerequisite selection or recovery acceptance.

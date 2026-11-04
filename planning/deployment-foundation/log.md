@@ -9415,3 +9415,59 @@ ownership, non-bypassable isolation, full CR4/native-host or adoption. Next spec
 the complete journal-bound supervisor/request-ownership protocol and critical-loss
 refusal, then bind the actual helper/all reviewed mutation classes. Keep the full
 nine-tier1.0 active; no publication, deployment, archival or release promotion.
+
+## 2026-11-04 — Independent draft review identifies recovery-ordering contradictions
+
+Review by: independent Codex `/root/recovery_admission_contract_review`.
+Recorded by: Codex root, transcribing returned review. Reviewed object is the
+Current Release Authority RFC atc5419034f7bb94189670caa5f8a99029412defdc plus its
+relevant controller/CLI sources, NOT a reversal of the approved gateway experiment.
+Verdict **CHANGES REQUIRED before specification acceptance**:
+
+- RP-741/P1: universal CR2 healthy-seven-container admission blocks CR4's allowed
+  partial/mixed failed-source rollback.
+- RP-742/P1: CR1/CR3 successful Finished establishes known without whole-helper
+  closure; actual controller.go220 precedes cmd/deployment-release/main.go84's
+  outer publication. Finished/helper death/new ordinary release can bypass a
+  fence if the condition only names abort/retry/rollback.
+- RP-743/P2: requiring quiescence before ANY recovery leaves no explicit lawful
+  phase for the fencing cleanup that establishes it.
+- RP-744/P2: successful rollback supposedly closes a pending release, yet no
+  Finished exists and CR5 rejects unclosed rows; ancestry/orientation/retry
+  windows and derived closure need exact normative rules.
+
+Reviewer also requires authenticated attachment to the live lock-owning
+supervisor or a proved sealed handoff, and tracking asynchronous native unit
+jobs if that packaging is selected. No tracked edits/fixtures/runtime claims;
+all reviewer handles terminal. These are draft defects, not shipped executions.
+
+Forward correction reconciles the BODY in one range: CR2 healthy observation
+now scopes to ordinary release, abort conclusion and restored success; recovery
+instead requires exact admitted resource ownership. CR1/CR3/CR6 require every
+successor's predecessor fence and success's full completion proof, including
+outer writers. Pre-backup failure cannot be finalized without closure/prior
+identity; uncertain post-checkpoint failures never mint ordinary admission.
+V1 identity is not a completion proof: concrete first-install/handoff producer
+is an explicit remaining construction gate, not grandfathering or a fake sidecar.
+
+CR4 separates read-only admission, checkpoint/input-authorized bounded cleanup,
+durable recovery_fenced, then destructive reset/restore/start. Pre-backup abort
+may clean only operation-owned work and preserves live services/data. Explicit
+recovery_of ancestry fixes source/target/backup/window, retries follow the failed
+child, and successful recovery derives parent recovered without fabricated or
+rewritten Finished. Source refusal/cleanup and restored-target success remain
+different observations. CR3 gains semantic proof/ancestry fields and the new
+boundary event; CR5 reads them, and acceptance includes all successful and
+refusal traces. Prefix binding excludes the referring event to avoid hash cycles.
+
+This is NOT a completed serialized supervisor protocol: exact proof/work-log
+schemas, first-install/v1 handoff, native profile, non-bypassable admission and
+actual producer/consumer executions remain explicit CR6/Open-question gates.
+No new OS service/privilege/adoption is inferred; selected packaging must
+reconcile the no-service promise and host floor before acceptance. No product,
+canonical behavior, CI, old evidence, authored copy or owner ruling changes.
+Root checked the complete normative diff and concrete trace ordering against
+reviewed source; no software suite/mirror validator for a prose-only amendment.
+Review by: Codex root, corrective author first filter. Recorded by: Codex root.
+Complete afterc5419034 four-path correction needs independent technical review;
+full CR4/Deployment/1.0 remain open. No push/deployment/archival/goal pause.
