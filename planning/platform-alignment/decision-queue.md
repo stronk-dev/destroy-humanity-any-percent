@@ -196,6 +196,10 @@ action per intent and refreshes its authoritative projection; Account defaults s
 300 requests per minute across authenticated routes. The existing server-validated manual batch
 and25-actions/s token refill are not a browser input-delivery guarantee. Actual minute profiles
 still show missed inputs/rate refusals after the stale-state repair; the Garage log owns results.
+The corrected observer's single native490dfe78 run (2026-11-04) retains valid
+input-loss/read429 findings; its full instrument/fixture union now has independent
+approval. Exact figures/environment are in that log, not a supported-floor or
+unique-cause claim. Earlier measurements keep their original capture limitations.
 
 Owner choice requested: collect actual clicks into the existing validated batch mechanism
 (recommended), or retain pending drops and explicitly choose a supported input rate. No answer

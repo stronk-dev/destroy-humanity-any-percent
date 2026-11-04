@@ -8907,3 +8907,39 @@ and correctness inspected by root first filter; complete fixture/docs/record
 follow-up after490dfe78 needs independent re-review and affected C/F/W execution,
 not another minute-profile run or self-approval. Both prior negative verdicts
 remain in the record. RP-368 owner policy, full CI/feature/archival/release stay open.
+
+## 2026-11-04 — Manual observer original-plus-corrections independently approved
+
+Review by: independent Codex `/root/manual_budget_instrument_corrective_review`.
+Recorded by: Codex root. APPROVED complete corrective union at0a185c06, no remaining
+finding in these scopes; all original7/correction6/follow-up4 paths inspected:
+
+- Original: `b6a13c7914e3f5fa71921a43e06b5804464b7b11..78f51a0ff4ea1f51edc21366ce0664bdb001d8c2`.
+- RP-712: `ec898e418fc93815fdc05d0255f1a3b9862e6d8a..490dfe78cf6400ce5ed4ba0cf7d9b17481f59b84`.
+- RP-713: `490dfe78cf6400ce5ed4ba0cf7d9b17481f59b84..0a185c06896fb37625ed3b94ce94e6f3974382a4`.
+
+Both CHANGES REQUIRED verdicts remain historical evidence. Independent exact old/
+current actual-function comparison discriminates malformed/read-failed/invalid-
+UTF8 nonmanual and invalid-UTF8 manual capture. Healthy/BOM/limiter controls stay
+valid; unexpected204 stays invalid, negative-lateness false-valid closes. Existing
+client fatal decoder reused, no new DTO authority/body logging. The early-wake
+timer still waits to the actual deadline; all60s/100ms/status/pending/rate rules stay.
+
+Final own Node272/3files pass318ms; corrected declared Linux41539 executes24 each
+in Chromium/Firefox/WebKit,72total,3.02s, exit0. Old fixture97018 remains9fail/
+63pass/Make2; first4360's unavailable final result supplies no counts. Typecheck
+at capture revision0/0; syntax/all range whitespace pass. Portable follow-up changes
+no observer/generated/driver/client/server/Make/Compose byte, so native80341 is
+REUSED at its actual490dfe78 source, not repeated or relabelled a new measurement.
+Its complete source-bound figures are in the preceding entry: both full profiles
+valid with input losses; four-Hz3read429/first19538ms. No malformed/page errors,
+no lossless-throughput floor or unique-cause conclusion. Earlier measurements are
+not retroactively revalidated against new capture guarantees.
+
+All handles terminal. Owned disposable services/listeners and only confirmed-empty
+networks removed; caches/pre-existing BuildKit preserved, tracked tree clean before
+root records. No exclusions, provider/worker/deadline/input/cadence/gameplay changes.
+Approvals close the instrument/timer/capture/fixture correction, not RP-368,
+supported input policy, full CI/feature/archival/release, the27 accounting failures
+or historical guard. Current queue moves to remaining source-owned corrective dispositions;
+do not rerun these completed profiles/reviews for reassurance.

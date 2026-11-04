@@ -14,16 +14,14 @@ that would need one is recorded as a blocker in `log.md` instead.
 Continue accepted construction and corrective review; do not repeat green populations
 or expand an uninformative diagnosis into another research campaign.
 
-1. Finish independent original-plus-corrections review of manual-budget observer
-   `b6a13c79..78f51a0f`, RP-712 capture fix and RP-713 portable test fixture. Original
-   CHANGES REQUIRED and the real browser fixture failure stay recorded. The single
-   native490dfe78 observation is complete, valid but lossy/limited; do not repeat
-   it for a test-only portability edit. Run affected C/F/W collection with the
-   portable fixture. No full DTO validation, new four-Hz floor, batching, larger
-   limiter or retries;60s/100ms limits and RP-368 owner boundary remain intact.
-2. API's catalog corrections and five technical amendments are reviewed; owner
-   adoption/new-descriptor/full workflow gates remain in its plan/log. Do not
-   restart completed reviews, infer adoption or mount a partial endpoint.
+1. Manual observer/timer/capture/portable-fixture union RP-372/712/713 is
+   independently approved at0a185c06. Both negative verdicts remain; no repeat
+   of its single valid-but-lossy/limited native observation. RP-368's existing
+   owner question is still unanswered: no new floor/batching/limiter/retry policy.
+2. Inspect remaining generated-operation port/HTTP-error correction dispositions
+   in API's owning log, then continue any genuinely unreviewed accepted scope.
+   Its five amendments still require adoption/new-descriptor/full workflow gates;
+   do not repeat completed reviews, infer assent or mount a partial endpoint.
 3. Keep RP-348/RP-351 causes open. R-013's report is reviewed, but the temporary
    profile is now absent and cannot be independently revalidated. No stall repair
    or cache/compiler/hosted-causality claim follows.
@@ -51,6 +49,7 @@ environment differences, exclusions and original rejected verdicts live in
 | Four-effect presentation/unknown refusal (RP-359/RP-360) | Scoped approval69c4f972..bbee9805; actual unknown-copy/wrong-scope controls discriminate |
 | Historical composed-execution record (RP-361) | Approved bbee9805..1d623dde; source correspondence checked, transient historical execution not independently replayed |
 | Shared reads, covered late receipts and stale dispatch (RP-369–371) | Three complete corrective ranges approved; current Linux hosts/Node/types/build and retained old failures, not fresh live-race/throughput evidence |
+| Manual observer/timer/capture/fixture (RP-372/RP-712/RP-713) | Complete original-plus-two-corrections approved; old failures/fixture CI red retained, Node272/browser72 pass, one native observation valid but lossy/limited; RP-368 policy separate |
 | Offer/purchase/transition pending focus (RP-319/RP-379/RP-380) | Three exact corrective ranges approved; actual duplicate-command/dual-revision/fallback controls discriminate, Manual policy RP-368 separate |
 | Bootstrap focus/live reduced motion (RP-393/RP-084) | Complete original corrections plus citation repair approved; current Node/native-input/media/Worker and Linux performance evidence, not AT/reference-hardware acceptance |
 | Native JSON failure/production-client/Pitch observers (RP-381/RP-389) | Complete three separate ranges approved; native helper negatives and full current real-service target pass; original failure attribution/reliability remains open |
