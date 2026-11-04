@@ -9,7 +9,8 @@
 shared helper's four zero-delay timers. Same1,272 focused cases pass; one matched
 four-CPU local report measures82.934→66.899s. The complete Linux three-engine browser
 job and strict types pass; exact populations/artifacts/limits are in the log.
-Corrective review is pending for the containing four-path batch. Hosted latency,
+Complete four-path4d56a5df..bae4d48c is independently approved; the reviewer executes
+522 affected consumer cases across three engines and strict types. Hosted latency,
 the original intermittent failures and whole-CI acceptance remain open.
 
 **Correction citation/metadata review,2026-11-04:** complete seven-path

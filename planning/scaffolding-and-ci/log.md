@@ -4794,3 +4794,25 @@ Complete four-path range after4d56a5df through this batch requires independent
 corrective review. Next: obtain that review, then reconcile hosted evidence only
 when publication is authorized. This does not close prior flakes, the hosted
 five-minute floor, client/server failures, feature acceptance or full nine-tier1.0.
+
+
+## 2026-11-04 — Garage task-yield corrective review approved
+
+Review by: independent Codex `/root/garage_task_yield_corrective_review`.
+Recorded by: Codex root, transcribing that agent's actual verdict. APPROVED, no
+findings, complete four-path range4d56a5dff47172d27146726fe7fa9a2c7a1d4a41..
+bae4d48ca75bf2f6e00367b79bdd05ef707c9c2f. Independently inspected the full diff,
+consumer semantics and retained full-job/paired artifacts; independently executed
+complete care/fiscal/opportunity files in unchanged three-engine/four-CPU service:
+522 passes/nine project-files/zero skips or failures,27.24s,98564 terminal0.
+Exact file/title/status tuples match the root candidate subset. Review JSON
+.cache/browser-settle-4d56a5df/review-consumers.json SHA256
+3bfac2460614ac0475dbd36620b99563a3544091215000937e1431c2d0b7ecec.
+Independent strict types zero errors/warnings and whitespace check pass. Root's
+complete source-bound job is reused with attribution, not relabelled reviewer-run.
+No tracked reviewer edits; HEAD stays fixed through checks, all handles terminal,
+no browser containers remain. Original baseline exit limitation and local-arm64,
+one-sample timing boundary remain. Plan now marks this corrective batch approved;
+no new software checks for this editorial closeout. Hosted/full-CI, flakes,
+feature acceptance and full nine-tier1.0 remain open; no archival/publication or
+goal pause. Continue accepted work while separate owner adoptions remain pending.
