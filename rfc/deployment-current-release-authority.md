@@ -411,14 +411,23 @@ resource generation. Ordinary release needs it before Started/runtime preparatio
 governed rollback obtains it through CR4 before reset/restore/replacement startup.
 No successful Finished, apparent healthy deployment or v1 terminal record waives
 this gate. Initial install/v1 handoff needs a real governed producer, not an
-operator assertion; until specified/proved, that bootstrap remains blocked.
+operator assertion. OP7/SP/adapters now specify that proposed producer; until
+actually constructed/proved, bootstrap remains blocked.
 
 The supervisor must outlive the invoking CLI and own the shared operator lock,
 controller, command descendants, admitted daemon/native jobs, operation SQL/HTTP
-streams and host publications/deletions. The runtime map includes the OUTER
-CLI outcome metric: publish it before the final completion proof/Finished, or
-include its whole lifetime in that proof. No protected writer remains outside
-the supervised scope just because Controller returned. Long-lived source/target
+streams and host publications/deletions. The current runtime map includes an
+OUTER CLI outcome writer, but the selected native profile RETIRES that writer:
+caller validation/lock failures produce bounded diagnostics, never a shared
+outcome write. Its admitted supervisor publishes ONLY P01 diagnostics through
+tracked F02 jobs, closing every such job/IO before completion is sealed. It
+cannot publish or copy a release-business success before Finished. The retained
+service projects business results only from the governed final event and its
+required graph under SP6/P01 (initial install additionally requires OP7 handoff).
+That verified retained-service work is distinct from an operation-owned writer;
+it does not reopen operation admission. Existing actual backup/restore/helper
+publications remain in whole-operation scope with their real terminal receipts.
+No protected writer escapes because Controller returned. Long-lived source/target
 services must have an explicit verified ownership disposition; they cannot be
 silently counted as vanished jobs or excluded unknown writers.
 
@@ -438,9 +447,12 @@ private artifacts. Readers must verify exact producer/supervisor identity,
 covered ledger prefix/operations, sealed admission, complete work-log/receipt
 bindings, terminal operation actors/streams and explicit retained-service/output
 ownership. Neither counts, self-reported booleans, a label nor file presence is
-sufficient. Once completion is sealed, only its final ledger append and inert
-control-plane teardown may follow; no old metric writer or delayed protected
-request can run afterward. The proof is synced before its first-introduction anchor event.
+sufficient. Once completion is sealed, that OPERATION may only append its final
+ledger event and perform inert control-plane teardown; no old operation/CLI
+metric writer or delayed protected request can run afterward. Separately verified
+retained-service activity, including SP6/P01's event-backed result projector,
+keeps its exact transferred ownership and cannot be relabelled operation work.
+The proof is synced before its first-introduction anchor event.
 Its covered-prefix hash ends immediately BEFORE that unique anchor; it never
 hashes an event containing its own hash. Reusing an earlier completion proof at
 a later admission needs a verified predecessor-fence binding to the current
@@ -518,7 +530,7 @@ independent implementation reviews and all existing clean-host populations open.
    source admits ONLY governed cleanup, then refuses reset until recovery_fenced;
    correct rollback success derives ancestral recovery without fabricating a
    parent Finished row. Failed recovery, wrong ancestry, changed deadline and
-   lost authority do not recover that parent. A late outer metric, queued native
+   lost authority do not recover that parent. A reintroduced outer outcome metric, queued native
    start, Docker request or SQL stream must prevent the appropriate proof.
    First-install/v1 handoff and successful real paths are mandatory, alongside
    all refusal controls; a paper trace or a no-op verifier is not execution.
@@ -563,8 +575,10 @@ implemented contract honestly; they never waive CR2/CR4 or authorize a no-op pat
   Persisting a generation label or full network ID alone is not this mapping.
   The source inventory is now retained in the mutation map; the unresolved task
   is construction/conformance of the linked COMBINED mechanism, not another inventory of the same
-  root calls. Include admitted mutating application HTTP, post-controller CLI
-  metrics, every helper's host writer and scheduled deletion of retained material.
+  root calls. Include admitted mutating application HTTP, every helper's host
+  writer and scheduled deletion of retained material. Reintroduction of the
+  current post-controller CLI outcome writer must refuse under SP6/P01, not
+  acquire permission to publish business success before Finished.
   Separately name any excluded install/rehearsal/rotation path rather than
   silently extending an ordinary release/rollback proof to it.
   The controlled combined prototype now exists; do not repeat its complete

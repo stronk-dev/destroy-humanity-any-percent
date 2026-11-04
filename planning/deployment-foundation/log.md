@@ -11986,3 +11986,33 @@ scope and absence of weakened accepted gates. Pending owner questions remain
 unanswered and are not repeated. No adoption request until that concrete package
 passes review. Full nine-tier goal active; no publication/deployment/archival/pause.
 Review by: Codex root, author first filter. Recorded by: Codex root.
+
+## 2026-11-04 — Linked review catches the old outer-writer alternative
+
+CHANGES REQUIRED, complete8-path
+ dcc151f277c862c2b78a1d5d16befc97de6fbaac..
+7b32e5738822981ee1c07277a6b62fb08ddf0a2c. Review by: independent Codex
+/root/native_supervisor_profile_review. Recorded by: Codex root. Full linked
+CR/OP/SP/adapters/tool/accepted-parent inspection finds one remaining conflict:
+CR6 still permits an outer CLI outcome writer before completion, while SP6/P01
+retire it and use retained-service business projection after the governed event.
+Other host/service/parent/dependency/sequencing clauses have no additional blocker.
+Links, append-only log, whitespace, exclusions/clean tree and unchanged rule/fixture
+hashes pass; actual35/37 plus both controls reused, no unrelated rerun. All handles
+terminal, no tracked reviewer edits or inferred acceptance.
+
+CR6 now selects exactly SP6/P01's ownership in its BODY: no outer outcome writer;
+only admitted F02 diagnostics, fully joined before seal; retained-service business
+projection after the governed final event/required graph, with OP7 install handoff.
+Other real backup/restore/helper publications remain covered by whole-operation
+closure and actual receipts. The seal restriction explicitly scopes to operation-
+owned effects, preserving ONLY verified transferred retained-service activity.
+Acceptance/Open-question text now treats reintroduced outer outcome writing as
+refusal, not a legitimate pre-Finished alternative. Initial-install wording names
+the now-proposed producer without pretending it is built/proved. Current-runtime
+source counterexamples remain factual/historical, not erased or claimed fixed.
+
+Two-path CR/log correction only; no rule/fixture, accepted parent, runtime or other
+contract changes. Original negative verdict preserved; complete linked union
+needs independent re-review. No native/software rerun for this normative fix,
+owner adoption, new permission, publication, archival, release or goal pause.
