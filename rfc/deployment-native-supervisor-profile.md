@@ -1,6 +1,6 @@
 # RFC: Native Deployment Supervisor Profile
 
-- **Status:** draft — core/adapters independently technically approved througha836e92b; new tool-delivery companion/linkage pending technical review; adoption/native producers/conformance pending; no implementation authority
+- **Status:** draft — core/adapters independently technically approved througha836e92b; corrected tool-delivery companion/linkage through1648e792; adoption/native producers/conformance pending; no implementation authority
 - **Author:** Codex
 - **Created:** 2026-11-04
 - **Parent / amends:** [Operation Evidence](deployment-operation-evidence.md), OP9; [Current Release Authority](deployment-current-release-authority.md), CR4/CR6; [Deployment Foundation](deployment-foundation.md), DP1/DP5/DP6
@@ -26,9 +26,10 @@ The [adapter companion](deployment-native-supervisor-adapters.md) now supplies
 the proposed finite plan expansion, request/body/terminal policies and private
 IPC. The corrected core/adapter union is independently technically approved
 througha836e92b; the owning log retains exact ranges and original negative verdicts.
-The new [tool-delivery companion](deployment-tool-artifact-inventory.md) is a
-separate, not-yet-reviewed draft, not covered by that verdict. Complete technical
-review of the amended contract precedes owner adoption under SP8; native producer
+The corrected [tool-delivery companion](deployment-tool-artifact-inventory.md)
+and linkage have separate independent technical approval through1648e792, not
+inherited approval from that earlier verdict. Complete technical review of the
+amended contract precedes owner adoption under SP8; native producer
 construction and actual conformance follow adoption, not as a circular prerequisite
 to permission to implement. OP9 remains open until its actual acceptance proof.
 

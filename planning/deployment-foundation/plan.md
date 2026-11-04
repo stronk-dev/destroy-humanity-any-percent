@@ -7,7 +7,7 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
-**Tool delivery proposal, 2026-11-04 (RP-759):** the new
+**Tool delivery proposal, 2026-11-04 (RP-759):** the independently technically reviewed
 [companion draft](../../rfc/deployment-tool-artifact-inventory.md) makes the
 separate CLI/Compose inventory and delivery contract concrete. It reuses the
 existing flat manifest and gives each tool its own SPDX, raw grants/notices,
@@ -15,15 +15,30 @@ covered-source file catalogue and truthful acquisition/build evidence. The
 tool-only MPL policy is proposed, not adopted; app policy is unchanged. Native
 SP1/SP8 links now distinguish technical review → owner adoption → construction
 → actual native/R-006 proof. No current artifact/version or unresolved right is
-approved. Initial independent review of070829cf..7efca4b8 returned CHANGES
-REQUIRED for missing typed source-member/origin and local-runner/recipe oracles.
-Both are now specified in the draft. The subsequent review found repository
-identity conflated with archive acquisition and a missing source-revision input;
-those are now separated and staged before final T3 acceptance. Complete-range
-re-review is next, then
-applicable policy adoption while existing host/architecture
-questions remain pending. No production/schema implementation or software test
-claim follows from this Markdown-only proposal.
+approved. Complete seven-path070829cf..1648e792 is independently TECHNICALLY
+APPROVED after correcting member/origin, runner/recipe and source-tuple findings;
+the owning log preserves both negative verdicts. Existing policy/host/architecture
+adoption remains pending. Before choosing the artifact floor, run the bounded
+standalone configuration comparison below. No production/schema implementation
+or software test claim follows from this Markdown-only proposal.
+
+**Next bounded study — direct Compose configuration:** pinned Compose source
+`cmd/main.go` and `cmd/compatibility/convert.go` have an explicit standalone path.
+Question: can the actual cached2.39.4 executable supply the same configuration
+outputs/refusals as CLI28.4.0 plus that plugin, without a separate CLI executable
+or Engine channel? Predeclare minimal public fixture, current production base
+and rotation inputs with synthetic public values, invalid YAML/type/required-env/
+missing-file cases, and removed/swapped executable controls. Compare complete
+parsed models in memory and actual version/exit outcomes; never persist private
+resolved models. Each case uses the existing isolated read-only/nonroot/no-cap/
+no-network fixture boundary and prior command/work/cleanup guards; a guard,
+missing dependency or incomplete population is INVALID, never a refusal/pass.
+Hash-check actual tools; make external/system CLI and daemon sockets unavailable
+in direct mode; no PATH fallback. Preserve all case results, not just survivors.
+A pass authorizes a smaller artifact/profile proposal for review and owner
+choice, not selection, implementation, rights clearance or waived conformance.
+Desktop/emulation research is not native Linux/amd64 SP8/R-006. A partial or
+negative result stays bounded and cannot silently change the two-tool draft.
 
 **Nested attribution correction,2026-11-04 (RP-761):** independently APPROVED
 complete six-path957dfa6b..a8168b63. Actual old imported-GDDO BSD omission

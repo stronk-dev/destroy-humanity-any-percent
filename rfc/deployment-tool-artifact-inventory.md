@@ -1,6 +1,6 @@
 # RFC: Deployment Tool Artifact Inventory and Delivery
 
-- **Status:** draft — technical review and owner adoption pending; no implementation or shipping authority
+- **Status:** draft — complete corrected proposal independently technically approved through1648e792; owner policy/artifact adoption pending; no implementation or shipping authority
 - **Author:** Codex
 - **Created:** 2026-11-04
 - **Parent / amends:** [Deployment Foundation](deployment-foundation.md), DP1/AC8; [Native Supervisor Profile](deployment-native-supervisor-profile.md), SP1/SP5/SP8

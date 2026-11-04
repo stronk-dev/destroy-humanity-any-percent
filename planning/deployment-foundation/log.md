@@ -11444,3 +11444,30 @@ local links. Log-prefix check confirms earlier committed bytes are untouched;
 an unintended blank during editing was caught and removed before commit. Diff
 whitespace passes. No actual build ran. Review by: Codex root, implementer first
 filter. Recorded by: Codex root.
+
+## 2026-11-04 — Tool-delivery proposal independently technically approved
+
+APPROVED, technical specification only, complete seven-path union
+070829cf7c5aded8996f5ff4a3db39d8cd5e48e0..
+1648e792bce72d2bc5c7e5177c26d8ad5434e627.
+Review by: independent Codex /root/native_supervisor_profile_review.
+Recorded by: Codex root, transcribing completed verdict. No blocking findings.
+Both prior negative verdicts above remain intact. Typed total member/origin
+coverage, bounded fixed runner, separate source expectations/archive identity
+and noncyclic post-build T3 binding now agree with existing consumers and parent
+roles. Actual18-key example, references, whitespace and production/normal-test/
+CI exclusion pass. No actual tool build/runtime run was executed or claimed.
+
+Status/index/plan/RP-759 now reflect that bounded verdict; this does not adopt
+the MPL policy, select versions/artifacts, resolve rights, implement the native
+profile or prove supported-host/SP8/R-006/1.0 acceptance. Tool data and the normal
+application license policy are unchanged. No push/deployment/archival or pause.
+
+Next avoid another untested assumption before artifact adoption. The pinned
+Compose source explicitly implements a standalone entry path, but source alone
+does not prove required behavior. The owning plan predeclares a finite real
+direct-versus-CLI/plugin configuration comparison, with complete parsed-output
+comparison, failure cases and missing/swapped binary controls in the existing
+isolated fixture. This may support removing an unnecessary separate wrapper
+and its discovery/native-component burden; it does not authorize that change.
+Preserve every actual config/compatibility outcome and native proof requirement.
