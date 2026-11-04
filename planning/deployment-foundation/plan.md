@@ -7,6 +7,39 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Carrier result,2026-11-04:** both native populations completed in the
+[source-bound observation](authority-carrier-observation.v1.json). The actual
+operator lock and original stream survive launcher exit in the separate
+supervisor namespace. Original writer pidfd exit plus original EOF precede
+same-path/same-ID replacement refusal; lock stays held. Omitting the lock FD
+refuses before a supervisor probe; fresh actual lock acquisition succeeds after
+fixture exit. Independent review pending. This is model evidence, not an actual
+Docker-daemon/authentication/bootstrap or supported-host result. Next bind this
+carrier and the reviewed SQL observer into the complete eight-kind supervisor
+profile/admission/receipt protocol against the existing mutation map; no contract
+adoption, production implementation or release acceptance follows from this run.
+
+**Supervisor authority-carrier experiment,2026-11-04:** source/contract work
+exposes daemon-generation/lock/bootstrap lifetime as the next missing binding.
+Before inventing a permanent service or assuming native handles survive the
+caller, test real Linux SCM_RIGHTS transfer of the existing exported
+AcquireOperatorStateLock FD, a connected native Unix stream and its writer pidfd
+into a separate-PID-namespace supervisor. Model socket activation by creating
+the listener in one process and passing it to a different-UID server; compare
+SO_PEERCRED with actual SO_PASSCRED/SCM_CREDENTIALS from fresh replies. Open the
+writer pidfd and obtain a second fresh reply before transfer. Complete transfer
+must keep the REAL operator lock busy and the same stream usable AFTER launcher
+exit. Native server exit and replacement at the same path/stable ID must leave
+the supervisor refusing new dispatch while keeping the lock. A missing lock FD
+must refuse before any supervisor probe. Actual library lock acquisition must
+work after fixture shutdown. Two owned model populations,60s per population,
+ordinary handshakes10s; build180s outside work, cleanup15s PER Docker command.
+No real Docker-daemon restart/host PID exposure, host settings, image pull/ports,
+keys, production code or deployment. Same-namespace launcher/server and separate
+supervisor use only exact owned container namespaces. This is native carrier
+mechanism evidence, not full daemon HTTP behavior, trusted peer authentication,
+inert bootstrap/OP9 adoption, packaged supervisor or clean-host recovery proof.
+
 **Next whole-connection ownership question:** the proven key-reading gateway is
 plaintext-only; do not weaken existing verified-TLS backup support to fit it.
 Before adding a TLS-terminating/authenticating proxy, test whether an observer

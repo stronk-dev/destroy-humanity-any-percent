@@ -1,0 +1,281 @@
+{
+  "arms": [
+    {
+      "active": {
+        "after_launcher_probe": 3,
+        "binding": {
+          "cookie": 32769,
+          "creator_pid": 22,
+          "creator_uid": 65532,
+          "lock_device": 65025,
+          "lock_inode": 1285714,
+          "writer_pid": 43,
+          "writer_uid": 0
+        },
+        "pid": 1,
+        "pid_namespace": "pid:[4026533224]",
+        "writer_pid_in_supervisor_namespace": 0
+      },
+      "arm": "complete",
+      "binding": {
+        "cookie": 32769,
+        "creator_pid": 22,
+        "creator_uid": 65532,
+        "lock_device": 65025,
+        "lock_inode": 1285714,
+        "writer_pid": 43,
+        "writer_uid": 0
+      },
+      "cleanup_complete": true,
+      "engine": "28.4.0 linux/arm64",
+      "kernel_profiles": {
+        "engine": {
+          "CapBnd": "0000000000000000",
+          "CapEff": "0000000000000000",
+          "CapPrm": "0000000000000000",
+          "Gid": "0\t0\t0\t0",
+          "NoNewPrivs": "1",
+          "Uid": "0\t0\t0\t0"
+        },
+        "launcher": {
+          "CapBnd": "0000000000000000",
+          "CapEff": "0000000000000000",
+          "CapPrm": "0000000000000000",
+          "Gid": "65532\t65532\t65532\t65532",
+          "NoNewPrivs": "1",
+          "Uid": "65532\t65532\t65532\t65532"
+        },
+        "supervisor": {
+          "CapBnd": "0000000000000000",
+          "CapEff": "0000000000000000",
+          "CapPrm": "0000000000000000",
+          "Gid": "65532\t65532\t65532\t65532",
+          "NoNewPrivs": "1",
+          "Uid": "65532\t65532\t65532\t65532"
+        }
+      },
+      "launch": {
+        "binding": {
+          "cookie": 32769,
+          "creator_pid": 22,
+          "creator_uid": 65532,
+          "lock_device": 65025,
+          "lock_inode": 1285714,
+          "writer_pid": 43,
+          "writer_uid": 0
+        },
+        "code": "",
+        "fd_count": 3,
+        "outcome": "received"
+      },
+      "live_probe": {
+        "code": "",
+        "count": 4,
+        "native_dead": false,
+        "outcome": "probe_completed",
+        "socket_eof": false,
+        "writer_pid": 0
+      },
+      "lock_held": {
+        "acquired": false,
+        "errno": 11
+      },
+      "lock_released": {
+        "acquired": true,
+        "errno": 0
+      },
+      "old_engine_exit": {
+        "code": "",
+        "count": 0,
+        "native_dead": true,
+        "outcome": "native_exit",
+        "socket_eof": true,
+        "writer_pid": 0
+      },
+      "ordinary_handshake_seconds": 10,
+      "profiles": {
+        "engine": {
+          "caps": [
+            "ALL"
+          ],
+          "network": "none",
+          "pid": "container:aa1d9e132f1b9fbbdd206281ffc016549f0faf1009a654c2e0b7c9d683c8d7d7",
+          "privileged": false,
+          "readonly": true,
+          "security": [
+            "no-new-privileges:true"
+          ],
+          "user": "0:0"
+        },
+        "launcher": {
+          "caps": [
+            "ALL"
+          ],
+          "network": "none",
+          "pid": "container:aa1d9e132f1b9fbbdd206281ffc016549f0faf1009a654c2e0b7c9d683c8d7d7",
+          "privileged": false,
+          "readonly": true,
+          "security": [
+            "no-new-privileges:true"
+          ],
+          "user": "65532:65532"
+        },
+        "supervisor": {
+          "caps": [
+            "ALL"
+          ],
+          "network": "none",
+          "pid": "",
+          "privileged": false,
+          "readonly": true,
+          "security": [
+            "no-new-privileges:true"
+          ],
+          "user": "65532:65532"
+        }
+      },
+      "project": "cc-authority-carrier-af9d43d5f7d2d05d",
+      "refused": {
+        "code": "authority_lost",
+        "count": 0,
+        "native_dead": true,
+        "outcome": "refused",
+        "socket_eof": false,
+        "writer_pid": 0
+      },
+      "replacement": {
+        "engine_id": "fixture-stable-engine-id",
+        "pid": 117,
+        "probes": 1,
+        "supervisor_calls": 0
+      },
+      "replacement_control": {
+        "count": 1,
+        "engine_id": "fixture-stable-engine-id",
+        "writer_pid": 0
+      },
+      "work_guard_seconds": 60
+    },
+    {
+      "arm": "missing_lock",
+      "binding": {
+        "cookie": 4099,
+        "creator_pid": 24,
+        "creator_uid": 65532,
+        "lock_device": 65025,
+        "lock_inode": 1285714,
+        "writer_pid": 46,
+        "writer_uid": 0
+      },
+      "cleanup_complete": true,
+      "engine": "28.4.0 linux/arm64",
+      "kernel_profiles": {
+        "engine": {
+          "CapBnd": "0000000000000000",
+          "CapEff": "0000000000000000",
+          "CapPrm": "0000000000000000",
+          "Gid": "0\t0\t0\t0",
+          "NoNewPrivs": "1",
+          "Uid": "0\t0\t0\t0"
+        },
+        "launcher": {
+          "CapBnd": "0000000000000000",
+          "CapEff": "0000000000000000",
+          "CapPrm": "0000000000000000",
+          "Gid": "65532\t65532\t65532\t65532",
+          "NoNewPrivs": "1",
+          "Uid": "65532\t65532\t65532\t65532"
+        },
+        "supervisor": {
+          "CapBnd": "0000000000000000",
+          "CapEff": "0000000000000000",
+          "CapPrm": "0000000000000000",
+          "Gid": "65532\t65532\t65532\t65532",
+          "NoNewPrivs": "1",
+          "Uid": "65532\t65532\t65532\t65532"
+        }
+      },
+      "launch": {
+        "binding": {
+          "cookie": 4099,
+          "creator_pid": 24,
+          "creator_uid": 65532,
+          "lock_device": 65025,
+          "lock_inode": 1285714,
+          "writer_pid": 46,
+          "writer_uid": 0
+        },
+        "code": "missing_lock_fd",
+        "fd_count": 2,
+        "outcome": "refused"
+      },
+      "lock_released": {
+        "acquired": true,
+        "errno": 0
+      },
+      "ordinary_handshake_seconds": 10,
+      "profiles": {
+        "engine": {
+          "caps": [
+            "ALL"
+          ],
+          "network": "none",
+          "pid": "container:cec7b5d25f691f5bf1f7921e759a6d7eb746c47d1ba69c747a719d09d49a35b7",
+          "privileged": false,
+          "readonly": true,
+          "security": [
+            "no-new-privileges:true"
+          ],
+          "user": "0:0"
+        },
+        "launcher": {
+          "caps": [
+            "ALL"
+          ],
+          "network": "none",
+          "pid": "container:cec7b5d25f691f5bf1f7921e759a6d7eb746c47d1ba69c747a719d09d49a35b7",
+          "privileged": false,
+          "readonly": true,
+          "security": [
+            "no-new-privileges:true"
+          ],
+          "user": "65532:65532"
+        },
+        "supervisor": {
+          "caps": [
+            "ALL"
+          ],
+          "network": "none",
+          "pid": "",
+          "privileged": false,
+          "readonly": true,
+          "security": [
+            "no-new-privileges:true"
+          ],
+          "user": "65532:65532"
+        }
+      },
+      "project": "cc-authority-carrier-ac5998e4f9d2bd5a",
+      "refused": {
+        "code": "missing_lock_fd",
+        "count": 0,
+        "native_dead": false,
+        "outcome": "refused",
+        "socket_eof": false,
+        "writer_pid": 0
+      },
+      "work_guard_seconds": 60
+    }
+  ],
+  "binary_sha256": "bdbbec59abdd14e707fecf435b0b8f3c97eee9c42a434189c5687e31b3685995",
+  "build_guard_seconds": 180,
+  "cleanup_outside_work_guard": true,
+  "cleanup_per_command_seconds": 15,
+  "final_binding_collection_seconds": 10,
+  "lock_source_sha256": "2d701b2a301ce98d8d87d4aa8244059745c0f7a44ee86474ee1cb9e84baa1097",
+  "objective_completed": true,
+  "runner_sha256": "02c59114733cb491ad8391aa0a0edb6ae1d848103c2a3dc909ad1f9697ad5f11",
+  "scope": "native model FD/lock carrier; not real Docker daemon or full supervisor",
+  "source_commit": "0f3a9a7c4dac96e7b3c11269cb2c08961d75ed75",
+  "source_sha256": "ddd92e1bd0a55523f81091149320289bdd3272881cba745544ecfaf9831dd94f"
+}

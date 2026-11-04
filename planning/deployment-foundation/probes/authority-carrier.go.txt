@@ -1,0 +1,597 @@
+// Manual native authority carrier. Never a production supervisor or daemon API.
+package main
+
+import (
+	"context"
+	"crypto/rand"
+	"encoding/hex"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"io"
+	"net"
+	"os"
+	"path/filepath"
+	"strings"
+	"syscall"
+	"time"
+
+	"cloud-clicker/server/deploymentrelease"
+	"golang.org/x/sys/unix"
+)
+
+const base = "/channel"
+const stableID = "fixture-stable-engine-id"
+
+func must(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
+func need(ok bool, message string) {
+	if !ok {
+		panic(message)
+	}
+}
+func clock(ctx context.Context) {
+	end, ok := ctx.Deadline()
+	need(ok, "missing deadline: INVALID")
+	must(ctx.Err())
+	need(time.Now().Before(end), "late native observation: INVALID")
+}
+func local(ctx context.Context) (context.Context, context.CancelFunc) {
+	return context.WithTimeout(ctx, 10*time.Second)
+}
+func nonce() string {
+	var data [16]byte
+	_, err := rand.Read(data[:])
+	must(err)
+	return hex.EncodeToString(data[:])
+}
+func publish(name string, value any) {
+	data, err := json.Marshal(value)
+	must(err)
+	path := filepath.Join(base, name)
+	must(os.WriteFile(path+".temporary", data, 0600))
+	must(os.Rename(path+".temporary", path))
+}
+func waitFile(ctx context.Context, name string) {
+	ctx, stop := local(ctx)
+	defer stop()
+	for {
+		_, err := os.Stat(filepath.Join(base, name))
+		if err == nil {
+			clock(ctx)
+			return
+		}
+		need(errors.Is(err, os.ErrNotExist), "native fixture file failure: INVALID")
+		clock(ctx)
+		time.Sleep(time.Millisecond)
+	}
+}
+
+func raw(conn *net.UnixConn, fn func(int) error) error {
+	r, err := conn.SyscallConn()
+	if err != nil {
+		return err
+	}
+	var inner error
+	err = r.Control(func(fd uintptr) { inner = fn(int(fd)) })
+	if err != nil {
+		return err
+	}
+	return inner
+}
+func credential(conn *net.UnixConn) *unix.Ucred {
+	var value *unix.Ucred
+	must(raw(conn, func(fd int) error {
+		var err error
+		value, err = unix.GetsockoptUcred(fd, unix.SOL_SOCKET, unix.SO_PEERCRED)
+		return err
+	}))
+	return value
+}
+func cookie(conn *net.UnixConn) uint64 {
+	var value uint64
+	must(raw(conn, func(fd int) error {
+		var err error
+		value, err = unix.GetsockoptUint64(fd, unix.SOL_SOCKET, unix.SO_COOKIE)
+		return err
+	}))
+	return value
+}
+func passCred(conn *net.UnixConn) {
+	must(raw(conn, func(fd int) error { return unix.SetsockoptInt(fd, unix.SOL_SOCKET, unix.SO_PASSCRED, 1) }))
+}
+func listen(kind, path string) *net.UnixListener {
+	listener, err := net.ListenUnix(kind, &net.UnixAddr{Name: path, Net: kind})
+	must(err)
+	listener.SetUnlinkOnClose(false)
+	must(os.Chmod(path, 0666))
+	return listener
+}
+func connect(ctx context.Context, kind, path string) *net.UnixConn {
+	ctx, stop := local(ctx)
+	defer stop()
+	conn, err := (&net.Dialer{}).DialContext(ctx, kind, path)
+	must(err)
+	clock(ctx)
+	return conn.(*net.UnixConn)
+}
+func accept(ctx context.Context, listener *net.UnixListener) *net.UnixConn {
+	ctx, stop := local(ctx)
+	defer stop()
+	end, _ := ctx.Deadline()
+	must(listener.SetDeadline(end))
+	conn, err := listener.AcceptUnix()
+	must(err)
+	clock(ctx)
+	return conn
+}
+func deadline(ctx context.Context, conn *net.UnixConn) (context.Context, context.CancelFunc) {
+	ctx, stop := local(ctx)
+	end, _ := ctx.Deadline()
+	must(conn.SetDeadline(end))
+	return ctx, stop
+}
+
+func packet(ctx context.Context, conn *net.UnixConn, value any, files []int) {
+	ctx, stop := deadline(ctx, conn)
+	defer stop()
+	data, err := json.Marshal(value)
+	must(err)
+	need(len(data) <= 1024, "fixture metadata exceeds closed frame: INVALID")
+	var ancillary []byte
+	if len(files) > 0 {
+		ancillary = unix.UnixRights(files...)
+	}
+	n, oob, err := conn.WriteMsgUnix(data, ancillary, nil)
+	must(err)
+	need(n == len(data) && oob == len(ancillary), "partial native packet: INVALID")
+	clock(ctx)
+}
+func receive(ctx context.Context, conn *net.UnixConn, target any) []int {
+	ctx, stop := deadline(ctx, conn)
+	defer stop()
+	data := make([]byte, 1024)
+	ancillary := make([]byte, unix.CmsgSpace(3*4))
+	n, oob, flags, _, err := conn.ReadMsgUnix(data, ancillary)
+	must(err)
+	need(flags&(unix.MSG_TRUNC|unix.MSG_CTRUNC) == 0, "truncated native metadata: INVALID")
+	messages, err := unix.ParseSocketControlMessage(ancillary[:oob])
+	must(err)
+	var files []int
+	for _, message := range messages {
+		need(message.Header.Level == unix.SOL_SOCKET && message.Header.Type == unix.SCM_RIGHTS, "unknown ancillary message: INVALID")
+		rights, err := unix.ParseUnixRights(&message)
+		must(err)
+		files = append(files, rights...)
+	}
+	for _, fd := range files {
+		unix.CloseOnExec(fd)
+	}
+	decoder := json.NewDecoder(strings.NewReader(string(data[:n])))
+	decoder.DisallowUnknownFields()
+	must(decoder.Decode(target))
+	need(decoder.Decode(new(any)) == io.EOF, "trailing native metadata: INVALID")
+	clock(ctx)
+	return files
+}
+
+type frame struct {
+	Command  string `json:"command"`
+	Nonce    string `json:"nonce"`
+	Who      string `json:"who"`
+	EngineID string `json:"engine_id"`
+	Count    uint64 `json:"count"`
+}
+
+func writeFrame(conn *net.UnixConn, value frame) {
+	data, err := json.Marshal(value)
+	must(err)
+	need(len(data) < 512, "fixture frame outside finite schema: INVALID")
+	data = append(data, '\n')
+	for len(data) > 0 {
+		n, err := conn.Write(data)
+		must(err)
+		need(n > 0, "partial frame: INVALID")
+		data = data[n:]
+	}
+}
+func readFrame(conn *net.UnixConn) (frame, *unix.Ucred) {
+	var data []byte
+	var writer *unix.Ucred
+	for len(data) < 512 {
+		one := make([]byte, 512-len(data))
+		ancillary := make([]byte, unix.CmsgSpace(unix.SizeofUcred))
+		n, oob, flags, _, err := conn.ReadMsgUnix(one, ancillary)
+		must(err)
+		need(n > 0 && flags&(unix.MSG_TRUNC|unix.MSG_CTRUNC) == 0, "invalid native credential frame: INVALID")
+		messages, err := unix.ParseSocketControlMessage(ancillary[:oob])
+		must(err)
+		for _, message := range messages {
+			need(message.Header.Level == unix.SOL_SOCKET && message.Header.Type == unix.SCM_CREDENTIALS, "unexpected native credential type: INVALID")
+			value, err := unix.ParseUnixCredentials(&message)
+			must(err)
+			if writer != nil {
+				need(*writer == *value, "writer changed within frame: INVALID")
+			}
+			writer = value
+		}
+		data = append(data, one[:n]...)
+		if data[len(data)-1] == '\n' {
+			break
+		}
+	}
+	need(len(data) > 0 && data[len(data)-1] == '\n', "oversized native frame: INVALID")
+	var value frame
+	decoder := json.NewDecoder(strings.NewReader(string(data)))
+	decoder.DisallowUnknownFields()
+	must(decoder.Decode(&value))
+	need(decoder.Decode(new(any)) == io.EOF, "trailing frame: INVALID")
+	return value, writer
+}
+func exchange(ctx context.Context, conn *net.UnixConn, command, who string) (frame, *unix.Ucred) {
+	ctx, stop := deadline(ctx, conn)
+	defer stop()
+	request := frame{Command: command, Who: who, Nonce: nonce()}
+	writeFrame(conn, request)
+	reply, writer := readFrame(conn)
+	clock(ctx)
+	need(reply.Command == command && reply.Who == who && reply.Nonce == request.Nonce && reply.EngineID == stableID, "native fresh-reply mismatch: INVALID")
+	need(writer != nil, "missing actual writer credentials: INVALID")
+	return reply, writer
+}
+func exited(fd int) bool {
+	poll := []unix.PollFd{{Fd: int32(fd), Events: unix.POLLIN}}
+	_, err := unix.Poll(poll, 0)
+	must(err)
+	need(poll[0].Revents&(unix.POLLERR|unix.POLLNVAL) == 0, "invalid native pidfd: INVALID")
+	return poll[0].Revents&(unix.POLLIN|unix.POLLHUP) != 0
+}
+func waitExit(ctx context.Context, fd int) {
+	ctx, stop := local(ctx)
+	defer stop()
+	for !exited(fd) {
+		clock(ctx)
+		time.Sleep(time.Millisecond)
+	}
+	clock(ctx)
+}
+
+type binding struct {
+	Cookie     uint64 `json:"cookie"`
+	LockDevice uint64 `json:"lock_device"`
+	LockInode  uint64 `json:"lock_inode"`
+	WriterPID  int32  `json:"writer_pid"`
+	WriterUID  uint32 `json:"writer_uid"`
+	CreatorPID int32  `json:"creator_pid"`
+	CreatorUID uint32 `json:"creator_uid"`
+}
+type ack struct {
+	Outcome    string `json:"outcome"`
+	Code       string `json:"code"`
+	NativeDead bool   `json:"native_dead"`
+	SocketEOF  bool   `json:"socket_eof"`
+	WriterPID  int32  `json:"writer_pid"`
+	Count      uint64 `json:"count"`
+}
+
+func launch(ctx context.Context) {
+	lock, err := deploymentrelease.AcquireOperatorStateLock(filepath.Join(base, "state"))
+	must(err)
+	file, ok := lock.(*os.File)
+	need(ok, "operator lock is not transferable file: INVALID")
+	defer file.Close()
+	engineListener := listen("unix", filepath.Join(base, "engine.sock"))
+	defer engineListener.Close()
+	engineControl := listen("unixpacket", filepath.Join(base, "engine-control.sock"))
+	defer engineControl.Close()
+	supervisorControl := listen("unixpacket", filepath.Join(base, "supervisor-control.sock"))
+	defer supervisorControl.Close()
+	publish("launcher-ready.json", map[string]any{"pid": os.Getpid(), "uid": os.Getuid()})
+	server := accept(ctx, engineControl)
+	defer server.Close()
+	need(credential(server).Uid == 0, "wrong model server UID: INVALID")
+	listening, err := engineListener.File()
+	must(err)
+	packet(ctx, server, ack{Outcome: "listener"}, []int{int(listening.Fd())})
+	must(listening.Close())
+	var serverAck ack
+	need(len(receive(ctx, server, &serverAck)) == 0 && serverAck.Outcome == "listening", "server did not adopt listener: INVALID")
+	original := connect(ctx, "unix", filepath.Join(base, "engine.sock"))
+	defer original.Close()
+	passCred(original)
+	creator := credential(original)
+	_, writer := exchange(ctx, original, "probe", "host")
+	need(writer.Uid == 0 && writer.Pid > 1 && writer.Pid != creator.Pid, "activation model did not distinguish creator/writer: INVALID")
+	pidfd, err := unix.PidfdOpen(int(writer.Pid), 0)
+	must(err)
+	defer unix.Close(pidfd)
+	need(!exited(pidfd), "writer already exited: INVALID")
+	_, second := exchange(ctx, original, "probe", "host")
+	need(*writer == *second && !exited(pidfd), "writer generation changed before carrier: INVALID")
+	var stat unix.Stat_t
+	must(unix.Fstat(int(file.Fd()), &stat))
+	meta := binding{Cookie: cookie(original), LockDevice: uint64(stat.Dev), LockInode: stat.Ino, WriterPID: writer.Pid, WriterUID: writer.Uid, CreatorPID: creator.Pid, CreatorUID: creator.Uid}
+	publish("writer-bound.json", meta)
+	supervisor := accept(ctx, supervisorControl)
+	defer supervisor.Close()
+	need(credential(supervisor).Uid == 65532, "wrong fixture supervisor UID: INVALID")
+	stream, err := original.File()
+	must(err)
+	defer stream.Close()
+	fds := []int{int(stream.Fd()), pidfd, int(file.Fd())}
+	if os.Getenv("CLOUD_CLICKER_CARRIER_ARM") == "missing_lock" {
+		fds = fds[:2]
+	}
+	packet(ctx, supervisor, meta, fds)
+	var response ack
+	need(len(receive(ctx, supervisor, &response)) == 0, "unexpected acknowledgement descriptors: INVALID")
+	if len(fds) == 2 {
+		need(response.Outcome == "refused" && response.Code == "missing_lock_fd", "partial carrier not refused: INVALID")
+		reply, _ := exchange(ctx, original, "exit", "host")
+		need(reply.Count == 2, "partial supervisor sent an engine request: INVALID")
+		waitExit(ctx, pidfd)
+	} else {
+		need(response.Outcome == "received", "complete carrier rejected: INVALID")
+	}
+	publish("launcher-result.json", map[string]any{"binding": meta, "outcome": response.Outcome, "code": response.Code, "fd_count": len(fds)})
+}
+
+func engine(ctx context.Context, replacement bool) {
+	var listener *net.UnixListener
+	if replacement {
+		path := filepath.Join(base, "engine.sock")
+		info, err := os.Lstat(path)
+		must(err)
+		need(info.Mode()&os.ModeSocket != 0, "unexpected replacement target: INVALID")
+		must(os.Remove(path))
+		listener = listen("unix", path)
+		publish("replacement-ready.json", map[string]any{"pid": os.Getpid(), "engine_id": stableID})
+	} else {
+		control := connect(ctx, "unixpacket", filepath.Join(base, "engine-control.sock"))
+		defer control.Close()
+		var response ack
+		fds := receive(ctx, control, &response)
+		need(response.Outcome == "listener" && len(fds) == 1, "invalid listener transfer: INVALID")
+		file := os.NewFile(uintptr(fds[0]), "engine-listener")
+		native, err := net.FileListener(file)
+		must(err)
+		must(file.Close())
+		listener = native.(*net.UnixListener)
+		listener.SetUnlinkOnClose(false)
+		packet(ctx, control, ack{Outcome: "listening"}, nil)
+	}
+	defer listener.Close()
+	probes := uint64(0)
+	supervisorCalls := uint64(0)
+	for {
+		conn := accept(ctx, listener)
+		for {
+			bounded, stop := deadline(ctx, conn)
+			request, _ := readFrame(conn)
+			need(len(request.Nonce) == 32 && (request.Command == "probe" || request.Command == "exit"), "invalid fixture request: INVALID")
+			if request.Command == "probe" {
+				probes++
+				if request.Who == "supervisor" {
+					supervisorCalls++
+				}
+			}
+			request.EngineID = stableID
+			request.Count = probes
+			writeFrame(conn, request)
+			clock(bounded)
+			stop()
+			if replacement {
+				publish("replacement-result.json", map[string]any{"probes": probes, "supervisor_calls": supervisorCalls, "engine_id": stableID, "pid": os.Getpid()})
+			}
+			if request.Command == "exit" {
+				conn.Close()
+				return
+			}
+			if replacement {
+				conn.Close()
+				break
+			}
+		}
+	}
+}
+
+func supervise(ctx context.Context) {
+	control := connect(ctx, "unixpacket", filepath.Join(base, "supervisor-control.sock"))
+	defer control.Close()
+	var meta binding
+	fds := receive(ctx, control, &meta)
+	defer func() {
+		for _, fd := range fds {
+			unix.Close(fd)
+		}
+	}()
+	if len(fds) == 2 {
+		packet(ctx, control, ack{Outcome: "refused", Code: "missing_lock_fd"}, nil)
+		publish("supervisor-refused.json", ack{Outcome: "refused", Code: "missing_lock_fd"})
+		return
+	}
+	need(len(fds) == 3, "invalid native carrier descriptor count: INVALID")
+	domain, err := unix.GetsockoptInt(fds[0], unix.SOL_SOCKET, unix.SO_DOMAIN)
+	must(err)
+	kind, err := unix.GetsockoptInt(fds[0], unix.SOL_SOCKET, unix.SO_TYPE)
+	must(err)
+	need(domain == unix.AF_UNIX && kind == unix.SOCK_STREAM, "original stream required: INVALID")
+	link, err := os.Readlink(fmt.Sprintf("/proc/self/fd/%d", fds[1]))
+	must(err)
+	need(link == "anon_inode:[pidfd]", "native pidfd required: INVALID")
+	var stat unix.Stat_t
+	must(unix.Fstat(fds[2], &stat))
+	need(stat.Mode&unix.S_IFMT == unix.S_IFREG && stat.Mode&0777 == 0600 && uint64(stat.Dev) == meta.LockDevice && stat.Ino == meta.LockInode, "operator lock identity changed: INVALID")
+	file := os.NewFile(uintptr(fds[0]), "retained-native-stream")
+	native, err := net.FileConn(file)
+	must(err)
+	must(file.Close())
+	fds[0] = -1
+	original := native.(*net.UnixConn)
+	defer original.Close()
+	need(cookie(original) == meta.Cookie && !exited(fds[1]), "native carrier binding lost: INVALID")
+	packet(ctx, control, ack{Outcome: "received"}, nil)
+	waitFile(ctx, "launcher-gone")
+	reply, writer := exchange(ctx, original, "probe", "supervisor")
+	need(writer.Uid == meta.WriterUID && !exited(fds[1]), "original writer lost after launcher exit: INVALID")
+	commands := listen("unixpacket", filepath.Join(base, "commands.sock"))
+	defer commands.Close()
+	publish("supervisor-active.json", map[string]any{"binding": meta, "after_launcher_probe": reply.Count, "writer_pid_in_supervisor_namespace": writer.Pid, "pid": os.Getpid(), "pid_namespace": mustLink("/proc/self/ns/pid")})
+	lost := false
+	for {
+		caller := accept(ctx, commands)
+		need(credential(caller).Uid == 65532, "wrong fixture controller UID: INVALID")
+		var request ack
+		need(len(receive(ctx, caller, &request)) == 0, "unexpected controller descriptors: INVALID")
+		var response ack
+		switch request.Code {
+		case "probe":
+			if exited(fds[1]) {
+				lost = true
+				response = ack{Outcome: "refused", Code: "authority_lost", NativeDead: true}
+			} else {
+				need(!lost, "lost authority reopened: INVALID")
+				reply, writer := exchange(ctx, original, "probe", "supervisor")
+				need(writer.Uid == meta.WriterUID && !exited(fds[1]), "native probe authority changed: INVALID")
+				response = ack{Outcome: "probe_completed", Count: reply.Count, WriterPID: writer.Pid}
+			}
+		case "stop_engine":
+			need(!lost, "engine already lost: INVALID")
+			exchange(ctx, original, "exit", "supervisor")
+			waitExit(ctx, fds[1])
+			bounded, stop := deadline(ctx, original)
+			var one [1]byte
+			n, err := original.Read(one[:])
+			need(n == 0 && errors.Is(err, io.EOF), "original native stream did not end EOF: INVALID")
+			clock(bounded)
+			stop()
+			lost = true
+			response = ack{Outcome: "native_exit", NativeDead: true, SocketEOF: true}
+			publish("authority-lost.json", response)
+		case "finish_fixture":
+			response = ack{Outcome: "fixture_finished", NativeDead: exited(fds[1])}
+		default:
+			panic("unknown fixture controller command: INVALID")
+		}
+		packet(ctx, caller, response, nil)
+		caller.Close()
+		if request.Code == "finish_fixture" {
+			return
+		}
+	}
+}
+
+func mustLink(path string) string { value, err := os.Readlink(path); must(err); return value }
+func lockProbe() {
+	lock, err := deploymentrelease.AcquireOperatorStateLock(filepath.Join(base, "state"))
+	if err != nil {
+		need(errors.Is(err, syscall.EWOULDBLOCK) || errors.Is(err, syscall.EAGAIN), "lock error is not contention: INVALID")
+		fmt.Println(`{"acquired":false,"errno":11}`)
+		return
+	}
+	must(lock.Close())
+	fmt.Println(`{"acquired":true,"errno":0}`)
+}
+func client(ctx context.Context) {
+	conn := connect(ctx, "unixpacket", filepath.Join(base, "commands.sock"))
+	defer conn.Close()
+	packet(ctx, conn, ack{Code: os.Getenv("CLOUD_CLICKER_CARRIER_COMMAND")}, nil)
+	var reply ack
+	need(len(receive(ctx, conn, &reply)) == 0, "unexpected reply descriptors: INVALID")
+	data, err := json.Marshal(reply)
+	must(err)
+	fmt.Println(string(data))
+}
+func replacementProbe(ctx context.Context) {
+	conn := connect(ctx, "unix", filepath.Join(base, "engine.sock"))
+	defer conn.Close()
+	passCred(conn)
+	reply, writer := exchange(ctx, conn, "probe", "independent_control")
+	need(writer.Uid == 0, "wrong replacement UID: INVALID")
+	data, err := json.Marshal(map[string]any{"engine_id": reply.EngineID, "writer_pid": writer.Pid, "count": reply.Count})
+	must(err)
+	fmt.Println(string(data))
+}
+
+func nativeProfile() map[string]string {
+	data, err := os.ReadFile("/proc/self/status")
+	must(err)
+	profile := map[string]string{}
+	for _, line := range strings.Split(string(data), "\n") {
+		key, value, ok := strings.Cut(line, ":")
+		if !ok {
+			continue
+		}
+		switch key {
+		case "Uid", "Gid", "CapEff", "CapPrm", "CapBnd", "NoNewPrivs":
+			profile[key] = strings.TrimSpace(value)
+		}
+	}
+	for _, key := range []string{"CapEff", "CapPrm", "CapBnd"} {
+		need(profile[key] == "0000000000000000", "unexpected native capabilities: INVALID")
+	}
+	need(profile["NoNewPrivs"] == "1", "no-new-privileges missing: INVALID")
+	return profile
+}
+
+func readFixture() {
+	name := os.Getenv("CLOUD_CLICKER_CARRIER_FILE")
+	need(name != "" && filepath.Base(name) == name && strings.HasSuffix(name, ".json"), "invalid fixture metadata name: INVALID")
+	path := filepath.Join(base, name)
+	info, err := os.Lstat(path)
+	if errors.Is(err, os.ErrNotExist) {
+		fmt.Println(`{"exists":false}`)
+		return
+	}
+	must(err)
+	need(info.Mode().IsRegular(), "fixture metadata not regular: INVALID")
+	data, err := os.ReadFile(path)
+	must(err)
+	need(json.Valid(data), "invalid fixture JSON: INVALID")
+	fmt.Printf("{\"exists\":true,\"value\":%s}\n", data)
+}
+
+func main() {
+	ctx, stop := context.WithTimeout(context.Background(), 60*time.Second)
+	defer stop()
+	role := os.Getenv("CLOUD_CLICKER_CARRIER_ROLE")
+	profile := nativeProfile()
+	switch role {
+	case "prepare", "anchor", "launcher", "engine", "supervisor", "replacement":
+		publish(role+"-kernel.json", profile)
+	}
+	switch role {
+	case "prepare":
+		must(os.Chmod(base, 0777))
+	case "read_fixture":
+		readFixture()
+	case "mark_launcher_gone":
+		must(os.WriteFile(filepath.Join(base, "launcher-gone"), []byte("gone\n"), 0600))
+	case "anchor":
+		publish("anchor-ready.json", map[string]any{"pid": os.Getpid(), "uid": os.Getuid()})
+		for {
+			clock(ctx)
+			time.Sleep(time.Millisecond)
+		}
+	case "launcher":
+		launch(ctx)
+	case "engine":
+		engine(ctx, false)
+	case "supervisor":
+		supervise(ctx)
+	case "replacement":
+		engine(ctx, true)
+	case "lock_probe":
+		lockProbe()
+	case "client":
+		client(ctx)
+	case "replacement_probe":
+		replacementProbe(ctx)
+	default:
+		panic("unknown authority carrier role: INVALID")
+	}
+	clock(ctx)
+}

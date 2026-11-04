@@ -1,0 +1,179 @@
+"""Manual native FD/lock carrier model; not the real Docker daemon protocol.
+
+Build180s outside two60s populations; ordinary handshakes10s. Cleanup15s PER
+command outside work. All namespaces/resources are exact disposable owned IDs.
+"""
+import hashlib
+import json
+import pathlib
+import re
+import secrets
+import shutil
+import subprocess
+import tempfile
+import time
+
+IMAGE = 'sha256:d2924abe506373b6f722045c48f98350077cc5b56a50491105c1abb027dce9b2'
+
+
+def main():
+    root = pathlib.Path.cwd()
+    source = root/'planning/deployment-foundation/probes/authority-carrier.go.txt'
+    binary = root/'.cache/bin/authority-carrier-research'
+    cache = root/'.cache/authority-carrier-research'
+    cache.mkdir(exist_ok=True)
+    overlay = cache/'overlay.json'
+    overlay.write_text(json.dumps(dict(Replace={str(root/'server/cmd/deployment-backup/main.go'):str(source)})))
+    digest = hashlib.sha256(source.read_bytes()).hexdigest()
+    end = time.monotonic()+180
+    build = subprocess.run(['make','build-deployment-backup-linux-amd64','RELEASE_BACKUP_OUTPUT=.cache/bin/authority-carrier-research','GOFLAGS=-overlay='+str(overlay)],capture_output=True,text=True,timeout=180)
+    if build.returncode or time.monotonic()>=end:
+        raise RuntimeError('manual native build failed/late: '+build.stdout+build.stderr)
+    binary_hash=hashlib.sha256(binary.read_bytes()).hexdigest()
+    dependency=root/'server/deploymentrelease/ledger.go'
+    dependency_hash=hashlib.sha256(dependency.read_bytes()).hexdigest()
+    source_commit = subprocess.run(['git','rev-parse','HEAD'],capture_output=True,text=True,check=True,timeout=10).stdout.strip()
+    observations = []
+    for arm in ('complete','missing_lock'):
+        project = 'cc-authority-carrier-'+secrets.token_hex(8)
+        work = pathlib.Path(tempfile.mkdtemp(prefix=project+'-'))
+        work.chmod(0o777)  # Fixture-public IPC/native metadata, no credentials.
+        channel=project+'-channel'
+        deadline = time.monotonic()+60
+        containers = []
+        completed = False
+
+        def run(*args,cleanup=False):
+            until = time.monotonic()+15 if cleanup else min(deadline,time.monotonic()+10)
+            timeout = until-time.monotonic()
+            if timeout<=0:raise RuntimeError('fixture command guard: INVALID')
+            reply = subprocess.run(['docker',*args],capture_output=True,text=True,timeout=timeout)
+            text = (reply.stdout+reply.stderr).strip() if args[0]=='logs' else reply.stdout.strip()
+            if reply.returncode or time.monotonic()>=until:
+                raise RuntimeError('owned fixture command failed/late: '+text+reply.stderr)
+            return text
+
+        def own(cid,role,cleanup=False):
+            assert run('inspect','--format','{{.Id}} {{.Image}} {{index .Config.Labels "com.docker.compose.project"}} {{index .Config.Labels "com.docker.compose.service"}}',cid,cleanup=cleanup)==' '.join((cid,IMAGE,project,role))
+
+        def create(role,uid,shared=None):
+            args=['create','--pull=never','--name',project+'-'+role,
+                  '--label','com.docker.compose.project='+project,'--label','com.docker.compose.service='+role,
+                  '--network=none','--ipc=private','--user='+uid,'--read-only','--cap-drop=ALL','--security-opt=no-new-privileges:true',
+                  '--mount','type=bind,source='+str(binary)+',target=/probe,readonly',
+                  '--mount','type=volume,source='+channel+',target=/channel',
+                  '--env','CLOUD_CLICKER_CARRIER_ROLE='+role,'--env','CLOUD_CLICKER_CARRIER_ARM='+arm]
+            if shared is not None:args+=['--pid=container:'+shared]
+            cid=run(*args,'--entrypoint','/probe',IMAGE)
+            assert re.fullmatch('[0-9a-f]{64}',cid)
+            containers.append((cid,role));own(cid,role);run('start',cid)
+            return cid
+
+        def readfile(name,anchor,uid='65532:65532'):
+            return json.loads(run('exec','--user',uid,'--env','CLOUD_CLICKER_CARRIER_ROLE=read_fixture','--env','CLOUD_CLICKER_CARRIER_FILE='+name,anchor,'/probe'))
+
+        def waitfile(name,actor,anchor,uid='65532:65532'):
+            until = min(deadline,time.monotonic()+10)
+            while True:
+                value=readfile(name,anchor,uid)
+                if value['exists']:
+                    assert time.monotonic()<until,'late native fixture metadata: INVALID'
+                    return value['value']
+                assert time.monotonic()<until,'native fixture handshake guard: INVALID'
+                assert run('inspect','--format','{{.State.Running}}',actor)=='true','native actor exited: '+run('logs',actor)
+                time.sleep(0.005)
+
+        def lock_probe(actor):
+            return json.loads(run('exec','--env','CLOUD_CLICKER_CARRIER_ROLE=lock_probe',actor,'/probe'))
+
+        def command(actor,value):
+            # The caller must outlive the supervisor it asks to finish. Running
+            # this client inside that PID namespace races its own teardown.
+            return json.loads(run('exec','--env','CLOUD_CLICKER_CARRIER_ROLE=client','--env','CLOUD_CLICKER_CARRIER_COMMAND='+value,anchor,'/probe'))
+
+        def profile(cid,uid,pid):
+            selected=json.loads(run('inspect','--format','{"user":{{json .Config.User}},"pid":{{json .HostConfig.PidMode}},"network":{{json .HostConfig.NetworkMode}},"readonly":{{json .HostConfig.ReadonlyRootfs}},"caps":{{json .HostConfig.CapDrop}},"security":{{json .HostConfig.SecurityOpt}},"privileged":{{json .HostConfig.Privileged}}}',cid))
+            assert selected==dict(user=uid,pid=pid,network='none',readonly=True,caps=['ALL'],security=['no-new-privileges:true'],privileged=False)
+            return selected
+
+        print(json.dumps(dict(phase='started',project=project,arm=arm,private_work=str(work))),flush=True)
+        try:
+            engine_version=run('version','--format','{{.Server.Version}} {{.Server.Os}}/{{.Server.Arch}}')
+            assert engine_version=='28.4.0 linux/arm64'
+            run('volume','create','--label','com.docker.compose.project='+project,channel)
+            prepare=create('prepare','0:0');assert run('wait',prepare)=='0','native channel preparation failed'
+            anchor=create('anchor','65532:65532');waitfile('anchor-ready.json',anchor,anchor)
+            launcher=create('launcher','65532:65532',anchor);waitfile('launcher-ready.json',launcher,anchor)
+            engine=create('engine','0:0',anchor);binding=waitfile('writer-bound.json',launcher,anchor)
+            assert binding['writer_uid']==0 and binding['creator_uid']==65532 and binding['writer_pid']!=binding['creator_pid']
+            supervisor=create('supervisor','65532:65532')
+            assert run('wait',launcher)=='0','native launcher failed: '+run('logs',launcher)
+            launch_result=waitfile('launcher-result.json',launcher,anchor)
+            if arm=='complete':
+                run('exec','--env','CLOUD_CLICKER_CARRIER_ROLE=mark_launcher_gone',anchor,'/probe')
+                active=waitfile('supervisor-active.json',supervisor,anchor)
+                assert active['binding']==binding and active['after_launcher_probe']==3
+                held=lock_probe(supervisor);assert held==dict(acquired=False,errno=11)
+                live=command(supervisor,'probe');assert live['outcome']=='probe_completed'
+                dead=command(supervisor,'stop_engine');assert dead['outcome']=='native_exit' and dead['native_dead'] is True and dead['socket_eof'] is True
+                assert run('wait',engine)=='0','model engine failed'
+                replacement=create('replacement','0:0',anchor);waitfile('replacement-ready.json',replacement,anchor,'0:0')
+                control=json.loads(run('exec','--env','CLOUD_CLICKER_CARRIER_ROLE=replacement_probe',supervisor,'/probe'))
+                assert control['engine_id']=='fixture-stable-engine-id' and control['writer_pid']==0
+                refused=command(supervisor,'probe');assert refused['outcome']=='refused' and refused['code']=='authority_lost' and refused['native_dead'] is True
+                replacement_result=waitfile('replacement-result.json',replacement,anchor,'0:0')
+                assert replacement_result['probes']==1 and replacement_result['supervisor_calls']==0
+                assert lock_probe(supervisor)==held,'authority loss released operator lock'
+                finished=command(supervisor,'finish_fixture');assert finished['outcome']=='fixture_finished'
+                assert run('wait',supervisor)=='0','native supervisor failed'
+                acquired=lock_probe(anchor);assert acquired==dict(acquired=True,errno=0)
+                result=dict(arm=arm,binding=binding,launch=launch_result,active=active,lock_held=held,
+                            live_probe=live,old_engine_exit=dead,replacement_control=control,
+                            replacement=replacement_result,refused=refused,lock_released=acquired)
+            else:
+                assert run('wait',supervisor)=='0','missing-lock refusal actor failed'
+                assert run('wait',engine)=='0','partial model engine failed'
+                refused=waitfile('supervisor-refused.json',supervisor,anchor)
+                assert refused['outcome']=='refused' and refused['code']=='missing_lock_fd'
+                assert launch_result['fd_count']==2 and launch_result['outcome']=='refused'
+                acquired=lock_probe(anchor);assert acquired==dict(acquired=True,errno=0)
+                result=dict(arm=arm,binding=binding,launch=launch_result,refused=refused,lock_released=acquired)
+            result['profiles']=dict(launcher=profile(launcher,'65532:65532','container:'+anchor),engine=profile(engine,'0:0','container:'+anchor),supervisor=profile(supervisor,'65532:65532',''))
+            result['kernel_profiles']=dict(launcher=readfile('launcher-kernel.json',anchor)['value'],engine=readfile('engine-kernel.json',anchor,'0:0')['value'],supervisor=readfile('supervisor-kernel.json',anchor)['value'])
+            result.update(project=project,engine=engine_version,work_guard_seconds=60,ordinary_handshake_seconds=10)
+            encoded=json.dumps(result,sort_keys=True)
+            assert time.monotonic()<deadline,'final population collection guard: INVALID'
+            completed=True
+        finally:
+            for cid,role in reversed(containers):
+                own(cid,role,cleanup=True)
+                if not completed:
+                    print(role+' native state: '+run('inspect','--format','{"status":{{json .State.Status}},"exit":{{json .State.ExitCode}},"error":{{json .State.Error}},"oom":{{json .State.OOMKilled}},"pid":{{json .State.Pid}}}',cid,cleanup=True),flush=True)
+                    print(role+': '+run('logs',cid,cleanup=True),flush=True)
+                run('rm','--force','--volumes',cid,cleanup=True)
+            if run('volume','ls','--quiet','--filter','name=^'+channel+'$',cleanup=True):
+                assert run('volume','inspect',channel,'--format','{{index .Labels "com.docker.compose.project"}}',cleanup=True)==project
+                run('volume','rm',channel,cleanup=True)
+            for kind in ('container','network','volume'):
+                assert run(kind,'ls','--quiet','--filter','label=com.docker.compose.project='+project,cleanup=True)=='','owned fixture cleanup incomplete'
+            if completed:shutil.rmtree(work)
+            else:print(json.dumps(dict(objective_completed=False,private_work=str(work))),flush=True)
+        result['cleanup_complete']=True
+        observations.append(result)
+    end=time.monotonic()+10
+    assert hashlib.sha256(source.read_bytes()).hexdigest()==digest
+    assert hashlib.sha256(binary.read_bytes()).hexdigest()==binary_hash
+    assert hashlib.sha256(dependency.read_bytes()).hexdigest()==dependency_hash
+    assert subprocess.run(['git','rev-parse','HEAD'],capture_output=True,text=True,check=True,timeout=10).stdout.strip()==source_commit
+    result=dict(objective_completed=True,arms=observations,source_sha256=digest,
+                runner_sha256=hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest(),
+                binary_sha256=binary_hash,source_commit=source_commit,lock_source_sha256=dependency_hash,
+                build_guard_seconds=180,cleanup_per_command_seconds=15,cleanup_outside_work_guard=True,
+                final_binding_collection_seconds=10,
+                scope='native model FD/lock carrier; not real Docker daemon or full supervisor')
+    encoded=json.dumps(result,sort_keys=True)
+    assert time.monotonic()<end,'final binding collection late: INVALID'
+    print(encoded,flush=True)
+
+
+if __name__=='__main__':main()

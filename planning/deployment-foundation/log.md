@@ -10166,3 +10166,54 @@ lifetime, native supported host, adoption and CR4/R-006. Current prototype uses
 Python observer, not a release-packaged Go producer or complete supervisor.
 Editorial closeout changes no reviewed source/observation/criterion; no identical
 rerun needed. Full nine-tier1.0 stays active; no push, deployment or archival.
+
+
+## 2026-11-04 — Original native authority and operator-lock carrier
+
+Outcome: establish the missing native handoff primitive before claiming a
+packaged supervisor. Manual Go/runner sources and source-bound
+`authority-carrier-observation.v1.json` touch no production/normal-test/CI bytes.
+Two60s populations use exact disposable Linux namespaces/native volume, no ports,
+network, host PID namespace, added capabilities, pulls or daemon restart.
+
+Root e13e58/session80725 retained final objective_completed=true in
+`.cache/authority-carrier-research/execution-complete.log`; resumed read f1e16b
+confirms both completed arms after the terminal session expired. Linux/amd64 Go
+binary on Desktop Engine28.4.0 Linux/arm64. SCM_CREDENTIALS identifies UID0 writer
+versus SO_PEERCRED's UID65532 listener creator. A retained writer pidfd, original
+connected stream and actual AcquireOperatorStateLock file pass via SCM_RIGHTS to
+a separate-PID-namespace UID65532 supervisor. After launcher exit the original
+stream completes probes3/4 and actual competing lock returns EAGAIN11. Native
+writer exit plus original EOF precede a same-path/same-ID live replacement;
+supervisor refuses authority_lost, replacement sees only its independent control,
+and the real lock stays held. Fixture-only supervisor finish permits actual new
+lock acquisition. Missing third FD returns missing_lock_fd before any supervisor
+probe (original server count remains2), then releases the original launcher lock.
+Kernel CapEff/Prm/Bnd0 and NoNewPrivs1 checked; exact own resources removed and
+all container/network/volume inventories empty before completed output.
+
+Development failures remain failures: initial Mac bind-mount Unix-socket chmod
+returned EINVAL (da514e/2fb1fb; preceding runs hid stderr); switching fixture IPC
+to a native Linux volume allowed transfer.18719b/0f44c0 reached lock/loss checks
+but failed at finish because the controller ran inside the namespace it asked to
+exit. Moving that controller to the owned anchor produced the full two-arm run.
+Neither partial population is completion evidence or a production defect.
+Root vet21c858 initially included unrelated normal main_test.go against the
+replacement research main and failed undefined scheduleRound; corrected exact
+file selector61688b passes Linux/amd64 vet. No bounds raised/assertions relaxed.
+
+Reproduce from root: `python3 planning/deployment-foundation/probes/authority-carrier.py.txt`.
+Vet: `make vet GO_PACKAGES=./cmd/deployment-backup/main.go GOFLAGS=-overlay=$PWD/.cache/authority-carrier-research/overlay.json GOOS=linux GOARCH=amd64 CGO_ENABLED=0`.
+Observation binds source ddd92e1b, runner02c59114, binary bdbbec59 and actual lock
+source2d701b2a; build180s/handshake10s/cleanup15s per command/final collection10s.
+
+RP-756 stays OPEN full production binding. Fixture metadata is not fsynced OP1/
+OP3 authority, UID equality is not authenticated bootstrap, and model protocol
+is not actual Docker daemon HTTP/lifetime or native supported-host evidence.
+Next construct the complete supervisor profile/admission/receipt proposal over
+all eight mutation kinds, using this carrier and reviewed SQL observer; retain
+all adoption, clean-host/R-006 and full nine-tier1.0 gates. Independent research/
+tool review pending, no specification adoption or feature acceptance inferred.
+No push/deploy/archive or goal pause.
+
+Review by: Codex root, research/tool author first filter. Recorded by: Codex root.
