@@ -7,6 +7,16 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Actual journal-file collection, 2026-11-04 (RP-725):** extend accepted DP7
+verification beyond controlled journalctl output. New manual
+`make test-deployment-journal` runs both production collectors against files
+written by actual systemd255 journald in an owned networkless Linux fixture.
+Eight selected records, native failure-cursor identity, unrelated-service
+exclusion, empty/different/missing directories and unknown-job refusal pass.
+This is a test/tool range awaiting independent review, not runtime/policy change
+or host logging-driver/14-day retention/full AC7/R-006 acceptance. The owning
+log records exact execution, initial selector error and sandbox denial.
+
 **Migration/dump consistency correction, 2026-11-04 (RP-724):** actual old-source
 regression creates a completed backup that refuses restoration when a schema/version
 transaction commits between validation and pg_dump. Check migration in one read-only

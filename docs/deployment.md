@@ -1253,6 +1253,18 @@ copied into the refusal. Both workload and cleanup collectors omit `--quiet`, wh
 would hide inaccessible-journal warnings. A complete empty JSON cleanup collection
 remains valid; it cannot stand in for the workload's required samples. These
 command controls do not establish host retention.
+`make test-deployment-journal` additionally starts real systemd journald and
+journalctl in an owned, networkless Linux fixture using the declared Playwright
+Noble image. Actual native journal files reach both production collectors:
+healthy empty cleanup collection, all seven service identifiers plus a cleanup
+failure, the exact hashed native failure cursor, unrelated-service exclusion,
+requested-directory isolation and missing-directory/unknown-job refusal. The
+fixture mounts only its test binary from the checkout, uses private temporary
+journal storage and removes its labelled container and anonymous volume. Its
+short synthetic population and derived reserve establish file/reader
+compatibility, not release-workload sizing, Docker's host journald logging driver,
+14-day availability/purge, supported-host installation or full AC7/R-006. The
+manual operations aggregate includes this check; push CI is unchanged.
 `journal-render` accepts only a complete, non-guarded observation with exact 14-day retention,
 capacity for fourteen measured peak days and an alert at 80% before eviction; it writes both the
 new journald drop-in and the exact budget file used by host monitoring, refusing to overwrite

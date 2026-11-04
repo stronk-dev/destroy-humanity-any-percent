@@ -8453,3 +8453,51 @@ RP-724 corrective defect closes, not RP-505, separate recovery-census/archive
 binding, snapshot-based RPO, full AC4/Deployment, R-006 or release. No operator
 key/configuration change, archival, publication or goal pause. Root reconciles
 current states and the bounded whole-product checkpoint; no suite for records.
+
+## 2026-11-04 — Actual native journal files reach both collectors (RP-725)
+
+Outcome: fill DP7's file/reader compatibility gap without treating controlled
+journalctl output as an actual Linux journal. New manual root target
+`make test-deployment-journal` builds the current command's Linux-amd64 test
+executable and owns one labelled, networkless, read-only Noble container using
+the existing declared Playwright1.62 image. Its private `/etc` anonymous volume,
+runtime/tmpfs journal and test-binary-only read-only checkout mount touch no host
+journal. Real systemd255 journald receives logger native messages, syncs and
+flushes actual journal files; unchanged production commands invoke actual
+journalctl against those files. Exact ownership is checked before force-removing
+the fixture and its anonymous volume. Native ordinary package runs explicitly
+skip the opt-in parent/child; those skips receive no integration credit.
+
+Coverage: healthy empty cleanup input, all seven identifiers plus one actual
+cleanup-failure message (eight selected rows), unrelated service's malformed
+message excluded, exact SHA256 of the actual journal cursor, requested empty
+directory isolation, missing-directory refusal and an actual unknown-job message
+refused. Workload errors emit no observation. A derived reserve uses the actual
+short synthetic population's byte rate; the private64GiB tmpfs ceiling allocates
+no such backing memory and is not a release-host budget. Collection crosses the
+real whole-second query cutoff before reading persisted microsecond records.
+No source mutation is needed: actual wrong-directory, unrelated/malformed and
+unknown-job populations discriminate the changed test/tool boundary.
+
+Execution by: Codex root, base351124e4 plus this complete six-path batch.
+Exploratory networkless native writer/read probe exits0 with one real cleanup
+record and string cursor/timestamp. A prior compacted output was lost; exact
+image inventory showed no remaining fixture before repeating it. First Make
+selector30510 exits0 with **no tests run** due recursive Make consuming an anchor;
+corrected to the existing unanchored unique-name convention, no credit for that
+attempt.47731 then fails at Docker socket permission before fixture creation;
+normal narrow development escalation runs92445 to terminal0. Actual child1.09s,
+native owner1.74s, package1.904s; both named PASS lines confirmed. Cleanup's exact
+label inventory is empty. Cold affected packages61611 terminal0: operations1.641s,
+command5.674s; selected vet exits0. These ordinary package runs are separate from
+the actual manual integration, not falsely credited for skipped fixture tests.
+Formatting and diff whitespace pass. Final change after execution is test log
+wording only; no assertion/runtime change.
+
+Review by: Codex root, implementer first filter only. Designated independent
+review requested for complete six paths after351124e4 through this commit:
+Makefile, new journal integration test, canonical deployment docs, backlog,
+owning plan and this log. No workflow/production/rule/retention change. Host
+Docker journald-driver delivery, 14-day retention/purge, supported-host workload
+sizing, exact release artifacts, full AC7/R-006 and release approval remain open.
+No unrelated service population rerun or broader milestone promotion.

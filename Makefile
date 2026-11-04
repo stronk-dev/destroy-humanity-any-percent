@@ -9,6 +9,7 @@
 .PHONY: test-deployment-backup-profile
 .PHONY: test-deployment-ingress-profile
 .PHONY: test-deployment-gameserver-profile
+.PHONY: test-deployment-journal
 .PHONY: verify-combat-go-boundary
 
 # Keep ordinary Go builds inside the writable repository sandbox. Override either
@@ -143,6 +144,7 @@ test-deployment-operations:
 	$(MAKE) test-deployment-backup-profile
 	$(MAKE) test-deployment-ingress-profile
 	$(MAKE) test-deployment-gameserver-profile
+	$(MAKE) test-deployment-journal
 	$(MAKE) test-deployment-operations-profile
 
 # Real one-minute job timing belongs to manual Deployment acceptance, not push
@@ -193,6 +195,15 @@ test-deployment-gameserver-profile:
 	cd server && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o ../.cache/bin/operations-gameserver ./cmd/gameserver
 	cd server && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go test -c -o ../.cache/bin/operations.test ./operations
 	$(MAKE) test-go GO_PACKAGES='./cmd/deployment-operations' GO_TEST_FLAGS='-run TestActualGameserverOutagePrivateProfileIntegration -v -count=1 -timeout=14m'
+
+# Actual journald files and journalctl in an owned, networkless Linux fixture.
+# No host journal, Docker logging-driver or retention/release acceptance claim.
+test-deployment-journal: export CLOUD_CLICKER_JOURNAL_TEST = 1
+test-deployment-journal: export CLOUD_CLICKER_OPERATIONS_ROOT = $(CURDIR)
+test-deployment-journal:
+	mkdir -p $(REPO_CACHE_DIR)/bin
+	cd server && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go test -c -o ../.cache/bin/journal-operations.test ./cmd/deployment-operations
+	$(MAKE) test-go GO_PACKAGES='./cmd/deployment-operations' GO_TEST_FLAGS='-run TestActualJournalCollectionIntegration -v -count=1 -timeout=3m'
 
 # Focus the existing real-service fixture without skipping or changing the
 # aggregate above. This is not the full operations or clean-host release gate.
