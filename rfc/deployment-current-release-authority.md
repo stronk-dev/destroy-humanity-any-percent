@@ -451,7 +451,9 @@ sufficient. Once completion is sealed, that OPERATION may only append its final
 ledger event and perform inert control-plane teardown; no old operation/CLI
 metric writer or delayed protected request can run afterward. Separately verified
 retained-service activity, including SP6/P01's event-backed result projector,
-keeps its exact transferred ownership and cannot be relabelled operation work.
+keeps its exact transferred ownership; no old operation writer may be relabelled
+as retained activity to evade closure. Later I04 import under a newly admitted
+operation retains that separate protocol's full ownership/receipt requirements.
 The proof is synced before its first-introduction anchor event.
 Its covered-prefix hash ends immediately BEFORE that unique anchor; it never
 hashes an event containing its own hash. Reusing an earlier completion proof at
