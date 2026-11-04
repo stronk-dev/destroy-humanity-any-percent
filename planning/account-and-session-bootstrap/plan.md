@@ -4,6 +4,16 @@
 - **RFC:** `rfc/account-and-session-bootstrap.md`
 - **Started:** 2026-07-29
 
+**Recovery proposal review, 2026-11-04:** independent technical review requires
+changes to complete original five-path1f95a62a..143174da. Authenticated-only v1
+migration strands an expired session's hidden code; an unlocked document check
+does not prevent another tab's newer commit being overwritten. The revised draft
+proposes pre-authentication pending migration, explicit entry choice and shared
+short write ownership/generations, with real acceptance populations. The renewal
+draft references that same writer without adopting refresh/marker policy. No
+runtime, policy or copy adoption; final independent specification review remains.
+The existing D-005 posture stays ruled, and the owning log records exact scopes.
+
 **Security corrective review checkpoint, 2026-11-01:** fresh independent Codex
 approves RP-417's complete `634b8360..069532f5` credential-cache correction and
 RP-443's complete `7cd232c5..13acd872` registered session-request admission

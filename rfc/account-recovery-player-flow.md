@@ -24,6 +24,13 @@ between different accounts, New Founder UI and the full 1.0 release floor remain
 
 ### R1 — Save the credential before entering gameplay
 
+With no stored account, show Create a new account and Recover existing account
+before dispatching bootstrap. Bootstrap begins only after the explicit new-account
+choice. A retained bootstrap key offers Continue account setup using that exact
+key; it does not authorize a new identity. Selecting recovery must not first create
+an unwanted account. Stored credentials, including expired legacy credentials,
+never fall through to automatic bootstrap on an authenticated-read failure.
+
 Keep the existing idempotent bootstrap operation and its exact request, encrypted receipt,
 expiry/tombstone semantics and persist-before-Desk ordering. Do not create an account through a
 second route, regenerate a key after ambiguous failure, or retry by issuing a different identity.
@@ -46,21 +53,63 @@ No credential goes into a URL/filename. Do not claim that initiating a download 
 Use one versioned browser credential document at `cloud-clicker.credentials.v2`:
 
 ```text
-{version:2, accountID, accessToken, refreshToken,
+{version:2, generation, accountID, accessToken, refreshToken,
  recoverySetup:null | {accountID, recoveryCode}}
 ```
 
-The nested account ID must match the outer one. Pending setup holds the recovery code only until
+`generation` is a fresh UUIDv4 for each successful document replacement; it is local
+coordination metadata, not a server identity or token. The nested account ID must
+match the outer one. Pending setup holds the recovery code only until
 acknowledgement; acknowledgement replaces it with `null` in the same single-item write. Do not
 persist a second permanent copy or erase the only pending copy before a successful write.
 Storage failure blocks the transition visibly, preserves the in-memory credential, and offers
 another explicit save attempt without another account/session request.
 
-Read the existing v1 document without discarding it. On a validated authenticated startup, migrate
-its session/account/code into pending v2 setup and show the previously hidden credential once.
-Remove v1 only after the v2 write succeeds. If both keys survive interrupted cleanup, valid v2
-takes precedence; finish removing v1 before claiming completed setup. A failed write/removal must
-not falsely claim the secret is cleared. A completed v2 setup never displays the code again.
+Read the existing v1 document without discarding it. Migrate a locally valid v1
+session/account/code into pending v2 setup **before requiring authenticated startup**.
+An expired access token must not hide the only saved recovery code. Display the
+retained values as browser-saved details, without claiming this local migration
+validated them with the server. The setup panel offers explicit recovery using
+those values; it submits only on the player's gesture through R3, never bootstrap
+or automatic refresh. Successful recovery preserves pending setup until acknowledgement.
+Acknowledgement alone cannot bypass the ordinary authenticated gameplay-read gate.
+
+Remove v1 only after the pending v2 write succeeds. If both keys survive interrupted
+cleanup, valid v2 takes precedence. Acknowledgement first finishes v1 removal while
+v2 still retains the code, then writes the acknowledged v2 document with a new
+generation. If removal or that write fails, the pending v2 copy remains recoverable
+and gameplay entry stays blocked. A completed v2 setup never redisplays a surviving
+legacy code. This ordering also survives interruption between the two operations.
+
+All cooperating copies of this client use one exclusive Web Lock named
+`cloud-clicker.credentials` for credential mutations: bootstrap-key creation and
+cleanup, bootstrap-result commit, legacy migration/cleanup, acknowledgement and
+recovery-session commit. Under that lock, reread storage, compare the attempt's
+observed generation/account, check cancellation, and perform the synchronous write
+before releasing ownership. Before a v2 generation exists, compare the exact
+observed v1/bootstrap-key state instead. Every document replacement gets a new
+generation; a delayed attempt cannot overwrite another writer's successful change.
+After a concurrent commit of the same idempotent bootstrap result, use the current
+valid document rather than restoring the old response's session pair.
+
+Never hold this short write lock across network requests. Acquire ownership to
+capture the starting document before dispatch; reacquire it to compare and commit
+after validation. A changed generation stops the old attempt with `changed`.
+Pending lock acquisition is abortable on cancellation/unmount. Missing or denied
+ownership/storage stops mutation visibly; no check-then-set fallback, lock stealing,
+implicit bootstrap, or account/session dispatch without the initial protected read.
+Read-only display/copy/download of already retained setup details remains available.
+Failed post-login ownership/persistence keeps the candidate pair in attempt memory
+for Retry save, preserving the prior durable document.
+
+Storage events and pre-action generation checks detach stale setup/recovery work;
+an observed acknowledged generation clears the old panel's in-memory code. These
+guarantees cover cooperating tabs sharing a storage bucket, not isolated profiles
+or arbitrary scripts bypassing the protocol. Future renewal must use this same
+document-write authority; refresh serialization and ambiguous-commit markers remain
+the separate renewal proposal's unadopted contract. The [Web Locks draft](https://www.w3.org/TR/web-locks/)
+and existing [R-011 observations](../planning/platform-alignment/browser-session-coordination.md)
+support feasibility, not completion of this feature's actual-browser acceptance.
 
 This specifies this application's local credential lifecycle, not deletion of browser backups,
 clipboard contents or downloaded files. Do not describe localStorage as encrypted or secure
@@ -89,6 +138,8 @@ Retry load reuses it and performs reads only. It must not resubmit the recovery 
 single-use refresh token. A failed persistence similarly retries the validated local write only.
 Keep any prior durable credentials intact until replacement succeeds. Recovery code entered in
 this form is never persisted; clear it on successful recovery, cancellation or unmount.
+Locally migrated legacy details are available even when their access token is expired;
+the form may prefill those pending values, but never submits them automatically.
 If the prior document has pending recovery setup, preserve that setup with the new session pair
 and return to its acknowledgement panel; logging in cannot silently erase its only saved code.
 
@@ -96,9 +147,10 @@ On successful commit, replace the old subscription and prediction state with the
 authoritative identity, reset identity-scoped revision cursors, and focus the Desk heading only
 when setup is complete (otherwise focus the setup heading). Old
 in-flight work must not write credentials, rebind UI or reopen a socket after cancellation,
-unmount or replacement of its observed credential generation/account. Check the current document
-before committing. This does not claim atomic cross-tab refresh coordination; that is owned by
-the separate browser-renewal proposal.
+unmount or replacement of its observed credential generation/account. R2's exclusive
+ownership and comparison govern the final write; an unlocked read followed by a
+later write does not satisfy this requirement. Single-use refresh serialization
+and ambiguous rotation remain owned by the separate browser-renewal proposal.
 
 ### R4 — Honest failures, keyboard use and secret handling
 
@@ -124,6 +176,7 @@ Implementation places adopted text in the existing copy catalog, not component s
 
 | Key suffix (`account.recovery.`) | Proposed English |
 |---|---|
+| `entry_title` / `new` / `resume_creation` | Start or recover your account / Create a new account / Continue account setup |
 | `setup_title` | Save your recovery details |
 | `account_id` | Account ID |
 | `code` | Recovery code |
@@ -138,6 +191,8 @@ Implementation places adopted text in the existing copy catalog, not component s
 | `load_failed` / `retry_load` | Signed in, but could not load your game. / Retry load |
 | `storage_failed` / `retry_save` | Could not save account details in this browser. Keep your recovery details and try again. / Retry save |
 | `changed` | Account details changed in another window. This recovery attempt has stopped. |
+| `saved_details` | These details were saved by this browser. Recover the account to check that they still work. |
+| `ownership_failed` | Could not safely update account details in this browser. Your saved details have not been replaced. |
 
 Copy and download use the same two labelled values; no tokens or game-state/export payload.
 
@@ -146,17 +201,30 @@ Copy and download use the same two labelled values; no tokens or game-state/expo
 1. Real built client/server/Postgres: bootstrap → save panel → native Copy/Download/manual
    acknowledgement → Desk. Match the actual issued ID/code privately; verify session persisted
    before gameplay, recovery secret removed afterwards, and reload does not redisplay it.
-2. Close/reload before acknowledgement, deny clipboard, fail storage writes/removal, and load a
-   real legacy v1 credential. Preserve the only recoverable values and the original account;
+2. Close/reload before acknowledgement, deny clipboard, fail storage writes/removal, and load
+   real valid and expired-access legacy v1 credentials. With expired access, display/save
+   the retained code and explicitly recover the same account without bootstrap, refresh,
+   renewed access as a prerequisite, or a code the player has never been allowed to see.
+   Preserve pending setup through login, and interrupt between legacy removal and acknowledgement.
+   Preserve the only recoverable values and the original account;
    no additional bootstrap or false saved/copied/cleared claim. Retain focused runtime/DOM tests.
 3. In a clean browser context, enter the saved details through native controls and recover the
    same current Founder, Company, persisted progress and usable socket. No bootstrap/new account,
    Founder creation or replayed gameplay command. Wrong-code and unknown-account cases fail
    without revealing account existence or changing gameplay state.
+   Assert zero bootstrap dispatches before the entry choice and throughout recovery;
+   separately resume an interrupted explicit creation with its original bootstrap key.
 4. Exercise rate limiting, failed post-login read, failed persistence, delayed replies, cancel,
    unmount and changed stored generation. Assert which exact operation executes once; read/save
    retries cannot create another session or replace newer credentials. Old UI/socket work stays
    detached. Never print the credential values while testing these boundaries.
+   In actual same-origin tabs sharing one storage bucket, force another recovery,
+   migration or acknowledgement commit between an attempt's validation and final write.
+   The stale attempt must preserve the newer document. A bypass of write ownership or
+   generation comparison must fail that control. Exercise queued-lock cancellation,
+   holder closure, unavailable locks, storage denial and concurrent initial bootstrap;
+   no hidden session/account creation or unsafe fallback is allowed. Isolated browser
+   contexts are separate storage populations, not evidence of shared-key exclusion.
 5. Native keyboard and 320px checks cover setup, correction, cancellation and resumed Desk focus;
    affected client type/build/boundary, generated API and real Postgres populations pass. Extend
    the existing composed journey rather than introducing another generic test framework.
@@ -167,9 +235,20 @@ Copy and download use the same two labelled values; no tokens or game-state/expo
 ## Acceptance blockers and deviations
 
 - Marco must adopt or edit the proposed credential-document migration, acknowledgement and
-  recovery-attempt policy, and explicitly adopt the copy block. D-005's posture stays ruled.
+  recovery-attempt/write-ownership policy, and explicitly adopt the copy block.
+  D-005's posture stays ruled. Supported-profile Web Lock/storage and actual writer
+  interleaving acceptance remain mandatory before completion; primitive studies do not waive them.
 - Designated specification review is required under the existing process. No implementation,
   owner-copy adoption, broader renewal/rights ruling or feature completion is implied by drafting.
 - No intended gameplay deviation; this changes the browser consumer/storage contract and makes
   the existing server credential usable by the player. No server endpoint, migration or token
   lifetime change is proposed.
+
+## Changelog
+
+- 2026-11-04: independent technical review requires changes to the original proposal:
+  authenticated-only legacy migration strands an expired session's hidden code, and
+  an unlocked document check cannot prevent another tab's newer commit being overwritten.
+  Propose pre-authentication pending migration plus shared exclusive write ownership,
+  document generations and explicit unavailable-ownership behavior; add both acceptance
+  populations and proposed utility copy. Still draft; no policy/copy adoption or implementation.

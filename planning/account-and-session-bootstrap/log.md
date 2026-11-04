@@ -1201,3 +1201,50 @@ are terminal. These corrective reviews close, not complete Account/API acceptanc
 new browser recovery/renewal policy, wider rights/player tasks or archival.
 No fresh full browser-composed rerun, hosted-CI/release approval, publication or
 deployment. Continue accepted construction/review; owner-held contracts remain.
+
+## 2026-11-04 — Recovery player-flow draft technical review requires changes
+
+Review by: independent Codex `/root/kernel_review_citation_corrective_review`.
+Recorded by: Codex root. CHANGES REQUIRED, complete original five-path range:
+`1f95a62a688f19675c08702e769075247b815a2a..143174da28783be71f525df499c8b2e8986d3f99`.
+Full RFC and original backlog/log/decision/index changes inspected against current
+Account D1–D3, server/session admission, generated SDK and browser bootstrap.
+
+RP-722: authenticated-only legacy migration requires the very valid access that
+an expired v1 no longer has; the never-displayed recovery code remains stranded.
+RP-723: check-document then write permits another tab to commit between operations;
+no generation/ownership exists in the proposed v2 document. Excluding refresh
+coordination cannot exclude recovery/migration/ack writers sharing this key.
+Current boundary6876 passes three selected tests (202 deselected), establishing
+existing premises only. No player-flow implementation or acceptance is claimed.
+No edits/commits/services by reviewer, all handles terminal; whitespace passes.
+D-005's posture is already ruled; exact policy/copy and implementation remain open.
+
+## 2026-11-04 — Correct the recovery proposal before adoption (first filter)
+
+Root's own draft now proposes local pending migration before authenticated startup,
+explicit recovery with retained legacy values even after expiry, and no automatic
+bootstrap before the entry choice. Pending code survives login and failed writes.
+Acknowledgement removes legacy while pending v2 still has the code, then writes
+the acknowledged generation, so interruption cannot discard the only saved copy.
+
+Propose a single short exclusive credential-write Web Lock for ALL cooperating
+bootstrap-key/result, migration/cleanup, acknowledgement and recovery writers.
+Capture under ownership, perform network requests outside it, then reacquire,
+reread/compare generation and synchronously commit or refuse. Missing ownership
+fails visibly, no unsafe fallback or lock stealing. Proposed extra utility copy
+is explicitly unadopted. Actual expired-v1, competing-commit/bypass, queued-cancel,
+holder-close, unavailable-lock/storage and initial-bootstrap cases join acceptance.
+The renewal draft must use that document writer, while its separate refresh
+serialization/ambiguous marker contract stays unadopted and incomplete.
+
+Source/diff checked against current v1 runtime and original review; primary W3C
+Web Locks draft confirms cooperating storage-bucket scope. Existing R-011 studies
+support feasibility only and are not rerun/restamped as feature acceptance.
+No software suite just for Markdown and no new browser/coordinator code; actual
+supported-profile acceptance remains mandatory after adoption. Complete six-path
+follow-up begins afterd981a05c through this containing two drafts/index/ledger/
+plan/log commit. Review by: Codex root, drafter first filter only. Recorded by:
+Codex root. Original CHANGES REQUIRED remains; independent union review precedes
+owner policy/copy adoption, then implementation. No TTL/server change, new privacy
+policy, archival, publication or release claim.

@@ -89,7 +89,13 @@ the existing owner-ruled recover-existing-account workflow owns recovery, never
 implicit bootstrap. A later newly authenticated generation clears that marker.
 No token is duplicated into logs, events, URLs, lock names or marker fields.
 
-Candidate coordination primitive: an exclusive Web Lock plus the durable marker.
+Candidate refresh-serialization primitive: an exclusive Web Lock plus the durable marker.
+This is distinct from the short credential-document write authority proposed in
+[Account Recovery R2](account-recovery-player-flow.md#r2--one-credential-document-explicit-legacy-handling).
+All future renewal writes must participate in that generation/ownership protocol;
+its short write lock cannot be held across a network request. A complete renewal
+contract must reconcile refresh-operation ownership/marker and lock ordering with
+that shared writer before adoption. Neither draft adopts the other by reference.
 The [Web Locks specification](https://w3c.github.io/web-locks/) describes exclusion
 across cooperating contexts sharing a storage bucket; this does not prove our
 supported-browser behavior or solve ambiguous server commit by itself. Availability,
@@ -130,7 +136,7 @@ into another identity. No second history store or client-authored receipt exists
 2. Actual runtime: snapshot, intent and all three operation ports resume after
    renewal; concurrent consumers perform one rotation. Severing any port binding
    must fail its own arm while valid-token controls remain green.
-3. Two actual browser contexts share one family, receive overlapping expiry,
+3. Two actual tabs sharing one storage bucket share one family, receive overlapping expiry,
    rotate once, persist the same descendant and recover. Disable coordination to
    demonstrate consumed-token replay/family revocation is detected, not tolerated.
 4. Delayed old replies, other-account replacement, storage denial, missing lock,
@@ -208,3 +214,7 @@ explicitly unadopted. Full nine-tier 1.0 and the complete platform floor remain.
 - 2026-10-12: reconcile stale S1/S-A1 prerequisite to the existing registered,
   generated and pinned refresh operation. Current focused contract/client/drift
   checks pass; no new endpoint, SDK change, policy adoption or review approval.
+- 2026-11-04: bind future renewal document writes to the recovery draft's shared
+  short write ownership/generation proposal; distinguish that from operation-long
+  refresh serialization. Clarify the shared-storage tab population. Both remain
+  unadopted; exact renewal marker/ownership closure and actual-profile proof remain.
