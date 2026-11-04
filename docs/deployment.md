@@ -219,8 +219,10 @@ Account/Guild concurrency, backup and application-attribution corrections, into
 byte-identical 74-artifact bundles. Each has six fresh Linux/amd64 executables,
 client/content/application metadata and seven independently scanned, normalized
 image inventories. The package validator, nine rebound tampering fixtures and
-manifest-bound source/image secret scan pass locally. Independent evidence review
-of this new record is pending. Both trees are the same candidate; the earlier
+manifest-bound source/image secret scan pass locally. Independent corrective
+evidence review approves complete range `893bb1e7..40d33bb7`, including a fresh
+six-executable rebuild and executed package/tampering checks. Both trees are the
+same candidate; the earlier
 [`df84ce1a` record](../planning/deployment-foundation/release-builds/candidate-df84ce1a.json)
 remains historical evidence, not an approved predecessor. The existing source
 correctness, hosted CI, predecessor provenance and clean-host gates remain open;

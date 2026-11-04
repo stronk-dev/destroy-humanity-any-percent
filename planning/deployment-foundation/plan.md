@@ -14,8 +14,9 @@ fresh independent artifact trees `.cache/release-current-893bb1e7/bundle-a` and
 reviewed Account/Guild, backup and attribution corrections missing from df84ce1a.
 Both full builds,14 actual platform-selected image scans, six upstream/rehearsal
 config identities, intact/nine semantic-tampering probes and exact-manifest source/
-image secret scan pass locally. Complete new evidence range after893bb1e7 needs
-independent review; no full feature/hosted/native/SP8/R-006 or predecessor claim.
+image secret scan pass locally. Complete four-path893bb1e7..40d33bb7 is
+independently APPROVED after fresh six-binary rebuild and actual intact/tampering/
+registry checks; no full feature/hosted/native/SP8/R-006 or predecessor claim.
 The existing local preview label is neither publication nor a smaller1.0 objective.
 
 **Direct upstream-Compose proposal, 2026-11-04 (RP-759):** the current

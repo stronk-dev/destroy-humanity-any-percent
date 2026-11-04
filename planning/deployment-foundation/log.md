@@ -11805,3 +11805,30 @@ needs independent corrective evidence review: retained record, canonical docs,
 owning plan/log. All root handles terminal, tracked source stayed fixed until
 these evidence records. Pending adoption questions remain unanswered and must
 not be repeated or inferred accepted.
+
+## 2026-11-04 — Current candidate evidence independently approved
+
+APPROVED, scoped corrective build evidence, complete four-path
+893bb1e7f9e7dcd92abbf1b21926c5486fec21f7..
+40d33bb7332c89247250f966e8ad5d9403e2ac7f. Review by: independent Codex
+/root/current_candidate_evidence_review. Recorded by: Codex root, transcribing
+completed verdict. No material findings.
+
+Independent actual75-file/74-artifact/mode/source-epoch/archive/record checks pass.
+Fresh root-Make six-executable rebuild is byte-identical, with actual static
+Linux/amd64 ELF/build metadata. All6 upstream/rehearsal runtime configs/platforms
+corroborated. Intact package/build-record consumers and all9 actual semantic
+mutations execute: exact3/fixture_rejected; originals still compare afterward.
+Corrected attribution,54 application packages and precise secret-scan bindings
+pass. Reviewer inspects all7 pairs of distinct raw scan timestamps/counts and
+identical normalized outputs, not a fresh rerun of14scans. Append-only log and
+whitespace pass; HEAD/tree unchanged, private review artifacts removed and all
+handles terminal. Full verdict supplies no predecessor pair, rights clearance,
+current CI, native/SP8/R-006, feature/archival or release acceptance.
+
+Root updates only actual artifact/review status and the material whole-product
+artifact checkpoint. Pending native/tool/copy/metadata/accounting/Headcount
+adoptions remain questions, not blockers to all accepted work. Full nine-tier1.0
+stays active. Next reconcile newly observed hosted maintenance failure at exact
+published source, preserving incomplete measurements and original budgets;
+no source change, publication, deployment or goal pause.

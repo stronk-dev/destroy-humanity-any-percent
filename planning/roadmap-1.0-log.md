@@ -5874,3 +5874,19 @@ do not repeat these completed controls or weaken the existing criteria.
 No new tier, full feature, current hosted-CI or release gate advances. The full
 world/combat/Tier3–8/endings/rights/accessibility/preservation construction and
 nine-tier1.0 goal remain intact/active. No push, archival or live deployment.
+
+## 2026-11-04 — Reviewed current artifact includes later runtime and attribution fixes
+
+Two fresh source893bb1e7 local candidate builds match all75files/74bound artifacts,
+including approved Account/Guild, backup and application attribution corrections.
+Complete four-path893bb1e7..40d33bb7 receives independent corrective build-evidence
+APPROVAL after a fresh six-executable rebuild, registry/platform checks and intact/
+nine semantic-tampering consumers. Root14 actual image scans and exact source/image
+secret scan pass; reviewer inspects those scans. [Deployment's owning log](deployment-foundation/log.md)
+holds exact hashes, execution/provenance and local Desktop limits.
+
+This replaces stale current-artifact claims, not historical records or acceptance
+criteria. No legitimate predecessor, current CI, rights/native-supervisor/clean-
+host/R-006 or new playable-tier proof follows. All gameplay through Transcendence,
+natural pacing, privacy/accessibility/preservation and release gates remain;
+the full1.0 goal stays active. Pending owner questions are not re-asked or adopted.

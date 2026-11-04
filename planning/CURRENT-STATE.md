@@ -12,15 +12,18 @@ concrete adoption questions remain unanswered. These advance platform correctnes
 not another playable tier or supported-release claim. Whole-product classification
 below retains its audit baseline; no fresh full-product/hosted acceptance is inferred.
 
-**Exact local artifact follow-up,2026-11-04:** two independent source`df84ce1a`
-candidate rebuilds match all75 files (74 bound artifacts plus manifest). New
-[retained record](deployment-foundation/release-builds/candidate-df84ce1a.json)
-and complete evidence range`df84ce1a..593e54b4` are independently approved after
-source rebuild, actual validator/tampering and registry checks. Actual native
-journal-file collection is independently approved separately at`927b26ed`.
-The Deployment log owns commands, setup mistakes and source/platform limits.
-These are current local artifacts and file compatibility, not a legitimate
-candidate/previous pair, hosted green, host retention or clean-host acceptance.
+**Exact local artifact follow-up,2026-11-04:** two independent source`893bb1e7`
+candidate rebuilds match all75 files (74 bound artifacts plus manifest), including
+the reviewed Account/Guild, backup and attribution corrections. The new
+[retained record](deployment-foundation/release-builds/candidate-893bb1e7.json)
+and complete evidence range`893bb1e7..40d33bb7` are independently approved after
+fresh six-executable source rebuild, actual intact/nine-tampering consumers and
+registry checks. Fourteen actual image scans and exact source/image secret scan
+pass; the reviewer inspects the scans rather than rerunning them. Earlier
+candidate records remain historical. Actual native journal-file collection has
+separate approval at`927b26ed`. The Deployment log owns commands and local/platform
+limits. This is neither a legitimate candidate/previous pair nor current hosted,
+rights, native-supervisor, host-retention or clean-host acceptance.
 
 **Account archival correction,2026-11-04:** complete`2d7ebbfd..13a56c11` is
 independently approved. Real concurrent New Founder/import previously left two
@@ -29,8 +32,8 @@ observed defect while retaining archives and existing credential semantics.
 Fresh old/current SQL, lock compatibility and full Account checks support it;
 root's broader server/Guild and race passes are separately attributed in the
 [Account log](account-and-session-bootstrap/log.md). Full Account/rights/player
-workflow acceptance remains open. The retained`df84ce1a` package predates this
-runtime correction; rebuild before citing it as evidence for current behavior.
+workflow acceptance remains open. Historical`df84ce1a` predates this correction;
+the independently reviewed`893bb1e7` rebuild above now contains it.
 
 **Guild deletion corrections,2026-11-04:** admission/deletion
 `0a9b0107..a61ade8e` and sweep/deletion`0ff2f614..78d75546` receive separate complete
@@ -39,8 +42,8 @@ trigger failures and the post-sweep `guild missing` rollback. Corrected cold
 Postgres/race suites pass both orders, exact refusals and preserved history; the
 actual composed Guild/HTTP/socket deletion check also passes. The [Guild log](archive/guild-model/log.md)
 distinguishes independent executions from inspected root checks and records cleanup.
-Current kernel is0.3.225, epoch8 unchanged. The retained`df84ce1a` candidate also
-predates these runtime corrections. No new playable tier or whole-feature/release
+Current kernel is0.3.225, epoch8 unchanged. The new`893bb1e7` candidate contains
+these runtime corrections; historical`df84ce1a` does not. No new playable tier or whole-feature/release
 acceptance follows; the27 Clout failures and historical version guard remain open.
 
 **Combined interruption prototype,2026-11-04:** complete research/tool/draft union
