@@ -8954,3 +8954,34 @@ new runtime mechanism or authorize implementation. Full combined fence, native
 supported-host proof, specification adoption, original Deployment acceptance and
 R-006/release gates remain OPEN. No live host/deployment, publication, archival,
 false status promotion or goal pause. The nine-tier1.0 objective stays active.
+
+## 2026-11-04 — Mutation-map original review: CHANGES REQUIRED; source repair
+
+Review by: independent Codex `/root/transition_mutation_map_technical_review`.
+Recorded by: Codex root, transcribing the returned verdict/findings.
+Reviewed range: `a0dc53bcc25e16860d5017f7af28be4842afd0d9..12aa01aeee362dfe1c542a50823ad5a720a082d0` (all5paths).
+Verdict: **CHANGES REQUIRED** for two completeness omissions, no runtime incident claim:
+
+1. `cmd/deployment-release/main.go`'s OUTER runRelease publishes the outcome metric
+   after Controller.Release returns, OUTSIDE its operator-lock lifetime. If an
+   operation acquires the lock it is already closed; early validation/admission
+   failures may never acquire it. runInstall also writes there; runRollback does
+   not have the corresponding wrapper write. Runtime/ledger completion therefore
+   does not cover every whole-helper host writer.
+2. Start launches backup schedule, whose round calls RemoveStaleTemporaries and
+   ApplyRetention, deleting eligible files. Creation/metrics alone omit a possible
+   writer class affecting backup/checkpoint material. No actual late deletion is
+   asserted; RP-505's separate metadata issue is not resolved or duplicated.
+
+Reviewer independently extracts Controller sequences, checks root/nested source
+and all8 original local links, reads fresh upstream2.39.4 source, confirms ID/name
+distinctions, and checks source/runtime diff is empty. No software suite, services,
+secret/receiver access or tracked reviewer edits for prose; all handles terminal,
+no scratch/resources remain. Other original root rows/source claims match.
+
+Correct map/draft/plan/ledger to explicitly cover both omitted effects and preserve
+this original negative verdict. This is source-only reconciliation, not a runtime
+fix or evidence either race actually occurred. The corrective exact range through
+the containing commit needs coherent union re-review. No source/test/CI/kernel/
+artifact changes or repeated runtime studies; full mechanism/adoption/release and
+the nine-tier1.0 goal remain open/active.

@@ -18,6 +18,14 @@ VerifyRestoreInputs → StopFailed → ResetDatabase → Restore → Start → V
 → AuthenticatedSmoke → append terminal ledger. All occur under the operator lock;
 that lock does not supervise Docker jobs or database backends.
 
+The OUTER [`runRelease`](../../server/cmd/deployment-release/main.go) then records
+the release outcome metric AFTER Controller.Release returns. This is outside the
+Controller's operator-lock lifetime: an acquired lock has already been closed,
+and early validation/lock-admission errors may never acquire it. `runInstall` has
+the same wrapper write; `runRollback` currently returns Controller.Rollback
+directly, with no analogous wrapper metric. A whole-helper fence must include
+this post-controller host writer, even after a terminal ledger record exists.
+
 ## Runtime boundaries
 
 The entries below are **direct source observations**, not new runtime executions.
@@ -39,6 +47,7 @@ process and fixed `cloud-clicker` project selection.
 | ResetDatabase | Removes the fixed named volume `cloud-clicker_postgres_data`, then Compose starts Postgres | Volume-name reuse and database initialization are explicit boundaries. A retired network ID neither identifies the volume generation nor terminates an already-admitted DB backend. |
 | Restore | Compose backup restore; private decrypted dump; clean-target checks; pg_restore writes; post-restore migration check; operations textfile update | Bind job, backend, target DB/storage generation and host writer. RP-726 proves client removal alone is insufficient. Cancellation is not rollback of earlier committed DDL. |
 | Success/failure ledger append | Local Go writes/fsyncs terminal JSON line; the helper also owns the operator lock | Durable event ordering belongs to CR3. A dead helper/unlocked file is not a completion record; torn/unsynced writes cannot mint recovery authority. |
+| Outer runRelease outcome publication | CLI calls operations.RecordOperation after Controller returns, outside its operator-lock lifetime | Include this host writer in local-helper termination/ordering. Controller completion, ledger completion or a newly acquired operator lock alone does not account for this write. No actual late overwrite is asserted. |
 
 ## Nested helper and persistent-resource boundaries
 
@@ -55,6 +64,14 @@ records backup/restore success or failure through
 file is renamed over the final metric file. Include that host writer even when
 the failed operation never reaches a successful SQL result. This audit does not
 claim that an actual old job overwrote a newer metric.
+
+Start also launches backup's long-running `schedule` command. Its
+`scheduleRound.run` calls RemoveStaleTemporaries and ApplyRetention: it DELETES
+eligible temporary and backup files, as well as creating a backup and publishing
+metrics. Include those deletion lifetimes/paths so a candidate cannot protect
+only new output while leaving checkpoint material exposed. No late retention
+deletion is demonstrated here; RP-505's independent protection-metadata issue
+and its pending adopted remedy remain separate.
 
 The release [`Compose template`](../../deployment/compose.template.yml) has FOUR
 networks: edge/application/database/operations. The database is not the sole

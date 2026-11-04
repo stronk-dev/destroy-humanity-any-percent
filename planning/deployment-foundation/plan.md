@@ -61,14 +61,18 @@ original wording and review finding rather than backdating a different instrumen
 existing release/rollback controllers, its nested SQL/HTTP/host effects and
 explicitly excluded install/rehearsal/rotation entry points at sourcea0dc53bc.
 Drain and authenticated smoke create accounts; backup/restore update host metrics;
+the outer release CLI also publishes outcome metrics outside Controller's lock
+lifetime, and Start's scheduled backup deletes eligible temporary/backup files;
 the production topology has four networks and five persistent volume families.
 Upstream Compose stop/remove submits selected IDs, while creation/volume names
 need different treatment. These are source findings, not queued-request/runtime
 proofs. Do not repeat the completed root-call inventory or independent network/
 backend positives. Next construct and prove ONE combined mechanism across the
 whole map, with explicit refusal for unknown ownership or surviving mutation.
-No deployment/runtime policy is adopted; independent technical review is pending
-for this research/draft reconciliation. Full CR4/R-006 and owner adoption remain.
+Original5-patha0dc53bc..12aa01ae is CHANGES REQUIRED for those two completeness
+omissions, now explicitly reconciled in map/draft/plan. Independent corrected-union
+review remains pending. No actual late overwrite/deletion or runtime-policy
+adoption is inferred; full CR4/R-006 and owner adoption remain.
 
 **Fresh exact candidate, 2026-11-04:** replace neither historical artifacts nor
 the predecessor with a fabricated pair. Two independent committed-source

@@ -257,7 +257,11 @@ remains open; do not substitute network removal for the required proof.
 The source-bound [mutation map](../planning/deployment-foundation/interrupted-transition-mutation-map.md)
 now enumerates the existing Controller release/rollback paths. It explicitly
 includes mutating HTTP bootstrap in drain/smoke, four configured networks, named
-volumes, startup migrations/jobs, and backup/operations host writers. A combined
+volumes, startup migrations/jobs, backup/operations host writers and scheduled
+temporary/backup DELETION. It also includes runRelease's outer outcome metric,
+published after Controller returns and outside its operator-lock lifetime;
+runRollback has no corresponding wrapper write. A terminal Controller ledger row
+therefore cannot by itself prove the whole helper finished publishing. A combined
 candidate must supply a lifetime or isolation argument for every in-scope row;
 SQL-session termination plus one retired network is not whole-operation proof.
 The map distinguishes upstream Compose's ID-addressed stop/remove calls from
@@ -343,8 +347,9 @@ questions remain; the author must reconcile their results into CR2/CR4 before ac
   Persisting a generation label or full network ID alone is not this mapping.
   The source inventory is now retained in the mutation map; the unresolved task
   is the COMBINED mechanism and its execution, not another inventory of the same
-  root calls. Include admitted mutating application HTTP and every helper's host
-  writer. Separately name any excluded install/rehearsal/rotation path rather than
+  root calls. Include admitted mutating application HTTP, post-controller CLI
+  metrics, every helper's host writer and scheduled deletion of retained material.
+  Separately name any excluded install/rehearsal/rotation path rather than
   silently extending an ordinary release/rollback proof to it.
 
 Docker documentation/source inspection is partial support for those instruments, not a runtime
