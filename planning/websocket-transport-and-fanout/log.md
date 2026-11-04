@@ -1212,3 +1212,36 @@ through the containing commit needs fresh independent corrective review. Origina
 Account/Transport acceptance, current hosted CI, clean-host/release and full
 nine-tier1.0 remain open/active; no publication, archival, owner adoption or pause.
 Review by: Codex root (implementer first filter). Recorded by: Codex root.
+
+## 2026-11-04 — RP-768 independently approved
+
+APPROVED, no findings requiring changes, complete seven-path range
+7505c5bfc9738c96633bb0c6c8b9b01030bc92e9..
+c32f69029f281481b486b0226a2c0d762bca31cb.
+Review by: fresh independent Codex /root/socket_expiry_corrective_review.
+Recorded by: Codex root, transcribing its completed verdict.
+
+Fresh independent race/uncached native old31.16s FAIL→corrected29.01s PASS;
+Linux-amd64 actual Postgres/socket old33.11s FAIL→corrected30.38s PASS. Both old
+failures lack4001; overlays use independently extracted7505c5bf bytes, never
+main mutations. Normal scheduler/no-early-expiry, lock retained through actual
+SQL cancellation/4001, unchanged revocation and fresh connect are verified.
+All3 native shutdown cases, both actual blocked-authentication/connect drains,
+actual family revocation, affected3-package vet/format/diff pass independently.
+Reviewer inspects and explicitly reuses root's full native/permitted-rerun and
+654PASS/0FAIL/one opt-in skip SQL evidence with matching digest, not a second
+whole-suite execution. Initial reviewer Make selector matched zero tests and
+initial Docker sandbox denied execution; corrected named/permitted runs supply
+all claimed evidence. Logs .cache/socket-expiry-independent-{native-old,sql-old,
+native-current,sql-current,native-controls,sql-drain-controls,sql-revocation}.log.
+All reviewer handles terminal and reviewed HEAD/tree stayed fixed/clean.
+
+This closes only RP-768 and its corrective review. Root reconciles status only;
+no software rerun for these editorial records. RP-767 stays OPEN/unapplied;
+9768d681's retained artifact predates this correction, so no artifact coverage
+is inferred. Full Account/Transport, hosted CI, clean-host/release/archival and
+nine-tier1.0 remain open/active. No push, adoption, deployment or goal pause.
+
+Cleanup verified: root-owned tmpfs Postgres7fd12c59177a removed only after all
+review handles terminate. Container inventory contains only the two pre-existing
+BuildKit services; no test process or game service remains.
