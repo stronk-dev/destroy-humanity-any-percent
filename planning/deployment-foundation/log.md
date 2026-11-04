@@ -9498,3 +9498,48 @@ then implement actual helper/runtime paths after the applicable acceptance/
 adoption gates. Non-bypassable admission, useful successful recovery/native
 execution and whole1.0 remain open. No owner authority, OS prerequisite, service,
 runtime behavior, publication, deployment, archival or goal pause is inferred.
+
+## 2026-11-04 — Specify operation evidence envelopes and phase reduction
+
+Afterb74d02a7, split the concrete record contract from the still-unselected native
+producer/profile. New draft `rfc/deployment-operation-evidence.md` defines closed
+canonical private objects for supervisor binding, phase work logs, terminal receipt
+envelope, predecessor/completion closures and initial-install handoff. Parent CR3
+adds required immutable supervision_sha256; index and owning next action link the
+proposal. No production decoder, generated schema or tracking validator is added.
+
+The format fixes ordinary byte/hash/UUID/counter/date rules without changing v1
+journal bytes. Native plans/subjects/evidence remain EXACT OP9 prerequisite types,
+not free-form extensible claims; unknown producers refuse and a universally
+refusing reader is explicitly not useful acceptance. Trust is the approved local
+operator/supervisor plus independently executed native conformance, not a new
+signature or an assertion that offline bytes replay historical socket EOF.
+
+Rollback fencing and execution use separately sealed phase streams: the first
+authorizes recovery_fenced, the second opens only afterward. Old outstanding
+items remain in their original open logs; newly admitted cleanup has its own
+Started authority. Work children are reserved before effects, native identity
+binds once, terminal delivery differs from actual actor/stream closure, and
+retained runtime services have explicit verified ownership rather than being
+pretended dead or relabelled temporary publishers. Exact prefix/hash boundaries
+exclude referring events; no self-hash or stale-proof reuse. Initial handoff
+covers EVERY supervised v1 install attempt through successful install, preserves
+original rows, and does not erase an unfinished installer from empty history.
+
+OP9 still needs complete native profile/plan/subject/receipt schemas, supervisor
+bootstrap and daemon/scope authority, non-bypassable Engine/SQL/HTTP admission,
+permissions, live lock-owner attachment/sealed handoff and all actual producers.
+Selecting new services/prerequisites requires explicit reconciliation/adoption;
+this record proposal selects none. Actual helper/native successful and refusal
+paths plus clean-host/RPO/RTO remain gates; the approved toy gateway is not an
+OP2/OP6 producer. No retrospective certificate or v1 grandfathering is permitted.
+
+Root reads the complete proposal/parent diff and traces ordinary admission,
+checkpointed recovery's phase split, initial handoff, typed refusal/unknown work,
+child bindings, closed logs and retained-service ownership. Whitespace/path/ref
+checks pass. Prose-only normative proposal: no software suite/mirror validator
+or unchanged pg_dump experiment for a document. Review by: Codex root,
+proposal author/first filter. Recorded by: Codex root. Complete afterb74d02a7
+six-path proposal needs independent technical review; OP9/profile and owner
+adoption remain, not product implementation. RP-745 records the prerequisite.
+No code/CI/kernel/copy/policy change, push, deployment, archival or goal pause.

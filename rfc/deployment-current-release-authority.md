@@ -181,6 +181,7 @@ and unintended nulls. Fields nullable below must still be present.
 | `recovery_of` | null for release; the immediate governing predecessor's operation UUID for rollback/retry, under CR4's ancestry rules |
 | `predecessor_fence_sha256` | CR6 proof hash; non-null on ordinary release Started and repeated thereafter; rollback null at Started, non-null from recovery_fenced onward |
 | `completion_proof_sha256` | CR6 whole-operation closure proof hash at Finished when closure is established; null on earlier events and permitted uncertain post-checkpoint failures/interrupted-rollback administrative finishes |
+| `supervision_sha256` | required non-null hash of the exact operation's Supervisor object under the proposed Operation Evidence contract; immutable across its events |
 
 The first v2 row follows the latest v1 completion strictly. Validate the complete prefix before
 effects; all subsequent rows OF THAT OPERATION keep operation/server/operator/source/target identical. Permit only
@@ -449,6 +450,12 @@ validator as implementation. The existing prototype artifacts are research,
 never these new proof types. No new resident service, native-unit prerequisite
 or privilege is adopted by naming the supervisor. Selecting such packaging must
 reconcile this draft's no-service promise and the parent's host floor explicitly.
+The proposed [Operation Evidence](deployment-operation-evidence.md) specifies
+the descriptor, phase logs, receipt envelope, closure and install-handoff shapes.
+Its OP9 native plan/subject/receipt producers and profile are STILL required;
+the proposed shapes are neither accepted authority nor a completed supervisor.
+Rollback fencing and subsequent execution use separate sealed phase logs, so
+its predecessor proof does not prematurely seal the execution it authorizes.
 
 If the supervisor/gateway or request authority is lost before a valid seal,
 missing processes/sockets or an unlocked file do NOT reconstruct it. Refuse

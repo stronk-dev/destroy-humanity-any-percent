@@ -7,6 +7,20 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Operation evidence proposal,2026-11-04:** new draft
+`rfc/deployment-operation-evidence.md` specifies canonical private hash-bound
+Supervisor, phase work-log, receipt-envelope, predecessor/completion and
+initial-install handoff records. Rollback fencing and execution have separate
+sealed logs, preventing a fence from closing the restoration it authorizes.
+Explicit ancestry/prefix/child/retained-runtime/attempt coverage and producer
+trust are required, not counts or experimental booleans. Parent CR3 gains the
+immutable descriptor reference; no production/schema generator is implemented.
+Whole proposal needs independent technical review. OP9 still requires exact native
+plan/subject/receipt producers, profile/permissions, bootstrap, non-bypassable
+admission and successful/refusal runtime/native proof before adoption/building.
+Next specify/prove OP9 against the complete mutation map, not another raw
+pg_dump repeat, invented certificate or standalone tracking validator.
+
 **Recovery-contract review,2026-11-04:** independent review at c5419034 finds
 RP-741–744: universal healthy-current admission conflicts with partial-source
 rollback; Finished lacks whole-helper closure; cleanup has no lawful pre-fence
