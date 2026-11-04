@@ -2378,3 +2378,48 @@ no tracked reviewer edits. No historical exact-revision execution, native macOS
 Firefox, actual AT, default-server continuity, SQL, performance or whole-CI claim.
 These corrective reviews close, not original Pitch/Recovery CHANGES REQUIRED,
 50a3a514 history, GS7/owner copy, full feature/archival/release or publication gates.
+
+## 2026-11-04 — Detached and watchdog Recovery terminal corrections approved
+
+Review by: fresh independent Codex `/root/recovery_terminal_corrective_review`.
+Recorded by: Codex root. APPROVED, no findings, both complete original ranges
+(base exclusive, tip inclusive), including all tests/docs/records:
+
+- RP-452, all five paths:
+  `0e4658150e95927ce9fbc1dda5c1e4883eeff00a..43afbbd122974915d632d1ec8cbdcd278983f0c9`.
+- RP-464/465, all thirteen paths:
+  `d5b409960c92c9b045dfe3a29288a2ec40f3e1f7..d0fc603a62a73083d64ac286bf26b3a1612a4f24`.
+
+Detached Finish/Stop replies leave the departed host alone. Existing watchdog
+receipt becomes one terminal transition, not progress or duplicate notification.
+Compatibility permits the bounded disjoint response widening. Original generated
+OpenAPI comparison confirms ONLY progress union changed and its first arm equals
+old progress schema. Receipt bytes/cadence/rewards/deadlines/pin remain unchanged.
+
+Fresh atcf1e53d9: Linux88959 terminal0,117 mounted passes/39 each Chromium,
+Firefox and WebKit,12.34s; detached/mounted Finish/Stop, generated-port watchdog
+and both Stop/heartbeat reply orders execute. Node31073 passes253/three actual
+files; mistakenly named scheduler file selects none. Actual soul-recovery-scheduler
+34201 adds five passes:258/four actual files total. Cold publicapi/account36045/vet,
+types69374 zero errors/warnings, build65583/217 modules, api-check42038 and both
+range whitespace checks pass. Initial restricted browser refusal ran zero tests.
+
+Real declared Linux-amd64/Postgres91702 terminal0: BOTH literal/purchased-generator
+scaling variants execute, no skips. Watchdog heartbeat terminal preserves Soul;
+Cancel replays byte-identical committed receipt. Parent65.53s, branches26.22/39.31s,
+package66.117s; all thirty malformed controls run per branch. Exact-old comparison
+function overlay12408 fails three positive union embeddings, seven refusal controls
+pass; old Account schema overlay27766 rejects genuine watchdog terminal. Main is
+never replaced. Private overlays retained `/private/tmp/cloud-clicker-recovery-review.kz3hu87w`.
+
+Original61951 native unmount failures are source/assertion-checked historical
+evidence, NOT reexecuted; its initial expected-copy errors remain disclosed.
+Full composeddf531b9b/86769 is REUSED from independent GarageNov3 verdict;
+app/server/main driver/Make/Compose diff remains empty through Markdown-only
+e853255b. Later native-control/focus/scheduler-ownership fixes retain separate
+approvals. All handles terminal; own disposable Postgres30c05436d11b and confirmed-
+empty networkb407c60b removed, two pre-existing BuildKit containers preserved.
+No tracked reviewer edits/commits. Corrective reviews close, not natural24-hour
+expiry/full five-minute completion/AT/original feature/API acceptance, pending
+amendments, hosted/full CI, clean-host proof, archival or release. Next RP-459's
+remaining restart/test-isolation review; no full-suite repeat for editorial records.

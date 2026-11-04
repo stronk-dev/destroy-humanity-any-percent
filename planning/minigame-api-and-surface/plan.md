@@ -1,5 +1,15 @@
 # Minigame API & Surface implementation plan
 
+**Recovery terminal review,2026-11-04:** complete five-path
+`0e465815..43afbbd1` (RP-452) and thirteen-path `d5b40996..d0fc603a`
+(RP-464/465) are independently approved. Fresh three-engine mounted controls,
+generated ports, real Linux-amd64/Postgres lifecycle in both scaling variants,
+old-schema/comparison overlays and affected gates pass/discriminate. The log
+separates current checks from reused historical/composed evidence and later
+corrections. No expiry/reward/retry policy, original-feature acceptance or adoption.
+Next inspect the remaining restart/test-isolation range RP-459; do not repeat
+these completed checks without a changed boundary or new failure.
+
 **Transaction corrective review, 2026-11-01:** fresh independent Codex approves
 complete `b0eab61f..4055b4fe` (RP-416 token-owned failed-terminal claim release)
 and `13acd872..ef10238f` (RP-444 existing activity/bootstrap request admission).

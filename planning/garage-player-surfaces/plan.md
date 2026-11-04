@@ -25,8 +25,9 @@ or expand an uninformative diagnosis into another research campaign.
    API's five amendments still require adoption/new-descriptor/full workflow gates.
 3. Reputation pending-Exit test correction RP-397 is independently approved;
    its owning log records current three-engine checks and separate R9 author holds.
-   Continue the Recovery detached-terminal/watchdog corrective review in its
-   owning lane; no new expiry, retry, reward or feature-acceptance contract.
+   Recovery detached-terminal/watchdog RP-452/464/465 now has complete independent
+   corrective approval too. Continue RP-459's remaining restart/test-isolation
+   review in that owning lane; no new expiry/retry/reward/acceptance contract.
 4. Keep RP-348/RP-351 causes open. R-013's report is reviewed, but the temporary
    profile is now absent and cannot be independently revalidated. No stall repair
    or cache/compiler/hosted-causality claim follows.
