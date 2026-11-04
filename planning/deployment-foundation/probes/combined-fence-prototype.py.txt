@@ -41,6 +41,18 @@ def write_json(path, value):
     temporary.replace(path)
 
 
+def volume_present(observation, name, project):
+    # Only the actual Engine's typed404 means absence. Permission, transport,
+    # malformed response and wrong ownership must invalidate the observation.
+    if type(observation.get("status")) is not int:
+        raise RuntimeError("invalid volume response: INVALID")
+    if observation == {"status": 404}:
+        return False
+    if observation == {"status": 200, "name": name, "project": project}:
+        return True
+    raise RuntimeError("volume observation failed or wrong owner: INVALID")
+
+
 def actor():
     role = sys.argv[1]
     gates = pathlib.Path("/gates")
@@ -120,6 +132,26 @@ def actor():
             def log_message(self, *args):
                 pass
 
+            def do_GET(self):
+                if self.path not in config["volume_reads"]:
+                    self.send_error(403)
+                    return
+                connection = UnixConnection("daemon", timeout=10)
+                connection.request("GET", self.path)
+                response = connection.getresponse()
+                data = response.read(1_048_577)
+                if len(data) > 1_048_576:
+                    raise RuntimeError("volume response exceeded bound: INVALID")
+                observation = {"status": response.status}
+                if response.status == 200:
+                    value = json.loads(data)
+                    observation.update(name=value.get("Name"),
+                                       project=value.get("Labels", {}).get("com.docker.compose.project"))
+                connection.close()
+                self.send_response(200)
+                self.end_headers()
+                self.wfile.write(json.dumps(observation).encode())
+
             def forward(self):
                 matches = [(name, item) for name, item in config["requests"].items()
                            if item["method"] == self.command and item["path"] == self.path]
@@ -168,6 +200,7 @@ def actor():
         server = http.server.ThreadingHTTPServer(("0.0.0.0", 8080), Handler)
         (gates / "proxy-started").write_text("started")
         server.serve_forever()
+    raise ValueError("unknown actor role")
 
 
 def population(arm):
@@ -295,7 +328,9 @@ def population(arm):
             "start": {"method": "POST", "path": "/v1.51/containers/" + pending + "/start", "body": ""},
             "volume": {"method": "DELETE", "path": "/v1.51/volumes/" + old_volume, "body": ""}}
         config = work / "config.json"
-        config.write_text(json.dumps(dict(project=project, requests=requests)))
+        config.write_text(json.dumps(dict(project=project, requests=requests,
+                                         volume_reads=["/v1.51/volumes/" + old_volume,
+                                                       "/v1.51/volumes/" + project + "-new-volume"])))
         actor_mounts = [(pathlib.Path(__file__).resolve(), "/probe.py", "ro"), (config, "/config.json", "ro"), (gates, "/gates", "rw"), (old_out, "/out", "rw")]
         proxy = create("proxy", PYTHON, control_network, ["python3", "/probe.py", "proxy"], actor_mounts + [("/var/run/docker.sock", "/engine.sock", "ro")], ["proxy"])
         application = create("application", PYTHON, old_network, ["python3", "/probe.py", "http", "old"], actor_mounts, ["application"])
@@ -386,10 +421,11 @@ def population(arm):
             assert text("wait", writer) == "0"
             assert text("wait", pending) == "0"
         rows = [int(row) for row in sql("SELECT id FROM public.prototype_data ORDER BY id", "live").splitlines()]
-        volume_inspection = run("volume", "inspect", new_volume, "--format", '{{index .Labels "com.docker.compose.project"}}', expected=False)
+        volume_url = "http://127.0.0.1:8080/v1.51/volumes/" + new_volume
+        volume_observation = json.loads(text("exec", proxy, "python3", "-c",
+                                            "import json,urllib.request;print(urllib.request.urlopen(" + repr(volume_url) + ").read().decode())"))
         sentinel = None
-        if volume_inspection.returncode == 0:
-            assert volume_inspection.stdout.strip() == project
+        if volume_present(volume_observation, new_volume, project):
             sentinel = text("run", "--rm", "--network", "none", "--label", "com.docker.compose.project=" + project,
                             "--mount", "type=volume,src=" + new_volume + ",dst=/v,readonly", "--entrypoint", "python3", PYTHON,
                             "-c", "from pathlib import Path;print(Path('/v/sentinel').read_text())")
@@ -397,7 +433,8 @@ def population(arm):
                      checkpoint=(current_out / "checkpoint").read_text() if (current_out / "checkpoint").exists() else None,
                      http_marker=(current_out / "http-marker").read_text(), volume_sentinel=sentinel)
         held = state == dict(rows=[42], metric="new", checkpoint="checkpoint-current", http_marker="new", volume_sentinel="new-volume")
-        result.update(forwarded=forwarded, forced_late_start_code=late_start.returncode,
+        result.update(forwarded=forwarded, volume_observation=volume_observation,
+                      forced_late_start_code=late_start.returncode,
                       forced_late_start_error=late_start.stderr.strip(), replacement_database=database,
                       replacement_network=new_network, replacement_volume=new_volume,
                       state=state, candidate_held=held,

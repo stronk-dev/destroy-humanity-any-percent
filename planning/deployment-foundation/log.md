@@ -9079,3 +9079,48 @@ after59ea5552 through the containing commit plus the forthcoming correction need
 fresh independent research/tool/technical review. Full CR4/native-host/R-006,
 original Deployment/whole1.0 acceptance and owner adoption remain open; no push,
 archival, host deployment or goal pause.
+
+## 2026-11-04 — RP-735 typed-volume correction and final combined execution
+
+Preserve original7-path59ea5552..98af4c8d and source-bound v1 unchanged. Its actual-
+AST permission controlf4e689 becomes None without raising, confirming RP-735's
+error/absence conflation. The corrected proxy exposes only two allowlisted READ-
+ONLY volume paths in addition to the predeclared exact owned mutation requests.
+It returns the actual Engine HTTP status and only name/project metadata for200;
+the driver accepts exact404 as absence, exact owned200 as present, and rejects
+ordinary failures, malformed shape or ownership mismatch. No whole environment,
+mount path or secret response is emitted. Unknown actor roles also fail loudly.
+
+Actual-source327ed4 controls: owned200/typed404 accepted; seven403/500/missing/
+wrong-name/wrong-owner/extra-error/string-status cases refuse. No deadline,
+population, hypothesis or replacement-state criterion is changed. Initial source
+patch is caught by direct inspection before execution because its new handler
+landed in the wrong local class; it is immediately moved to the proxy before any
+Docker population runs. No invalid run or correction evidence is invented for
+that unexecuted edit.
+
+Final70426 exits0 on ALL three populations, with same exact row/file/HTTP/volume
+outcomes as19985. Actual volume responses are404/404/owned200, now retained in
+`combined-fence-observation.v2.json`, binding source SHA256
+ee9d482ca10c0a351295e4570686c2900b3d875b37df47f341b428822e8be2a6.
+Both weak controls mutate replacement state; generation population retains42,
+new metric/checkpoint/HTTP marker/volume sentinel. Late create201 and old-volume
+delete204 STILL occur, so literal quiescence is not proved. Extra forced late
+start fails with the retired-ID error only in the generation population, under
+the candidate's stated stronger adversarial framing. Originalv1 remains historical.
+
+ed2d2c independently checks v1 against exact98af4c8d source and v2 against current
+source, ordered complete three-population denominators/objective flags, and
+identical actual run/wait/outer-error AST. Priorb5c23c guard controls therefore
+apply unchanged; no repeated unrelated suite. All9 final-project container/
+network/volume checks are empty, as the initial9 checks were. All execution
+handles terminal; no retained task cache/build image/shared resource changes.
+
+The complete original7-path range plus correction through this containing
+commit requires fresh independent tool/research/technical-draft review. RP-735
+is corrected, not independently closed yet; RP-734's controlled isolation result
+does not authorize a real protocol, pre-backup teardown, new shipping supervisor,
+protected-backup metadata change or production implementation. Concrete production
+bindings in the candidate table, native supported-host/actual helper/backup/pair
+and R-006/adoption/full1.0 gates remain OPEN. No push, archival, deployment,
+authored-copy change or goal pause.

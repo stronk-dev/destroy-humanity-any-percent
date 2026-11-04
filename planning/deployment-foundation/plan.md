@@ -108,8 +108,14 @@ old-volume delete204 still occur after admission even in the good population:
 this is isolation, NOT literal daemon quiescence. `combined-fence-candidate.md`
 now names the concrete remaining production/durable bindings and the incompatible
 pre-backup destructive branch. Full real-helper/native-host/adoption/compatibility
-remain OPEN. Actual-source guard/classifier controls and artifact binding checks
-are required; independent tool/research/technical-draft review remains pending.
+remain OPEN. Root actual-AST control finds RP-735: ordinary volume-inspect failure
+could be recorded as absence. Original source/v1 observation is preserved98af4c8d.
+Correction uses typed actual Engine404, checks owned200 and rejects other replies.
+Seven failure/shape/ownership controls refuse; full corrected70426 reproduces all
+three outcomes and retains404/404/owned200. Final v2 hash binds exact corrected
+source. Original guard/error AST is unchanged and its previous controls apply;
+all6 project container/network/volume inventories are independently empty after
+both runs. Independent complete original-plus-correction review remains pending.
 
 **Fresh exact candidate, 2026-11-04:** replace neither historical artifacts nor
 the predecessor with a fabricated pair. Two independent committed-source

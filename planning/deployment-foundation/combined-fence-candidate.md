@@ -1,8 +1,13 @@
 # Combined interruption candidate: contained clients and resource generations
 
 2026-11-04. Research for draft CR4; **not an adopted or implemented release
-protocol**. The source-bound [three-population observation](combined-fence-observation.v1.json)
+protocol**. The source-bound [three-population observation](combined-fence-observation.v2.json)
 comes from the [manual prototype](probes/combined-fence-prototype.py.txt).
+The [original observation](combined-fence-observation.v1.json) is historical and
+bound to source98af4c8d. Its volume-inspection branch could conflate ordinary CLI
+failure with absence (RP-735). The corrected source accepts only actual Engine404
+as absence, validates200 ownership, rejects other failures and retains typed
+responses. Final full execution reproduces the same three outcomes below.
 
 ## Candidate and actual experiment
 

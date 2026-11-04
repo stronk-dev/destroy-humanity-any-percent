@@ -1,0 +1,160 @@
+{
+  "objective_completed": true,
+  "guard_exhausted": false,
+  "probe_source_sha256": "sha256:ee9d482ca10c0a351295e4570686c2900b3d875b37df47f341b428822e8be2a6",
+  "python_fixture_config": "sha256:d2924abe506373b6f722045c48f98350077cc5b56a50491105c1abb027dce9b2",
+  "postgres_fixture_config": "sha256:75f5a96988cdf694a215073c3e9c001b706b371e2f94df3967f2efdec2787f6b",
+  "observations": [
+    {
+      "arm": "parent_only",
+      "project": "cc-combined-fence-5e812fb10853e470",
+      "old_network": "17843c83446c13740775589273fef162ebf7cfea9d3902f8ff8fbdf6d8cb12a6",
+      "pending_container": "74190357c65e31bcddf63f27ad48429794fd75d4f16ecf5e2078e48a42920d19",
+      "helper_pid": 7,
+      "forwarded": {
+        "create": {
+          "admission_seen": true,
+          "status": 201,
+          "body": "{\"Id\":\"2e0a013f90084a5d7c4caf27ebb0c8b47a24d36e6d666d3a8dacc3c664e8cd64\",\"Warnings\":[\"The requested image's platform (linux/amd64) does not match the detected host platform (linux/arm64/v8) and no specific platform was requested\"]}\n"
+        },
+        "start": {
+          "admission_seen": true,
+          "status": 204,
+          "body": ""
+        },
+        "volume": {
+          "admission_seen": true,
+          "status": 204,
+          "body": ""
+        }
+      },
+      "volume_observation": {
+        "status": 404
+      },
+      "forced_late_start_code": 0,
+      "forced_late_start_error": "",
+      "replacement_database": "f49bd3952f4d94006557f40f0d8fb6cb2e38857ffbb823209fb1c1b6c943f0f1",
+      "replacement_network": "17843c83446c13740775589273fef162ebf7cfea9d3902f8ff8fbdf6d8cb12a6",
+      "replacement_volume": "cc-combined-fence-5e812fb10853e470-old-volume",
+      "state": {
+        "rows": [
+          7,
+          13,
+          14,
+          42
+        ],
+        "metric": "old",
+        "checkpoint": null,
+        "http_marker": "old",
+        "volume_sentinel": null
+      },
+      "candidate_held": false,
+      "local_descendant_wrote": true,
+      "known_daemon_writer_wrote": true,
+      "old_http_writer_wrote": true,
+      "objective_completed": true,
+      "guard_exhausted": false
+    },
+    {
+      "arm": "reused_names",
+      "project": "cc-combined-fence-9f7dfb18fdbb4632",
+      "old_network": "14c81a5ac83aa54b9224f15c87fdbe98b50be6cb2323f5cc161cedb6c966d124",
+      "pending_container": "2aa231aa4ca56b60ab0c34bf29fd43260bd46a286eb14449077580ac60bf552c",
+      "helper_pid": 6,
+      "old_lock_client_exit": 137,
+      "forwarded": {
+        "create": {
+          "admission_seen": true,
+          "status": 201,
+          "body": "{\"Id\":\"ecce62e91038d55977d81be8281b09024a7493b62b5b5b447632be50bc6b74fe\",\"Warnings\":[\"The requested image's platform (linux/amd64) does not match the detected host platform (linux/arm64/v8) and no specific platform was requested\"]}\n"
+        },
+        "start": {
+          "admission_seen": true,
+          "status": 404,
+          "body": "{\"message\":\"No such container: 2aa231aa4ca56b60ab0c34bf29fd43260bd46a286eb14449077580ac60bf552c\"}\n"
+        },
+        "volume": {
+          "admission_seen": true,
+          "status": 204,
+          "body": ""
+        }
+      },
+      "volume_observation": {
+        "status": 404
+      },
+      "forced_late_start_code": 0,
+      "forced_late_start_error": "",
+      "replacement_database": "2ddef1277fe9202c063fbcc93301022bd60c989e438ff32f2477f6bca690a1cc",
+      "replacement_network": "fd4b75e9edb49d9ab4d5375db055dfbeb9a05bc3075e5dcd613ce52da91cae39",
+      "replacement_volume": "cc-combined-fence-9f7dfb18fdbb4632-old-volume",
+      "state": {
+        "rows": [
+          14,
+          42
+        ],
+        "metric": "old",
+        "checkpoint": null,
+        "http_marker": "new",
+        "volume_sentinel": null
+      },
+      "candidate_held": false,
+      "local_descendant_wrote": false,
+      "known_daemon_writer_wrote": false,
+      "old_http_writer_wrote": false,
+      "objective_completed": true,
+      "guard_exhausted": false
+    },
+    {
+      "arm": "generations",
+      "project": "cc-combined-fence-b7afa7596034d97a",
+      "old_network": "c0688c0b6102a5f5ed983dfc0b5c6ae29c23a8d4beb87053db3212f6e02b4cc9",
+      "pending_container": "47edf033d58d988f99a193051ae483f1ef48b978d8d838eb7306aeaaf6f27755",
+      "helper_pid": 7,
+      "old_lock_client_exit": 137,
+      "forwarded": {
+        "create": {
+          "admission_seen": true,
+          "status": 201,
+          "body": "{\"Id\":\"a0e0eee7f3411f12b0a09ca1e4789597da12b4f3605e484b90661d9fbe518e23\",\"Warnings\":[\"The requested image's platform (linux/amd64) does not match the detected host platform (linux/arm64/v8) and no specific platform was requested\"]}\n"
+        },
+        "start": {
+          "admission_seen": true,
+          "status": 404,
+          "body": "{\"message\":\"No such container: 47edf033d58d988f99a193051ae483f1ef48b978d8d838eb7306aeaaf6f27755\"}\n"
+        },
+        "volume": {
+          "admission_seen": true,
+          "status": 204,
+          "body": ""
+        }
+      },
+      "volume_observation": {
+        "status": 200,
+        "name": "cc-combined-fence-b7afa7596034d97a-new-volume",
+        "project": "cc-combined-fence-b7afa7596034d97a"
+      },
+      "forced_late_start_code": 1,
+      "forced_late_start_error": "Error response from daemon: failed to set up container networking: network c0688c0b6102a5f5ed983dfc0b5c6ae29c23a8d4beb87053db3212f6e02b4cc9 not found\nError: failed to start containers: a0e0eee7f3411f12b0a09ca1e4789597da12b4f3605e484b90661d9fbe518e23",
+      "replacement_database": "b0caa60c3b2d9ceff34668345c93d1d47b854dc68a63198511556436a07b1b11",
+      "replacement_network": "bf0b25010fa086552d39d8d991a7283886cd3eacca1e907bfa78ceb9b49b4ace",
+      "replacement_volume": "cc-combined-fence-b7afa7596034d97a-new-volume",
+      "state": {
+        "rows": [
+          42
+        ],
+        "metric": "new",
+        "checkpoint": "checkpoint-current",
+        "http_marker": "new",
+        "volume_sentinel": "new-volume"
+      },
+      "candidate_held": true,
+      "local_descendant_wrote": false,
+      "known_daemon_writer_wrote": false,
+      "old_http_writer_wrote": false,
+      "objective_completed": true,
+      "guard_exhausted": false
+    }
+  ],
+  "discrimination_established": true,
+  "combined_candidate_supported": true
+}
