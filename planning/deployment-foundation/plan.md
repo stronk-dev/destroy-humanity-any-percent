@@ -13,7 +13,9 @@ is released. The separately identified backend-termination arm prevents that
 row but preserves earlier DDL. Draft CR4 now explicitly requires database-side
 quiescence too; no production recovery policy is adopted. Both successful
 three-arm runs and invalid initial instruments are in the owning log. Five-path
-research/draft range awaits independent technical review; next specify/prove the
+research/draft range retains CHANGES REQUIRED for RP-727/728 instrument defects;
+forward guard/classification correction and six retained controls now pass with
+the actual SQL arms, pending union re-review. Next specify/prove the
 complete pending-Engine/client/database fence, not more client-death positive checks.
 
 **Fresh exact candidate, 2026-11-04:** replace neither historical artifacts nor

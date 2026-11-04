@@ -4,15 +4,78 @@ Run from the repository root with Python 3. This does not implement a recovery
 policy or prove all Engine/Compose request lifetimes. Guard exhaustion invalidates
 the observation. The three outcomes are recorded, not forced to a hypothesis.
 """
+import ast
+import contextlib
+import inspect
+import io
 import json
 import pathlib
 import queue
 import secrets
 import shutil
 import subprocess
+import sys
 import tempfile
 import threading
 import time
+
+
+class ResearchGuard(RuntimeError):
+    pass
+
+
+def wait_for_boundary(check, deadline, clock=time.monotonic, pause=time.sleep):
+    until = min(deadline, clock() + 10)
+    while True:
+        if clock() >= until:
+            raise ResearchGuard("handshake guard exhausted: INVALID")
+        value = check()
+        # A command can finish successfully after the local handshake guard.
+        # Its matching result does not turn that incomplete observation valid.
+        if clock() >= until:
+            raise ResearchGuard("handshake guard exhausted: INVALID")
+        if value:
+            return value
+        pause(0.01)
+
+
+def guard_controls():
+    marker = object()
+    for completed, deadline, should_pass in ((0, 60, True), (9, 60, True),
+                                             (10, 60, False), (11, 60, False),
+                                             (6, 5, False)):
+        now = [0]
+        def check():
+            now[0] = completed
+            return marker
+        try:
+            actual = wait_for_boundary(check, deadline, clock=lambda: now[0], pause=lambda _: None)
+        except ResearchGuard:
+            assert not should_pass, "ordinary matching observation refused"
+        else:
+            assert should_pass and actual is marker, "late matching observation accepted"
+    error = RuntimeError("fixture Docker failure")
+    def failed(_):
+        raise error
+    # Execute main's actual collection exception boundary. Checking only the
+    # wait helper's propagation would miss the original catch-site defect.
+    blocks = [node for node in ast.walk(ast.parse(inspect.getsource(main)))
+              if isinstance(node, ast.Try) and len(node.body) == 1
+              and isinstance(node.body[0], ast.Assign)
+              and any(isinstance(target, ast.Name) and target.id == "backend" for target in node.body[0].targets)]
+    assert len(blocks) == 1, "actual collection boundary missing or ambiguous"
+    diagnostic = io.StringIO()
+    with contextlib.redirect_stdout(diagnostic):
+        try:
+            exec(compile(ast.Module(body=blocks, type_ignores=[]), "<actual-backend-boundary>", "exec"),
+                 dict(wait_for=failed, blocked_backend=None, ResearchGuard=ResearchGuard,
+                      json=json, arm="fixture", last_backend={}))
+        except RuntimeError as observed:
+            assert observed is error and not isinstance(observed, ResearchGuard), "command failure misclassified"
+        else:
+            raise AssertionError("command failure accepted")
+    assert diagnostic.getvalue() == "", "ordinary command failure reported as guard exhaustion"
+    print("guard controls passed: two timely, three late/deadline, one ordinary failure")
 
 
 def main():
@@ -43,7 +106,7 @@ def main():
     def run(*args, cleanup=False):
         timeout = 15 if cleanup else min(10, deadline - time.monotonic())
         if timeout <= 0:
-            raise RuntimeError("whole-experiment guard exhausted: INVALID")
+            raise ResearchGuard("whole-experiment guard exhausted: INVALID")
         result = subprocess.run(["docker", *args], text=True, capture_output=True,
                                 timeout=timeout)
         if result.returncode != 0:
@@ -57,14 +120,7 @@ def main():
         assert run("inspect", "--format", "{{.Image}}", container) == "sha256:75f5a96988cdf694a215073c3e9c001b706b371e2f94df3967f2efdec2787f6b", "wrong fixture image config"
 
     def wait_for(check):
-        until = min(deadline, time.monotonic() + 10)
-        while True:
-            value = check()
-            if value:
-                return value
-            if time.monotonic() >= until:
-                raise RuntimeError("handshake guard exhausted: INVALID")
-            time.sleep(0.01)
+        return wait_for_boundary(check, deadline)
 
     observations = []
     try:
@@ -117,7 +173,7 @@ def main():
                 return row if row["state"] == "active" and row["wait"] == "Lock" and row["wait_event"] == "advisory" and row["query"].lstrip().startswith("COPY public.restore_fence_probe") else None
             try:
                 backend = wait_for(blocked_backend)
-            except RuntimeError:
+            except ResearchGuard:
                 print(json.dumps(dict(objective_completed=False, guard_exhausted=True,
                                       arm=arm, last_backend=last_backend)), flush=True)
                 raise
@@ -177,9 +233,14 @@ def main():
 
 if __name__ == "__main__":
     try:
-        main()
+        if sys.argv[1:] == ["--guard-controls"]:
+            guard_controls()
+        elif not sys.argv[1:]:
+            main()
+        else:
+            raise ValueError("unknown probe arguments")
     except Exception as error:
-        guard = isinstance(error, (subprocess.TimeoutExpired, queue.Empty)) or "guard exhausted" in str(error)
+        guard = isinstance(error, (ResearchGuard, subprocess.TimeoutExpired, queue.Empty))
         print(json.dumps(dict(objective_completed=False, guard_exhausted=guard,
                               error_class="invalid_experiment")), flush=True)
         raise

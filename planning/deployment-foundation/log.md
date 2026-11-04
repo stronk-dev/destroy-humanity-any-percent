@@ -8722,3 +8722,46 @@ research implementer/draft author first filter only. Recorded by: Codex root.
 Exact five-path range after5b9dbb2c through this containing commit needs fresh
 independent technical review: draft, new probe source, backlog, owning plan/log.
 This is no production correction, release acceptance or narrower1.0 goal.
+
+## 2026-11-04 — Original restore research review: CHANGES REQUIRED
+
+Review by: independent Codex `/root/restore_backend_fence_research_review`.
+Recorded by: Codex root. Complete five-path range:
+`5b9dbb2c8409111984bc68f334b61dff0c0b9062..fad986789aa475ebda35e10e791854e620d785d2`.
+CHANGES REQUIRED. Fresh actual30254 terminal0 independently confirms exact
+COPY/advisory waits, zero baselines, normal/client-removed row1 and identified
+backend-terminated row0. Earlier DDL remains in all arms; no full recovery fence.
+Exact owned project container/network/volume inventories empty; no reviewer edits.
+
+RP-727: exact AST-extracted56d223 accepts a matching check returning at11 with
+deadline10, because the local wait tests truth before its guard. Fast actual
+result is not invalidated, but the tool's promised guard must discriminate.
+RP-728: collection catches every RuntimeError as guard exhaustion, including
+ordinary Docker failure; the outer report can then contradict that classification.
+Preserve this verdict and forward-correct; no guard increase or adoption.
+
+## 2026-11-04 — Forward-correct the research guard and failure class
+
+The actual wait now checks its unchanged deadline before invoking a check and
+again before accepting a matching result. Explicit ResearchGuard distinguishes
+exhaustion from ordinary command failure; the collection catch handles only that
+class. Retained `python3 planning/deployment-foundation/probes/restore-backend-fence-probe.py.txt --guard-controls`
+executes two timely matches, exact10/late11/whole-deadline5→6 refusals and a genuine
+ordinary Docker error through MAIN'S ACTUAL AST-extracted collection catch, not
+just the wait helper. All six controls pass. Separate exact historical/current
+catch execution reproduces old false guard=true and corrected no guard claim;
+the same sentinel RuntimeError propagates unchanged. No source mutation or mock
+database result is used for the real experiment.
+
+Corrected actual53207 terminal0 repeats all three real SQL arms with zero baselines,
+advisory COPY waits and results1/1/0; full-ID removal/backend survival and true
+termination match prior observations. Owned project is removed before publishing
+completion. Subsequent edits only strengthen the retained failure-class control
+using the actual catch AST; real SQL/data assertions are unchanged. Whitespace and
+Python execution pass. No unrelated Go/browser tests for this instrument repair.
+
+Review by: Codex root, correction implementer first filter only. Recorded by:
+Codex root. Complete original five paths plus this four-path forward range
+(basefad98678 exclusive through this commit) needs independent union re-review.
+Original negative verdict remains. RP-726's complete mechanism/CR4/adoption and
+full product/source/host/release gates stay open; no runtime change or goal pause.
