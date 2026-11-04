@@ -5,6 +5,13 @@
 - **Started:** 2026-07-28
 - **Status:** local repairs ongoing; full local/hosted acceptance open
 
+**Fixture-discovery corrective review,2026-11-04:** complete seven-path
+`f423e704..663976f1` (RP-396) is independently approved. Exact-old private files
+fail both Vitest registrations; byte-identical suffix correction restores the
+intended runner. Current owning Node command35/35 and topology controls pass;
+the log distinguishes fresh execution from reused independent composed evidence.
+No assertions/exclusions/workflow/deadline change or whole-CI acceptance follows.
+
 ## Current checkpoint — 2026-11-02
 
 The accepted contract remains RFC D2/D3: all six blocking jobs, the complete

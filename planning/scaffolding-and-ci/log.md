@@ -4436,3 +4436,34 @@ This closes RP-706's corrective review only. Linux/ARM64 is not hosted AMD64 or
 hosted timing. Full CI, AC7/manual performance, broader feature/archival/release
 gates remain open. Root updates current statuses; no suite for these editorial
 records, no push or product/specification change. Full1.0 goal remains active.
+
+## 2026-11-04 — Node fixture discovery correction independently approved
+
+Review by: fresh independent Codex `/root/node_fixture_collection_corrective_review`.
+Recorded by: Codex root, transcribing its APPROVED verdict, no findings. Complete
+seven-path `f423e704dfd0cdaaeeaac9dcc51891b82380021a..663976f1d88f23b83c421a47084ac16f4b1f70c3`
+(base exclusive, tip inclusive), including all original records. Both100% renames
+and Make references are the entire executable change: no assertions, exclusions,
+workflow topology, retry, deadline or production change. Original fixture blobs
+remain care028c4207869a6d558a0a42b4c9b85051a5e37293 and
+productioncf88a62e65d6e215816c45eb17267ba557536f96.
+
+Fresh at6076a1c4: actual current owning Make-lane Node command35/35 passes,
+zero skips (original30 unchanged plus five separately added N5 controls).
+Private exact-old reconstruction under actual current Vitest configuration
+fails BOTH with "No test suite found", exit1, despite separate Node execution.
+Changing only those private suffixes selects neither in Vitest and retains
+Node30/30. Current discovery still selects legitimate manual-budget-observation
+`.test.mjs`; this is suffix/runner ownership, not a blanket mjs exclusion.
+`make verify-ci-topology`47669 terminal0 includes27 negative controls and shared
+Linux/Make-selector controls; exact-range whitespace passes. No tracked mutation.
+
+Affected app/server/main driver/proof helpers/fixtures/Make/workflow/declared
+Compose diff from independently executeddf531b9b is empty. Its full composed
+86769 is REUSED with GarageNov3 reviewer provenance, not freshly executed here.
+Original full-client19241 and broader RED native39477 remain historical; no
+fresh whole-suite, full CI/hosted-latency/feature/archival/release proof follows.
+Reviewer starts no services, leaves no active handles or tracked edits/commits;
+private fixture retained at `/private/tmp/cloud-clicker-rp396-review.uogbttob`.
+Root reconciles current statuses only; no software suite for these editorial
+records. Full nine-tier goal remains active; no push or adoption.
