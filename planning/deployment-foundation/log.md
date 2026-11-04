@@ -8985,3 +8985,34 @@ fix or evidence either race actually occurred. The corrective exact range throug
 the containing commit needs coherent union re-review. No source/test/CI/kernel/
 artifact changes or repeated runtime studies; full mechanism/adoption/release and
 the nine-tier1.0 goal remain open/active.
+
+## 2026-11-04 — Corrected mutation-map union independently APPROVED
+
+Review by: independent Codex `/root/transition_mutation_map_technical_review`.
+Recorded by: Codex root, transcribing its returned final verdict.
+Complete reviewed union, base exclusive/tip inclusive:
+
+- Original5paths: `a0dc53bcc25e16860d5017f7af28be4842afd0d9..12aa01aeee362dfe1c542a50823ad5a720a082d0`.
+- Corrective5paths: `12aa01aeee362dfe1c542a50823ad5a720a082d0..8825019c79e1ebe9a1f4bdf296c6ba28ecc704cc`.
+
+Verdict: **APPROVED**, bounded research/technical-draft reconciliation. Original
+CHANGES REQUIRED remains. Reviewer verifies both omitted writer classes now
+explicit: post-controller CLI metrics outside lock lifetime, and scheduled
+temporary/backup deletion. Independent consistencya8dfad exits0: Markdown-only
+ranges, unchanged runtime sources, nine valid local links, append-only original
+log preservation and coverage of all Controller Runtime calls. Full-range
+whitespace passes. Upstream ID/name distinctions were independently checked
+against primary source in the original review, not a Desktop-binary/runtime test.
+
+No software suite, services, receiver/secret access or tracked edits/commits;
+all handles terminal, no scratch/resources remain, checkout clean. Reviewer asks
+one non-blocking editorial clarification, applied in this closeout: `pending
+adopted remedy` becomes `proposal awaiting adoption`, preserving the unadopted
+backup-metadata status without a new review cycle or source change.
+
+RP-733's source-map completeness is independently supported. The COMBINED
+recovery protocol, delayed-action execution, actual runtime implementation,
+native supported-host and exact-artifact R-006 remain unproved/unbuilt. This
+verdict adopts no specification, operator behavior or release. No publication,
+archival, deployment, new playable-tier claim or goal pause. Continue constructing
+the complete mechanism under the full nine-tier1.0 objective.

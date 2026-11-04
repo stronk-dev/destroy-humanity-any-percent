@@ -70,9 +70,11 @@ proofs. Do not repeat the completed root-call inventory or independent network/
 backend positives. Next construct and prove ONE combined mechanism across the
 whole map, with explicit refusal for unknown ownership or surviving mutation.
 Original5-patha0dc53bc..12aa01ae is CHANGES REQUIRED for those two completeness
-omissions, now explicitly reconciled in map/draft/plan. Independent corrected-union
-review remains pending. No actual late overwrite/deletion or runtime-policy
-adoption is inferred; full CR4/R-006 and owner adoption remain.
+omissions, now explicitly reconciled in map/draft/plan. Complete original plus
+corrective5-path12aa01ae..8825019c union is independently APPROVED; original
+negative verdict remains. No actual late overwrite/deletion or runtime-policy
+adoption is inferred; full CR4/R-006 and owner adoption remain. The owning log
+records checked source boundaries and unexecuted runtime/host gates.
 
 **Fresh exact candidate, 2026-11-04:** replace neither historical artifacts nor
 the predecessor with a fabricated pair. Two independent committed-source

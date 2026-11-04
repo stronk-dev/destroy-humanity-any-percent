@@ -71,7 +71,7 @@ eligible temporary and backup files, as well as creating a backup and publishing
 metrics. Include those deletion lifetimes/paths so a candidate cannot protect
 only new output while leaving checkpoint material exposed. No late retention
 deletion is demonstrated here; RP-505's independent protection-metadata issue
-and its pending adopted remedy remain separate.
+and its proposal awaiting adoption remain separate.
 
 The release [`Compose template`](../../deployment/compose.template.yml) has FOUR
 networks: edge/application/database/operations. The database is not the sole
