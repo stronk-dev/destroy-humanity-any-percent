@@ -23,7 +23,8 @@ two unsafe flag-based deletions; those passes are diagnostic execution, not
 retention acceptance. Signed outer v2, external trust and authenticated legacy
 copy remain unadopted; no production/key/format change. Governed resolution,
 D-019, snapshot-based RPO and clean-host gates stay separate. Exact scope/evidence
-is in the owning log; implement only after this concrete amendment is adopted.
+is in the owning log. One concrete adoption question is delivered2026-11-04;
+no answer is recorded. Implement only after adoption; do not repeat the question.
 
 **Actual game-process availability proof, 2026-11-04 (RP-721):** construct the
 missing DP7 producer-to-receiver path using the current gameserver executable,

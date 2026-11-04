@@ -58,6 +58,15 @@ Concrete prices/rates/resources/copy, HG-10 policy, identity/AC-3 adoption and r
 acceptance remain separate. Technical approval of their successor drafts is not their adoption
 or integration proof. No full-nine-tier requirement or release gate is waived.
 
+## Backup protection metadata adoption — RP-505
+
+The [complete signed-metadata proposal](../../rfc/backup-protection-metadata.md)
+is independently technically approved2026-11-04; the Deployment log owns exact
+scope and fresh diagnostic reproduction. One question requests adoption of BM1–BM5,
+including dedicated signing authority/external trust and authenticated legacy copy.
+Delivered2026-11-04, no recorded answer; no implementation or operator key change
+is inferred. Governed resolution, D-019, snapshot-based RPO and R-006 stay separate.
+
 ## Recovery implementation/copy adoption — D-005 / RP-123
 
 D-005's one-time display/copy/download/recover-existing-account posture remains

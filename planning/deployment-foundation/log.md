@@ -8404,3 +8404,16 @@ integration test/docs/backlog/plan/log commit. Review by: Codex root, implemente
 first filter only. Recorded by: Codex root. Independent corrective review remains;
 no self-approval, original R6/AC4, real-release/clean-host or1.0 acceptance,
 archival, publication or goal pause.
+
+## 2026-11-04 — Deliver the concrete metadata adoption question
+
+After complete independent technical approval above, root sends ONE async question
+linking BM1–BM5: adopt the reviewed signed-metadata/dedicated-seed/external-trust/
+authenticated-legacy-copy repair, or keep draft. Tool accepts delivery; no answer
+is recorded and preselection is not approval. AGENTS reserves specification
+adoption; technical review alone cannot authorize the new format/key contract.
+No operator key generated/accessed, backup converted, signing code implemented,
+retention duration changed or original discarded. Current RP-724 correction uses
+the already accepted DP6 consistency contract independently of this pending choice.
+Root reconciles plan/backlog/owner routing only, no software suite for records.
+Do not repeat the question; full nine-tier1.0 and all separate release gates remain.
