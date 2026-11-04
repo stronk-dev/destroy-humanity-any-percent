@@ -47,6 +47,15 @@ exits0, all original native outcomes unchanged, v2 binds3d672aa9. Actualdc6858
 passes broker allow/UID/route/native-error and native-profile corruption controls.
 Complete original-plus-correction review remains; no bounds/populations changed.
 
+Independent union review is CHANGES REQUIRED for RP-751: actual92969/diagnostic
+24761 both exit1 at broker native Mounts order, before after-control. Same exact
+destinations/type/RW appear reversed. Original negative remains, no independent
+full pass inferred. Forward correction sorts by destination without dropping
+entries/values and rejects duplicate destinations; actualab38d7 shows old refusal,
+current both-order pass and invalid-mount refusals. Fresh14788 exits0, complete
+native population unchanged, v3 binds2cfcb55c. Guard functions are AST-identical
+to independently checked4f0c5464. Complete containing union needs re-review.
+
 **Operation evidence proposal,2026-11-04:** new draft
 `rfc/deployment-operation-evidence.md` specifies canonical private hash-bound
 Supervisor, phase work-log, receipt-envelope, predecessor/completion and

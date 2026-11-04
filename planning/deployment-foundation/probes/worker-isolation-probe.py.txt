@@ -202,9 +202,13 @@ def main():
     def inspect_profile(container, uid, network, readonly, mounted):
         projection = '{"user":{{json .Config.User}},"network":{{json .HostConfig.NetworkMode}},"readonly":{{json .HostConfig.ReadonlyRootfs}},"caps":{{json .HostConfig.CapDrop}},"security":{{json .HostConfig.SecurityOpt}},"pid_mode":{{json .HostConfig.PidMode}},"ipc_mode":{{json .HostConfig.IpcMode}},"privileged":{{json .HostConfig.Privileged}},"mounts":[{{range $i,$m:=.Mounts}}{{if $i}},{{end}}{"destination":{{json $m.Destination}},"type":{{json $m.Type}},"rw":{{json $m.RW}}}{{end}}]}'
         selected = json.loads(run("inspect", "--format", projection, container))
+        assert len({entry['destination'] for entry in selected['mounts']}) == len(selected['mounts']), "duplicate native mount destination"
+        assert len({entry['destination'] for entry in mounted}) == len(mounted), "duplicate intended mount destination"
+        selected['mounts'].sort(key=lambda entry: entry['destination'])
+        intended_mounts = sorted(mounted, key=lambda entry: entry['destination'])
         assert selected == dict(user=uid, network=network, readonly=readonly, caps=['ALL'],
                                 security=['no-new-privileges:true'], pid_mode='', ipc_mode='private',
-                                privileged=False, mounts=mounted), "profile mismatch"
+                                privileged=False, mounts=intended_mounts), "profile mismatch"
         return selected
 
     def worker(role, mode, network, readonly, uid, address, mounted):

@@ -9682,3 +9682,38 @@ plus containing correction needs fresh independent review. Review by: Codex root
 corrective author first filter. Recorded by: Codex root. RP-749/750 remain open
 pending review/full-profile construction respectively; no OP9/adoption/runtime/
 supported-host/release claim or goal pause.
+
+## 2026-11-04 — Independent worker review fires native mount-order mismatch
+
+Review by: independent Codex `/root/worker_isolation_research_review`.
+Recorded by: Codex root, transcribing returned verdict. Complete union
+9a17aa2a2f0269598815d43af0ddc5e66a875ade..aa765a4026fce0b5311fbcbe4401ec092eab1c68
+plus aa765a4026fce0b5311fbcbe4401ec092eab1c68..4f0c5464aaa94ee219780ce604d8800603e6afe6
+is **CHANGES REQUIRED — research instrument**. RP-751/P2: actual92969 exits1
+at broker inspect_profile. Diagnostic24761 also exits1 and captures native
+/daemon.sock then /broker versus expected reverse, with identical type/RW/
+destination values. Actual-function0ba47b reproduces the same false refusal.
+Neither real run reaches after-control, so no independent full pass is claimed.
+
+Independentf1efb8 passes old/current bindings, original late acceptance and fixed
+final/command/cleanup/ordinary-error/errno controls. Independent394f4d passes
+actual broker/native-profile corruption controls, full scope/whitespace and
+append-only log. Product/CI untouched. First owned inventories326c8c/35c4c6/80cf1d
+and diagnostic inventoriese44f45/914d07/2b6eef are empty; a237a3 removes both
+retained temporary directories. All handles terminal; no tracked edits/commits.
+
+Forward correction compares destination-ordered native/intended projections,
+preserving all cardinality/field/value checks and refusing duplicates explicitly.
+Actualab38d7 compiles old/current inspect_profile: old reversed-order input
+refuses; both current orderings pass; duplicate, altered-RW and extra-host mounts
+refuse. Actual bounded/run ASTs equal the independently tested4f0c5464 bodies;
+no guard change. No retry, looser policy, population omission or raised bound.
+
+Fresh actual14788 exits0 with before/after PGN and successful marker controls,
+native101/2/30/30 refusal classes, actual Engine200/OK, route/UID403, kernel/
+native profile checks and retained channel marker. V3 normalizes the actual
+output and binds source2cfcb55c7f0966e2657ccb00bc7586cf58bdd7b53195f3a3df5c956278bab3b5.
+Original source/v1/v2 and independent negative remain. Root fixtures/resources
+are rechecked empty before corrective commit. Complete original plus both
+corrections needs independent re-review, not OP9/adoption/recovery acceptance.
+Review by: Codex root, corrective author first filter. Recorded by: Codex root.

@@ -248,7 +248,7 @@ make vet GO_PACKAGES=./cmd/deployment-backup GOFLAGS="-overlay=$PWD/.cache/conne
 ### Isolated command-worker mechanism
 
 The [manual worker study](probes/worker-isolation-probe.py.txt) and
-[current source-bound observation](worker-isolation-observation.v2.json) test a
+[current source-bound observation](worker-isolation-observation.v3.json) test a
 Docker-backed worker boundary for OP9. The [initial observation](worker-isolation-observation.v1.json)
 binds committed sourceaa765a40 and retains a known
 instrument defect: source-binding collection follows its last deadline check
@@ -259,7 +259,14 @@ local completion deadline, including cleanup. Actual old-source controls accept
 61s final collection/deadline60 and11s command/local10; current timely controls
 pass and exact/late controls refuse. Fresh actual76328 completes every original
 population with unchanged native outcomes; v2 binds source3d672aa9. Both versions
-remain. Independent complete-range review is pending, not OP9 acceptance.
+remain. Independent review of that union is CHANGES REQUIRED for RP-751:
+actual92969 and diagnostic24761 fail on the same VALID broker mount set returned
+in reverse order. Neither completes the after-control; no independent pass is
+claimed. Source now compares destination-ordered projections, preserving exact
+cardinality/values and rejecting duplicate/altered/extra mounts. Actual old/new
+controlab38d7 discriminates both orderings and invalid sets; fresh actual14788
+completes every population at source2cfcb55c, retained v3. Original negative/
+v1/v2 remain. Complete corrected-union review is pending, not OP9 acceptance.
 
 Actual57766 compares UID65532/cap-drop writable network controls BEFORE and AFTER
 an isolated network-none/read-only worker. Both controls reach real pinned
