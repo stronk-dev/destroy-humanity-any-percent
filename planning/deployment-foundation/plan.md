@@ -13,9 +13,11 @@ verification beyond controlled journalctl output. New manual
 written by actual systemd255 journald in an owned networkless Linux fixture.
 Eight selected records, native failure-cursor identity, unrelated-service
 exclusion, empty/different/missing directories and unknown-job refusal pass.
-This is a test/tool range awaiting independent review, not runtime/policy change
-or host logging-driver/14-day retention/full AC7/R-006 acceptance. The owning
-log records exact execution, initial selector error and sandbox denial.
+Complete six-path351124e4..927b26ed is independently APPROVED after fresh actual
+native-journal execution and cold owners/vet. This mixed-architecture local
+test/tool proof changes no runtime/policy and does not establish host logging-driver,
+14-day retention/full AC7/R-006 acceptance. The owning log records exact execution,
+initial selector error and sandbox denial. Continue those separate accepted gates.
 
 **Migration/dump consistency correction, 2026-11-04 (RP-724):** actual old-source
 regression creates a completed backup that refuses restoration when a schema/version

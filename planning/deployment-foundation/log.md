@@ -8501,3 +8501,29 @@ owning plan and this log. No workflow/production/rule/retention change. Host
 Docker journald-driver delivery, 14-day retention/purge, supported-host workload
 sizing, exact release artifacts, full AC7/R-006 and release approval remain open.
 No unrelated service population rerun or broader milestone promotion.
+
+## 2026-11-04 — Native journal compatibility independently approved (RP-725)
+
+Review by: fresh independent Codex `/root/journal_file_compatibility_corrective_review`.
+Recorded by: Codex root, transcribing its executed verdict. APPROVED, no findings,
+complete six-path range (base exclusive, tip inclusive):
+`351124e48ce2a5c0cce5dc73efe76c9f5b43e394..927b26ed02537dda486edf45702bcd491a166954`.
+All test/tool/docs/backlog/plan/log inspected. Existing ordinary invalid populations
+discriminate service filtering, exact directory selection and unknown-job refusal;
+actual native cursor identity and named population checks pass. No source mutation
+is needed or claimed. Initial no-tests and sandbox-denied invocations remain
+non-evidence; no historical failure is restamped green.
+
+Fresh independent63894 terminal0: actual root manual target, native child0.61s,
+owner1.12s, package1.273s, both named populations explicitly PASS. Cold affected
+packages97957 terminal0: operations1.612s/command5.755s. Selected vet, formatting
+and complete-range whitespace pass. Final escalated exact fixture-label inventory
+is empty; removal includes anonymous volume. No tracked reviewer edits/commits or
+live handles. Cached Noble/systemd image is Linux/arm64, while collector executable
+is Linux/amd64: this mixed-architecture Desktop fixture is explicitly local.
+
+RP-725's file/reader evidence gap closes. Host Docker journald-driver delivery,
+release-workload capacity measurement, actual14-day availability/purge,
+supported-host installation, full AC7/R-006 and release gates remain open.
+Root reconciles only owning plan/ledger and this verdict; no suite for records,
+runtime change, full feature promotion, archival, publication or goal pause.
