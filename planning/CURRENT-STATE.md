@@ -12,6 +12,16 @@ concrete adoption questions remain unanswered. These advance platform correctnes
 not another playable tier or supported-release claim. Whole-product classification
 below retains its audit baseline; no fresh full-product/hosted acceptance is inferred.
 
+**Exact local artifact follow-up,2026-11-04:** two independent source`df84ce1a`
+candidate rebuilds match all75 files (74 bound artifacts plus manifest). New
+[retained record](deployment-foundation/release-builds/candidate-df84ce1a.json)
+and complete evidence range`df84ce1a..593e54b4` are independently approved after
+source rebuild, actual validator/tampering and registry checks. Actual native
+journal-file collection is independently approved separately at`927b26ed`.
+The Deployment log owns commands, setup mistakes and source/platform limits.
+These are current local artifacts and file compatibility, not a legitimate
+candidate/previous pair, hosted green, host retention or clean-host acceptance.
+
 **Latest hosted verification,2026-11-02:** published main is `d6b1c668`;
 [CI41476621196](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/41476621196)
 passes browser (all phases), composed-player, harness and schema. Server still

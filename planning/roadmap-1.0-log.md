@@ -5804,3 +5804,22 @@ clean-host rehearsal, rights/accessibility, natural pacing, historical guard and
 27 accounting failures remain open alongside substantial world/combat/Tier3–8/
 final-ending work. The whole-product classification is not freshly re-audited;
 the full nine-tier1.0 goal stays active. No push, deployment, archival or release.
+
+## 2026-11-04 — Current exact candidate rebuilt and independently checked
+
+Source`df84ce1a` replaces no old artifact: two new local candidate trees match all75
+files, including74 bound artifacts, six helpers, image archive, application metadata
+and seven independently scanned normalized inventories per tree. Four-path evidence
+range`df84ce1a..593e54b4` is independently approved after fresh source-binary rebuild,
+actual package/nine tampering probes and upstream amd64 registry identity checks.
+The [Deployment log](deployment-foundation/log.md) owns hashes, original failed setup,
+excluded premature metadata, scan provenance and local/emulated limits. Actual
+native journal-file compatibility also receives bounded independent approval at
+`927b26ed`, not host-driver/retention credit.
+
+This advances current artifact/evidence construction, not a playable tier, full
+Deployment acceptance or release. Both trees are one candidate; legitimate
+predecessor/current-release authority, hosted CI, actual retention, supported clean
+host/R-006 and the full product/rights/accessibility/pacing/ending scope remain.
+No owner adoption is inferred, historic artifact rewritten or acceptance loosened.
+The full nine-tier1.0 objective remains active.

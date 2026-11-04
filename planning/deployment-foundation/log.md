@@ -8591,3 +8591,28 @@ Complete four-path evidence range afterdf84ce1a through this commit: new retaine
 record, canonical docs, owning plan/log. Needs independent evidence review, no
 self-approval or archival. Continue real predecessor/authority/clean-host and
 accepted gameplay work; pending owner adoption questions are not answered by build.
+
+## 2026-11-04 — Current candidate build evidence independently approved
+
+Review by: fresh independent Codex `/root/candidate_rebuild_evidence_corrective_review`.
+Recorded by: Codex root. APPROVED, no findings, complete four-path range (base
+exclusive/tip inclusive):
+`df84ce1a86780135633b1d388541a1a5016bdf1d..593e54b4da2f4afdd6189ddac73b6a3e64854715`.
+Retained record, canonical docs, owning plan/log all inspected. Both trees match
+all75 files (74 manifest-bound artifacts plus manifest), including actual record
+hashes/source timestamp/archive configuration/seven normalized inventories.
+Fresh independent registry reads confirm all six upstream/rehearsal Linux/amd64
+configuration identities. Current validator and healthy package probe pass;
+all nine actual tampering probes exit exact3/fixture_rejected. Independent current
+source six-binary rebuild83170 terminal0 matches retained bytes; private scratch
+removed. Post-probe full equality holds and work directory is empty.
+
+Root's fourteen actual scans are inspected, NOT independently rerun: distinct raw
+scan times and matching package populations. Inspected secret-scan output binds
+the exact source/manifest/archive,2464files/zero findings, no guard exhaustion.
+Both initial setup mistakes remain excluded. All review handles terminal; no
+tracked reviewer edits/commits. This is build-evidence approval, not a candidate/
+previous pair, full Deployment/hosted CI/supported-host R-006 or release readiness.
+Root reconciles owning plan and bounded whole-product artifact checkpoint only;
+no new suite for records or full-feature/archival promotion. Continue the full
+nine-tier1.0 scope and all separate source/product/operator/acceptance gates.

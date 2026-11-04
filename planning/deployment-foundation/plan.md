@@ -13,7 +13,9 @@ the predecessor with a fabricated pair. Two independent committed-source
 application metadata and seven freshly scanned normalized image inventories.
 The new retained `release-builds/candidate-df84ce1a.json` validates; healthy package,
 nine actual rebound tampering populations and bound source/image secret scan pass.
-This evidence range awaits independent review, not full DP-B/Deployment acceptance.
+Complete four-pathdf84ce1a..593e54b4 is independently APPROVED after fresh
+six-binary source rebuild/equality, actual bundle probes and registry checks.
+That verdict approves this evidence, not full DP-B/Deployment acceptance.
 Continue legitimate floor-compliant predecessor/current-release authority and
 supported clean-host proof; neither candidate rebuild is a previous release.
 The log owns exact identities, commands, initial setup mistakes and platform limits.

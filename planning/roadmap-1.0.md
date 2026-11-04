@@ -12,6 +12,10 @@ Current real backup and Caddy release/rollback boundaries pass. Recovery flow/co
 and signed backup-metadata proposals are technically reviewed, with concrete owner
 adoption questions pending. [Owning logs and limits](CURRENT-STATE.md) distinguish
 these from full feature/clean-host/hosted proof. No new tier or release is complete.
+Later exact-artifact checkpoint: source`df84ce1a` now has two byte-identical local
+candidate trees and an independently approved retained build record at`593e54b4`.
+Fresh source rebuild, actual package/tampering checks and registry identities
+support that evidence; it supplies neither a previous release nor clean-host proof.
 
 **Whole-product classification baseline (2026-10-16):** see the [whole-product overview](CURRENT-STATE.md#whole-product-overview)
 and [current verification](CURRENT-STATE.md#current-verification-and-closeout).
