@@ -11415,3 +11415,32 @@ all17 declared keys, sorted source/SDK roles and digest syntax, and all3 local
 links resolve. These are document checks, not a tool build or software-suite
 pass. No runtime/CI/kernel/dependency/accepted-parent bytes changed.
 Review by: Codex root, implementer first filter. Recorded by: Codex root.
+
+## 2026-11-04 — Tool recipe source identity corrected after re-review
+
+CHANGES REQUIRED, independent technical-spec review of complete seven-path
+070829cf7c5aded8996f5ff4a3db39d8cd5e48e0..
+b828abe57cb1800e1509e98ad03257853ef7c4d4.
+Review by: independent Codex /root/native_supervisor_profile_review.
+Recorded by: Codex root, transcribing completed verdict. Original member/origin
+and runner findings are substantively repaired. New finding: the recipe had
+no repository/revision tuple while conflating repository URI with archive URI.
+Document checks also expose my inaccurate17-key count: the old example/list
+had16. Both are record mistakes, not execution evidence or successful builds.
+
+Correction adds explicit source_repository/source_commit expectations, distinct
+from actual archive acquisition; the runner records those honestly, and the
+post-build T3 producer verifies actual Git/import/terms correspondence before
+the final binary-bound map is accepted. No cyclic pre-build final map is needed.
+The actual reviewed tool-builder revision now cross-binds fixed build-type/
+runner URLs and internal revision independently of later unrelated app commits;
+the final bundle still hashes the exact receipt, recipe and executable.
+Complete original-plus-corrections needs independent re-review. No runtime,
+schema implementation, dependency or CI change; no build/feature acceptance.
+
+Current first filter parses the example and checks its actual18 keys, exact
+declared key set, source revision/digest syntax, sorted source/SDK roles and all3
+local links. Log-prefix check confirms earlier committed bytes are untouched;
+an unintended blank during editing was caught and removed before commit. Diff
+whitespace passes. No actual build ran. Review by: Codex root, implementer first
+filter. Recorded by: Codex root.

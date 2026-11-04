@@ -306,11 +306,13 @@ For a release-owned rebuild, generate a standard in-toto Statement/v1 with SLSA
 `https://slsa.dev/provenance/v1` build provenance, subject SHA256 equal to the tool.
 Use the [SLSA build-provenance format](https://slsa.dev/spec/v1.2/build-provenance).
 This section defines the release-owned `tool-build-v1` type. Its `buildType` URI
-is the immutable GitHub blob URL for this RFC at the producer release's full
-`source_commit`, with fragment `#t5--truthful-acquisitionbuild-provenance`.
-Its closed external parameters are `tool_id`, `version`, `platform`, `source_uri`,
-`recipe`: the last is exactly `provenance/tools/<id>/recipe.json`. Identity and
-source URI derive from the recipe and match metadata. The fixed runner is the
+is the immutable GitHub blob URL for this RFC at the build producer's full
+revision, with fragment `#t5--truthful-acquisitionbuild-provenance`.
+Its closed external parameters are `tool_id`, `version`, `platform`,
+`source_repository`, `source_commit`, `recipe`: the last is exactly
+`provenance/tools/<id>/recipe.json`. Identity and declared repository/commit
+expectations derive from the recipe and match `source_record.uri`/`commit`.
+They are distinct from the actually acquired source archive URI/hash. The fixed runner is the
 `build-tool` mode of existing `server/cmd/assemble-release-bundle/main.go`;
 `builder.id` is its immutable GitHub blob URL at that same producer commit.
 The validator compares that exact path and commit, not any same-commit blob.
@@ -325,7 +327,8 @@ compiler/linker commands. Published artifacts still have T2's acquisition route.
 A different build mode needs an explicit contract amendment, not guessed steps.
 
 The closed recipe keys are `schema_version:1`, `tool_id`, `version`, `platform`,
-`inputs`, `source_input_id`, `go_toolchain_input_id`, `source_subdirectory`,
+`source_repository`, `source_commit`, `inputs`, `source_input_id`,
+`go_toolchain_input_id`, `source_subdirectory`,
 `import_path`, `module_mode`, `main_package`, `build_mode`, `build_tags`,
 `strip_symbols`, `strip_dwarf`, `string_overrides`. Identity matches T1.
 `inputs` has exactly one source and one Go SDK, sorted by unique `id`, with
@@ -334,9 +337,16 @@ closed rows `id`, `kind` (`source` or `go_toolchain`), `uri` (public HTTPS),
 inputs; IDs identify files `<id>.tar.gz` in the declared input directory. Hashes
 and safe members verify before extraction, with no links, duplicates or special
 files. `source_input_id`/`go_toolchain_input_id` select the corresponding rows.
-Source URI/commit/tree match the T2a map and actual T3 query; SDK platform and
-full extracted contents match the selected official archive. Do not synthesize
-a source correspondence from a release version alone.
+`source_repository` is the public HTTPS repository URI; `source_commit` is its
+full 40-character lowercase hex revision, both declared expectations rather
+than inferred tarball metadata. The runner records them as external parameters
+and separately records actual acquired archive URI/hash. It does not claim Git
+authentication merely from compiling a tarball. After the build, the T3 producer
+verifies actual Git/tree/import/terms correspondence against those expectations
+and archive bytes before emitting/accepting the final binary-bound scope map.
+That map is not a cyclic pre-build input. SDK platform/full extracted contents
+match the selected official archive. Missing source evidence blocks metadata
+eligibility, even if compilation succeeded; a version alone proves no source tree.
 
 `source_subdirectory` is an existing safe relative directory, empty for root.
 `module_mode` is `module_vendor` or `gopath_vendor`: respectively require the
@@ -370,10 +380,15 @@ make build-deployment-tool RELEASE_COMMIT="$RELEASE_COMMIT" TOOL_RECIPE=/public/
 
 The target invokes the fixed runner's `build-tool` mode with `--root`,
 `--producer-commit`, `--recipe`, `--input-directory`, `--output`; output must not
-exist or must be empty. `RELEASE_COMMIT` uses the existing release-build source
-identity. The runner checks full Git HEAD and clean runner/build-contract inputs
+exist or must be empty. `RELEASE_COMMIT` uses the existing build source identity.
+The runner checks full Git HEAD and clean runner/build-contract inputs
 against that commit, records it as `internalParameters.producerSourceCommit`,
-and the final validator requires equality with manifest `source_commit`. These
+and the final validator requires the build-type URL, fixed runner URL and that
+internal revision to agree. This is the reviewed tool-build producer revision,
+which may precede a later application's manifest `source_commit`: unchanged
+tools need not be rebuilt for an unrelated application edit. The final manifest
+still binds the exact binary, recipe and receipt bytes; no uncited runner or
+unsupported build type is admitted. These
 paths are staging locations, not additional behavioral parameters or secrets.
 The runner uses a private extracted workspace and the declared SDK's absolute
 `bin/go`, with argv for `go build -a -trimpath -buildvcs=false`, the declared
@@ -393,7 +408,9 @@ The assembler copies these to T1's binary path and
 `provenance/tools/<id>/build.intoto.json`; the latter is `build_record_path` and
 an `in_toto`/`selected_binary` provenance row. `resolvedDependencies` includes the
 exact source archive, SDK archive, recipe and discovered vendored/component
-inputs with their actual URIs/digests. Source commit matches `source_record`;
+inputs with their actual URIs/digests. A declared Git expectation is not listed
+as an authenticated resolved Git input without actual verification. The declared
+source tuple matches `source_record` and T3's later verified scope map;
 recipe bytes match the final manifest. No guessed successful steps or omitted
 inputs. These are trusted local producer claims, not signatures, builder
 security levels or independent reproduction claims. Acceptance executes the
@@ -408,6 +425,8 @@ selected artifact; missing/mismatched real inputs must refuse):
   "tool_id": "docker-cli",
   "version": "28.4.0",
   "platform": "linux/amd64",
+  "source_repository": "https://github.com/docker/cli",
+  "source_commit": "0000000000000000000000000000000000000000",
   "inputs": [
     {"id":"sdk","kind":"go_toolchain","uri":"https://go.dev/dl/go1.24.7.linux-amd64.tar.gz","sha256":"sha256:0000000000000000000000000000000000000000000000000000000000000000","strip_prefix":"go/"},
     {"id":"source","kind":"source","uri":"https://example.invalid/cli-source.tar.gz","sha256":"sha256:0000000000000000000000000000000000000000000000000000000000000000","strip_prefix":"cli/"}

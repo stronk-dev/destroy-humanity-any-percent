@@ -17,7 +17,10 @@ SP1/SP8 links now distinguish technical review → owner adoption → constructi
 → actual native/R-006 proof. No current artifact/version or unresolved right is
 approved. Initial independent review of070829cf..7efca4b8 returned CHANGES
 REQUIRED for missing typed source-member/origin and local-runner/recipe oracles.
-Both are now specified in the draft; complete-range re-review is next, then
+Both are now specified in the draft. The subsequent review found repository
+identity conflated with archive acquisition and a missing source-revision input;
+those are now separated and staged before final T3 acceptance. Complete-range
+re-review is next, then
 applicable policy adoption while existing host/architecture
 questions remain pending. No production/schema implementation or software test
 claim follows from this Markdown-only proposal.
