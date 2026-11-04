@@ -10819,3 +10819,24 @@ corrective review of the complete code/tests/docs/records range. RP-761 remains
 review-pending; full attribution/rights/tool/native/adoption/R-006 and1.0 remain.
 No publication, deployment, archival or goal pause. Diff/gofmt checked.
 Review by: Codex root, implementer first filter. Recorded by: Codex root.
+
+## 2026-11-04 — Committed scoped metadata generation retains actual copied BSD
+
+Actual clean committedef9e1ed811c18bb77816537b48ff7e2ab4e4b5f7 root generator
+b40fb5/31440→9e6d1a completes53 dependencies with existing built-client inputs.
+Diagnostic version0.0.0-scoped-attribution-check, explicit commit and
+2026-11-04T14:15:06Z; no release bundle/exact-manifest/R-006 claim. Local owned
+output path is in .cache/worker-cli-tools/scoped-attribution-metadata-output.txt.
+
+Actual output85d2ec includes full original GDDO BSD text/2013 copyright in the
+Prometheus dependency's section with relative internal/github.com/golang/gddo/
+LICENSE heading. Its declared/concluded expression now correctly combines
+Apache2.0 AND BSD3. The stdlib likewise records0BSD AND BSD3 from its selected
+imported scopes; existing supported license classes only.53 dependencies plus
+application, SPDX2.3. Output identities:
+sbom.spdx.json41,725bytes SHA256e072ef559cbb5b30400fd1eae73f2dbd58af0a1a41374f4001c3f75ca37a5057;
+third-party-licenses.txt172,622bytes SHA25621900c836ec78e2cb516c3e2cc8d4d93fa450073290ecd87c89793bae0823c35.
+Tree stays clean, all handles terminal. Next fresh independent corrective review
+of complete957dfa6b..this checkpoint, including old-code real-import failure,
+full affected checks and source-scope refusal controls. RP-761 remains OPEN;
+no blanket nested/tool/MPL/source-rights, adoption or release promotion.
