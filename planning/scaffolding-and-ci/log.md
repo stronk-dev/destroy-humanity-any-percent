@@ -4547,3 +4547,51 @@ tests/docs/ledger/plan/log commit; designated independent union review remains.
 Review by: Codex root, implementer first filter only. Recorded by: Codex root.
 Original CHANGES REQUIRED, unadopted history proposal and full nine-tier goal stay;
 no archival, push, release or self-approval.
+
+## 2026-11-04 — First quote repair requires changes; use reference block parsing
+
+Review by: independent Codex `/root/kernel_review_citation_corrective_review`.
+Recorded by: Codex root. CHANGES REQUIRED persists across original eight-path
+`a7e33b73a39a435157c7049a8d13abdd68a63c4d..611273b5f6c8ce15126f163ff473d48bb2239ed2`
+and complete six-path `a6fa32ac45b551bd497fff4cb409df2e259030f0..3ae7f43a551882b193c8902cba4061c899467474`.
+ActualCLI76172 plus official CommonMark reference render finds RP-717: quoted
+list `> - item / > =` wrongly exposes metadata; relative four-space heading and
+thematic exits wrongly refuse it. Two-space Setext positive passes. Full71169
+fixtures/topology36941 pass but do not trigger these missing cases; root26526
+still refuses50a3a514. No assertion or owner rule is relaxed to rescue the draft.
+Reference commonmark0.31.0 downloaded only to private storage, SHA256
+`1bd1225b4e3440f948a139b732b84dcc8e36cc9c541e347fc1e52aaf10ef0517`;
+actual rendered fixture retained `/private/tmp/cloud-clicker-citation-review-ASqrbF`.
+RP-540's separate complete approval remains. Reviewer makes no tracked edits.
+
+## 2026-11-04 — Parse review block boundaries with pinned CommonMark (first filter)
+
+Replace the hand scanner with CommonMark0.31.2's block tree. Only paragraph/
+heading source spans outside quotes/code/raw HTML reach the unchanged closed
+metadata/range grammar; inline comments stay excluded. List nesting/lazy lines
+now follow real parsed containers; no renderer, executable HTML, new review
+authentication or exception authority is introduced. Add the exact list-relative
+negative plus three genuine exits. Fixture Node children use source-installed
+dependencies via NODE_PATH because their tiny Git histories do not install
+packages; honest controls prevent missing modules counting as successful refusals.
+
+Pin one dev dependency and its lock (four new packages, no old resolution change).
+Installed metadata/licenses: CommonMark0.31.2/entities3.0.1 BSD-2-Clause,
+mdurl1.0.1/minimist1.2.8 MIT; no vendored bundle. Restricted pnpm5154 terminates1
+at lockfile write; authorized identical48301 succeeds. Subsequent CI-style frozen
+install passes. Peer diagnostic exits1 for existing @emnapi core/runtime1.11.1
+versus wasm-runtime1.2.0; original lock contains identical coordinates, not changed
+or repaired here. Build16416 passes217 modules; parsed JS/Worker source maps
+contain none of the four added tool packages, CSS graph has no package assets.
+
+Final native fixtures13416 pass all nine quote negatives/nine genuine exits,
+60 literal-path refusals and existing correction/remap/archive/ancestry controls.
+Syntax/diff and topology51286 pass27 negatives/Make/shared-script controls.
+Actual root64388 passes checkout/binding controls then exits expected Make2 at
+original50a3a514, not a new review-binding failure. No kernel-watched path, math,
+version, correction row, runtime, schema or workflow changes. Actual Linux frozen
+install/fixture and independent union re-review remain before this is approved.
+Complete eight-path follow-up starts after3ae7f43a through this containing
+package/lock/tools/tests/docs/ledger/plan/log commit. Review by: Codex root,
+implementer first filter. Recorded by: Codex root. Both prior rejected verdicts
+and full1.0/CI/author/release gates remain; no push or self-approval.

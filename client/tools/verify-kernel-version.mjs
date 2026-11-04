@@ -1,5 +1,6 @@
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { execFileSync } from "node:child_process";
+import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 
@@ -101,66 +102,27 @@ const correctionsAt = (ref, label) => {
 // A completed ledger record is not a quoted example or a request to create one.
 // Keep the existing range/correction rules; recognize visible metadata, not
 // incidental appearances of its labels anywhere in the surrounding prose.
+const { Parser } = createRequire(import.meta.url)("commonmark");
+const reviewParser = new Parser();
 const visibleReviewText = (content) => {
-  let fence = null;
-  let quotedFence = null;
-  let quotedParagraph = false;
-  const heading = (line) => /^ {0,3}#{1,6}(?:[ \t]|$)/.test(line);
-  const thematicBreak = (line) => /^ {0,3}(?:(?:\*[ \t]*){3,}|(?:-[ \t]*){3,}|(?:_[ \t]*){3,})$/.test(line);
-  const setextUnderline = (line) => /^ {0,3}(?:=+|-+)[ \t]*$/.test(line);
-  const listStart = (line) => /^ {0,3}(?:[-+*]|1[.)])[ \t]+\S/.test(line);
-  const fenceMarker = (line) => {
-    const match = /^ {0,3}(`{3,}|~{3,})/.exec(line);
-    return match && !(match[1][0] === "`" && line.slice(match[0].length).includes("`")) ? match : null;
-  };
-  const expandedTabs = (line) => {
-    let column = 0;
-    return [...line].map((character) => {
-      const width = character === "\t" ? 4 - column % 4 : 1;
-      column += width;
-      return character === "\t" ? " ".repeat(width) : character;
-    }).join("");
-  };
-  return content.replace(/<!--[\s\S]*?(?:-->|$)/g, "").split(/\r?\n/).map((line) => {
-    const marker = fenceMarker(line);
-    if (fence !== null) {
-      if (marker && marker[1][0] === fence[0] && marker[1].length >= fence.length && line.slice(marker[0].length).trim() === "") fence = null;
-      return "";
+  const lines = content.split(/\r?\n/);
+  const visible = lines.map(() => "");
+  const walker = reviewParser.parse(content).walker();
+  let event;
+  while ((event = walker.next())) {
+    if (!event.entering) continue;
+    const node = event.node;
+    if (node.type === "block_quote" || node.type === "code_block" || node.type === "html_block") {
+      walker.resumeAt(node, false);
+      continue;
     }
-    const expanded = expandedTabs(line);
-    if (/^ {0,3}>/.test(expanded)) {
-      let body = expanded;
-      // Find the leaf within quoted/list containers. A quoted list paragraph
-      // permits the same lazy continuation as a plain or nested quotation.
-      for (;;) {
-        if (thematicBreak(body)) break;
-        const prefix = /^ {0,3}> ?/.exec(body) ??
-          (quotedParagraph ? /^ {0,3}(?:[-+*]|1[.)]) {1,4}(?=\S)/ : /^ {0,3}(?:[-+*]|[0-9]{1,9}[.)]) {1,4}(?=\S)/).exec(body);
-        if (!prefix) break;
-        body = body.slice(prefix[0].length);
-      }
-      const quoteMarker = fenceMarker(body);
-      if (quotedFence !== null) {
-        if (quoteMarker && quoteMarker[1][0] === quotedFence[0] && quoteMarker[1].length >= quotedFence.length && body.slice(quoteMarker[0].length).trim() === "") quotedFence = null;
-        quotedParagraph = false;
-      } else if (quoteMarker) {
-        quotedFence = quoteMarker[1];
-        quotedParagraph = false;
-      } else {
-        quotedParagraph = body.trim() !== "" && !heading(body) && !thematicBreak(body) &&
-          !(quotedParagraph && setextUnderline(body)) && (quotedParagraph || !/^(?: {4}|\t)/.test(body));
-      }
-      return "";
-    }
-    // CommonMark §5.1: omitting '>' does not end an open quote paragraph.
-    // A blank or a genuine interrupting block does; indented text alone does not.
-    if (quotedParagraph && expanded.trim() !== "" && !heading(expanded) && !thematicBreak(expanded) &&
-        !setextUnderline(expanded) && !listStart(expanded) && marker === null) return "";
-    quotedParagraph = false;
-    quotedFence = null;
-    if (marker) { fence = marker[1]; return ""; }
-    return /^(?: {0,3}>| {4}|\t)/.test(line) ? "" : line;
-  }).join("\n");
+    if (node.type !== "paragraph" && node.type !== "heading") continue;
+    const [[start], [end]] = node.sourcepos;
+    for (let line = start - 1; line < end; line++) visible[line] = lines[line];
+  }
+  // Keep existing inline-comment exclusion without changing Markdown's block
+  // boundaries or manufacturing content from quoted/list-relative lines.
+  return visible.join("\n").replace(/<!--[\s\S]*?(?:-->|$)/g, (comment) => comment.replace(/[^\r\n]/g, ""));
 };
 const completedReviewMetadata = (section) => {
   const fields = new Map();

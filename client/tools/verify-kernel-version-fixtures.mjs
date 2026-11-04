@@ -5,7 +5,12 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const sourceRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
-const run = (root, command, args = []) => execFileSync(command, args, { cwd: root, encoding: "utf8", stdio: "pipe" });
+// The isolated Git histories contain only the guard's subject files. Their Node
+// subprocesses use the source checkout's installed, lock-pinned tool dependencies.
+const run = (root, command, args = []) => execFileSync(command, args, {
+  cwd: root, encoding: "utf8", stdio: "pipe",
+  env: command === "node" ? { ...process.env, NODE_PATH: path.join(sourceRoot, "client/node_modules") } : process.env,
+});
 const write = (root, filename, data) => { mkdirSync(path.dirname(path.join(root, filename)), { recursive: true }); writeFileSync(path.join(root, filename), data); };
 const commit = (root, message) => { run(root, "git", ["add", "."]); run(root, "git", ["commit", "-m", message]); };
 const versionFiles = (root, version) => {
@@ -214,6 +219,7 @@ try {
     ["tab-lazy-quoted-example", `# Fixture ledger\n\n> \tExample only\n**Review by:** Fixture Reviewer\n**Decision:** APPROVED\nExact range ${reviewRange}\n`],
     ["ordered-text-lazy-quoted-example", `# Fixture ledger\n\n> Example paragraph\n> 2. # Still paragraph text, not an interrupting list heading\n**Review by:** Fixture Reviewer\n**Decision:** APPROVED\nExact range ${reviewRange}\n`],
     ["invalid-fence-lazy-quoted-example", ["# Fixture ledger", "", "> ```info`not-a-fence", "**Review by:** Fixture Reviewer", "**Decision:** APPROVED", `Exact range ${reviewRange}`, ""].join("\n")],
+    ["list-relative-lazy-quoted-example", `# Fixture ledger\n\n## Independent review ${reviewRange}\n\n> - item\n> =\n**Review by:** Fixture Reviewer\n**Decision:** APPROVED\n`],
     ["commented-example", `# Fixture ledger\n\n<!--\n## Independent review ${reviewRange}\n- **Review by:** Fixture Reviewer\n- **Decision:** APPROVED\n-->\n`],
     ["empty-fields", `# Fixture ledger\n\n## Independent review ${reviewRange}\n\n- **Review by:**\n- **Decision:**\n`],
     ["pending-decision", `# Fixture ledger\n\n## Independent review ${reviewRange}\n\n- **Review by:** Fixture Reviewer\n- **Decision:** pending; approval must be obtained later.\n`],
@@ -246,6 +252,9 @@ try {
 
   // Preserve the completed record forms used by real legacy review/remap logs.
   const completedReviews = [
+    `# Ledger\n\n## Independent review ${reviewRange}\n\n> - item\n>   =\n**Review by:** Fixture Reviewer\n**Decision:** APPROVED\n`,
+    `# Ledger\n\n## Independent review ${reviewRange}\n\n> - item\n>     # Heading\n**Review by:** Fixture Reviewer\n**Decision:** APPROVED\n`,
+    `# Ledger\n\n## Independent review ${reviewRange}\n\n> - item\n>     ---\n**Review by:** Fixture Reviewer\n**Decision:** APPROVED\n`,
     `# Ledger\n\n## Independent review ${reviewRange}\n\n> Quoted example\n\n**Review by:** Fixture Reviewer\n**Decision:** APPROVED\n`,
     `# Ledger\n\n## Independent review ${reviewRange}\n\n> Quoted example\n>\n**Review by:** Fixture Reviewer\n**Decision:** APPROVED\n`,
     `# Ledger\n\n> Quoted example\n## Independent review ${reviewRange}\n\n**Review by:** Fixture Reviewer\n**Decision:** APPROVED\n`,

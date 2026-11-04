@@ -7,10 +7,12 @@
 
 **Correction citation/metadata review,2026-11-04:** complete seven-path
 `611273b5..fce6c3d9` (RP-540) independently approved. Original eight-path
-`a7e33b73..611273b5` (RP-131) requires changes: lazy quote metadata is falsely
-admitted. RP-716's follow-up excludes continuation while preserving legitimate
-metadata exits; full fixtures/topology/syntax pass and original50a3a514 still
-fails. Independent follow-up review remains; no history-exception adoption,
+`a7e33b73..611273b5` (RP-131) and first follow-up `a6fa32ac..3ae7f43a`
+require changes: lazy/list-relative quote handling still misclassifies metadata.
+RP-716/717's new follow-up uses pinned CommonMark block parsing, preserves the
+existing field grammar and adds the reference-rendered counterexamples. Full
+fixtures/frozen install/topology/build pass; original50a3a514 still fails.
+Independent final union review remains; no history-exception adoption,
 version/row rewrite or whole-CI acceptance. Owning log holds exact evidence.
 
 **Fixture-discovery corrective review,2026-11-04:** complete seven-path

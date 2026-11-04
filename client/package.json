@@ -25,6 +25,7 @@
     "@vitest/browser-playwright": "4.1.10",
     "ajv": "8.20.0",
     "axe-core": "4.12.1",
+    "commonmark": "0.31.2",
     "playwright": "1.62.0",
     "svelte-check": "4.7.4",
     "typescript": "5.9.2",
