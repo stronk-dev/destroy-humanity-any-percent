@@ -224,15 +224,15 @@ func TestActualWebsocketRecoveryReplaysPrivateReceiptsAndLatestWorld(t *testing.
 
 type changingChannelMemberships struct{ allowed atomic.Bool }
 
-func (memberships *changingChannelMemberships) GuildMember(accountID, id string) bool {
+func (memberships *changingChannelMemberships) GuildMember(_ context.Context, accountID, id string) bool {
 	return accountID == "account" && id == "guild.allowed" && memberships.allowed.Load()
 }
 
-func (memberships *changingChannelMemberships) CohortMember(founderID, id string) bool {
+func (memberships *changingChannelMemberships) CohortMember(_ context.Context, founderID, id string) bool {
 	return founderID == "founder" && id == "cohort.allowed" && memberships.allowed.Load()
 }
 
-func (memberships *changingChannelMemberships) MatchParticipant(founderID, id string) bool {
+func (memberships *changingChannelMemberships) MatchParticipant(_ context.Context, founderID, id string) bool {
 	return founderID == "founder" && id == "match.allowed" && memberships.allowed.Load()
 }
 

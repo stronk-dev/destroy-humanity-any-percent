@@ -159,7 +159,7 @@ func TestGuildLifecycleConcurrencyAndHistoryIntegration(t *testing.T) {
 	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM guild_members WHERE guild_id=$1 AND left_at IS NULL`, guildID).Scan(&active); err != nil || active != 2 {
 		t.Fatalf("active=%d err=%v", active, err)
 	}
-	if !service.GuildMember(accounts[0], guildID) {
+	if !service.GuildMember(ctx, accounts[0], guildID) {
 		t.Fatal("leader is not authorized")
 	}
 
@@ -169,7 +169,7 @@ func TestGuildLifecycleConcurrencyAndHistoryIntegration(t *testing.T) {
 	}
 	leaveID := "018f0000-0000-7000-8000-000000000110"
 	left, err := service.Handle(ctx, joinedAccount, []byte(guildIntent(leaveID, "leave_guild", 2, "")))
-	if err != nil || receiptOutcome(t, left.Receipt) != "applied" || service.GuildMember(joinedAccount, guildID) {
+	if err != nil || receiptOutcome(t, left.Receipt) != "applied" || service.GuildMember(ctx, joinedAccount, guildID) {
 		t.Fatalf("left=%s err=%v", left.Receipt, err)
 	}
 	rejoinID := "018f0000-0000-7000-8000-000000000111"
@@ -208,7 +208,7 @@ func TestGuildLifecycleConcurrencyAndHistoryIntegration(t *testing.T) {
 	if count, err := service.SweepDisbanded(ctx, now.Add(7*24*time.Hour), 10); err != nil || count != 1 {
 		t.Fatalf("due sweep=%d err=%v", count, err)
 	}
-	if service.GuildMember(sweepAccount, sweepGuild) {
+	if service.GuildMember(ctx, sweepAccount, sweepGuild) {
 		t.Fatal("swept guild retained membership")
 	}
 	var pendingRequests int

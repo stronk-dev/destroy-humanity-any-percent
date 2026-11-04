@@ -1093,12 +1093,12 @@ func TestComposedGameserverExitVerificationAndBoardIntegration(t *testing.T) {
 	cohortDeadline := time.Now().Add(3 * time.Second)
 	for time.Now().Before(cohortDeadline) {
 		cohortID, err = composition.Commons.FounderCohort(ctx, founderID)
-		if err == nil && composition.Commons.CohortMember(founderID, cohortID) {
+		if err == nil && composition.Commons.CohortMember(ctx, founderID, cohortID) {
 			break
 		}
 		time.Sleep(25 * time.Millisecond)
 	}
-	if err != nil || !composition.Commons.CohortMember(founderID, cohortID) {
+	if err != nil || !composition.Commons.CohortMember(ctx, founderID, cohortID) {
 		t.Fatalf("pre-Exit Compact projection unavailable: %v", err)
 	}
 	websocketURL := "ws" + strings.TrimPrefix(httpServer.URL, "http") + "/connection/websocket"
@@ -1140,7 +1140,7 @@ func TestComposedGameserverExitVerificationAndBoardIntegration(t *testing.T) {
 	}
 	_ = responseBody(resignResponse)
 	cohortDeadline = time.Now().Add(3 * time.Second)
-	for time.Now().Before(cohortDeadline) && !composition.Commons.CohortMember(founderID, cohortID) {
+	for time.Now().Before(cohortDeadline) && !composition.Commons.CohortMember(ctx, founderID, cohortID) {
 		time.Sleep(25 * time.Millisecond)
 	}
 	writeWS(t, formerMember, map[string]any{"id": 3, "subscribe": map[string]any{"channel": "cohort:" + cohortID}})

@@ -179,13 +179,13 @@ type channelMemberships struct {
 	commons *commonsprojection.Projector
 }
 
-func (memberships channelMemberships) GuildMember(accountID, guildID string) bool {
-	return memberships.guilds.GuildMember(accountID, guildID)
+func (memberships channelMemberships) GuildMember(ctx context.Context, accountID, guildID string) bool {
+	return memberships.guilds.GuildMember(ctx, accountID, guildID)
 }
-func (memberships channelMemberships) CohortMember(founderID, cohortID string) bool {
-	return memberships.commons.CohortMember(founderID, cohortID)
+func (memberships channelMemberships) CohortMember(ctx context.Context, founderID, cohortID string) bool {
+	return memberships.commons.CohortMember(ctx, founderID, cohortID)
 }
-func (channelMemberships) MatchParticipant(string, string) bool { return false }
+func (channelMemberships) MatchParticipant(context.Context, string, string) bool { return false }
 
 type logInvariantSink struct {
 	logger     *slog.Logger

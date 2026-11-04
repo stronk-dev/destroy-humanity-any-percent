@@ -1245,3 +1245,68 @@ nine-tier1.0 remain open/active. No push, adoption, deployment or goal pause.
 Cleanup verified: root-owned tmpfs Postgres7fd12c59177a removed only after all
 review handles terminate. Container inventory contains only the two pre-existing
 BuildKit services; no test process or game service remains.
+
+## 2026-11-05 — RP-767 versioned correction; previous delivery hold corrected
+
+Previous goal turn makes progress: RP-768 independently closed at215a98b3.
+Review by: independent Codex /root/membership_version_authority_review (technical
+interpretation ONLY). Recorded by: Codex root. Accepted KV-1 structurally requires
+a same-commit version bump for changed guarded production paths; AGENTS' false-
+signal prohibition concerns behavior-identical work. This correction changes
+cancellation/refusal/lifecycle. Identical economics/SQL predicates do not make it
+neutral. RFC-0000 Rule3 and Transport T5/T6 / Guild G5 already authorize this
+conformance fix. No extra owner ruling, draft N1 adoption or guard exception is
+needed. Root's previous hold was an overbroad interpretation, now corrected in
+current bodies; historical logs/verdicts stay intact. Reviewer freshly executes
+existing kernel-guard fixtures, including60 literal-path refusals; eligibility
+is not implementation approval.
+
+Rebase pinned preparation onto215a98b3: only node.go differs among the9 old base
+files; its RP-768 credential-return/OnAlive blocks are retained byte-exact. Old
+preparer correctly refuses that drift. Apply the complete9-file cancellation
+patch, put the reviewed4-case probe into the ordinary integration population
+(header only changes), and increment all3 version sources225→226 in this same
+coherent batch. No guarded-prefix/correction/history rewrite, applied migration,
+epoch8/content/copy/economics or public wire/identity schema changes. Actual
+membership policy/SQL predicates stay unchanged; cancelled work now refuses.
+
+Fresh baseline11332 at215 fails all4 actual Linux-amd64/Postgres/race arms:
+Guild caller/configured3.73/16.44s, Cohort3.56/16.61s. Configured cases first observe
+successful Drain/4003 then SQL surviving the original bound. Tracked correction
+94516 passes1.55/1.28/1.30/1.16s with original locks held. Backend cancellation can
+briefly finish after Drain returns: bounded, never instantaneous SQL quiescence.
+Logs under .cache/transport-membership-shutdown-215a98b3 retain exact populations.
+
+Finished native8-package race2431 passes; native DB cases skip. Linux-amd64 real-
+PG full8-package race25947 runs ALONE and passes: Kernel1.063, Transport74.087,
+Account23.444, Gameserver199.156, Guild3.906, Commonsprojection1.530,
+Replayverify3.106, Replaycatalog9.383s;873PASS/zeroFAIL/one old opt-in minute cleanup
+skip. SQL-full-serial.log SHA256
+673ee3fd7e828d11d503bb47ec88a86271db86ad5f99d1b3f367359ebf96eef3.
+Client375 transport/payload/replay tests3217, strict types40836 zero errors/warnings,
+affected vet35519 and native gameserver build2617 pass. Real history guard47931
+remains RED at historical50a3a514; source-version parity passes before that failure.
+No whole-CI or full-history pass. Root current13 source/test/version hashes stay
+fixed through failed and successful executions; final checksum assertion passes.
+
+Invalid verification is retained, not overwritten: root full2862 and reviewer59770
+were concurrent against the SAME default fixture DB. Their TRUNCATE/account/epoch
+operations interfere: root Minigame409/epoch-history failures; reviewer healthy
+family control4001. Both runs remain FAILED (sql-full.log and independent-current.log).
+Root scheduled non-independent work in parallel; no product regression is inferred
+from that setup. With all other SQL runners stopped and no source/assertion/guard
+changes, reviewer33958 passes its selected cases, then root25947 passes full8.
+Existing docs/ci now states the shared-DB single-runner requirement; a different
+host port alone is not isolation. No new orchestration/lock/RFC/test exemption.
+
+Preliminary independent review finds no code issue: all9 candidate bindings match,
+ordinary regression matches prior body, and node.go outside OnSubscribe matches
+215 exactly. Fresh serial race33958 covers actual4-case cancellation, healthy
+Guild/Commons/recovery, expiry, both authentication shutdowns, family revocation,
+Exit/re-sign/leave and Guild lifecycle:34PASS/zeroFAIL/zeroSKIP. It reuses root's
+source-bound old proof after inspecting bindings, not a fresh old execution.
+Final complete25-path implementation/test/version/docs/record range after215a98b3
+still needs its committed-range verdict. Retained9768d681 artifact predates these
+changes. Full feature/hosted/rights/native/R-006/release and nine-tier1.0 stay open;
+no publication, archival, new owner adoption or goal pause.
+Review by: Codex root (implementation/output first filter). Recorded by: Codex root.

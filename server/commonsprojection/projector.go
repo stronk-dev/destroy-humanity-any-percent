@@ -679,14 +679,14 @@ func (p *Projector) FounderCohort(ctx context.Context, founderID string) (string
 	return id, err
 }
 
-func (p *Projector) CohortMember(founderID, cohortID string) bool {
+func (p *Projector) CohortMember(ctx context.Context, founderID, cohortID string) bool {
 	if p == nil || founderID == "" || cohortID == "" {
 		return false
 	}
 	// Assignment persists across runs; permission does not. A delayed projection
 	// must agree with the current, non-archived Company's authoritative head.
 	var member bool
-	err := p.db.QueryRow(`SELECT EXISTS(
+	err := p.db.QueryRowContext(ctx, `SELECT EXISTS(
 		SELECT 1 FROM founder_commons_assignments assignment
 		JOIN company_compact_memberships membership ON membership.founder_id=assignment.founder_id
 		JOIN save_streams company ON company.id=membership.company_stream_id

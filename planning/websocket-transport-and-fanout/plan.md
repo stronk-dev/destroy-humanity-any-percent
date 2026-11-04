@@ -16,24 +16,26 @@ opt-in cleanup skip explicit. Complete seven-path7505c5bf..c32f6902 receives fre
 independent corrective APPROVAL after exact-old/current expiry, shutdown/drain and
 actual family-revocation execution. Original feature/release gates remain separate.
 
-2026-11-04 RP-767 remains OPEN in the product. Real Guild/Cohort permission SQL
-can survive successful configured15s drain; the2s caller population also times out.
-The complete nine-file context-propagation candidate is UNAPPLIED. Native/five-
-package Linux-amd64/Postgres race and final four-case old/current proof pass for
-the candidate; baseline failures and source versions are retained in the log.
-Complete six-pathc7a9e385..d446a17f candidate/tool/research range is independently
-APPROVED, including fresh final old/current configured-bound SQL proof. Exactly `server/guild/intents.go`
-is guarded: lawful delivery and exact eligibility under adopted authority remain,
-not an inferred exception or false replay-version bump. The pending guard draft's
-N1 is not automatically satisfied by unchanged math/permission predicates.
+2026-11-04 RP-767 is locally implemented with kernel0.3.226. Independent
+technical review /root/membership_version_authority_review establishes that
+accepted KV-1's normal same-commit bump applies to this behavior-changing
+correction. The prior root-authored neutrality/exception hold was overbroad;
+no draft adoption, registry exception/removal or new owner ruling is needed.
+Guild/Cohort permission lookups now receive client and node cancellation through
+the production resolver chain, including the actual SQL read. On the current
+base all4 old races fail; ordinary tracked-test correction passes all4 with
+locks still held, under the original2s caller and configured15s bounds.
 
-Reproduce from root with
-`python3 planning/websocket-transport-and-fanout/probes/prepare-membership-candidate.py`.
-It prints an ignored output directory. Use its `baseline-docker.json` or
-`candidate-docker.json` through `make test-go-ci CI_TEST_PACKAGES=./gameserver`
-with `CI_TEST_FLAGS='-overlay=/workspace/<output>/<population>-docker.json -run TestComposedDrainCancelsBlockedMembershipLookupIntegration -race -v'`.
-The compiler overlay adds the manual probe; ordinary CI/product sources are unchanged.
-Full candidate package selectors are `./transport ./gameserver ./guild ./commonsprojection ./account`.
+All8 affected native/Linux-amd64 real-PG race packages, client replay/transport,
+strict types, native gameserver build and vet pass. Root/reviewer initially overlap
+shared-DB suites and retain their failures; unchanged-source serial reviewer and
+full root runs pass. Final full-range corrective review remains. Full feature,
+historical kernel-guard debt and hosted/clean-host/release gates stay separate.
+The ordinary regression is
+`make test-go-ci CI_TEST_PACKAGES=./gameserver CI_TEST_FLAGS='-race -run TestComposedDrainCancelsBlockedMembershipLookupIntegration -v'`.
+The prior six-pathc7a9e385..d446a17f candidate approval stays historical. Its
+preparer is now pinned to215a98b3 and deliberately refuses changed source;
+use only the matching source checkout for historical overlay reproduction.
 
 2026-11-04 RP-766: pending initial authentication now inherits node cancellation;
 late results are refused and late library registrations close before queue setup.

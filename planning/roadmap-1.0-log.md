@@ -5906,3 +5906,14 @@ gate. RP-767 stays OPEN/unapplied; legitimate predecessor, hosted CI, rights,
 native supervisor/clean host/R-006 and all nine tiers through Transcendence remain.
 The full1.0 goal stays active. No repeated owner question, inferred adoption,
 push, deployment, archival or release call.
+
+## 2026-11-05 — Membership cancellation reaches the ordinary implementation
+
+RP-767 is locally implemented with kernel0.3.226, preserving RP-768. Independent
+technical review resolves root's unnecessary exception hold: existing KV-1
+requires normal versioned corrective delivery for this behavior-changing fix.
+Affected native/real-PG race and client/replay/type/build/vet checks pass; final
+implementation review remains. The [owning log](websocket-transport-and-fanout/log.md)
+holds old/current proof, failed shared-DB overlap and unchanged-source serial passes.
+No artifact is relabelled:9768d681 predates the two corrections. Full nine-tier1.0,
+historical guard/accounting/CI, content, clean-host and release gates remain.

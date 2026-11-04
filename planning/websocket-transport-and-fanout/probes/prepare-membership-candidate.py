@@ -8,7 +8,7 @@ import subprocess
 import tempfile
 
 ROOT = Path(__file__).resolve().parents[3]
-BASE = "c7a9e385436fb730ac360527b5346083e45c6188"
+BASE = "215a98b3330445a1d7cc840d4c46a5cfad7c92ac"
 SOURCE = "planning/websocket-transport-and-fanout/probes/membership-shutdown-integration_test.go.txt"
 TARGET = "server/gameserver/membership_shutdown_observation_test.go"
 
@@ -121,7 +121,7 @@ guarded = sorted(path for path in changes if not path.endswith("_test.go") and a
 if guarded != ["server/guild/intents.go"]:
     raise RuntimeError(f"kernel scope drift: {guarded}")
 
-parent = ROOT / ".cache/transport-membership-shutdown-c7a9e385"
+parent = ROOT / (".cache/transport-membership-shutdown-" + BASE[:8])
 parent.mkdir(parents=True, exist_ok=True)
 output = Path(tempfile.mkdtemp(prefix="candidate-", dir=parent))
 patch = []

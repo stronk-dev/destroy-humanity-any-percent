@@ -680,12 +680,12 @@ func uniqueConstraint(err error) (string, bool) {
 	return "", false
 }
 
-func (service *Service) GuildMember(accountID, guildID string) bool {
+func (service *Service) GuildMember(ctx context.Context, accountID, guildID string) bool {
 	if service == nil || !uuidPattern.MatchString(accountID) || !uuidV7Pattern.MatchString(guildID) {
 		return false
 	}
 	var exists bool
-	return service.db.QueryRow(`SELECT EXISTS(SELECT 1 FROM guild_members WHERE account_id=$1 AND guild_id=$2 AND left_at IS NULL)`, accountID, guildID).Scan(&exists) == nil && exists
+	return service.db.QueryRowContext(ctx, `SELECT EXISTS(SELECT 1 FROM guild_members WHERE account_id=$1 AND guild_id=$2 AND left_at IS NULL)`, accountID, guildID).Scan(&exists) == nil && exists
 }
 
 func (service *Service) FounderGuildMember(ctx context.Context, founderID string) (bool, error) {
@@ -697,5 +697,5 @@ func (service *Service) FounderGuildMember(ctx context.Context, founderID string
 	return exists, err
 }
 
-func (service *Service) CohortMember(_, _ string) bool     { return false }
-func (service *Service) MatchParticipant(_, _ string) bool { return false }
+func (service *Service) CohortMember(context.Context, string, string) bool     { return false }
+func (service *Service) MatchParticipant(context.Context, string, string) bool { return false }

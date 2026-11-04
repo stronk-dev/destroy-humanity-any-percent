@@ -77,9 +77,11 @@ Both full builds, 14 actual platform-selected image scans, six upstream/rehearsa
 config identities, intact/nine semantic-tampering checks and manifest-bound source/
 image secret scan pass locally. Independent corrective artifact-evidence review
 APPROVES complete four-path `9768d681..40969759` after fresh six-executable rebuild,
-actual package/tampering consumers and registry reads. RP-767 membership
-cancellation remains unapplied/open. No full feature, hosted CI, native/SP8/R-006
-or predecessor proof follows. The local preview label is unchanged; full nine-tier
+actual package/tampering consumers and registry reads. Later RP-768 expiry and
+kernel `0.3.226` RP-767 membership corrections require a future rebuilt artifact;
+RP-767's current-source checks pass and final implementation review is pending.
+No full feature, hosted CI, native/SP8/R-006 or predecessor proof follows.
+The local preview label is unchanged; full nine-tier
 1.0 remains the objective.
 
 **Direct upstream-Compose proposal, 2026-11-04 (RP-759):** the current

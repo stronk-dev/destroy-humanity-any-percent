@@ -195,6 +195,12 @@ make vectors-check-ci
 `make test-go-ci` reproduces the complete Go suite cold on Linux/amd64 with
 Postgres, including packages whose integration tests are not selected by the
 focused `test-save-integration` target.
+
+The default SQL targets share a database within their Compose project, and several
+fixtures truncate accounts, catalogs and epochs. Run these targets serially across
+implementers and reviewers unless the project and database are explicitly isolated.
+Changing `SAVE_TEST_HOST_PORT` alone changes the host binding, not the database namespace.
+
 On Apple Silicon, that Docker lane disables AVX2 inside the emulated amd64 test container because
 Docker Desktop's QEMU CPU-feature combination corrupts the age authenticated-payload path. The
 hosted Actions runner is native amd64 and retains ordinary CPU detection, so the optimized path is

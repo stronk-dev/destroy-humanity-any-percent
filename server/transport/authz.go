@@ -1,6 +1,9 @@
 package transport
 
-import "strings"
+import (
+	"context"
+	"strings"
+)
 
 type Identity struct {
 	AccountID string
@@ -8,13 +11,13 @@ type Identity struct {
 }
 
 type Memberships interface {
-	GuildMember(accountID, guildID string) bool
-	CohortMember(founderID, cohortID string) bool
-	MatchParticipant(founderID, matchID string) bool
+	GuildMember(ctx context.Context, accountID, guildID string) bool
+	CohortMember(ctx context.Context, founderID, cohortID string) bool
+	MatchParticipant(ctx context.Context, founderID, matchID string) bool
 }
 
-func Authorized(identity Identity, channel string, memberships Memberships) bool {
-	if identity.AccountID == "" || identity.FounderID == "" || channel == "" {
+func Authorized(ctx context.Context, identity Identity, channel string, memberships Memberships) bool {
+	if ctx.Err() != nil || identity.AccountID == "" || identity.FounderID == "" || channel == "" {
 		return false
 	}
 	if channel == "world" || channel == "feed" || channel == "player:"+identity.FounderID {
@@ -26,11 +29,11 @@ func Authorized(identity Identity, channel string, memberships Memberships) bool
 	}
 	switch prefix {
 	case "guild":
-		return memberships.GuildMember(identity.AccountID, id)
+		return memberships.GuildMember(ctx, identity.AccountID, id)
 	case "cohort":
-		return memberships.CohortMember(identity.FounderID, id)
+		return memberships.CohortMember(ctx, identity.FounderID, id)
 	case "match":
-		return memberships.MatchParticipant(identity.FounderID, id)
+		return memberships.MatchParticipant(ctx, identity.FounderID, id)
 	default:
 		return false
 	}

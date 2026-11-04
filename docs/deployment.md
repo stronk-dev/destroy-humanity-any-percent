@@ -222,9 +222,10 @@ scanned, normalized image inventories. The package validator, nine rebound
 tampering fixtures and manifest-bound source/image secret scan pass locally.
 Independent corrective artifact-evidence review approves complete range
 `9768d681..40969759`, including a fresh six-executable rebuild and executed
-package/tampering and registry checks. RP-767's
-membership-query cancellation correction remains unapplied and open. Both trees
-are the same candidate; the earlier
+package/tampering and registry checks. The later RP-768 expiry correction and
+kernel `0.3.226` RP-767 membership cancellation correction are absent from this retained
+artifact. The latter's current-source checks pass; implementation review is pending.
+Both trees are the same candidate; the earlier
 [`893bb1e7` record](../planning/deployment-foundation/release-builds/candidate-893bb1e7.json)
 remains historical evidence, not an approved predecessor. Current source correctness,
 hosted CI, predecessor provenance and clean-host gates remain open. Local packaging

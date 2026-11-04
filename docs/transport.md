@@ -195,7 +195,9 @@ including otherwise valid credentials. A final `OnConnect` guard also disconnect
 late library registrations before allocating application queues or handlers. That
 cleanup can follow a connect reply already produced by the library.
 
-Known limitation (RP-767): Guild/Cohort subscription membership queries do not yet
-inherit shutdown cancellation. A blocked query can outlive successful socket drain.
-The tested, unapplied correction is tracked in the
-[Transport plan](../planning/websocket-transport-and-fanout/plan.md).
+Subscription membership lookups inherit the client context and node shutdown
+cancellation. The composed Guild and Commons resolvers carry it to their actual
+Postgres reads; cancelled authorization denies access and shutdown returns the
+existing `4003` drain close. Backend cancellation can briefly finish after Drain
+returns, within the caller's bound; Drain is not an instantaneous SQL barrier.
+Kernel `0.3.226` identifies this behavior-changing guarded Guild correction.

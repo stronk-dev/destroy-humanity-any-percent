@@ -176,8 +176,21 @@ func (n *Node) bindHandlers() {
 		})
 		n.replaceOldestConnections(client)
 		client.OnSubscribe(func(event centrifuge.SubscribeEvent, callback centrifuge.SubscribeCallback) {
+			if n.authCtx.Err() != nil {
+				callback(centrifuge.SubscribeReply{}, disconnectServerDrain)
+				return
+			}
+			lookupCtx, cancelLookup := context.WithCancel(client.Context())
+			stopNodeCancellation := context.AfterFunc(n.authCtx, cancelLookup)
+			defer stopNodeCancellation()
+			defer cancelLookup()
 			identity, ok := identityFromClient(client)
-			if !ok || !Authorized(identity, event.Channel, n.memberships) {
+			allowed := ok && Authorized(lookupCtx, identity, event.Channel, n.memberships)
+			if n.authCtx.Err() != nil {
+				callback(centrifuge.SubscribeReply{}, disconnectServerDrain)
+				return
+			}
+			if !allowed {
 				callback(centrifuge.SubscribeReply{}, centrifuge.ErrorPermissionDenied)
 				return
 			}

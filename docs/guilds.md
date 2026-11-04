@@ -36,7 +36,10 @@ concurrent persistence correction; cap, permission, prices and balance policy ar
 Manual disbanding requires the leader
 to be the sole member. A guild below two members records the first deficient instant and a sweep
 disbands it after seven complete days. Membership changes enter a claimed outbox and publish strict
-`presence` envelopes on `guild:{guild_id}`; authorization queries the active account row directly.
+`presence` envelopes on `guild:{guild_id}`; authorization queries active membership directly.
+The transport resolver passes its cancellation context into that read, so socket drain can
+cancel a blocked permission query. This correction carries kernel `0.3.226`; membership policy,
+query predicates and economy formulas are unchanged.
 
 Account deletion closes and anonymizes membership history. A departing leader deterministically
 hands leadership to the oldest officer, then oldest member; an empty guild disbands. The mutation

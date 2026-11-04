@@ -1,5 +1,15 @@
 # Current repository state
 
+**Membership drain correction,2026-11-05:** RP-767 is locally implemented with
+kernel `0.3.226` under normal accepted KV-1 corrective delivery. No new owner choice
+or scope exception was required; root's earlier neutrality hold was overbroad.
+Affected native/Linux-amd64 real-Postgres race, client replay/transport, types,
+build and vet pass. Final independent implementation review is pending; the
+[Transport log](websocket-transport-and-fanout/log.md) preserves old failures,
+shared-database interference and successful serial evidence. Epoch8 is unchanged.
+The retained `9768d681` artifact predates both this correction and RP-768; no new
+tier, hosted-CI, artifact, full-feature or release acceptance follows.
+
 **Bounded local checkpoint,2026-11-04:** actual gameserver stop→five-minute alert→
 restart→matching resolution is independently proved at `b23a139b`. A newly
 reproduced backup race—successful creation followed by restore refusal after a
@@ -20,8 +30,9 @@ Account/Guild, backup and attribution corrections. The
 and complete evidence range `9768d681..40969759` are independently approved after
 a fresh six-executable rebuild, actual intact/nine-tampering consumers and registry
 reads. Root's14 actual image scans and exact source/image secret scan pass; the
-reviewer independently inspects those scans. RP-767 membership-query cancellation
-remains OPEN/unapplied. Earlier records remain historical. Actual native journal
+reviewer independently inspects those scans. Later RP-767/RP-768 corrections are
+outside that artifact; the current-source follow-up above owns their status.
+Earlier records remain historical. Actual native journal
 collection has separate approval at `927b26ed`. The Deployment log owns execution
 and local/platform limits. This is neither a legitimate candidate/previous pair
 nor current hosted, rights, native-supervisor, host-retention or clean-host acceptance.
@@ -43,7 +54,8 @@ trigger failures and the post-sweep `guild missing` rollback. Corrected cold
 Postgres/race suites pass both orders, exact refusals and preserved history; the
 actual composed Guild/HTTP/socket deletion check also passes. The [Guild log](archive/guild-model/log.md)
 distinguishes independent executions from inspected root checks and records cleanup.
-Current kernel is0.3.225, epoch8 unchanged. The new `9768d681` candidate contains
+Those corrections used kernel0.3.225; current kernel `0.3.226` retains them, with
+epoch8 unchanged. The `9768d681` candidate contains
 these runtime corrections; historical`df84ce1a` does not. No new playable tier or whole-feature/release
 acceptance follows; the27 Clout failures and historical version guard remain open.
 

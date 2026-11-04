@@ -1,15 +1,22 @@
 package transport
 
 import (
+	"context"
 	"errors"
 	"testing"
 )
 
 type testMemberships struct{}
 
-func (testMemberships) GuildMember(_, id string) bool      { return id == "guild.allowed" }
-func (testMemberships) CohortMember(_, id string) bool     { return id == "cohort.allowed" }
-func (testMemberships) MatchParticipant(_, id string) bool { return id == "match.allowed" }
+func (testMemberships) GuildMember(_ context.Context, _, id string) bool {
+	return id == "guild.allowed"
+}
+func (testMemberships) CohortMember(_ context.Context, _, id string) bool {
+	return id == "cohort.allowed"
+}
+func (testMemberships) MatchParticipant(_ context.Context, _, id string) bool {
+	return id == "match.allowed"
+}
 
 func phase0Policy(t *testing.T) Policy {
 	t.Helper()
@@ -73,8 +80,15 @@ func TestWorldReservationRollbackRestoresPriorRevision(t *testing.T) {
 
 func TestAuthorization(t *testing.T) {
 	identity := Identity{AccountID: "account", FounderID: "founder"}
-	if !Authorized(identity, "player:founder", testMemberships{}) || Authorized(identity, "player:other", testMemberships{}) ||
-		!Authorized(identity, "guild:guild.allowed", testMemberships{}) || Authorized(identity, "match:match.denied", testMemberships{}) {
+	if !Authorized(context.Background(), identity, "player:founder", testMemberships{}) || Authorized(context.Background(), identity, "player:other", testMemberships{}) ||
+		!Authorized(context.Background(), identity, "guild:guild.allowed", testMemberships{}) || Authorized(context.Background(), identity, "match:match.denied", testMemberships{}) {
 		t.Fatal("channel authorization mismatch")
+	}
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+	for _, channel := range []string{"world", "feed", "player:founder", "guild:guild.allowed", "cohort:cohort.allowed", "match:match.allowed"} {
+		if !Authorized(context.Background(), identity, channel, testMemberships{}) || Authorized(ctx, identity, channel, testMemberships{}) {
+			t.Fatalf("membership cancellation changed channel permission: %s", channel)
+		}
 	}
 }
