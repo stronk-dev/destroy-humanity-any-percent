@@ -7989,3 +7989,38 @@ established. Original Claude R9/R22 remain CHANGES REQUIRED, RP-143's named
 population remains unsupported, and AC3/AC4/R-006/full Deployment/release gates
 remain. Only these corrective reviews close; no feature/archival/release approval,
 runtime change or publication. Goal remains active.
+
+## 2026-11-04 — Backup header and recovery snapshot corrections approved
+
+Review by: fresh independent Codex `/root/backup_parser_snapshot_corrective_review`.
+Recorded by: Codex root. APPROVED, no findings, complete eight-path range
+`630f6833f57f4acc98e0df3bc6bece11e55a60cf..bc5d5f5d25e6d988ec00e3760b06cc4db7b395f5`
+(base exclusive, tip inclusive), including both production/test files and original
+docs/ledger/plan/log. Outer and authenticated metadata use bounded single-object
+admission before dump output. One read-only repeatable-read transaction supplies
+the complete recovery identity; failures return no partial identity. Formats,
+hash/output definitions, retention and backup policy stay unchanged.
+
+Fresh atfe29da5e: cold four owners/vet79525 terminal0; parser80992 terminal0,
+all fourteen arms pass (eight malformed/six valid, whitespace and exact64KiB).
+Private exact630f6833 parser overlay41343 exits expected Make2: all eight malformed
+arms admit and emit30/35 dump bytes, while all six valid controls pass. Main is
+never replaced. Declared Linux-amd64/Postgres backup93438 terminal0 executes
+ALL eight integration functions, no skips, including encrypted empty/populated
+restores, concurrent-write snapshot coherence, cancellation/no identity and actual
+database lock release; snapshot case1.00s. Exact-range whitespace passes.
+
+Old SQL82454 remains REUSED implementer evidence, not reexecuted. Reviewer verifies
+identity.go equals reviewed tip and exact snapshot test is unchanged, SHA256
+`233fe86500bd1ab057fe37e246c3be327332a38013367ce0436d56d194674394`.
+Later locking/parser safeguards retain separate scopes. All handles terminal;
+target output records creation/removal of dedicated tmpfs Postgres/network and final
+project inventory is empty. No prelaunch inventory was captured; none is claimed.
+Peer resources untouched, no tracked edits/commits; private overlay retained at
+`/private/tmp/cloud-clicker-backup-review.ek90rg15`.
+
+These corrective reviews close, not separate dump-snapshot binding, rights-policy
+adoption, production RPO/RTO, clean-host R-006, full Deployment/CI, archival or
+release. Next remaining DP7 writer/receiver corrective scopes RP-521/RP-523.
+Root reconciles current statuses only; no software suite for editorial records,
+no push/adoption/deployment, full nine-tier goal remains active.

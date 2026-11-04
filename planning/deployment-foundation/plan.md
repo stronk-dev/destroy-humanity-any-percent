@@ -7,6 +7,16 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Backup parser/snapshot corrective review,2026-11-04:** complete eight-path
+`630f6833..bc5d5f5d` (RP-489/490) is independently approved. Fresh exact-old parser
+discriminates all eight malformed cases; corrected14 arms, cold four owners/vet
+and all eight real Linux-amd64/Postgres backup functions pass without skips,
+including concurrent snapshot/cancellation/lock-release observations. The log
+separates fresh execution from historical old-SQL evidence. Separate dump binding,
+production RPO/RTO, metadata authority and clean-host/full-feature gates remain.
+Next consolidate remaining DP7 writer/receiver corrective scopes RP-521/RP-523;
+do not repeat these completed backup checks without new changes or evidence.
+
 **Drain/restart corrective checkpoint, 2026-11-02:** independent review approves
 RP-138's complete `1908762f..c9c9dde7` marker correction and RP-143's complete
 `8f83e4c5..81a970ce` removal of the false admitted-work acceptance route. Cold
@@ -451,15 +461,17 @@ read-only repeatable-read transaction. A real locked-table/concurrent account-wr
 regression fails on the old implementation; all seven declared Linux-amd64/Postgres
 backup integration functions now pass, including cancellation with no partial identity
 and observed lock release. Affected cold Go/vet pass. The owning log records the
-corrected cancellation observer and review range after `8ba84996`; it can share
-review with RP-489. Separate dump snapshots and full Deployment/clean-host gates remain.
+corrected cancellation observer. The complete shared `630f6833..bc5d5f5d` range
+is independently approved2026-11-04; fresh evidence is at the top of this plan.
+Separate dump snapshots and full Deployment/clean-host gates remain.
 
 **Preceding bounded checkpoint, 2026-10-12:** RP-489 unifies backup-file header admission with
 the existing single-object decoder and bounds outer/decrypted metadata framing.
 Eight encrypted malformed arms fail on old code; final14 arms retain healthy,
 whitespace and exact64KiB controls. Affected cold Go/vet and all six declared
 Linux-amd64/Postgres backup integration functions pass. The owning log holds the
-range after `630f6833`; designated review, full Deployment and clean-host gates remain.
+range after `630f6833`, now independently approved throughbc5d5f5d with RP-490.
+Full Deployment and clean-host gates remain.
 
 **Bounded checkpoint, 2026-10-09:** RP-482 adds healthy baselines to the public-metrics and
 source/image-secret probes. Actual assembled-bundle tampering and always-rejecting gates
