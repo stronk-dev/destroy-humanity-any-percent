@@ -22,6 +22,13 @@ disbanding now satisfy their tested deletion boundaries. Current kernel0.3.225,
 epoch8 unchanged; the retained candidate predates those runtime fixes. Owning
 Account/Guild logs preserve old/current SQL, race/composed checks and exact review
 ranges. This advances existing correctness, not a new tier or complete1.0 gate.
+Combined interruption research now has independent approval through`954abe09`,
+including actual Docker/Postgres weaker controls and contained-generation
+prototype, three corrected instrument-refusal gaps and source-bound v3 evidence.
+This supports a controlled isolation candidate, not an adopted/implemented
+release protocol or native-host/R-006 proof. The Deployment plan names the
+remaining durable real-helper/pre-backup/packaging/resource/backup bindings;
+no playable-tier, current-CI or release gate is promoted.
 
 **Whole-product classification baseline (2026-10-16):** see the [whole-product overview](CURRENT-STATE.md#whole-product-overview)
 and [current verification](CURRENT-STATE.md#current-verification-and-closeout).

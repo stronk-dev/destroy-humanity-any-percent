@@ -129,6 +129,16 @@ again completes all3 populations, now with typed start204/204/404 and volume
 v1/v2 remain. Complete corrected-union re-review is pending, not a new mechanism
 adoption or acceptance. No bound/population/replacement criterion changes.
 
+Complete original7-path plus both6-path correction ranges through954abe09 are
+now independently APPROVED after fresh final40535 all3 real populations and
+actual guard/classifier/source-binding07c8c8. Original CHANGES REQUIRED and v1/v2
+remain; RP-735–737 close only their instrument defects. The owning log records
+exact reviewed union and cleanup. RP-734's controlled isolation evidence is
+supported, but the durable production protocol, non-destructive pre-backup branch,
+packaged supervisor, all real resources, backup/pair authority and native-host
+adoption/R-006 remain OPEN. Do not repeat complete controlled populations absent
+a new correction; construct the real protocol rather than promote this prototype.
+
 **Fresh exact candidate, 2026-11-04:** replace neither historical artifacts nor
 the predecessor with a fabricated pair. Two independent committed-source
 `df84ce1a` rebuilds now match all74 bundle artifacts, six helpers, image archive,

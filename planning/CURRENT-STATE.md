@@ -43,6 +43,17 @@ Current kernel is0.3.225, epoch8 unchanged. The retained`df84ce1a` candidate als
 predates these runtime corrections. No new playable tier or whole-feature/release
 acceptance follows; the27 Clout failures and historical version guard remain open.
 
+**Combined interruption prototype,2026-11-04:** complete research/tool/draft union
+through`954abe09` is independently approved after original CHANGES REQUIRED and
+instrument repairs. Actual three-population Docker/Postgres execution distinguishes
+parent-only/name-reusing policies from contained resource generations; the latter
+preserves the tested replacement SQL/files/HTTP/volume values. [Candidate and limits](deployment-foundation/combined-fence-candidate.md)
+name modeled actors, proxy-before-daemon delay, extra adversarial start and missing
+real-helper/durable/pre-backup/packaging/topology/backup/native-host bindings.
+This is isolation, not literal quiescence or implemented Deployment recovery.
+No product/runtime/CI/kernel/epoch/release claim changes; full1.0 construction
+and original acceptance gates remain open.
+
 **Latest hosted verification,2026-11-02:** published main is `d6b1c668`;
 [CI41476621196](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/41476621196)
 passes browser (all phases), composed-player, harness and schema. Server still

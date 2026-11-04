@@ -43,8 +43,10 @@ candidate preserves every tested replacement value. Actual positive SQL/HTTP and
 volume writes precede admission, so absence of old mutation is not inferred from
 an unavailable target. Exact rows/bytes/start results are retained.
 
-The late create returns201 in ALL populations. The dead contained client never
-receives that ID and cannot submit its next request. The driver deliberately
+The late create returns201 in ALL populations. In the two contained populations,
+the dead client never receives that ID and cannot submit its next request.
+Parent-only descendants can survive and receive it, but the actor does not issue
+a subsequent start. The driver deliberately
 forces an ADDITIONAL start of that container as a stronger adversarial control:
 it succeeds in the weak populations and refuses for the retired network ID.
 Do not describe this forced start as a request the dead client had submitted.

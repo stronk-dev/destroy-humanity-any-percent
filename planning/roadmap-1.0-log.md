@@ -5848,3 +5848,29 @@ clean-host/release/rights/accessibility/preservation proof remain. Continue safe
 accepted construction/corrections while owner-specific adoptions are pending;
 do not repeat already-resolved Headcount model decisions or completed measurements.
 No push, host deployment, archival, acceptance promotion or goal pause.
+
+## 2026-11-04 — Combined interrupted-operation candidate independently tested
+
+Research/tool/draft source`954abe091392762a91394aeaca3f2c4a26779339`; product remains
+kernel0.3.225/epoch8. A combined controlled experiment now covers contained helper
+descendants, actual admitted pg_restore COPY, proxy-held old create/start/delete,
+modeled HTTP/host writers and a prepared named volume. Parent-only and contained-
+but-name-reusing controls corrupt replacement state; the generation candidate
+retains exact row42/current files/HTTP marker/volume sentinel after all gates open.
+All3 populations execute; native Engine starts204/204/404 and volume404/404/owned200
+are retained with exact source hashes. Root/independent old/new instrument controls
+catch volume-error conflation, arbitrary start failure and final late acceptance;
+all three defects are corrected, with original sources/artifacts/negative verdict
+preserved. The [Deployment log](deployment-foundation/log.md) owns full reviewed
+union, independent40535/07c8c8/33d154 and verified resource cleanup.
+
+This is measured progress on a complete mechanism, not that mechanism's product
+implementation. Late old-generation metadata effects remain: isolation is not
+literal quiescence. Model actors/row42/text checkpoint, proxy-before-daemon delay,
+extra driver start and unattached sentinel do not prove the real CLI, game backup,
+all4 networks/5 volumes, pre-backup abort, durable authority, actual release pair
+or native supported host. Those concrete bindings/adoption/R-006 remain open;
+do not repeat these completed controls or weaken the existing criteria.
+No new tier, full feature, current hosted-CI or release gate advances. The full
+world/combat/Tier3–8/endings/rights/accessibility/preservation construction and
+nine-tier1.0 goal remain intact/active. No push, archival or live deployment.

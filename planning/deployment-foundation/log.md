@@ -9182,3 +9182,39 @@ Real helper/durable ownership/pre-backup non-destructive branch/all resources,
 protected encrypted backup/pair, native host and adoption/R-006/whole1.0 remain.
 No runtime/CI/kernel0.3.225/epoch8, authored-copy, acceptance or operator-policy
 change, push, archival, host deployment or goal pause.
+
+## 2026-11-04 — Corrected combined-prototype union independently APPROVED
+
+Review by: independent Codex `/root/combined_fence_prototype_research_review`.
+Recorded by: Codex root, transcribing its returned final verdict.
+Complete reviewed union, base exclusive/tip inclusive:
+
+- `59ea5552135a1bdfde21d5544db237131389a14d..98af4c8d68ce31c9f384441dd4da07a6d845ce8c`.
+- `98af4c8d68ce31c9f384441dd4da07a6d845ce8c..811db80d0aa43222726a08223666be2759254b2d`.
+- `811db80d0aa43222726a08223666be2759254b2d..954abe091392762a91394aeaca3f2c4a26779339`.
+
+Verdict: **APPROVED**, corrected research/tool and technical-draft scope. Original
+CHANGES REQUIRED remains. Bound owned-container Engine start/retired-network
+classification and the final collection-deadline acceptance boundary resolve both
+blocking findings. Fresh independent40535 exits0: all3 real populations match
+SQL/file/HTTP/volume outcomes, starts204/204/404, volumes404/404/owned200.
+Actual-source07c8c8 accepts declared results and rejects permission/transport/
+target/network/unexpected-success errors; old late collection reproduces, corrected
+timely passes/boundary-late refuse; all3 artifact/source bindings pass. Full-range
+33d154 passes complete ranges, preserved negative verdict/artifacts, unchanged
+product/CI source and whitespace. Root executions are not relabeled reviewer work.
+
+All reviewer handles terminal; nine exact owned-project resource inventories empty;
+no edits/commits/scratch, checkout clean. Reviewer requests one non-blocking prose
+precision, applied in this editorial closeout without source/rerun: only the TWO
+contained populations guarantee the late ID was not received; parent-only request
+descendants may survive, although they never issue a start by actor design. The
+driver's explicit stronger adversarial start framing is unchanged.
+
+RP-735–737 close their instrument defects; RP-734's controlled isolation evidence
+is independently supported. Late old-generation create/delete STILL occur, so no
+literal quiescence, real recovery protocol, adoption, native supported-host or
+release readiness follows. Construct durable full real-helper ownership/protocol,
+pre-backup branch, packaging/all resources and checkpoint/previous-pair binding;
+do not rerun completed controls for reassurance or promote the prototype into
+acceptance. Whole nine-tier1.0 stays active; no push/deployment/archival/goal pause.
