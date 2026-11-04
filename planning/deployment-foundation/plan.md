@@ -18,9 +18,11 @@ build mode needs its own concrete accepted contract if selected.
 
 Earlier core/adapter/tool reviews cover their cited historical bytes, not this
 amendment. The reviewed v3 configuration study is below; two new input arms also
-complete the actual public population. Next independent combined research/tool
-and technical-spec review, then an explicit owner adoption request for the
-reviewed scope. Static inventory construction can be adopted separately from
+complete the actual public population. Complete11-path765aae44..70acee7f now has
+independent combined research/tool and technical-spec APPROVAL after the exact
+exec-environment/image-default and withdrawn-runner corrections. Next is an
+explicit owner adoption request for the reviewed tool/policy scope. Static
+inventory construction can be adopted separately from
 native runtime dispatch; private handling/native/SP8/R-006 must still be built
 and proved before feature acceptance. No shipping version or rights clearance,
 production/schema implementation or whole-CI claim is made.
@@ -85,8 +87,9 @@ typed/token controls with owned cleanup. Process-environment outputs match all6
 retained v3 positive mode/case hashes/lengths (047f2b). Absent-secret references
 are actually0/6/8 in minimal/base/rotation for BOTH modes; the direct Docker
 configuration has empty auths only. The new selector rejects unknown mode before
-work (5b36c0). This source/data and C01's normative translation await combined
-independent review, not self-approval or private/native acceptance.
+work (5b36c0). The complete source/data and corrected C01 translation are
+independently APPROVED765aae44..70acee7f; the reviewer reran both actual arms.
+This is not owner adoption or private/native acceptance.
 
 **Nested attribution correction,2026-11-04 (RP-761):** independently APPROVED
 complete six-path957dfa6b..a8168b63. Actual old imported-GDDO BSD omission

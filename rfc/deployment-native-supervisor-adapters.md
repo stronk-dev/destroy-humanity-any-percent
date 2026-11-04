@@ -1,8 +1,8 @@
 # Native supervisor: request and producer adapters
 
 Normative companion proposal to [SP1–SP8](deployment-native-supervisor-profile.md).
-**Draft; direct upstream-Compose amendment pending technical review/adoption;
-no implementation authority.** This enumerates the proposed
+**Draft; direct upstream-Compose amendment independently technically approved
+through70acee7f; owner adoption pending, no implementation authority.** This enumerates the proposed
 plan population and adapters. Native conformance remains unproved. A successful
 table/schema check cannot establish a real handler, filesystem or service result.
 

@@ -10,9 +10,11 @@ new source dependency, build/runtime change or complete license clearance.
 Can the cached tool hashes, upstream statements and the existing application
 inventory satisfy the proposed shipping floor? **No.** These are distinct
 evidence gaps, not a reason to mark a partial inventory full. Whether both
-executables are needed is a separate architecture question: the new bounded
-standalone comparison below tests the external CLI wrapper's necessity without
-silently changing the current two-tool draft or adopting an artifact.
+executables are needed was a separate architecture question. The independently
+reviewed standalone and input studies below now support a one-Compose proposal;
+complete technical/research approval765aae44..70acee7f includes its explicit
+exec-environment/image-default correction. Owner adoption and actual complete
+source/terms delivery remain pending; no research artifact is selected for shipping.
 
 The [source-bound observation](native-tool-inventory-observation.v1.json) records
 actual binary metadata and publisher-file consistency. The

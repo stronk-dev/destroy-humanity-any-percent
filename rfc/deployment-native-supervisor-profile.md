@@ -1,6 +1,6 @@
 # RFC: Native Deployment Supervisor Profile
 
-- **Status:** draft — prior core/adapter/tool reviews retained; direct upstream-Compose amendment pending technical review and adoption; native producers/conformance pending; no implementation authority
+- **Status:** draft — prior core/adapter/tool reviews retained; complete direct upstream-Compose amendment independently technically approved through70acee7f; owner adoption/native producers/conformance pending; no implementation authority
 - **Author:** Codex
 - **Created:** 2026-11-04
 - **Parent / amends:** [Operation Evidence](deployment-operation-evidence.md), OP9; [Current Release Authority](deployment-current-release-authority.md), CR4/CR6; [Deployment Foundation](deployment-foundation.md), DP1/DP5/DP6
@@ -28,10 +28,10 @@ IPC. The corrected core/adapter union is independently technically approved
 througha836e92b; the owning log retains exact ranges and original negative verdicts.
 The earlier two-tool [delivery companion](deployment-tool-artifact-inventory.md)
 and linkage had separate independent technical approval through1648e792. The
-current direct upstream-Compose amendment is new, not covered by those verdicts.
-Its bounded configuration research is independently approved through7a5368b5;
-the additional input-construction study has separate recorded evidence. Complete
-technical review of the amended contract precedes owner adoption under SP8; native producer
+current direct upstream-Compose amendment has its own complete independent
+technical/research approval765aae44..70acee7f, including both input-construction
+arms and the image-environment correction. Prior verdicts are not extended to
+new bytes. Technical approval precedes owner adoption under SP8; native producer
 construction and actual conformance follow adoption, not as a circular prerequisite
 to permission to implement. OP9 remains open until its actual acceptance proof.
 

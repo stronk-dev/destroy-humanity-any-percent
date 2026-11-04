@@ -11711,3 +11711,30 @@ independent re-review. No adoption, implementation, artifact pin/rights clearanc
 private/native/SP8/R-006 acceptance, CI promotion, publication, deployment,
 archival or goal pause follows. Review by: Codex root, implementer first filter.
 Recorded by: Codex root.
+
+## 2026-11-04 — Corrected direct compiler proposal independently approved
+
+APPROVED, technical-spec and bounded research/tool only, complete11-path union
+765aae446dc78d52f72dbb22a2ba137ef87565c9..
+70acee7fdfb8865361c74f4c785fc7cb9db85f82. Review by: independent Codex
+/root/native_supervisor_profile_review. Recorded by: Codex root, transcribing
+completed verdict. Both findings resolved; no remaining technical blockers.
+
+Reviewer rechecked exact C01-only authenticated exec environment, pinned image/
+effective container validation before start, defaults/order/source-target binding,
+original attach/native completion, retained H06 and private-output limits. Probe
+and both reports are byte-identical to its previously executed complete successful
+Docker arms, so those actual results are reused rather than needlessly rerun for
+text-only corrections. Source/report hashes,21 names,12 local RFC paths, negative
+verdict/historical log prefix and whitespace pass. Normal product/tests/CI bytes
+remain excluded; tree clean and all review/root handles terminal. The root casing
+assertion was corrected against unchanged text, not called a software pass.
+
+Current statuses now cite this complete range. Next: ask Marco to adopt the
+reviewed tool-inventory/upstream-acquisition and tool-only MPL/source-delivery
+contract so static packaging implementation can proceed. AGENTS and RFC-0000
+reserve specification/policy adoption to Marco; independent review supplies no
+such decision. Native-profile/parent adoption, actual selected version/rights,
+private/native/SP8/R-006 construction and full1.0 remain separate. No runtime
+implementation, feature acceptance, publication, deployment, archival, release
+approval or goal pause follows from this checkpoint.
