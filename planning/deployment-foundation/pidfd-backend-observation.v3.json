@@ -1,0 +1,701 @@
+{
+  "actor_observer_guard_seconds": 240,
+  "actor_output": "=== RUN   TestManualOperationGatewayControls\n=== RUN   TestManualOperationGatewayControls/deadline_postcollection\n=== RUN   TestManualOperationGatewayControls/both_EOF_but_admission_open\n=== RUN   TestManualOperationGatewayControls/frontend_only\n=== RUN   TestManualOperationGatewayControls/server_only\n=== RUN   TestManualOperationGatewayControls/neither\n=== RUN   TestManualOperationGatewayControls/complete\n=== RUN   TestManualOperationGatewayControls/native_failure\n=== RUN   TestManualOperationGatewayControls/deadline_failure\n=== RUN   TestManualOperationGatewayControls/real_EOF\n=== RUN   TestManualOperationGatewayControls/truncated_header\n=== RUN   TestManualOperationGatewayControls/bad_length\n=== RUN   TestManualOperationGatewayControls/oversized_frame\n=== RUN   TestManualOperationGatewayControls/truncated_body\n=== RUN   TestManualOperationGatewayControls/bad_key_size\n=== RUN   TestManualOperationGatewayControls/duplicate_key\n--- PASS: TestManualOperationGatewayControls (0.02s)\n    --- PASS: TestManualOperationGatewayControls/deadline_postcollection (0.00s)\n    --- PASS: TestManualOperationGatewayControls/both_EOF_but_admission_open (0.00s)\n    --- PASS: TestManualOperationGatewayControls/frontend_only (0.00s)\n    --- PASS: TestManualOperationGatewayControls/server_only (0.00s)\n    --- PASS: TestManualOperationGatewayControls/neither (0.00s)\n    --- PASS: TestManualOperationGatewayControls/complete (0.00s)\n    --- PASS: TestManualOperationGatewayControls/native_failure (0.00s)\n    --- PASS: TestManualOperationGatewayControls/deadline_failure (0.00s)\n    --- PASS: TestManualOperationGatewayControls/real_EOF (0.02s)\n    --- PASS: TestManualOperationGatewayControls/truncated_header (0.00s)\n    --- PASS: TestManualOperationGatewayControls/bad_length (0.00s)\n    --- PASS: TestManualOperationGatewayControls/oversized_frame (0.00s)\n    --- PASS: TestManualOperationGatewayControls/truncated_body (0.00s)\n    --- PASS: TestManualOperationGatewayControls/bad_key_size (0.00s)\n    --- PASS: TestManualOperationGatewayControls/duplicate_key (0.00s)\n=== RUN   TestManualPIDfdBackendIntegration\n    pidfd_backend_research_test.go:763: real TLS backup/restore, interrupted original and pre-activity startup native ownership complete\n--- PASS: TestManualPIDfdBackendIntegration (3.85s)\n=== RUN   TestManualPIDfdTerminalControls\n=== RUN   TestManualPIDfdTerminalControls/reset_alone\n=== RUN   TestManualPIDfdTerminalControls/EOF_alone\n=== RUN   TestManualPIDfdTerminalControls/native_exit_alone\n=== RUN   TestManualPIDfdTerminalControls/unknown_stream_error\n=== RUN   TestManualPIDfdTerminalControls/forwarder_unfinished\n=== RUN   TestManualPIDfdTerminalControls/unbound_subject\n=== RUN   TestManualPIDfdTerminalControls/admission_open\n=== RUN   TestManualPIDfdTerminalControls/native_EOF_completion\n=== RUN   TestManualPIDfdTerminalControls/native_reset_completion\n=== RUN   TestManualPIDfdTerminalControls/permission_error\n=== RUN   TestManualPIDfdTerminalControls/deadline_error\n--- PASS: TestManualPIDfdTerminalControls (0.00s)\n    --- PASS: TestManualPIDfdTerminalControls/reset_alone (0.00s)\n    --- PASS: TestManualPIDfdTerminalControls/EOF_alone (0.00s)\n    --- PASS: TestManualPIDfdTerminalControls/native_exit_alone (0.00s)\n    --- PASS: TestManualPIDfdTerminalControls/unknown_stream_error (0.00s)\n    --- PASS: TestManualPIDfdTerminalControls/forwarder_unfinished (0.00s)\n    --- PASS: TestManualPIDfdTerminalControls/unbound_subject (0.00s)\n    --- PASS: TestManualPIDfdTerminalControls/admission_open (0.00s)\n    --- PASS: TestManualPIDfdTerminalControls/native_EOF_completion (0.00s)\n    --- PASS: TestManualPIDfdTerminalControls/native_reset_completion (0.00s)\n    --- PASS: TestManualPIDfdTerminalControls/permission_error (0.00s)\n    --- PASS: TestManualPIDfdTerminalControls/deadline_error (0.00s)\n=== RUN   TestManualPIDfdRPCAdmissionControls\n=== RUN   TestManualPIDfdRPCAdmissionControls/already_cancelled\n=== RUN   TestManualPIDfdRPCAdmissionControls/already_expired\n=== RUN   TestManualPIDfdRPCAdmissionControls/cancel_while_encoding\n=== RUN   TestManualPIDfdRPCAdmissionControls/queued_expiry_before_unlock\n=== RUN   TestManualPIDfdRPCAdmissionControls/queued_timely_reply\n=== RUN   TestManualPIDfdRPCAdmissionControls/write_error_is_not_refusal\n--- PASS: TestManualPIDfdRPCAdmissionControls (0.03s)\n    --- PASS: TestManualPIDfdRPCAdmissionControls/already_cancelled (0.00s)\n    --- PASS: TestManualPIDfdRPCAdmissionControls/already_expired (0.00s)\n    --- PASS: TestManualPIDfdRPCAdmissionControls/cancel_while_encoding (0.00s)\n    --- PASS: TestManualPIDfdRPCAdmissionControls/queued_expiry_before_unlock (0.03s)\n    --- PASS: TestManualPIDfdRPCAdmissionControls/queued_timely_reply (0.00s)\n    --- PASS: TestManualPIDfdRPCAdmissionControls/write_error_is_not_refusal (0.00s)\nPASS",
+  "binary_sha256": "9f2ab43c53cff3c240d26294864eefe2bb848d2b5a683839798eb232b0613c98",
+  "build_guard_seconds": 180,
+  "cleanup_complete": true,
+  "cleanup_outside_work_guard": true,
+  "cleanup_per_command_seconds": 15,
+  "collection_guard_seconds": 10,
+  "database_id": "5de2acb45242da1f8cac0f697a84d4ad0e9c083992195a8ef24464baed64076e",
+  "engine": "28.4.0 linux/arm64",
+  "handshake_seconds": 10,
+  "interrupted": {
+    "all_native_and_stream_terminal_before_unlock": true,
+    "bindings": [
+      {
+        "binding": {
+          "binding": {
+            "inode": "57113279",
+            "local": "172.18.0.2:5432",
+            "parent": 1,
+            "pid": 126,
+            "remote": "172.18.0.3:41222",
+            "start": "177490608"
+          },
+          "binding_sha256": "2b84f5dfa743d78e0a2e6b065a0d891e56981c94875415928acb23d73a91283b",
+          "code": "",
+          "errno": 0,
+          "native_exit": false,
+          "outcome": "bound",
+          "sequence": 9,
+          "signals_sent": 0,
+          "subjects": 0
+        },
+        "front_end": "peer_eof",
+        "native_exit": true,
+        "server_end": "eof"
+      },
+      {
+        "binding": {
+          "binding": {
+            "inode": "57113283",
+            "local": "172.18.0.2:5432",
+            "parent": 1,
+            "pid": 127,
+            "remote": "172.18.0.3:41236",
+            "start": "177490620"
+          },
+          "binding_sha256": "930362ae12fa9e58c568dd66f60c141d536e5429bc8075d7739acbe8f4bb11ae",
+          "code": "",
+          "errno": 0,
+          "native_exit": false,
+          "outcome": "bound",
+          "sequence": 10,
+          "signals_sent": 0,
+          "subjects": 0
+        },
+        "front_end": "peer_eof",
+        "native_exit": true,
+        "server_end": "eof"
+      }
+    ],
+    "old_reference": {
+      "binding": {
+        "inode": "",
+        "local": "",
+        "parent": 0,
+        "pid": 0,
+        "remote": "",
+        "start": ""
+      },
+      "binding_sha256": "",
+      "code": "",
+      "errno": 3,
+      "native_exit": false,
+      "outcome": "old_reference_dead",
+      "sequence": 15,
+      "signals_sent": 1,
+      "subjects": 0
+    },
+    "termination": {
+      "binding": {
+        "inode": "",
+        "local": "",
+        "parent": 0,
+        "pid": 0,
+        "remote": "",
+        "start": ""
+      },
+      "binding_sha256": "",
+      "code": "",
+      "errno": 0,
+      "native_exit": true,
+      "outcome": "terminated",
+      "sequence": 12,
+      "signals_sent": 1,
+      "subjects": 0
+    },
+    "wrong_binding": {
+      "binding": {
+        "inode": "",
+        "local": "",
+        "parent": 0,
+        "pid": 0,
+        "remote": "",
+        "start": ""
+      },
+      "binding_sha256": "",
+      "code": "binding_mismatch",
+      "errno": 0,
+      "native_exit": false,
+      "outcome": "refused",
+      "sequence": 11,
+      "signals_sent": 0,
+      "subjects": 0
+    }
+  },
+  "objective_completed": true,
+  "observer": {
+    "kernel": "aarch64",
+    "net_namespace": "net:[4026532830]",
+    "pid_namespace": "pid:[4026532828]",
+    "postmaster": {
+      "parent": 0,
+      "pid": 1,
+      "start": "177489949",
+      "status": {
+        "CapBnd": "00000000a80425fb",
+        "CapEff": "0000000000000000",
+        "CapPrm": "0000000000000000",
+        "Gid": "70\t70\t70\t70",
+        "NoNewPrivs": "0",
+        "Uid": "70\t70\t70\t70"
+      }
+    },
+    "status": {
+      "CapBnd": "0000000000000000",
+      "CapEff": "0000000000000000",
+      "CapPrm": "0000000000000000",
+      "Gid": "70\t70\t70\t70",
+      "NoNewPrivs": "1",
+      "Uid": "70\t70\t70\t70"
+    }
+  },
+  "observer_id": "18c6c277d901b6e9af69a3f3cbb1bd19e9ddae6bc1ed5bc5bca80f41464336fc",
+  "observer_profile": {
+    "caps": [
+      "ALL"
+    ],
+    "ipc": "private",
+    "network": "container:5de2acb45242da1f8cac0f697a84d4ad0e9c083992195a8ef24464baed64076e",
+    "pid": "container:5de2acb45242da1f8cac0f697a84d4ad0e9c083992195a8ef24464baed64076e",
+    "privileged": false,
+    "readonly": true,
+    "security": [
+      "no-new-privileges:true"
+    ],
+    "user": "70:70"
+  },
+  "population_work_guard_seconds": 60,
+  "positive": {
+    "backup": [
+      {
+        "binding": {
+          "binding": {
+            "inode": "57118189",
+            "local": "172.18.0.2:5432",
+            "parent": 1,
+            "pid": 107,
+            "remote": "172.18.0.3:41192",
+            "start": "177490439"
+          },
+          "binding_sha256": "14d0e645b25ada54ccd77910f36d578edb16a7693a240e3710155011c936b3ec",
+          "code": "",
+          "errno": 0,
+          "native_exit": false,
+          "outcome": "bound",
+          "sequence": 1,
+          "signals_sent": 0,
+          "subjects": 0
+        },
+        "front_end": "peer_eof",
+        "native_exit": true,
+        "server_end": "reset"
+      },
+      {
+        "binding": {
+          "binding": {
+            "inode": "57118190",
+            "local": "172.18.0.2:5432",
+            "parent": 1,
+            "pid": 108,
+            "remote": "172.18.0.3:41194",
+            "start": "177490454"
+          },
+          "binding_sha256": "65c35950b8afc5f4f0c601e6bac52e6e65d15593cf6d31f1d8795af2d0c762ec",
+          "code": "",
+          "errno": 0,
+          "native_exit": false,
+          "outcome": "bound",
+          "sequence": 2,
+          "signals_sent": 0,
+          "subjects": 0
+        },
+        "front_end": "peer_eof",
+        "native_exit": true,
+        "server_end": "reset"
+      }
+    ],
+    "identity_equal": true,
+    "restore": [
+      {
+        "binding": {
+          "binding": {
+            "inode": "57122080",
+            "local": "172.18.0.2:5432",
+            "parent": 1,
+            "pid": 116,
+            "remote": "172.18.0.3:41202",
+            "start": "177490515"
+          },
+          "binding_sha256": "e98b1af7854df332e04117f21053cf87a23561faadb88f23da4349f923053b89",
+          "code": "",
+          "errno": 0,
+          "native_exit": false,
+          "outcome": "bound",
+          "sequence": 5,
+          "signals_sent": 0,
+          "subjects": 0
+        },
+        "front_end": "peer_eof",
+        "native_exit": true,
+        "server_end": "reset"
+      },
+      {
+        "binding": {
+          "binding": {
+            "inode": "57122084",
+            "local": "172.18.0.2:5432",
+            "parent": 1,
+            "pid": 117,
+            "remote": "172.18.0.3:41204",
+            "start": "177490530"
+          },
+          "binding_sha256": "c0e7e4b270c8364e949bdf01da09491da0a7093b396cc9a5bc34f56852cf0464",
+          "code": "",
+          "errno": 0,
+          "native_exit": false,
+          "outcome": "bound",
+          "sequence": 6,
+          "signals_sent": 0,
+          "subjects": 0
+        },
+        "front_end": "peer_eof",
+        "native_exit": true,
+        "server_end": "reset"
+      }
+    ],
+    "tls_identity": "true|/CN=cloud_clicker"
+  },
+  "project": "cc-pidfd-backend-b25edc1998c487a1",
+  "protocol_key_parsing": false,
+  "rows": "7,42",
+  "runner_sha256": "82b6fe7ca1dc9d13244ff77310f71a3bf5d62e755d2de53ac565a504f74dfe8b",
+  "same_bystander_and_postmaster": true,
+  "source_commit": "8272f5863fa5f65bf7ae4b2d18060b5ba1572f0f",
+  "source_hashes": {
+    "planning/deployment-foundation/probes/backup-operation-gateway_test.go.txt": "ca26d97038e2e120714102aee23cf3711bdc539f3543505fd0bac5b0410095dc",
+    "planning/deployment-foundation/probes/pidfd-backend-observer.py.txt": "5bd33c27cf6f4a83183756341a1b8ed9517e7c348fc7980a36e594d00920ed0c",
+    "planning/deployment-foundation/probes/pidfd-backend_test.go.txt": "a710094f2e411b7ec6575814c9ef834689f5acb9f6deb2abb5a5329889ea4c47",
+    "server/deploymentbackup/tls_integration_test.go": "2315262e02b2787c3a543827af4150275288a45b91d5d8e439bdc3f4d7e644fc"
+  },
+  "startup": {
+    "activity_rows": 0,
+    "bindings": [
+      {
+        "binding": {
+          "binding": {
+            "inode": "57113284",
+            "local": "172.18.0.2:5432",
+            "parent": 1,
+            "pid": 128,
+            "remote": "172.18.0.3:41240",
+            "start": "177490661"
+          },
+          "binding_sha256": "2e555e85294628ae4c96e167a6e09afa2b55283719978cf437141007950fbebf",
+          "code": "",
+          "errno": 0,
+          "native_exit": false,
+          "outcome": "bound",
+          "sequence": 16,
+          "signals_sent": 1,
+          "subjects": 0
+        },
+        "front_end": "locally_closed",
+        "native_exit": true,
+        "server_end": "eof"
+      }
+    ],
+    "old_reference": {
+      "binding": {
+        "inode": "",
+        "local": "",
+        "parent": 0,
+        "pid": 0,
+        "remote": "",
+        "start": ""
+      },
+      "binding_sha256": "",
+      "code": "",
+      "errno": 3,
+      "native_exit": false,
+      "outcome": "old_reference_dead",
+      "sequence": 19,
+      "signals_sent": 2,
+      "subjects": 0
+    },
+    "original_stream_terminal": true,
+    "termination": {
+      "binding": {
+        "inode": "",
+        "local": "",
+        "parent": 0,
+        "pid": 0,
+        "remote": "",
+        "start": ""
+      },
+      "binding_sha256": "",
+      "code": "",
+      "errno": 0,
+      "native_exit": true,
+      "outcome": "terminated",
+      "sequence": 17,
+      "signals_sent": 2,
+      "subjects": 0
+    }
+  },
+  "tls_termination": false,
+  "transcript": [
+    {
+      "binding": {
+        "inode": "57118189",
+        "local": "172.18.0.2:5432",
+        "parent": 1,
+        "pid": 107,
+        "remote": "172.18.0.3:41192",
+        "start": "177490439"
+      },
+      "binding_sha256": "14d0e645b25ada54ccd77910f36d578edb16a7693a240e3710155011c936b3ec",
+      "code": "",
+      "errno": 0,
+      "native_exit": false,
+      "outcome": "bound",
+      "sequence": 1,
+      "signals_sent": 0,
+      "subjects": 0
+    },
+    {
+      "binding": {
+        "inode": "57118190",
+        "local": "172.18.0.2:5432",
+        "parent": 1,
+        "pid": 108,
+        "remote": "172.18.0.3:41194",
+        "start": "177490454"
+      },
+      "binding_sha256": "65c35950b8afc5f4f0c601e6bac52e6e65d15593cf6d31f1d8795af2d0c762ec",
+      "code": "",
+      "errno": 0,
+      "native_exit": false,
+      "outcome": "bound",
+      "sequence": 2,
+      "signals_sent": 0,
+      "subjects": 0
+    },
+    {
+      "binding": {
+        "inode": "",
+        "local": "",
+        "parent": 0,
+        "pid": 0,
+        "remote": "",
+        "start": ""
+      },
+      "binding_sha256": "",
+      "code": "",
+      "errno": 0,
+      "native_exit": true,
+      "outcome": "exited",
+      "sequence": 3,
+      "signals_sent": 0,
+      "subjects": 0
+    },
+    {
+      "binding": {
+        "inode": "",
+        "local": "",
+        "parent": 0,
+        "pid": 0,
+        "remote": "",
+        "start": ""
+      },
+      "binding_sha256": "",
+      "code": "",
+      "errno": 0,
+      "native_exit": true,
+      "outcome": "exited",
+      "sequence": 4,
+      "signals_sent": 0,
+      "subjects": 0
+    },
+    {
+      "binding": {
+        "inode": "57122080",
+        "local": "172.18.0.2:5432",
+        "parent": 1,
+        "pid": 116,
+        "remote": "172.18.0.3:41202",
+        "start": "177490515"
+      },
+      "binding_sha256": "e98b1af7854df332e04117f21053cf87a23561faadb88f23da4349f923053b89",
+      "code": "",
+      "errno": 0,
+      "native_exit": false,
+      "outcome": "bound",
+      "sequence": 5,
+      "signals_sent": 0,
+      "subjects": 0
+    },
+    {
+      "binding": {
+        "inode": "57122084",
+        "local": "172.18.0.2:5432",
+        "parent": 1,
+        "pid": 117,
+        "remote": "172.18.0.3:41204",
+        "start": "177490530"
+      },
+      "binding_sha256": "c0e7e4b270c8364e949bdf01da09491da0a7093b396cc9a5bc34f56852cf0464",
+      "code": "",
+      "errno": 0,
+      "native_exit": false,
+      "outcome": "bound",
+      "sequence": 6,
+      "signals_sent": 0,
+      "subjects": 0
+    },
+    {
+      "binding": {
+        "inode": "",
+        "local": "",
+        "parent": 0,
+        "pid": 0,
+        "remote": "",
+        "start": ""
+      },
+      "binding_sha256": "",
+      "code": "",
+      "errno": 0,
+      "native_exit": true,
+      "outcome": "exited",
+      "sequence": 7,
+      "signals_sent": 0,
+      "subjects": 0
+    },
+    {
+      "binding": {
+        "inode": "",
+        "local": "",
+        "parent": 0,
+        "pid": 0,
+        "remote": "",
+        "start": ""
+      },
+      "binding_sha256": "",
+      "code": "",
+      "errno": 0,
+      "native_exit": true,
+      "outcome": "exited",
+      "sequence": 8,
+      "signals_sent": 0,
+      "subjects": 0
+    },
+    {
+      "binding": {
+        "inode": "57113279",
+        "local": "172.18.0.2:5432",
+        "parent": 1,
+        "pid": 126,
+        "remote": "172.18.0.3:41222",
+        "start": "177490608"
+      },
+      "binding_sha256": "2b84f5dfa743d78e0a2e6b065a0d891e56981c94875415928acb23d73a91283b",
+      "code": "",
+      "errno": 0,
+      "native_exit": false,
+      "outcome": "bound",
+      "sequence": 9,
+      "signals_sent": 0,
+      "subjects": 0
+    },
+    {
+      "binding": {
+        "inode": "57113283",
+        "local": "172.18.0.2:5432",
+        "parent": 1,
+        "pid": 127,
+        "remote": "172.18.0.3:41236",
+        "start": "177490620"
+      },
+      "binding_sha256": "930362ae12fa9e58c568dd66f60c141d536e5429bc8075d7739acbe8f4bb11ae",
+      "code": "",
+      "errno": 0,
+      "native_exit": false,
+      "outcome": "bound",
+      "sequence": 10,
+      "signals_sent": 0,
+      "subjects": 0
+    },
+    {
+      "binding": {
+        "inode": "",
+        "local": "",
+        "parent": 0,
+        "pid": 0,
+        "remote": "",
+        "start": ""
+      },
+      "binding_sha256": "",
+      "code": "binding_mismatch",
+      "errno": 0,
+      "native_exit": false,
+      "outcome": "refused",
+      "sequence": 11,
+      "signals_sent": 0,
+      "subjects": 0
+    },
+    {
+      "binding": {
+        "inode": "",
+        "local": "",
+        "parent": 0,
+        "pid": 0,
+        "remote": "",
+        "start": ""
+      },
+      "binding_sha256": "",
+      "code": "",
+      "errno": 0,
+      "native_exit": true,
+      "outcome": "terminated",
+      "sequence": 12,
+      "signals_sent": 1,
+      "subjects": 0
+    },
+    {
+      "binding": {
+        "inode": "",
+        "local": "",
+        "parent": 0,
+        "pid": 0,
+        "remote": "",
+        "start": ""
+      },
+      "binding_sha256": "",
+      "code": "",
+      "errno": 0,
+      "native_exit": true,
+      "outcome": "exited",
+      "sequence": 13,
+      "signals_sent": 1,
+      "subjects": 0
+    },
+    {
+      "binding": {
+        "inode": "",
+        "local": "",
+        "parent": 0,
+        "pid": 0,
+        "remote": "",
+        "start": ""
+      },
+      "binding_sha256": "",
+      "code": "",
+      "errno": 0,
+      "native_exit": true,
+      "outcome": "exited",
+      "sequence": 14,
+      "signals_sent": 1,
+      "subjects": 0
+    },
+    {
+      "binding": {
+        "inode": "",
+        "local": "",
+        "parent": 0,
+        "pid": 0,
+        "remote": "",
+        "start": ""
+      },
+      "binding_sha256": "",
+      "code": "",
+      "errno": 3,
+      "native_exit": false,
+      "outcome": "old_reference_dead",
+      "sequence": 15,
+      "signals_sent": 1,
+      "subjects": 0
+    },
+    {
+      "binding": {
+        "inode": "57113284",
+        "local": "172.18.0.2:5432",
+        "parent": 1,
+        "pid": 128,
+        "remote": "172.18.0.3:41240",
+        "start": "177490661"
+      },
+      "binding_sha256": "2e555e85294628ae4c96e167a6e09afa2b55283719978cf437141007950fbebf",
+      "code": "",
+      "errno": 0,
+      "native_exit": false,
+      "outcome": "bound",
+      "sequence": 16,
+      "signals_sent": 1,
+      "subjects": 0
+    },
+    {
+      "binding": {
+        "inode": "",
+        "local": "",
+        "parent": 0,
+        "pid": 0,
+        "remote": "",
+        "start": ""
+      },
+      "binding_sha256": "",
+      "code": "",
+      "errno": 0,
+      "native_exit": true,
+      "outcome": "terminated",
+      "sequence": 17,
+      "signals_sent": 2,
+      "subjects": 0
+    },
+    {
+      "binding": {
+        "inode": "",
+        "local": "",
+        "parent": 0,
+        "pid": 0,
+        "remote": "",
+        "start": ""
+      },
+      "binding_sha256": "",
+      "code": "",
+      "errno": 0,
+      "native_exit": true,
+      "outcome": "exited",
+      "sequence": 18,
+      "signals_sent": 2,
+      "subjects": 0
+    },
+    {
+      "binding": {
+        "inode": "",
+        "local": "",
+        "parent": 0,
+        "pid": 0,
+        "remote": "",
+        "start": ""
+      },
+      "binding_sha256": "",
+      "code": "",
+      "errno": 3,
+      "native_exit": false,
+      "outcome": "old_reference_dead",
+      "sequence": 19,
+      "signals_sent": 2,
+      "subjects": 0
+    },
+    {
+      "binding": {
+        "inode": "",
+        "local": "",
+        "parent": 0,
+        "pid": 0,
+        "remote": "",
+        "start": ""
+      },
+      "binding_sha256": "",
+      "code": "",
+      "errno": 0,
+      "native_exit": false,
+      "outcome": "stopped",
+      "sequence": 20,
+      "signals_sent": 2,
+      "subjects": 7
+    }
+  ]
+}

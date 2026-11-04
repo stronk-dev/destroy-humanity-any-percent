@@ -59,6 +59,17 @@ job admission, adversarial pre-binding inode/tuple reuse, trusted observer
 permissions, complete CLI/outer writers/daemon lifetime/native host/adoption
 and R-006 remain. No TLS interception or BackendKeyData parsing is introduced.
 
+Independent original-plus-native-producer review is CHANGES REQUIRED for RP-755:
+actual d0d69c/23b33f accepts11.021604s queueing because the10s RPC clock starts
+after mutex; e02ea3/0f2837 also publishes an already-cancelled call. Actual native
+8476a3/b67fac and private no-signal failure f05842/15edaa otherwise corroborate.
+Preserve verdict/v1/v2. Forward correction starts at entry with context-aware
+TryLock and guards before publication. Fresh98a13e/ba1f57 v3 passes all3 native
+populations,6 queued/timely/cancelled/expired/encoding/write-error controls plus
+the11 native terminal and reused framing/deadline controls; veteb13f0 passes.
+Complete corrected union needs independent re-review. No deadline raised;
+already-published work cannot be unsent by cancellation or erased from scope.
+
 **RP-753 existing TLS-input correction,2026-11-04:** URL certificate paths reach
 Go but were dropped from libpq service config. Valid old-code25bca5 proves Go
 verified TLS/client identity while actual psql fails at default root.crt instead

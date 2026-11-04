@@ -52,7 +52,7 @@ def main():
                         '        target: /probe\n        read_only: true\n'
                         '      - type: bind\n        source: '+json.dumps(str(observation))+'\n'
                         '        target: /observation\n    entrypoint: [/probe]\n'
-                        '    command: [-test.run, "^TestManual(PIDfdBackendIntegration|PIDfdTerminalControls|OperationGatewayControls)$", -test.count=1, -test.v, -test.timeout=240s]\n')
+                        '    command: [-test.run, "^TestManual(PIDfdBackendIntegration|PIDfdTerminalControls|PIDfdRPCAdmissionControls|OperationGatewayControls)$", -test.count=1, -test.v, -test.timeout=240s]\n')
     compose = ['compose','--project-name',project,'-f',str(root/'compose.deployment-backup-test.yml'),'-f',str(override)]
 
     def run(*args,timeout=10):
@@ -92,7 +92,7 @@ def main():
             time.sleep(0.005)
         actor = run(*compose,'run','--rm','--no-deps','--pull','never','backup-test',timeout=240)
         end = time.monotonic()+10
-        assert all('--- PASS: '+name in actor for name in ('TestManualPIDfdBackendIntegration','TestManualPIDfdTerminalControls','TestManualOperationGatewayControls')) and '--- SKIP:' not in actor
+        assert all('--- PASS: '+name in actor for name in ('TestManualPIDfdBackendIntegration','TestManualPIDfdTerminalControls','TestManualPIDfdRPCAdmissionControls','TestManualOperationGatewayControls')) and '--- SKIP:' not in actor
         result = json.loads((observation/'result.json').read_text())
         assert result['objective_completed'] is True and result['positive']['identity_equal'] is True
         assert len(result['positive']['backup'])==len(result['positive']['restore'])==len(result['interrupted']['bindings'])==2

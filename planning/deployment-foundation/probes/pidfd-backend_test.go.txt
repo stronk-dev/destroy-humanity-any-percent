@@ -54,14 +54,33 @@ type nativeRPC struct {
 }
 
 func (m *nativeRPC) call(ctx context.Context, request map[string]any) (nativeReply, error) {
-	m.mu.Lock()
-	defer m.mu.Unlock()
 	ctx, stop := context.WithTimeout(ctx, 10*time.Second)
 	defer stop()
+	if err := researchDeadline(ctx); err != nil {
+		return nativeReply{}, err
+	}
+	// The budget includes waiting for serialization. A cancelled caller may
+	// not wait behind an unbounded mutex or publish a native command later.
+	retry := time.NewTicker(time.Millisecond)
+	defer retry.Stop()
+	for !m.mu.TryLock() {
+		select {
+		case <-ctx.Done():
+			return nativeReply{}, ctx.Err()
+		case <-retry.C:
+		}
+	}
+	defer m.mu.Unlock()
+	if err := researchDeadline(ctx); err != nil {
+		return nativeReply{}, err
+	}
 	m.sequence++
 	path := filepath.Join(m.directory, fmt.Sprintf("request-%06d.json", m.sequence))
 	data, err := json.Marshal(request)
 	if err != nil {
+		return nativeReply{}, err
+	}
+	if err := researchDeadline(ctx); err != nil {
 		return nativeReply{}, err
 	}
 	file, err := os.OpenFile(path+".temporary", os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0644)
@@ -76,6 +95,9 @@ func (m *nativeRPC) call(ctx context.Context, request map[string]any) (nativeRep
 		err = closeErr
 	}
 	if err != nil {
+		return nativeReply{}, err
+	}
+	if err := researchDeadline(ctx); err != nil {
 		return nativeReply{}, err
 	}
 	if err = os.Rename(path+".temporary", path); err != nil {
@@ -767,4 +789,128 @@ func TestManualPIDfdTerminalControls(t *testing.T) {
 			}
 		})
 	}
+}
+
+type nativeCancelJSON struct{ cancel context.CancelFunc }
+
+func (c nativeCancelJSON) MarshalJSON() ([]byte, error) {
+	c.cancel()
+	return []byte(`"cancelled"`), nil
+}
+
+func TestManualPIDfdRPCAdmissionControls(t *testing.T) {
+	noPublication := func(t *testing.T, m *nativeRPC) {
+		t.Helper()
+		entries, err := os.ReadDir(m.directory)
+		if err != nil {
+			t.Fatal(err)
+		}
+		for _, entry := range entries {
+			if strings.HasPrefix(entry.Name(), "request-") && !strings.HasSuffix(entry.Name(), ".temporary") {
+				t.Fatal("expired/cancelled call published a native command")
+			}
+		}
+	}
+	for _, expired := range []bool{false, true} {
+		name := "already cancelled"
+		if expired {
+			name = "already expired"
+		}
+		t.Run(name, func(t *testing.T) {
+			m := &nativeRPC{directory: t.TempDir()}
+			var ctx context.Context
+			var stop context.CancelFunc
+			if expired {
+				ctx, stop = context.WithDeadline(context.Background(), time.Now().Add(-time.Second))
+			} else {
+				ctx, stop = context.WithCancel(context.Background())
+				stop()
+			}
+			defer stop()
+			_, err := m.call(ctx, map[string]any{"action": "unit"})
+			expect := context.Canceled
+			if expired {
+				expect = context.DeadlineExceeded
+			}
+			if !errors.Is(err, expect) || m.sequence != 0 {
+				t.Fatal("already invalid call admitted", err)
+			}
+			noPublication(t, m)
+		})
+	}
+	t.Run("cancel while encoding", func(t *testing.T) {
+		m := &nativeRPC{directory: t.TempDir()}
+		ctx, stop := context.WithCancel(context.Background())
+		defer stop()
+		_, err := m.call(ctx, map[string]any{"action": nativeCancelJSON{cancel: stop}})
+		if !errors.Is(err, context.Canceled) {
+			t.Fatal("encoding cancellation not refused", err)
+		}
+		noPublication(t, m)
+	})
+	t.Run("queued expiry before unlock", func(t *testing.T) {
+		m := &nativeRPC{directory: t.TempDir()}
+		m.mu.Lock()
+		ctx, stop := context.WithTimeout(context.Background(), 25*time.Millisecond)
+		defer stop()
+		done := make(chan error, 1)
+		go func() { _, err := m.call(ctx, map[string]any{"action": "unit"}); done <- err }()
+		select {
+		case err := <-done:
+			m.mu.Unlock()
+			if !errors.Is(err, context.DeadlineExceeded) {
+				t.Fatal("queued expiry not refused", err)
+			}
+		case <-time.After(time.Second):
+			m.mu.Unlock()
+			<-done
+			t.Fatal("RPC waited for mutex after caller expired")
+		}
+		if m.sequence != 0 {
+			t.Fatal("expired queue entry allocated a command")
+		}
+		noPublication(t, m)
+	})
+	t.Run("queued timely reply", func(t *testing.T) {
+		m := &nativeRPC{directory: t.TempDir()}
+		if err := os.WriteFile(filepath.Join(m.directory, "response-000001.json"), []byte(`{"sequence":1,"outcome":"unit_reply"}`), 0600); err != nil {
+			t.Fatal(err)
+		}
+		m.mu.Lock()
+		ctx, stop := context.WithTimeout(context.Background(), time.Second)
+		defer stop()
+		done := make(chan error, 1)
+		go func() {
+			reply, err := m.call(ctx, map[string]any{"action": "unit"})
+			if err == nil && reply.Outcome != "unit_reply" {
+				err = errors.New("reply mismatch")
+			}
+			done <- err
+		}()
+		m.mu.Unlock()
+		select {
+		case err := <-done:
+			if err != nil {
+				t.Fatal(err)
+			}
+		case <-ctx.Done():
+			t.Fatal("timely queued call did not complete")
+		}
+		if _, err := os.Stat(filepath.Join(m.directory, "request-000001.json")); err != nil {
+			t.Fatal("timely command not published", err)
+		}
+	})
+	t.Run("write error is not refusal", func(t *testing.T) {
+		path := filepath.Join(t.TempDir(), "not-a-directory")
+		if err := os.WriteFile(path, []byte("file"), 0600); err != nil {
+			t.Fatal(err)
+		}
+		m := &nativeRPC{directory: path}
+		ctx, stop := context.WithTimeout(context.Background(), time.Second)
+		defer stop()
+		reply, err := m.call(ctx, map[string]any{"action": "unit"})
+		if err == nil || reply.Outcome != "" {
+			t.Fatal("native request write failure became an outcome")
+		}
+	})
 }

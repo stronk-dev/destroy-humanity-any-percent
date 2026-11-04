@@ -500,6 +500,19 @@ admission, unbound/missing actors and permission/deadline failures. The reused
 manual helper's14 framing/4 deadline controls also pass. No test skips.
 Linux/amd64 overlay vet2b7282 passes; new complete union needs independent review.
 
+That initial complete union is independently **CHANGES REQUIRED** for RP-755:
+native RPC's10s clock excluded mutex queue time. Actual d0d69c/23b33f accepts
+11.021604s; e02ea3/0f2837 additionally publishes an already-cancelled command.
+Independent8476a3/b67fac reproduces the native populations and private no-signal
+f05842/15edaa fails, but those do not approve the instrument. Preserve the
+original verdict and both historical observations.
+The [corrected observation](pidfd-backend-observation.v3.json) binds entry-time,
+context-aware queue admission and checks before native command publication.
+Fresh98a13e/ba1f57 completes all3 native populations plus6 actual admission/
+no-publication/error controls and all existing controls. Veteb13f0 passes.
+Complete original-plus-correction re-review remains; no bounds were raised.
+Cancellation cannot erase already-published commands or unknown outcomes.
+
 The native observer runs UID70, CapEff/Prm/Bnd0, NoNewPrivs1, read-only root and
 the exact selected PID/network namespace. It is a TRUSTED fixture observer,
 with same-UID process access; namespace sharing is not a grant to an untrusted

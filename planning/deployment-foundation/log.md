@@ -10078,3 +10078,60 @@ nine-tier1.0 gates remain. Complete e3beb00d..9bf8fdba plus this next producer
 range requires fresh independent delegated review; root is first-filter only.
 
 Review by: Codex root, research/tool author first filter. Recorded by: Codex root.
+
+
+## 2026-11-04 — Independent native study review fires RPC admission bug
+
+Review by: independent Codex `/root/pidfd_backend_research_review`.
+Recorded by: Codex root, transcribing returned verdict. Complete union:
+- `e3beb00dc55db24ab56432b54bc56b0c7ce60954..9bf8fdbadd71ae87a4f4c05cd16458180db35b86`.
+- `9bf8fdbadd71ae87a4f4c05cd16458180db35b86..8272f5863fa5f65bf7ae4b2d18060b5ba1572f0f`.
+
+Verdict **CHANGES REQUIRED — research instrument**, RP-755/P2. Actual private
+control d0d69c/23b33f holds nativeRPC mutex11s under parent60, then supplies a
+matching reply: call accepts after11.021604s because its local10s begins AFTER
+mutex acquisition. Independent e02ea3/0f2837 additionally shows already-cancelled
+call writes request-000001.json before refusing. Bound from call entry, refuse
+expired/cancelled admission before publication, retain controls/no raised bound.
+
+Independent actual8476a3/b67fac DOES reproduce all3 native populations,7 retained
+references,2 SIGTERMs, TLS roundtrip/bystander preservation and controls. Private
+no-signal f05842/15edaa exits1 at native deadline, so unfinished work cannot close.
+9fa0cb checks historical/current bindings; Linux/amd64 vet1bd53b passes;5ffb9f
+checks9-path scope, append-only negatives, exact private mutation and clean tree.
+These actual measured runs remain evidence within their executions, not overall
+instrument approval. Initial queue-control aad031/92bd33 accidentally selects no
+tests through Make dollar expansion; excluded, corrected executed controls above
+are the findings. Reviewer made no tracked edits/commits. Both own projects'
+container/network/volume2d09b6/e9cd95/d87a4d and694abf/c27048/295397 empty;
+all handles terminal. No native-host/admission-authority/adoption/recovery gate.
+
+## 2026-11-04 — Forward-correct RPC queue budget and pre-publication cancellation
+
+Start local10s at call entry. Context-aware TryLock wait can return while the
+mutex remains held; deadline checked again after admission, encoding and staging
+before atomic publication. Already-cancelled/expired, cancelled-while-queued and
+cancelled-while-encoding calls publish no native request. This does not promise
+cancellation can unsend an already-published command; unknown work stays invalid.
+Six actual admission controls cover those paths, timely reply and native write
+failure (not a refusal). Eleven native terminal and unchanged14 framing/4 deadline
+controls remain, no guard raised or populations dropped.
+
+Fresh actual98a13e/ba1f57 exits0: full TLS encrypted identity roundtrip, actual
+interrupted helper and pre-activity startup complete with all7 retained native
+exits, exact4 reset/3 EOF ends,2 real SIGTERMs, wrong-binding refusal, old-reference
+ESRCH3 and same continuous Postgres/bystander/rows7 then7/42. No skipped tests;
+six new controls execute (queued expiry returns before mutex unlock). Rootf7d661
+binds retained v3 to Go a710094f, observer5bd33c27 unchanged, runner82b6fe7c,
+prior child ca26d970 and normal TLS fixture2315262e unchanged. No fixture password
+or age private key in output. Final Linux/amd64 overlay veteb13f0 passes. Exact
+own projectb25edc1998c487a1 removed, all owned container/network/volume inventories
+empty before completed output. Original v1/v2/negative verdict remain.
+
+Whole original-plus-native-producer-plus-correction union needs independent
+re-review. No production/normal-test/CI/kernel byte changed. RP-755 remains open
+until that verdict; RP-754 full native profile/admission/reuse/lifetime/supported
+host/OP9 adoption and whole CR4/R-006 remain OPEN. Root is first-filter only.
+Full nine-tier1.0 stays active; no push/deploy/archive or goal pause.
+
+Review by: Codex root, corrective research/tool author first filter. Recorded by: Codex root.
