@@ -7,13 +7,15 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
-**Nested attribution finding,2026-11-04 (RP-761):** an actual six-command import
-and metadata diagnostic now reproduces missing nested BSD attribution for the
-client_golangv1.23.2 GDDO httputil copy. The new binary/source observation keeps
-all37 tool candidates,12 positive function scopes/25 UNKNOWN. Complete seven-path1cc6762a..7623cf93 manual-tool/diagnostic batch is independently
-APPROVED as bounded research; next repair actual linked Go attribution under DP1/AC8,
-then return to the separately held tool/source/adoption work. Root-NOTICE's
-approved correction remains closed.
+**Nested attribution correction,2026-11-04 (RP-761):** independently reproduced
+actual GDDO BSD omission now has a normal real-import regression and compiler-
+imported scope collection. Root+actual package ancestors retain license/NOTICE
+terms; unknown/invalid scopes fail before output and unrelated subtrees are not
+inventoried. Real regression/full affected metadata packages/vet pass. Next run
+the committed actual generator and obtain fresh independent corrective review;
+no license allowlist or tool/MPL policy adopted. The prior seven-path research
+batch1cc6762a..7623cf93 is independently approved;12positive/25UNKNOWN tool scopes
+remain bounded evidence. RP-760's original root-NOTICE correction stays closed.
 
 **Application attribution correction,2026-11-04 (RP-760):** independently
 APPROVED complete8-path9cde3a64..0c746ca1. Old actual Prometheus NOTICE omission

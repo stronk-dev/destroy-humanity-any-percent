@@ -79,11 +79,18 @@ actual secret files.
 
 ## Application licenses and SBOM
 
-`make generate-release-metadata` inventories the union of module graphs actually linked into the
+`make generate-release-metadata` inventories the union of compiler import graphs for the
 gameserver, deployment-backup, deployment-release, deployment-operations, deployment-rehearsal and
 deployment-browser
 commands (not the much larger `go.sum`
-graph), adds the Go standard library, and derives the browser inventory from the built client's
+graph). For each Go module and the standard library, it collects licensing files at the
+source root and each ancestor of an imported package directory. Copied components in nested
+scopes therefore retain their own copyright/license and NOTICE text; relative scope paths
+identify the source. Each license file must match the existing recognized set independently,
+so a valid root grant cannot hide an unsupported nested grant. Unimported subtrees do not
+widen the inventory. Package directories outside their declared source root, invalid present
+files and missing root licenses fail generation. The resulting SPDX expression combines the
+recognized grants for that dependency. It derives the browser inventory from the built client's
 own JavaScript sourcemaps (`client/dist/**/*.map`) and the Vite-generated
 `css-dependency-graph.json`: every shipped module under `node_modules/` resolves to its
 exact installed package directory, so transitive packages the bundler inlines (currently `pad-end`

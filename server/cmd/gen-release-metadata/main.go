@@ -92,62 +92,165 @@ func discoverDependencies(root string) ([]releasepackage.Dependency, error) {
 }
 
 func discoverGoDependencies(root string) ([]releasepackage.Dependency, error) {
-	format := `{{with .Module}}{{if not .Main}}{{.Path}}{{"\t"}}{{.Version}}{{"\t"}}{{.Dir}}{{"\n"}}{{end}}{{end}}`
-	arguments := []string{"list", "-deps", "-f", format}
-	arguments = append(arguments, shippedGoCommands...)
+	arguments := append([]string{"list", "-deps", "-json=Dir,Standard,Module"}, shippedGoCommands...)
 	command := exec.Command("go", arguments...)
 	command.Dir = filepath.Join(root, "server")
 	output, err := command.Output()
 	if err != nil {
 		return nil, fmt.Errorf("go dependency inventory: %w", err)
 	}
-	unique := map[string]releasepackage.Dependency{}
-	for _, line := range strings.Split(strings.TrimSpace(string(output)), "\n") {
-		if line == "" {
+	type moduleSource struct {
+		Path, Version, Dir string
+		Main               bool
+	}
+	type moduleScopes struct {
+		source moduleSource
+		dirs   []string
+	}
+	modules := make(map[string]*moduleScopes)
+	var standard []string
+	decoder := json.NewDecoder(bytes.NewReader(output))
+	for {
+		var pkg struct {
+			Dir      string
+			Standard bool
+			Module   *moduleSource
+		}
+		err := decoder.Decode(&pkg)
+		if err == io.EOF {
+			break
+		}
+		if err != nil || pkg.Dir == "" {
+			return nil, fmt.Errorf("%w: invalid Go package inventory", releasepackage.ErrInvalidContent)
+		}
+		if pkg.Module == nil {
+			if !pkg.Standard {
+				return nil, fmt.Errorf("%w: unowned Go package", releasepackage.ErrInvalidContent)
+			}
+			standard = append(standard, pkg.Dir)
 			continue
 		}
-		fields := strings.Split(line, "\t")
-		if len(fields) != 3 || fields[0] == "" || fields[1] == "" || fields[2] == "" {
-			return nil, fmt.Errorf("%w: invalid Go inventory row %q", releasepackage.ErrInvalidContent, line)
-		}
-		identity := fields[0] + "@" + fields[1]
-		if _, exists := unique[identity]; exists {
+		if pkg.Module.Main {
 			continue
 		}
-		text, license, err := licenseAt(fields[2])
+		module := *pkg.Module
+		if module.Path == "" || module.Version == "" || module.Dir == "" {
+			return nil, fmt.Errorf("%w: invalid Go module inventory", releasepackage.ErrInvalidContent)
+		}
+		identity := module.Path + "@" + module.Version
+		scopes, exists := modules[identity]
+		if !exists {
+			scopes = &moduleScopes{source: module}
+			modules[identity] = scopes
+		} else if scopes.source.Dir != module.Dir {
+			return nil, fmt.Errorf("%w: conflicting Go module directories", releasepackage.ErrInvalidContent)
+		}
+		scopes.dirs = append(scopes.dirs, pkg.Dir)
+	}
+	result := make([]releasepackage.Dependency, 0, len(modules)+1)
+	for identity, scopes := range modules {
+		text, license, notice, err := goAttributionAt(scopes.source.Dir, scopes.dirs)
 		if err != nil {
 			return nil, fmt.Errorf("%s: %w", identity, err)
 		}
-		notice, err := noticeAt(fields[2])
-		if err != nil {
-			return nil, fmt.Errorf("%s NOTICE: %w", identity, err)
-		}
-		unique[identity] = releasepackage.Dependency{Name: fields[0], Version: fields[1], Kind: "go", License: license, LicenseText: text, NoticeText: notice,
-			Download: "https://proxy.golang.org/" + fields[0] + "/@v/" + fields[1] + ".zip", PackageURL: "pkg:golang/" + fields[0] + "@" + fields[1]}
+		module := scopes.source
+		result = append(result, releasepackage.Dependency{Name: module.Path, Version: module.Version, Kind: "go", License: license, LicenseText: text, NoticeText: notice,
+			Download: "https://proxy.golang.org/" + module.Path + "/@v/" + module.Version + ".zip", PackageURL: "pkg:golang/" + module.Path + "@" + module.Version})
 	}
 	goLicenseRoot := runtime.GOROOT()
-	goLicense, license, err := licenseAt(goLicenseRoot)
-	if err != nil {
-		// Homebrew keeps the upstream Go LICENSE one directory above its
-		// libexec GOROOT; official toolchains keep it at GOROOT.
-		goLicenseRoot = filepath.Dir(runtime.GOROOT())
-		goLicense, license, err = licenseAt(goLicenseRoot)
-		if err != nil {
-			return nil, fmt.Errorf("Go standard library license: %w", err)
-		}
+	if _, _, err := licenseAt(goLicenseRoot); err != nil {
+		// Homebrew stores the upstream license above its libexec GOROOT.
+		goLicenseRoot = filepath.Dir(goLicenseRoot)
 	}
-	goNotice, err := noticeAt(goLicenseRoot)
+	text, license, notice, err := goAttributionAt(goLicenseRoot, standard)
 	if err != nil {
-		return nil, fmt.Errorf("Go standard library NOTICE: %w", err)
+		return nil, fmt.Errorf("Go standard library attribution: %w", err)
 	}
 	version := strings.TrimPrefix(runtime.Version(), "go")
-	unique["go.dev/stdlib@"+version] = releasepackage.Dependency{Name: "go.dev/stdlib", Version: version, Kind: "go", License: license, LicenseText: goLicense, NoticeText: goNotice,
-		Download: "https://go.dev/dl/go" + version + ".src.tar.gz", PackageURL: "pkg:golang/go.dev/stdlib@" + version}
-	result := make([]releasepackage.Dependency, 0, len(unique))
-	for _, dependency := range unique {
-		result = append(result, dependency)
-	}
+	result = append(result, releasepackage.Dependency{Name: "go.dev/stdlib", Version: version, Kind: "go", License: license, LicenseText: text, NoticeText: notice,
+		Download: "https://go.dev/dl/go" + version + ".src.tar.gz", PackageURL: "pkg:golang/go.dev/stdlib@" + version})
 	return result, nil
+}
+
+// goAttributionAt includes only the module root and ancestors of actually
+// imported packages. An unrelated subtree cannot add or hide a license grant.
+func goAttributionAt(root string, packageDirs []string) (string, string, string, error) {
+	root, err := filepath.EvalSymlinks(root)
+	if err != nil {
+		return "", "", "", err
+	}
+	scopes := map[string]bool{root: true}
+	for _, directory := range packageDirs {
+		directory, err = filepath.EvalSymlinks(directory)
+		if err != nil {
+			return "", "", "", err
+		}
+		relative, err := filepath.Rel(root, directory)
+		if err != nil || relative == ".." || strings.HasPrefix(relative, ".."+string(filepath.Separator)) {
+			return "", "", "", fmt.Errorf("%w: Go package outside source root", releasepackage.ErrInvalidContent)
+		}
+		for {
+			scopes[directory] = true
+			if directory == root {
+				break
+			}
+			directory = filepath.Dir(directory)
+		}
+	}
+	directories := make([]string, 0, len(scopes))
+	for directory := range scopes {
+		directories = append(directories, directory)
+	}
+	sort.Strings(directories)
+	var licenses, notices bytes.Buffer
+	labels := make(map[string]bool)
+	rootLicense := false
+	for _, directory := range directories {
+		entries, err := os.ReadDir(directory)
+		if err != nil {
+			return "", "", "", err
+		}
+		for _, entry := range entries {
+			isLicense := isLicenseName(entry.Name())
+			isNotice := isNoticeName(entry.Name())
+			if !isLicense && !isNotice {
+				continue
+			}
+			if !entry.Type().IsRegular() {
+				return "", "", "", releasepackage.ErrInvalidContent
+			}
+			data, err := os.ReadFile(filepath.Join(directory, entry.Name()))
+			if err != nil || len(bytes.TrimSpace(data)) == 0 {
+				return "", "", "", releasepackage.ErrInvalidContent
+			}
+			display, err := filepath.Rel(root, filepath.Join(directory, entry.Name()))
+			if err != nil {
+				return "", "", "", err
+			}
+			destination := &notices
+			if isLicense {
+				label, err := releasepackage.DetectPermissiveLicense(string(data))
+				if err != nil {
+					return "", "", "", fmt.Errorf("%w: unrecognized scoped license %s", err, filepath.ToSlash(display))
+				}
+				for _, item := range strings.Split(label, " AND ") {
+					labels[item] = true
+				}
+				rootLicense = rootLicense || directory == root
+				destination = &licenses
+			}
+			fmt.Fprintf(destination, "----- %s -----\n%s\n", filepath.ToSlash(display), strings.TrimSpace(strings.ReplaceAll(string(data), "\r\n", "\n")))
+		}
+	}
+	if !rootLicense {
+		return "", "", "", releasepackage.ErrInvalidContent
+	}
+	ordered := make([]string, 0, len(labels))
+	for label := range labels {
+		ordered = append(ordered, label)
+	}
+	sort.Strings(ordered)
+	return licenses.String(), strings.Join(ordered, " AND "), notices.String(), nil
 }
 
 // discoverClientDependencies inventories exactly the npm packages whose
@@ -398,6 +501,16 @@ func packageDirectory(module string) (string, error) {
 	}
 }
 
+func isLicenseName(name string) bool {
+	name = strings.ToLower(name)
+	return name == "license" || strings.HasPrefix(name, "license.") || name == "copying" || strings.HasPrefix(name, "copying.")
+}
+
+func isNoticeName(name string) bool {
+	name = strings.ToLower(name)
+	return name == "notice" || strings.HasPrefix(name, "notice.")
+}
+
 func licenseAt(directory string) (string, string, error) {
 	entries, err := os.ReadDir(directory)
 	if err != nil {
@@ -405,8 +518,7 @@ func licenseAt(directory string) (string, string, error) {
 	}
 	var candidates []string
 	for _, entry := range entries {
-		name := strings.ToLower(entry.Name())
-		if !entry.IsDir() && (name == "license" || strings.HasPrefix(name, "license.") || name == "copying" || strings.HasPrefix(name, "copying.")) {
+		if !entry.IsDir() && isLicenseName(entry.Name()) {
 			candidates = append(candidates, entry.Name())
 		}
 	}
@@ -437,8 +549,7 @@ func noticeAt(directory string) (string, error) {
 	}
 	var candidates []string
 	for _, entry := range entries {
-		name := strings.ToLower(entry.Name())
-		if name != "notice" && !strings.HasPrefix(name, "notice.") {
+		if !isNoticeName(entry.Name()) {
 			continue
 		}
 		if !entry.Type().IsRegular() {

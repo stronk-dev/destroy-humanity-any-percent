@@ -10785,3 +10785,37 @@ independently confirmed. Next implement compiler-linked Go attribution scopes,
 retaining approved root NOTICE behavior and refusing unknown nested grants. No
 complete provenance map, fifth compiled MPL claim, remedy/rights/tool/adoption/
 distribution/release acceptance or goal pause follows from this research verdict.
+
+## 2026-11-04 — Correct linked Go scope attribution under existing DP1/AC8
+
+RP-761 correction is separate from tool/MPL architecture adoption. New ordinary
+real-import regression14de4b/65166→14ed88 reproduces the exact nested GDDO BSD
+omission on old behavior, using actual six-command compiler graph, source file,
+metadata discovery/sorting and that module's formatter output. This prevents
+an unrelated dependency's copy of a license from satisfying the witness.
+
+Replace module-root-only TSV discovery with typed compiler-package JSON. Preserve
+module identity/root agreement, group actual imported directories, then collect
+root+imported-ancestor license/NOTICE scopes within each module and selected
+stdlib root. Symlink-resolved source directories must remain inside that root;
+missing/unknown package metadata refuses. Relative file headings retain scope.
+Each licensing file is classified before combining recognized grants; a valid
+root/nearby grant cannot mask an unsupported nested one. Named nonregular/empty
+files or missing root grant fail. Unimported subtrees cannot widen/poison the
+inventory. Existing root/browser NOTICE behavior and license allowlist remain;
+no gameplay, public/save schema, dependency/kernel/version/CI or MPL-policy change.
+Canonical Deployment docs now describe the actual compiler-import scope.
+
+Actual real-import regressione1158e/45471→bb7096 passes. Full affected packages
+bc8236/15580→959d03 pass cold, vet205dc8 passes. Focused fixtures additionally
+cover duplicate imported directories/ancestor dedup, root+nested notices and
+combined MIT/BSD, an unrelated unsupported subtree, unsupported licensing file
+alongside a known file, outside root, missing root, symlink grant and empty notice.
+No per-file permission/unknown failure is relabelled absent. Existing model/source
+research and RP-760 verdicts remain historical within their exact scope.
+
+Next actual metadata generation from committed source, then fresh independent
+corrective review of the complete code/tests/docs/records range. RP-761 remains
+review-pending; full attribution/rights/tool/native/adoption/R-006 and1.0 remain.
+No publication, deployment, archival or goal pause. Diff/gofmt checked.
+Review by: Codex root, implementer first filter. Recorded by: Codex root.
