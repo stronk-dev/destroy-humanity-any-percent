@@ -9884,3 +9884,32 @@ bindings, not another unchanged two-session positive. Full nine-tier1.0 stays
 active; no push, host deployment, archival, release claim or goal pause.
 
 Review by: Codex root, research/tool author first filter. Recorded by: Codex root.
+
+
+## 2026-11-04 — Actual-helper gateway study independently APPROVED
+
+Review by: independent Codex `/root/backup_operation_gateway_review`.
+Recorded by: Codex root, transcribing returned verdict.
+Exact complete range:
+`86b82187919846408152a21f22e7d919fe48bf20..efc4d402298488ce9dc5ab3c23dba6f9c598e79a`.
+Verdict **APPROVED — research/tool scope**, no blocking findings.
+
+Independent ee94bc/55acca exits0: actual encrypted backup/restore identity,
+both2-connection populations, wrong/correct-key distinction, original EOFs BEFORE
+lock release, preserved continuous control/Postgres/rows7/42 and all controls,
+without skips. Private cancellation severing dd9f6f/32439f exits1: substituting
+wrong key for correct key fails at observation deadline: INVALID; no completion
+from unfinished originals. Tracked sources untouched. Independent783b19 passes
+six actual-AST command deadline/error cases and13 observation corruptions;
+root/independent source/runner/binary bindings match. Neither output contains
+fixture password or age private key.94b5cf Linux/amd64 overlay vet passes;
+69cd49 verifies complete7-path scope, append-only log, exact private mutation and
+clean tracked checkout. Reviewer made no tracked edits/commits.
+
+Both reviewer projects' container/network/volume inventories empty:
+d2cbd0/2e8d18/f2e4d0 and cd7c8b/5cd140/cf1669. All handles terminal. Root's result
+is not relabeled as independent evidence. Research approval leaves RP-752 full
+producer/profile binding OPEN: full CLI/outer publication, non-bypassable
+production isolation, restart authority, TLS, supported host, OP9 adoption and
+CR4/R-006 remain. Editorial closeout changes no tool/criterion and needs no
+identical repetition. Full nine-tier1.0 stays active; no push/deploy/archive.

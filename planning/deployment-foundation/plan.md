@@ -39,7 +39,10 @@ admission yields exact111; real journal-write failure occurs before native dial.
 All14 terminal/framing plus4 deadline controls pass, no test skips. Final
 Linux/amd64 overlay vet5bd1d6 passes;62d424 binds retained v1 to final
 source/runner and excludes
-fixture password/private key in observation. New range needs independent review.
+fixture password/private key in observation. Complete86b82187..efc4d402 is
+independently APPROVED: fresh ee94bc/55acca all populations; private correct-key
+severing dd9f6f/32439f fails unfinished-session observation;783b19 guards/error/
+artifact corruptions and94b5cf vet pass. All reviewer fixtures removed.
 Next full supervisor/OP9 binding must include actual CLI/outer metrics and
 interrupted output publication, not relabel this package-function proof as those.
 

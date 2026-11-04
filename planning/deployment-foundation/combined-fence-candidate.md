@@ -416,8 +416,11 @@ terminal/framing controls include partial/oversized/bad/duplicate frames,
 one-sided EOF, open admission and native/deadline errors. All pass, no skips.
 Four additional actual deadline cases require timely completion and refuse past,
 cancelled or missing bounds; local dial/SQL/cancel/child observations check the
-clock after collection. Final Linux/amd64 overlay vet5bd1d6 passes. New range
-awaits independent review.
+clock after collection. Final Linux/amd64 overlay vet5bd1d6 passes. Complete
+86b82187..efc4d402 is independently APPROVED: fresh ee94bc/55acca reproduces all
+populations and controls; private correct-key severing dd9f6f/32439f fails at the
+unfinished-session deadline, with no tracked mutation.783b19 checks guards/error/
+artifact corruptions and94b5cf vet passes; all reviewer fixtures removed.
 
 This is a disposable SSL-disabled fixture, on Desktop Linux/arm64 running the
 amd64 package test executable and pinned PG16.15. Synthetic manifest hashes are
