@@ -310,8 +310,12 @@ The [manual runner](probes/cli-worker-probe.py.txt),
 [source-bound observation](cli-worker-observation.v1.json) extend the prior
 isolation study to actual Linux/amd64 Docker28.4.0 and Compose2.39.4 clients.
 They are research inputs only; no daemon or host CLI is installed and no
-shipping dependency changes. Actual cafdcb/418737 exits0; independent review
-of this new range is pending.
+shipping dependency changes. Actual cafdcb/418737 exits0. Complete new range
+2699ad00..04452299 is independently APPROVED after fresh c8216a/f54d40 actual
+population, f3ce08 actual-AST trace/profile/deadline/error and binding controls,
+d605ec Linux/amd64 vet and66728a complete scope/archive/static-binary checks.
+Exact reviewer project container/network/volume inventories are empty. This
+does not extend the review to the still-unbuilt production profile.
 
 An isolated UID65532 worker obtains the real Engine28.4.0 Linux/arm64 version
 through the Go Unix/HTTP broker. Compose's real plugin version and config

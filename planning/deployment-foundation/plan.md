@@ -35,8 +35,11 @@ Actual ContainerCreate reaches POST and is refused403 without forwarding or
 child creation; UID0 is refused403. Native profiles match network-none/read-only/
 cap-drop/no-new-privileges, and raw socket is ENOENT2. Eleven actual Go policy
 controls pass; Linux/amd64 overlay vet0df9ed passes. Retained v1 binds exact
-sources/binary/tools. This is first-filter research evidence, pending complete
-independent review, not durable write admission/native-host/adoption/CR4 proof.
+sources/binary/tools. Complete2699ad00..04452299 is independently APPROVED:
+fresh c8216a/f54d40 reproduces all populations, f3ce08 refuses trace/profile/
+deadline/error corruptions and validates bindings; d605ec vet and66728a full
+scope/static-binary/archive checks pass. Reviewer cleanup inventories empty.
+This is compatibility research, not durable write admission/native-host/adoption/CR4 proof.
 Earlier interrupted output is inadmissible: terminal output was lost, no probe
 process/resources remain, and its retained scratch directory alone proves no
 outcome. A pre-commit source check corrected the broker stdout cardinality from3

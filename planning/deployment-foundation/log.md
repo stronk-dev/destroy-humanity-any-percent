@@ -9796,3 +9796,33 @@ repeating these unchanged compatibility populations. Complete range from
 2699ad00 through this batch requires fresh independent delegated review.
 
 Review by: Codex root, research/tool author first filter. Recorded by: Codex root.
+
+
+## 2026-11-04 — Actual CLI/Go compatibility independently APPROVED
+
+Review by: independent Codex `/root/cli_worker_research_review`.
+Recorded by: Codex root, transcribing returned verdict.
+Exact complete range:
+`2699ad00d1be30753a08d6b11c60ba5c697c2286..04452299fca7592ee66fe7a1ad6c8b54b132ba82`.
+Verdict **APPROVED — research/tool scope**, no blocking findings.
+
+Independent c8216a/f54d40 exits0: actual Docker/Compose, Go11 policy controls,
+actual ContainerCreate403 without forwarding, wrong-UID403, raw-socket ENOENT2
+and exact native/kernel profiles reproduce. Output retained in ignored
+.cache/cli-worker-broker-research/independent-execution-v1.log. Independent
+f3ce08 executes reviewed AST: nine trace corruptions refuse; mount ordering
+passes while twelve profile/mount corruptions refuse; root/worker exact and late
+command deadlines refuse; unrelated permission/transport errors cannot satisfy
+UID refusal. Both observation/source/tool/binary bindings pass. d605ec overlay
+Linux/amd64 vet passes. 66728a checks complete eight-path scope, append-only log,
+actual archive hash, static ELF amd64 identities, diff and clean tracked state.
+
+Exact own reviewer project cc-cli-worker-ea72b248f89dd0bc container/network/volume
+inventories64619d/43771a/89a6b8 empty. All handles terminal; no tracked edits or
+commits. The lost-output limitation remains, and local Compose config is not
+misrepresented as daemon lifecycle execution. Root's pass is not the reviewer's.
+This approves compatibility research only. Durable job admission, complete job
+identity/write authorization, supervisor/daemon lifetime, actual helpers,
+supported native host, adoption/recovery/R-006 and the full nine-tier1.0 remain
+open. Editorial closeout changes no tool/observation/criterion; no repeated
+identical run required. Goal stays active; no push, deployment or archival.
