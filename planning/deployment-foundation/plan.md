@@ -29,6 +29,16 @@ including receipt/proof temporal order and historical-reference semantics.
 Complete original-plus-correction needs independent re-review; no format/proof
 is adopted or implemented, and OP9's native producer/profile gates remain.
 
+Complete original six-path plus corrective five-path union through09c1c792 is
+independently APPROVED as a SCOPED SERIALIZATION CONTRACT. Original negative
+remains; independent0dd9b8 checks all ranges/references/whitespace and affected
+positive/failure/install/retry traces. RP-746–748 close draft defects; RP-745
+stays OPEN for OP9/native producers. Next choose/specify and prove a concrete
+native supervisor/worker profile and its exact plan/subject/native-receipt types,
+including daemon/scope authority, bootstrap and non-bypassable admission. Bind
+the actual helper/all mutation-map resources. No format-only acceptance or
+universal-refusal implementation substitutes for useful real recovery paths.
+
 **Recovery-contract review,2026-11-04:** independent review at c5419034 finds
 RP-741–744: universal healthy-current admission conflicts with partial-source
 rollback; Finished lacks whole-helper closure; cleanup has no lawful pre-fence

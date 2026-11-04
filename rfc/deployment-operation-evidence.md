@@ -1,6 +1,6 @@
 # RFC: Deployment Operation Evidence
 
-- **Status:** draft — proposed serialization/verification contract, not implementation authority
+- **Status:** draft — record envelopes/phase reduction independently technically approved; OP9 native profile/producers and adoption pending, not implementation authority
 - **Author:** Codex
 - **Created:** 2026-11-04
 - **Design refs:** `design/06-tech.md` §stack; `design/00-vision.md` pillar6

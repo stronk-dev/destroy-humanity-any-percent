@@ -9580,3 +9580,29 @@ checks full containing diff and all affected ordinary/failure/retry/install
 traces; no software suite for this prose correction. Review by: Codex root,
 corrective author first filter. Recorded by: Codex root. Complete original plus
 containing five-path correction needs independent technical re-review.
+
+## 2026-11-04 — Corrected evidence-format union independently APPROVED
+
+Review by: independent Codex `/root/operation_evidence_contract_review`.
+Recorded by: Codex root, transcribing its final returned verdict. Complete union:
+
+- `b74d02a735403e79c2e90147c402fe1ffe5ce8ba..7a7e7b39a71f29dec28c0f70039060a4a550a3e2`.
+- `7a7e7b39a71f29dec28c0f70039060a4a550a3e2..09c1c792ce8de0795fb64880186c6d1c2fdac6a6`.
+
+Verdict **APPROVED — scoped serialization contract**, no blocking findings.
+Original CHANGES REQUIRED remains. Independently checked unique anchors and
+historical repetitions, installation's non-Started admission, reached-stage
+phase coverage, valid empty-work versus missing/torn/lost logs, inherited/current
+completion/retry/administrative interruption and temporal order. Independent
+0dd9b8 exits0 for original/corrective/union scope/whitespace, local references
+and negative-verdict preservation. No software suite/mirror validator warranted
+for prose semantics. No tracked edits/commits/fixtures; all handles terminal.
+
+RP-746–748 close draft-format defects only. RP-745/OP9 remains OPEN: native
+schemas/profile/producers, permissions, non-bypassable admission, actual helper/
+runtime conformance, clean-host execution and adoption are not established by
+record-format review. This editorial closeout reconciles status only, not the
+approved normative rules. Next construct the native supervisor/worker profile
+and exact producer/subject/receipt semantics, then prove it against actual work.
+No product/CI/kernel/copy change, publication, deployment, archival or goal pause;
+the full nine-tier1.0 remains active.
