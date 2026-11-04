@@ -22,7 +22,7 @@ adoption remains pending. Before choosing the artifact floor, run the bounded
 standalone configuration comparison below. No production/schema implementation
 or software test claim follows from this Markdown-only proposal.
 
-**Next bounded study — direct Compose configuration:** pinned Compose source
+**Predeclared bounded study — direct Compose configuration:** pinned Compose source
 `cmd/main.go` and `cmd/compatibility/convert.go` have an explicit standalone path.
 Question: can the actual cached2.39.4 executable supply the same configuration
 outputs/refusals as CLI28.4.0 plus that plugin, without a separate CLI executable
@@ -39,6 +39,17 @@ A pass authorizes a smaller artifact/profile proposal for review and owner
 choice, not selection, implementation, rights clearance or waived conformance.
 Desktop/emulation research is not native Linux/amd64 SP8/R-006. A partial or
 negative result stays bounded and cannot silently change the two-tool draft.
+
+Executed first filter: all3 complete valid models match; both modes reject all4
+invalid cases; missing/swapped binary controls and an actual parsed policy-field
+change refuse. Exact binaries run inside checked nonroot/read-only/no-cap/no-
+network boundaries without Engine sockets, and direct mode has no CLI executable.
+Owned cleanup passes. Artifact/probe are retained under this plan; the full
+research/tool range needs independent review. Next obtain that verdict, then
+draft a single directly invoked Compose compiler amendment for review/owner
+adoption, preserving all current native/manifest and source/rights criteria.
+This result does not modify the currently reviewed two-tool contract or select
+the old research version as a shipping pin. No native-host release proof claimed.
 
 **Nested attribution correction,2026-11-04 (RP-761):** independently APPROVED
 complete six-path957dfa6b..a8168b63. Actual old imported-GDDO BSD omission

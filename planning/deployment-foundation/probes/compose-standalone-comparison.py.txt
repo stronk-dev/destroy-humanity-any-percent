@@ -1,0 +1,239 @@
+"""Bounded manual compatibility research, not a shipping/native-host validator.
+
+Run from the repository root with --output pointing at a fresh JSON file.
+Only cached public tools/image, synthetic public inputs and owned containers.
+No services are applied. No operator configuration, credentials or sockets mount.
+"""
+import argparse
+import copy
+import hashlib
+import json
+import pathlib
+import runpy
+import secrets
+import shutil
+import subprocess
+import tempfile
+import time
+
+BOUNDARY = pathlib.Path("planning/deployment-foundation/probes/worker-isolation-probe.py.txt")
+PYTHON = runpy.run_path(str(BOUNDARY))["PYTHON"]
+WORK_SECONDS, COMMAND_SECONDS, CLEANUP_SECONDS, BUILD_SECONDS = 60, 10, 15, 180
+
+WORKER = r'''
+import hashlib,json,os,pathlib,subprocess,sys,time
+mode,expected_compose,expected_cli=sys.argv[1:]
+deadline=time.monotonic()+60
+def require(ok,message):
+    if not ok: raise RuntimeError(message)
+status={}
+for line in pathlib.Path('/proc/self/status').read_text().splitlines():
+    key,_,value=line.partition(':')
+    if key in ('CapEff','CapBnd','NoNewPrivs'):status[key]=value.strip()
+require(os.getuid()==65532 and int(status['CapEff'],16)==int(status['CapBnd'],16)==0 and status['NoNewPrivs']=='1','worker privilege mismatch')
+require(not pathlib.Path('/var/run/docker.sock').exists() and not pathlib.Path('/missing-engine.sock').exists(),'unexpected Engine socket')
+compose=pathlib.Path('/tools/plugins/docker-compose' if mode=='wrapped' else '/tools/docker-compose')
+base=dict(mode=mode,uid=os.getuid(),kernel=status,engine_channel=False)
+if mode=='missing':
+    require(not compose.exists() and not pathlib.Path('/tools/docker').exists(),'missing control setup')
+    try: subprocess.run([str(compose),'version','--short'],check=False,timeout=10,capture_output=True)
+    except FileNotFoundError: pass
+    else: raise RuntimeError('missing executable did not refuse')
+    print(json.dumps(dict(base,objective_completed=True,refusal='exec_unavailable',tool_executed=False)),flush=True)
+    sys.exit(0)
+digest=hashlib.sha256(compose.read_bytes()).hexdigest()
+if mode=='swapped':
+    require(digest==expected_cli and digest!=expected_compose,'swap control setup')
+    print(json.dumps(dict(base,objective_completed=True,refusal='binary_hash_mismatch',tool_executed=False)),flush=True)
+    sys.exit(0)
+require(digest==expected_compose,'wrong Compose bytes')
+require((mode=='wrapped')==pathlib.Path('/tools/docker').exists(),'CLI presence mismatch')
+if mode=='wrapped':
+    require(hashlib.sha256(pathlib.Path('/tools/docker').read_bytes()).hexdigest()==expected_cli,'wrong CLI bytes')
+    prefix=['/tools/docker','compose']
+else: prefix=[str(compose)]
+environment=dict(PATH='/no-external-tools',DOCKER_CONFIG='/fixture/docker-config',DOCKER_HOST='unix:///missing-engine.sock',DOCKER_CLI_HINTS='false')
+def invoke(args,expected):
+    until=min(deadline,time.monotonic()+10)
+    remaining=until-time.monotonic()
+    require(remaining>0,'worker guard: INVALID')
+    result=subprocess.run(prefix+args,cwd='/fixture',env=environment,capture_output=True,text=True,timeout=remaining)
+    require(time.monotonic()<until,'command guard: INVALID')
+    require((result.returncode==0)==expected,'unexpected command outcome: '+repr(args)+' exit='+str(result.returncode)+' stderr='+result.stderr)
+    return result
+version=invoke(['version','--short'],True).stdout.strip()
+require(version.removeprefix('v')=='2.39.4','actual version mismatch')
+models={};rows=[]
+for case in json.loads(pathlib.Path('/fixture/cases.json').read_text()):
+    args=['--project-name','cc-standalone-model','--env-file','/fixture/'+case['env']]
+    for path in case['files']:args+=['--file','/fixture/'+path]
+    result=invoke(args+['config','--format','json'],case['success'])
+    row=dict(case=case['id'],exit=result.returncode,stdout_bytes=len(result.stdout.encode()),stdout_sha256=hashlib.sha256(result.stdout.encode()).hexdigest(),stderr_sha256=hashlib.sha256(result.stderr.encode()).hexdigest())
+    if case['success']:
+        model=json.loads(result.stdout)
+        require(isinstance(model,dict) and model.get('name')=='cc-standalone-model','invalid model shape')
+        models[case['id']]=model
+        row['services']=sorted(model['services'])
+    rows.append(row)
+require(time.monotonic()<deadline,'worker guard: INVALID')
+print(json.dumps(dict(base,objective_completed=True,version=version,rows=rows,models=models)),flush=True)
+'''
+
+
+def require(ok, message):
+    if not ok:
+        raise RuntimeError(message)
+
+
+def equal_models(left, right):
+    require(left == right, "complete parsed model mismatch")
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--output", required=True)
+    args = parser.parse_args()
+    root = pathlib.Path.cwd()
+    output = pathlib.Path(args.output).resolve()
+    require(not output.exists() and output.parent.is_dir(), "fresh output required")
+    require((root / "Makefile").is_file(), "repository root required")
+    tools = root / ".cache/worker-cli-tools"
+    metadata = json.loads((tools / "tools.json").read_text())
+    for entry in metadata["binaries"]:
+        require(hashlib.sha256((root / entry["path"]).read_bytes()).hexdigest() == entry["sha256"], "cached binary changed")
+    compose_hash = metadata["binaries"][1]["sha256"]
+    cli_hash = metadata["binaries"][0]["sha256"]
+    project = "cc-standalone-" + secrets.token_hex(8)
+    work = pathlib.Path(tempfile.mkdtemp(prefix=project + "-"))
+    work.chmod(0o755)
+    containers = []
+    attempted_create = False
+    completed = False
+    deadline = None
+
+    def run(*command, cleanup=False):
+        now = time.monotonic()
+        until = now + CLEANUP_SECONDS if cleanup else min(deadline, now + COMMAND_SECONDS)
+        require(until > now, "outer guard: INVALID")
+        reply = subprocess.run(["docker", *command], capture_output=True, text=True, timeout=until-now)
+        require(time.monotonic() < until, "outer command guard: INVALID")
+        require(reply.returncode == 0, "owned Docker command failed: " + command[0] + " " + reply.stderr)
+        return reply.stdout.strip()
+
+    def owned(container, mode, cleanup=False):
+        actual = run("inspect", "--format", '{{.Id}} {{.Image}} {{index .Config.Labels "com.docker.compose.project"}} {{index .Config.Labels "com.docker.compose.service"}}', container, cleanup=cleanup)
+        require(actual == " ".join((container, PYTHON, project, mode)), "container ownership mismatch")
+
+    try:
+        images = {name: "research.invalid/" + name + "@sha256:" + str(index)*64 for index, name in enumerate(("alertmanager", "caddy", "gameserver", "node-exporter", "postgres", "prometheus"), 1)}
+        render = subprocess.run(["make", "render-release-compose", "RELEASE_COMPOSE_OUTPUT=" + str(work / "base.yml"), *[name.upper().replace("-", "_") + "_IMAGE=" + image for name, image in images.items()]], capture_output=True, text=True, timeout=BUILD_SECONDS)
+        require(render.returncode == 0, "actual release renderer failed: " + render.stdout + render.stderr)
+        shutil.copyfile(root / "deployment/compose.rotation.template.yml", work / "rotation.yml")
+        public_env = (root / "deployment/.env.example").read_text()
+        public_env += "\nCLOUD_CLICKER_JWT_PREVIOUS_ID=jwt-previous-public\nCLOUD_CLICKER_BOOTSTRAP_PREVIOUS_ID=bootstrap-previous-public\nCLOUD_CLICKER_JWT_PREVIOUS_SECRET_FILE=./secrets/jwt-previous\nCLOUD_CLICKER_BOOTSTRAP_PREVIOUS_SECRET_FILE=./secrets/bootstrap-previous\n"
+        (work / "public.env").write_text(public_env)
+        (work / "empty.env").write_text("# deliberately missing required values\n")
+        (work / "minimal.yml").write_text("services:\n  probe:\n    image: " + PYTHON + "\n    network_mode: none\n    read_only: true\n")
+        (work / "invalid.yml").write_text("services: [\n")
+        (work / "wrong-type.yml").write_text("services: []\n")
+        (work / "docker-config").mkdir()
+        (work / "docker-config/config.json").write_text(json.dumps(dict(auths={}, cliPluginsExtraDirs=["/tools/plugins"])))
+        (work / "secrets").mkdir()
+        for name in ("database-url", "postgres-password", "jwt-current", "bootstrap-current", "cursor-current", "alertmanager.yml", "jwt-previous", "bootstrap-previous"):
+            (work / "secrets" / name).write_text("public synthetic test input, never an operator secret\n")
+        cases = [
+            dict(id="minimal", env="public.env", files=["minimal.yml"], success=True),
+            dict(id="production_base", env="public.env", files=["base.yml"], success=True),
+            dict(id="production_rotation", env="public.env", files=["base.yml", "rotation.yml"], success=True),
+            dict(id="invalid_yaml", env="public.env", files=["invalid.yml"], success=False),
+            dict(id="wrong_type", env="public.env", files=["wrong-type.yml"], success=False),
+            dict(id="required_env_missing", env="empty.env", files=["base.yml"], success=False),
+            dict(id="input_missing", env="public.env", files=["missing.yml"], success=False),
+        ]
+        (work / "cases.json").write_text(json.dumps(cases))
+        for path in work.rglob("*"):
+            path.chmod(0o755 if path.is_dir() else 0o644)
+        fixture_hashes = {str(p.relative_to(work)): hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(work.rglob("*")) if p.is_file()}
+        deadline = time.monotonic() + WORK_SECONDS
+        engine = run("version", "--format", "{{.Server.Version}} {{.Server.Os}}/{{.Server.Arch}}")
+        image = json.loads(run("image", "inspect", PYTHON, "--format", '{"id":{{json .Id}},"os":{{json .Os}},"arch":{{json .Architecture}}}'))
+        require(image == dict(id=PYTHON, os="linux", arch="arm64"), "unmeasured fixture image platform")
+        results = {}
+        profiles = {}
+        print(json.dumps(dict(phase="started", project=project, cases=len(cases), modes=4)), flush=True)
+        for mode in ("wrapped", "direct", "missing", "swapped"):
+            mounts = ["type=bind,source=" + str(work) + ",target=/fixture,readonly"]
+            destinations = ["/fixture"]
+            if mode == "wrapped":
+                mounts += ["type=bind,source=" + str(tools / "docker") + ",target=/tools/docker,readonly", "type=bind,source=" + str(tools / "plugins/docker-compose") + ",target=/tools/plugins/docker-compose,readonly"]
+                destinations += ["/tools/docker", "/tools/plugins/docker-compose"]
+            elif mode != "missing":
+                source = tools / ("docker" if mode == "swapped" else "plugins/docker-compose")
+                mounts += ["type=bind,source=" + str(source) + ",target=/tools/docker-compose,readonly"]
+                destinations += ["/tools/docker-compose"]
+            argv = ["create", "--pull=never", "--name", project + "-" + mode, "--label", "com.docker.compose.project=" + project, "--label", "com.docker.compose.service=" + mode, "--network", "none", "--ipc", "private", "--read-only", "--user", "65532:65532", "--cap-drop", "ALL", "--security-opt", "no-new-privileges:true"]
+            for mount in mounts:
+                argv += ["--mount", mount]
+            attempted_create = True
+            container = run(*argv, "--entrypoint", "python3", PYTHON, "-c", WORKER, mode, compose_hash, cli_hash)
+            containers.append((container, mode))
+            owned(container, mode)
+            raw = json.loads(run("inspect", container))[0]
+            selected = dict(user=raw["Config"]["User"], network=raw["HostConfig"]["NetworkMode"], ipc=raw["HostConfig"]["IpcMode"], pid=raw["HostConfig"]["PidMode"], readonly=raw["HostConfig"]["ReadonlyRootfs"], privileged=raw["HostConfig"]["Privileged"], caps=raw["HostConfig"]["CapDrop"], security=raw["HostConfig"]["SecurityOpt"], mounts=sorted([dict(path=m["Destination"], type=m["Type"], rw=m["RW"]) for m in raw["Mounts"]], key=lambda x:x["path"]))
+            expected = dict(user="65532:65532", network="none", ipc="private", pid="", readonly=True, privileged=False, caps=["ALL"], security=["no-new-privileges:true"], mounts=[dict(path=p, type="bind", rw=False) for p in sorted(destinations)])
+            require(selected == expected, "actual fixture boundary mismatch")
+            profiles[mode] = selected
+            run("start", container)
+            while run("inspect", "--format", "{{.State.Running}}", container) == "true":
+                require(time.monotonic() < deadline, "worker observation guard: INVALID")
+                time.sleep(0.1)
+            exit_code = run("wait", container)
+            if exit_code != "0":
+                error_lines = [line for line in run("logs", container).splitlines() if line.startswith(("RuntimeError:", "subprocess.TimeoutExpired:"))]
+                raise RuntimeError("worker incomplete: " + mode + " exit=" + exit_code + " " + " ".join(error_lines))
+            observed = json.loads(run("logs", container))
+            require(observed["objective_completed"] is True, "worker objective incomplete")
+            results[mode] = observed
+        for case in cases:
+            if case["success"]:
+                equal_models(results["wrapped"]["models"][case["id"]], results["direct"]["models"][case["id"]])
+        production = results["direct"]["models"]["production_base"]
+        require(len(production["services"]) == 7 and len(production["networks"]) == 4 and len(production["volumes"]) == 5 and production["services"]["gameserver"]["read_only"] is True, "production model did not exercise real boundaries")
+        altered = copy.deepcopy(production)
+        altered["services"]["gameserver"]["read_only"] = False
+        try:
+            equal_models(production, altered)
+        except RuntimeError as error:
+            require(str(error) == "complete parsed model mismatch", "unexpected discrimination refusal")
+        else:
+            raise RuntimeError("model comparison accepted a real altered policy field")
+        for mode in ("wrapped", "direct"):
+            results[mode].pop("models")
+        require(time.monotonic() < deadline, "work guard: INVALID")
+        observation = dict(schema_version=1, objective_completed=True, research_only=True, project=project, engine=engine, fixture_image=image, binary_inputs=metadata["binaries"], fixture_hashes=fixture_hashes, cases=cases, results=results, profiles=profiles, model_comparisons=3, policy_field_change_refused=True, source_sha256=hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest(), boundary_source_sha256=hashlib.sha256(BOUNDARY.read_bytes()).hexdigest(), guards=dict(work=WORK_SECONDS, command=COMMAND_SECONDS, cleanup=CLEANUP_SECONDS, build=BUILD_SECONDS), limitations=["Desktop ARM64 fixture with AMD64 tool execution; not supported native Linux/amd64", "Configuration compilation only; no service applied or native supervisor proved", "Synthetic public configuration and placeholder image references; no release artifact eligibility", "No operator Docker config/credentials/network/Engine socket available inside workers", "No rights/artifact/profile adoption or acceptance inferred"])
+        completed = True
+    finally:
+        for container, mode in reversed(containers):
+            owned(container, mode, cleanup=True)
+            run("rm", "--force", "--volumes", container, cleanup=True)
+        leftover = run("container", "ls", "--all", "--quiet", "--no-trunc", "--filter", "label=com.docker.compose.project=" + project, cleanup=True) if attempted_create else ""
+        for container in leftover.splitlines():
+            mode = run("inspect", "--format", '{{index .Config.Labels "com.docker.compose.service"}}', container, cleanup=True)
+            require(mode in ("wrapped", "direct", "missing", "swapped"), "unknown leftover fixture role")
+            owned(container, mode, cleanup=True)
+            run("rm", "--force", "--volumes", container, cleanup=True)
+        if attempted_create:
+            require(run("container", "ls", "--all", "--quiet", "--filter", "label=com.docker.compose.project=" + project, cleanup=True) == "", "owned cleanup incomplete")
+        if completed:
+            shutil.rmtree(work)
+        else:
+            print(json.dumps(dict(objective_completed=False, private_work=str(work))), flush=True)
+    observation["cleanup_complete"] = True
+    with output.open("x") as handle:
+        json.dump(observation, handle, sort_keys=True, indent=2)
+        handle.write("\n")
+    print(json.dumps(dict(objective_completed=True, cleanup_complete=True, output=str(output), comparisons=observation['model_comparisons'], failure_cases=sum(not c['success'] for c in cases)*2, binary_controls=2, policy_field_change_refused=True)), flush=True)
+
+
+if __name__ == "__main__":
+    main()

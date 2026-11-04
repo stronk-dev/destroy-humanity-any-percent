@@ -9,7 +9,10 @@ new source dependency, build/runtime change or complete license clearance.
 
 Can the cached tool hashes, upstream statements and the existing application
 inventory satisfy the proposed shipping floor? **No.** These are distinct
-evidence gaps, not a reason to omit either tool or mark a partial inventory full.
+evidence gaps, not a reason to mark a partial inventory full. Whether both
+executables are needed is a separate architecture question: the new bounded
+standalone comparison below tests the external CLI wrapper's necessity without
+silently changing the current two-tool draft or adopting an artifact.
 
 The [source-bound observation](native-tool-inventory-observation.v1.json) records
 actual binary metadata and publisher-file consistency. The
@@ -67,6 +70,34 @@ not new evidence about these research fixtures or permission to ship them.
 Technical review and owner policy/artifact adoption remain separate from actual
 selected-tool rights closure and native/R-006 acceptance. It does not create a
 universal signature or reproduced-vendor-build gate.
+
+### Standalone configuration comparison
+
+The [manual comparison](probes/compose-standalone-comparison.py.txt) executes
+the actual cached2.39.4 binary both directly and through CLI28.4.0/plugin
+discovery, using the explicit standalone entry in the pinned
+[main](https://github.com/docker/compose/blob/a32dc3da722e6b2e4fbfc72e40b1a697c4686460/cmd/main.go).
+The [observation](compose-standalone-observation.v1.json) records complete
+parsed-model equality for a minimal fixture and the actual current production
+base/rotation templates rendered by the existing release renderer. The real
+production model has7 services/4 networks/5 volume families; nothing is applied.
+Inputs use public synthetic values/placeholder image references, not operator
+secrets. No raw resolved models are retained in the observation.
+
+Both modes pass3 valid cases and reject4 invalid cases each. Direct workers have
+no external Docker CLI, network or Engine socket; exact tool hashes, actual
+nonroot/capability/read-only/mount boundaries are checked. Removed/swapped binary
+controls refuse. A changed read-only field in the actual parsed production model
+fails the complete-model comparison. All4 owned fixture containers are removed.
+Initial sandbox attempts failed before container creation; the permitted local
+Docker launcher completes. Full range awaits independent research/tool review.
+
+This supports a **proposal** to use one directly invoked Compose compiler,
+avoiding a separate native-linked CLI executable and plugin discovery. Compose's
+own embedded Docker CLI Go-module components still need their inventory/terms;
+they do not disappear. No version/artifact selection, rights clearance, policy
+adoption, profile implementation or native Linux/amd64/SP8/R-006 proof follows.
+This Desktop/ARM64 fixture executes AMD64 tools; existing acceptance stays intact.
 
 ### Exact Compose source and root-text follow-up
 

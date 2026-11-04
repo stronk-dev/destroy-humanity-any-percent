@@ -11471,3 +11471,40 @@ comparison, failure cases and missing/swapped binary controls in the existing
 isolated fixture. This may support removing an unnecessary separate wrapper
 and its discovery/native-component burden; it does not authorize that change.
 Preserve every actual config/compatibility outcome and native proof requirement.
+
+## 2026-11-04 — Real standalone Compose matches configuration population
+
+At539e1bb4, execute the predeclared study with cached Compose2.39.4 and CLI28.4.0.
+New manual probe invokes the actual root release renderer for current production
+base plus rotation, alongside a minimal fixture and4 invalid inputs. All3 full
+parsed models match direct versus wrapped/plugin invocation; each mode rejects
+all4 invalid inputs. The real base model contains7 services/4 networks/5 volume
+families. Missing executable and wrong-binary-hash controls refuse; mutating the
+actual parsed gameserver read_only field fails the complete-model comparator.
+Direct workers receive no mounted CLI or Engine socket and have no executable
+PATH fallback. Actual UID65532, CapEff/CapBnd0, NoNewPrivs1, read-only roots,
+network:none and exact read-only bind sets are checked. No service model applied.
+
+Initial sandbox run failed before container creation and its cleanup diagnostic
+masked the socket denial. Instrument now exposes stderr and avoids cleanup API
+calls when no create was attempted; the next ordinary run explicitly reports
+Docker Unix-socket operation-not-permitted. Narrow approved probe-launcher run
+cca9eb/97512→965d00 completes, all4 owned containers removed. Existing-output
+controlb8af0e rejects before work;449728 confirms exact bytes unchanged.
+
+Retained observation12,729bytes/SHA1b5ebbc46ac0ebffd0560606e409f890f88aef7bb72f3d1532fb4b0d5bb3edbe;
+probe16,695bytes/SHA3952fe52dd31e058a838d1a6e5768bc2689317959ce92e78b36bed7b9f9e480c.
+Source binding matches. Reproduce from root:
+python3 planning/deployment-foundation/probes/compose-standalone-comparison.py.txt
+--output <fresh existing-parent JSON path>. Uses existing cached public image/
+tools and root Make renderer; guards unchanged, no module/cache workaround.
+Raw resolved models stay in memory; retained inputs are synthetic public data.
+
+Complete six-path range after539e1bb4 needs independent research/tool review.
+Next propose a direct-Compose-only compiler/profile if that verdict holds;
+current two-tool draft remains unadopted/unchanged. Embedded Docker CLI source
+components in Compose still require attribution. No selected shipping version,
+rights/policy closure, native Linux/amd64/SP8/R-006 or release acceptance follows
+from this ARM64 Desktop fixture. No production, CI or kernel change, publication,
+deployment, archival or pause. All root handles terminal. Review by: Codex root,
+implementer first filter. Recorded by: Codex root.
