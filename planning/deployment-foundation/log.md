@@ -10572,3 +10572,56 @@ directories and121 missing; it is availability only, not authenticated source or
 partial release clearance. The full180-module population remains the required
 collection scope; no package/term may disappear to make an inventory pass.
 No product/CI/balance/copy change, publication or goal pause.
+
+## 2026-11-04 — All180 Compose source identities collected; actual detector refuses four MPL roots
+
+Previous goal turn's provenance audit was completed/independently approved through
+4af4fe6b; clean current state revalidated. This batch advances RP-759 with actual
+source, not inferred license labels. Full population180 from the reviewed binary
+inventory; root/nested notice paths remain distinct. No production, ordinary-test,
+CI, dependency lock, kernel/balance or authored-copy bytes changed.
+
+Initial1a8bd8 v1 exits1 after59 verified/121 URLError; no guard exhaustion or
+exclusions. Diagnostic8e0d34 confirms Python DNS failure; direct curl2d4093 works.
+Preserve exact v1 source/hash and failed artifact. Separate ordinary root curl
+calls (exec1005, all121 successful/terminal) stage missing archives; current
+collector is offline-only. Final7e05f9/28740→b04e35 exits0: all180 full source
+archives match their binary h1;59 cached/121 staged;106,533,767 archive bytes.
+Collect237 named notice files/1,487,398bytes (200 root,37 nested); no missing
+root filename. Source collection is complete, license applicability is not.
+No source code executed/installed and no module/compiler cache setting changed.
+
+Actual Hash1 corresponds to primary Go x/mod/dirhash;500MiB compressed/expanded
+safety limits follow Go module zip contract. Original600s collection guard kept.
+Final0ae26d private controls refuse changed full source, duplicate entry, expired
+guard, corrupt existing notice cache, incomplete179 population and preexisting
+output; originals unchanged, private control directories removed. Earlierbc65ec
+only completes source-corruption refusal: its duplicate builder reused mutable
+ZipInfo and hit an invalid CRC fixture. That remainder is not completion evidence;
+copying ZipInfo produces the six final discriminating controls above.
+
+Manual Go overlay invokes ACTUAL existing licenseAt/detector against every
+source-bound root. Final1b60c5/74430→738e61 executes180, recognizes176/refuses4,
+Go1/Make2; retained report binds full v2 bytes. All4 are exact Hashicorp MPL2.0
+roots: errwrap1.1.0, go-cleanhttp0.5.2, go-multierror1.1.1, go-version1.7.0.
+No false all-clear or policy widening. First424d80 invocation ran ZERO tests
+because Make places GO_TEST_FLAGS before package selection and -args consumed
+that package; excluded. Required wrapper uses GO_PACKAGES= and places the explicit
+package BEFORE -args in GO_TEST_FLAGS; ordinary root target/owned GOCACHE retained.
+
+Independent-of-classification corruption controls16bf51/49869→9216da andca562f/
+15245→04c2d1 fail at duplicate-index and exact notice-byte checks, respectively;
+neither publishes a report. Overlay vet0a6d5e passes. Existing cold positive ISC/
+0BSD tests54f975/53262→b6239a pass, alongside actual176 recognized roots. All
+handles terminal; private verified corpus/overlay retained for reproduction.
+Classifier/probe/source/artifact hashes checked; original helper bytes unchanged.
+
+Primary MPL2.0 §3 and Mozilla FAQ Q7–Q8 were read; exact-source availability and
+recipient notices need a concrete tool-specific delivery treatment. No general
+legal clearance, signed/reproduced build, vendor-patch correspondence,37 nested
+scopes, main-source/stdlib/CLI-native closure, shipping selection or distribution
+permission follows. Next review this complete source/tool/diagnostic range, then
+finish those exact remaining scopes and proposal. RP-759/adoption/host/SP8/R-006
+stay OPEN. No product/CI/architecture adoption, publication/deployment/archival or
+goal pause. Diff checked; no unrelated software suite.
+Review by: Codex root, implementer first filter. Recorded by: Codex root.

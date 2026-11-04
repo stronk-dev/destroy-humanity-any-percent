@@ -22,9 +22,13 @@ first inventory: actual Compose publisher graph covers180 modules but leaves182
 licenses unknown; actual CGO-enabled CLI has no dependency module list. RP-759
 keeps source/native closure and license/NOTICE delivery OPEN. Existing app SBOM
 cannot silently cover either new binary. Source-bound manual tool/audit is independently APPROVED
-ad1d23c1..3fd7483c; no clearance/distribution or shipping version adopted. Next
-collect all180 exact module sources against their binary h1 identities and scoped
-license/NOTICE bytes, plus actual CLI Go/vendor/native closure.
+ad1d23c1..3fd7483c; no clearance/distribution or shipping version adopted.
+The complete source follow-up now verifies all180 archive h1 identities and
+retains237 scoped notice files, including37 nested. Actual current detector
+recognizes176 roots and refuses4 exact MPL2.0 roots; the manual diagnostic
+correctly exits nonzero. Full batch review pending; no license-policy widening.
+Next resolve covered-source/notices delivery, nested/main/stdlib scope and
+actual CLI Go/vendor/native closure before shipping/adoption readiness.
 
 Next complete the exact CLI/Compose provenance/rights/artifact inventory and
 DP7 projection/reboot-cache adoption evidence required by SP1/SP6; obtain explicit

@@ -1,0 +1,212 @@
+"""Collect the complete pinned Compose module-source/notice population.
+
+Manual research only; no dependency installation, source execution or license
+clearance. Hash1 follows golang.org/x/mod/sumdb/dirhash. Archive size guards use
+x/mod/zip's 500MiB limits. A collection/guard failure remains visible and exits1.
+"""
+
+import argparse
+import base64
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import hashlib
+import json
+from pathlib import Path, PurePosixPath
+import subprocess
+import tempfile
+import time
+import urllib.request
+import zipfile
+
+
+MAX_ZIP = 500 << 20
+
+
+class CollectionError(Exception):
+    pass
+
+
+class GuardExhausted(CollectionError):
+    pass
+
+
+def check(deadline):
+    if time.monotonic() >= deadline:
+        raise GuardExhausted("collection_guard")
+
+
+def escaped(value):
+    return "".join("!" + c.lower() if "A" <= c <= "Z" else c for c in value)
+
+
+def digest(data):
+    return hashlib.sha256(data).hexdigest()
+
+
+def inspect_zip(path, module, expected, deadline):
+    """Verify ALL archive bytes through Hash1 before exposing notice content."""
+    check(deadline)
+    if path.stat().st_size > MAX_ZIP:
+        raise CollectionError("compressed_size_limit")
+    prefix = module["path"] + "@" + module["version"] + "/"
+    files = []
+    summary = hashlib.sha256()
+    with zipfile.ZipFile(path) as archive:
+        entries = archive.infolist()
+        names = [x.filename for x in entries]
+        if len(set(names)) != len(names) or sum(x.file_size for x in entries) > MAX_ZIP:
+            raise CollectionError("duplicate_or_expanded_size_limit")
+        for item in sorted(entries, key=lambda x: x.filename):
+            check(deadline)
+            name = item.filename
+            if not name.startswith(prefix) or "\n" in name or "\\" in name:
+                raise CollectionError("invalid_module_prefix_or_name")
+            relative = name[len(prefix):]
+            if relative and any(p in ("", ".", "..") for p in relative.rstrip("/").split("/")):
+                raise CollectionError("invalid_relative_name")
+            mode = item.external_attr >> 16
+            if mode & 0o170000 == 0o120000:
+                raise CollectionError("symlink_not_supported")
+            file_hash = hashlib.sha256()
+            with archive.open(item) as stream:
+                while True:
+                    check(deadline)
+                    chunk = stream.read(1 << 20)
+                    if not chunk:
+                        break
+                    file_hash.update(chunk)
+            summary.update((file_hash.hexdigest() + "  " + name + "\n").encode())
+            leaf = PurePosixPath(relative).name.lower()
+            if not item.is_dir() and any(leaf == p or leaf.startswith(p + ".") or leaf.startswith(p + "-")
+                                         for p in ["license", "licence", "copying", "notice", "copyright"]):
+                files.append((name, relative, file_hash.hexdigest(), item.file_size))
+        observed = "h1:" + base64.b64encode(summary.digest()).decode()
+        if observed != expected:
+            raise CollectionError("module_h1_mismatch")
+        check(deadline)
+        notices = []
+        for name, relative, expected_file_hash, size in files:
+            check(deadline)
+            content = archive.read(name)
+            if digest(content) != expected_file_hash or len(content) != size:
+                raise CollectionError("notice_changed_after_hash")
+            notices.append({"module_path": relative, "sha256": expected_file_hash,
+                            "bytes": size, "scope": "root" if "/" not in relative else "nested",
+                            "content": content})
+    check(deadline)
+    return observed, notices
+
+
+def collect(module, cache, gomodcache, deadline):
+    path, version, expected = module["path"], module["version"], module["sum"]
+    if not expected.startswith("h1:") or path.startswith("/") or ".." in path.split("/"):
+        raise CollectionError("invalid_pinned_module")
+    key = digest((path + "@" + version).encode())
+    target = cache / (key + ".zip")
+    cached_go = gomodcache / "cache/download" / escaped(path) / "@v" / (escaped(version) + ".zip")
+    url = "https://proxy.golang.org/" + escaped(path) + "/@v/" + escaped(version) + ".zip"
+    temporary = None
+    if target.exists():
+        source, origin = target, "collected_cache"
+    elif cached_go.is_file():
+        source, origin = cached_go, "existing_go_cache"
+    else:
+        check(deadline)
+        stream = tempfile.NamedTemporaryFile(prefix=key + "-", suffix=".partial", dir=cache, delete=False)
+        temporary = Path(stream.name)
+        with stream:
+            with urllib.request.urlopen(url, timeout=min(30, deadline - time.monotonic())) as response:
+                total = 0
+                while True:
+                    check(deadline)
+                    data = response.read(1 << 20)
+                    if not data:
+                        break
+                    total += len(data)
+                    if total > MAX_ZIP:
+                        raise CollectionError("download_size_limit")
+                    stream.write(data)
+        source, origin = temporary, "public_go_proxy"
+    observed, notices = inspect_zip(source, module, expected, deadline)
+    check(deadline)
+    if temporary is not None:
+        temporary.rename(target)
+        source = target
+    records = []
+    notice_root = cache / "notices"
+    notice_root.mkdir(exist_ok=True)
+    for item in notices:
+        check(deadline)
+        content = item.pop("content")
+        destination = notice_root / (item["sha256"] + ".txt")
+        if destination.exists():
+            if digest(destination.read_bytes()) != item["sha256"]:
+                raise CollectionError("notice_cache_changed")
+        else:
+            try:
+                with destination.open("xb") as output:
+                    output.write(content)
+            except FileExistsError:
+                if digest(destination.read_bytes()) != item["sha256"]:
+                    raise CollectionError("notice_cache_changed")
+        records.append(item)
+    check(deadline)
+    return {"path": path, "version": version, "expected_h1": expected, "observed_h1": observed,
+            "archive_sha256": digest(source.read_bytes()), "archive_bytes": source.stat().st_size,
+            "origin": origin, "url": url, "notices": records,
+            "root_license_present": any(x["scope"] == "root" and
+                                        PurePosixPath(x["module_path"]).name.lower().startswith(("license", "licence", "copying"))
+                                        for x in records)}
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--inventory", type=Path, default=Path("planning/deployment-foundation/native-tool-inventory-observation.v1.json"))
+    parser.add_argument("--cache", type=Path, default=Path(".cache/worker-cli-tools/module-sources"))
+    parser.add_argument("--output", type=Path, required=True)
+    args = parser.parse_args()
+    if args.output.exists():
+        raise CollectionError("output_already_exists")
+    inventory_bytes = args.inventory.read_bytes()
+    modules = json.loads(inventory_bytes)["compose"]["binary"]["modules"]
+    if len(modules) != 180 or len({(x["path"], x["version"]) for x in modules}) != 180:
+        raise CollectionError("complete_pinned_180_population_required")
+    gomodcache = Path(subprocess.check_output(["go", "env", "GOMODCACHE"], text=True, timeout=10).strip())
+    args.cache.mkdir(parents=True, exist_ok=True)
+    start = time.monotonic()
+    deadline = start + 600
+    results, failures = [], []
+    with ThreadPoolExecutor(max_workers=4) as pool:
+        pending = {pool.submit(collect, module, args.cache, gomodcache, deadline): module for module in modules}
+        for future in as_completed(pending):
+            module = pending[future]
+            try:
+                results.append(future.result())
+            except Exception as error:
+                failures.append({"path": module["path"], "version": module["version"],
+                                 "error_class": type(error).__name__,
+                                 "reason": str(error) if isinstance(error, CollectionError) else "source_io_or_parse_failure"})
+            count = len(results) + len(failures)
+            if count % 25 == 0 or count == len(modules):
+                print(json.dumps({"accounted": count, "verified": len(results), "failed": len(failures)}), flush=True)
+    elapsed = time.monotonic() - start
+    guard = elapsed >= 600 or any(x["error_class"] == "GuardExhausted" for x in failures)
+    complete = len(results) == len(modules) and not failures and not guard
+    report = {"schema_version": 1, "objective_completed": complete,
+              "objective": "Collect all180 pinned Compose module archives and available scoped notices, validating binary h1 identities",
+              "distribution_approved": False, "license_classification_complete": False,
+              "signature_verified": False, "inventory_sha256": digest(inventory_bytes),
+              "probe_sha256": digest(Path(__file__).read_bytes()),
+              "source_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], text=True, timeout=10).strip(),
+              "collection_guard_seconds": 600, "collection_seconds": elapsed, "guard_exhausted": guard,
+              "expected_modules": len(modules), "verified_modules": len(results), "exclusions": [],
+              "failures": failures, "modules": sorted(results, key=lambda x: (x["path"], x["version"])),
+              "limitations": ["Module h1 correspondence is not independent publisher-signature verification",
+                              "Named notice files include nested scopes; no automatic legal applicability conclusion",
+                              "Main Compose source/stdlib, CLI native/vendor closure and final delivery remain separate"]}
+    with args.output.open("x") as output:
+        output.write(json.dumps(report, indent=2, sort_keys=True) + "\n")
+    print(json.dumps({"objective_completed": complete, "verified_modules": len(results),
+                      "notice_files": sum(len(x["notices"]) for x in results),
+                      "without_root_license": sum(not x["root_license_present"] for x in results),
+                      "failures": len(failures), "guard_exhausted": guard}), flush=True)
+    raise SystemExit(0 if complete else 1)

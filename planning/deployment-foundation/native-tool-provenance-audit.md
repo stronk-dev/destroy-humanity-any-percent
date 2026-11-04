@@ -60,6 +60,52 @@ not proof of the exact native link closure in this fixture.
 
 ## Consequence and next construction
 
+### Exact Compose source and root-text follow-up
+
+The complete [v2 source collection](compose-source-notices-observation.v2.json)
+now covers all180 embedded dependency identities:59 archives from the existing
+Go download cache and121 separately staged public-proxy downloads. Every full
+archive matches its binary-reported Go `h1` identity. Total archive bytes are
+106,533,767. The collector retains237 named license/NOTICE candidates containing
+1,487,398bytes:200 root files and37 nested files. All180 modules have a named
+root license candidate; filename presence is not a legal conclusion.
+
+[Hash1](https://github.com/golang/mod/blob/v0.27.0/sumdb/dirhash/hash.go) hashes all
+sorted archive names and contents; the collector does not authenticate a zip by
+its transport or filename. Its500MiB compressed/expanded safety limits come from
+[Go's module-zip contract](https://github.com/golang/mod/blob/v0.27.0/zip/zip.go).
+Research collection guard600s is unchanged, with no exclusions or exhaustion.
+The [failed v1](compose-source-notices-observation.v1.json) and its exact source
+remain: Python DNS failed on121 downloads, so it completed only59 and exited1.
+Completed direct curl transfers supplied those121 inputs before the offline v2
+collector ran. Failed/partial inputs were not relabelled available or licensed.
+
+The [manual actual-detector sweep](compose-license-classification-observation.v1.json)
+binds that complete source observation and each private root-file population/
+byte hash, then invokes the existing `licenseAt` and `DetectPermissiveLicense`
+through a compiler overlay. It recognizes176 roots and refuses4; Go test exits1/
+Make2. These4 exact pinned roots contain MPL-2.0 text:
+
+- `github.com/hashicorp/errwrap@v1.1.0`
+- `github.com/hashicorp/go-cleanhttp@v0.5.2`
+- `github.com/hashicorp/go-multierror@v1.1.1`
+- `github.com/hashicorp/go-version@v1.7.0`
+
+This is the current detector's result, not a permission decision or a proposal
+to label those files Apache/MIT. [MPL2.0 §3](https://www.mozilla.org/en-US/MPL/2.0/)
+and [Mozilla's redistribution FAQ Q7–Q8](https://www.mozilla.org/en-US/MPL/2.0/FAQ/)
+identify covered-source availability and recipient notices as part of executable
+distribution. A tool-specific delivery proposal must account for the actual
+covered source/notices and preserved recipient rights. The existing application
+allowlist has not been widened. No shipping architecture/license policy adopted.
+
+Root recognition does not resolve the37 nested scopes, main Compose source,
+Go1.24.7 standard-library notices or the CLI's different Go/native build. Nor do
+module checksums prove a vendor tree was unpatched or reproduce the binary.
+Keep the source/build correspondence and complete final delivery gates separate.
+The probe, v1/v2 sources and actual-refusal observation remain manual research
+inputs; they are not normal CI tests or a package eligibility verifier.
+
 The existing `gen-release-metadata` discovers dependencies of six Cloud Clicker
 Go commands and the built browser client. It does not inspect external CLI/
 Compose bytes. Adding these binaries to an artifact list cannot silently make

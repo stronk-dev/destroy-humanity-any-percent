@@ -1,0 +1,127 @@
+// Manual source-rights diagnostic, loaded through a compiler overlay into
+// cmd/gen-release-metadata. Calls the actual existing licenseAt/detector.
+package main
+
+import (
+	"crypto/sha256"
+	"encoding/hex"
+	"encoding/json"
+	"flag"
+	"os"
+	"path/filepath"
+	"testing"
+)
+
+var sourceNoticeIndex = flag.String("source-notice-index", "", "private verified-source index")
+var sourceLicenseReport = flag.String("source-license-report", "", "fresh manual observation")
+var sourceNoticeObservation = flag.String("source-notice-observation", "", "complete source-collection observation")
+
+func TestManualComposeRootLicenseClassification(t *testing.T) {
+	if *sourceNoticeIndex == "" || *sourceLicenseReport == "" || *sourceNoticeObservation == "" {
+		t.Fatal("manual index and report flags are required")
+	}
+	data, err := os.ReadFile(*sourceNoticeIndex)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var index []struct{ Path, Version, Directory string }
+	if json.Unmarshal(data, &index) != nil || len(index) != 180 {
+		t.Fatal("complete verified180-module index required")
+	}
+	type notice struct {
+		ModulePath string `json:"module_path"`
+		Scope      string
+		SHA256     string
+		Bytes      int
+	}
+	var observation struct {
+		ObjectiveCompleted bool `json:"objective_completed"`
+		Modules            []struct {
+			Path, Version string
+			Notices       []notice
+		}
+	}
+	observedBytes, err := os.ReadFile(*sourceNoticeObservation)
+	if err != nil || json.Unmarshal(observedBytes, &observation) != nil || !observation.ObjectiveCompleted || len(observation.Modules) != 180 {
+		t.Fatal("complete source observation required")
+	}
+	expected := make(map[string]map[string]notice)
+	for _, module := range observation.Modules {
+		key := module.Path + "@" + module.Version
+		if _, exists := expected[key]; exists {
+			t.Fatal("duplicate expected module")
+		}
+		expected[key] = make(map[string]notice)
+		for _, item := range module.Notices {
+			if item.Scope == "root" {
+				if filepath.Base(item.ModulePath) != item.ModulePath {
+					t.Fatal("invalid root filename")
+				}
+				expected[key][item.ModulePath] = item
+			}
+		}
+	}
+	type result struct {
+		Path, Version, License, TextSHA256, Status string
+	}
+	results := make([]result, 0, len(index))
+	refused := 0
+	for _, module := range index {
+		key := module.Path + "@" + module.Version
+		files, present := expected[key]
+		if !present {
+			t.Fatal("duplicate or unexpected index module")
+		}
+		delete(expected, key)
+		entries, err := os.ReadDir(module.Directory)
+		if err != nil || len(entries) != len(files) {
+			t.Fatal("root notice population mismatch")
+		}
+		for _, entry := range entries {
+			wanted, ok := files[entry.Name()]
+			if !ok || !entry.Type().IsRegular() {
+				t.Fatal("unexpected root notice")
+			}
+			contents, err := os.ReadFile(filepath.Join(module.Directory, entry.Name()))
+			got := sha256.Sum256(contents)
+			if err != nil || len(contents) != wanted.Bytes || hex.EncodeToString(got[:]) != wanted.SHA256 {
+				t.Fatal("root notice bytes mismatch")
+			}
+		}
+		text, license, err := licenseAt(module.Directory)
+		hash := sha256.Sum256([]byte(text))
+		row := result{Path: module.Path, Version: module.Version, License: license, TextSHA256: hex.EncodeToString(hash[:]), Status: "recognized_by_current_detector"}
+		if err != nil {
+			row.Status = "detector_refused"
+			refused++
+		}
+		results = append(results, row)
+	}
+	if len(expected) != 0 {
+		t.Fatal("missing expected module")
+	}
+	observationHash := sha256.Sum256(observedBytes)
+	report := struct {
+		ObjectiveCompleted      bool
+		DistributionApproved    bool
+		SourceObservationSHA256 string
+		Modules                 int
+		DetectorRefusals        int
+		Results                 []result
+	}{true, false, hex.EncodeToString(observationHash[:]), len(results), refused, results}
+	output, err := os.OpenFile(*sourceLicenseReport, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0o600)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := json.NewEncoder(output).Encode(report); err != nil {
+		_ = output.Close()
+		t.Fatal(err)
+	}
+	if err := output.Close(); err != nil {
+		t.Fatal(err)
+	}
+	if refused != 0 {
+		t.Fatalf("actual existing detector refused%d of%d module roots; rights clearance unproved", refused, len(results))
+	}
+	t.Logf("recognized%d module root texts; applicability/nested notices and distribution approval remain separate", len(results))
+}
