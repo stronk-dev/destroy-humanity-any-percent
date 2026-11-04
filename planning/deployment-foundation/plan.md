@@ -26,7 +26,8 @@ ad1d23c1..3fd7483c; no clearance/distribution or shipping version adopted.
 The complete source follow-up now verifies all180 archive h1 identities and
 retains237 scoped notice files, including37 nested. Actual current detector
 recognizes176 roots and refuses4 exact MPL2.0 roots; the manual diagnostic
-correctly exits nonzero. Full batch review pending; no license-policy widening.
+correctly exits nonzero. Complete ten-path4af4fe6b..9c90bc2e batch is independently
+APPROVED as research/tool; no license-policy widening or clearance.
 Next resolve covered-source/notices delivery, nested/main/stdlib scope and
 actual CLI Go/vendor/native closure before shipping/adoption readiness.
 

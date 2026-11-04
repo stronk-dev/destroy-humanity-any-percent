@@ -10625,3 +10625,26 @@ finish those exact remaining scopes and proposal. RP-759/adoption/host/SP8/R-006
 stay OPEN. No product/CI/architecture adoption, publication/deployment/archival or
 goal pause. Diff checked; no unrelated software suite.
 Review by: Codex root, implementer first filter. Recorded by: Codex root.
+
+## 2026-11-04 — Complete Compose source/diagnostic batch independently approved
+
+APPROVED, bounded research/tool scope, exact ten-path
+4af4fe6b95044b263c34d4d3ba81fe50c690c856..
+9c90bc2efeaa8dd554a33f21a491464843996ce0.
+Review by: independent Codex /root/native_supervisor_profile_review.
+Recorded by: Codex root, transcribing the completed verdict. Independent full
+collector reproduces every stable180/237 h1/archive/notice fact and both source
+bindings; v1 stays incomplete. All six private corruption/guard/population/cache/
+overwrite controls refuse as intended. Final population/elapsed checks inspected.
+Own verified200-root-file corpus and actual Go overlay produce byte-equivalent
+classification JSON:176 recognized/4 exact MPL2.0 refusals, Go1/Make2. Duplicate
+index/changed notice refuse before publication; overlay vet and ISC/0BSD controls
+pass. Exact range whitespace passes and checkout clean. No tracked reviewer edits.
+
+No complete rights clearance, vendor-patch/main/stdlib/CLI-native/nested-scope
+closure, shipping selection, architecture adoption or release proof. RP-759
+remains OPEN. Source follow-up is reviewed; next complete those real scopes and
+exact source/notice delivery. Separate read-only follow-up notices the existing
+application generator's root NOTICE omission; confirm against an actually linked
+dependency before treating it as a corrective defect. No policy widening,
+product change, publication or goal pause follows from this research verdict.
