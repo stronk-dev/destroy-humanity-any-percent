@@ -70,6 +70,15 @@ Next resolve covered-source/notices delivery and inline/header terms, plus
 published-binary/source correspondence and CLI's exact native linked components
 before shipping/adoption readiness. Source selection is not a rights decision.
 
+CLI native follow-up now inspects807 CUs/35,689 function symbols from the actual
+ELF:212 non-Go units,330 executable-backed native ranges and549 native-range
+function symbols. Keep8 no-range native units,13 zero-size symbols,2 unassigned
+function extents and unmatched file symbols explicit.192 musl-labelled paths
+have upstream1.2.5 counterparts;12 runtime/cgo paths match SDK/compiler source;
+8 generated units remain unknown. Exact Alpine patches/CRT/native source identity
+and rights are not established. Source counterparts and extent/binding/unknown
+controls execute; complete native research batch awaits independent review.
+
 Next complete the exact CLI/Compose provenance/rights/artifact inventory and
 DP7 projection/reboot-cache adoption evidence required by SP1/SP6; obtain explicit
 architecture/host/artifact-floor adoption and reconcile parent bodies before

@@ -265,6 +265,74 @@ adoption or tool redistribution. The four actual root MPL refusals, CLI's native
 and OASIS issues, final notices/covered-source delivery and SP1/native/R-006 gates
 remain OPEN. No application or normal CI behavior changes.
 
+### CLI native code metadata and source counterparts
+
+The [native observation](cli-native-components-observation.v1.json) parses the
+actual CLI's build info, ELF sections/symbols and DWARF from one hash-bound byte
+slice. The [manual Go probe](probes/cli-native-components_test.go.txt) validates
+every declared compilation-unit code range against executable sections and
+correlates function symbols by full extent containment, not just their starting
+address. No Linux CLI code is executed.
+
+There are807 compilation units:595 Go and212 other-language units. The latter
+carry192 musl1.2.5 build-path labels,12 Go runtime/cgo labels and8 generated-CGO
+build-path labels.184 of the192 musl-labelled units have code ranges;8 do not.
+All330 non-Go ranges are executable-backed (310 musl-labelled,12 runtime/cgo,
+8 generated). Empty units remain visible and are not code-presence witnesses.
+Producer comments name Alpine clang/LLD19.1.4 and GCC14.2.0; those are observed
+labels, not package hashes or authentication.
+
+The entire35,689 STT_FUNC census closes:35,125 Go-only CU matches,549 native CU
+matches,0 mixed,13 zero-size symbols and2 without any CU range match. All symbol
+types are counted. The two unmatched function-labelled symbols are Go FIPS
+boundary markers; no source identity is assigned from their spelling. All13
+zero-size symbols remain with unknown extents, including CRT helpers and some
+musl aliases. The209 file-symbol entries include6 without a matching CU basename,
+including two `crtstuff.c` entries. A basename comparison is not object identity;
+no GCC runtime or other component is cleared by this inventory.
+
+The [counterpart observation](cli-native-counterparts-observation.v1.json) and
+[offline collector](probes/cli-native-counterparts.py.txt) retain all212 native
+units. Each of the192 musl-labelled source names exists in the public
+[musl1.2.5 release archive](https://musl.libc.org/releases/musl-1.2.5.tar.gz),
+1,080,786bytes/SHA256`a9a118bbe84d8764da0ea0d28b3ab3fae8477fc7e4085d90102b8596fc7c75e4`.
+These are **same-path upstream counterparts**, not demonstrated matches to the
+Alpine-patched files that produced this binary. Its6,204-byte COPYRIGHT file,
+SHA256`f9bc4423732350eb0b3f7ed7e91d530298476f8fec0c6c427a1c04ade22655af`,
+states a whole-library MIT grant and identifies additional per-file material.
+The full archive remains available for those source notices; a root label is not
+a completed inline-term review. Fifteen counterpart files have terms markers;
+the marker scan does not classify grants or establish exhaustive applicability.
+
+All12 runtime/cgo source counterparts match the exact publisher-checked
+Go1.24.7 SDK and the earlier compiler-selected source hashes. Their relationship
+to binary code is still compiler metadata, not a reproduced build. The8
+generated-CGO units remain explicitly unresolved; generated files were not
+reconstructed or guessed from similar names.
+
+The [musl release page](https://musl.libc.org/releases.html) links a detached
+signature. It was downloaded and hash-bound as an input but **not verified**.
+The source archive's hash above is a local download identity, not a claim of
+independent publisher authentication or an exact Alpine package revision.
+SDK and musl archives are read from the same immutable snapshots used for their
+hash checks; neither is extracted or executed by the collector.
+
+Cold full overlaid metadata tests and vet pass. Controls exercise wrong binary
+bytes, invalid/cross-unit code extents and the real libc entry-point's specific
+native CU. The [counterpart controls](probes/cli-native-counterparts-controls.py.txt)
+reject changed observations/archives before output, preserve existing output,
+and retain a private missing-source counterpart as UNKNOWN rather than dropping
+the unit or declaring rights. Reproduce the Python report from repository root
+with `python3 planning/deployment-foundation/probes/cli-native-counterparts.py.txt
+--output /tmp/cli-native-counterparts.json`; the owning log gives the Go overlay.
+This complete native research batch awaits independent review.
+
+Actual Alpine patch/source identity, CRT/remaining native symbols, generated
+code/header terms, complete final notice/source delivery and applicable tool
+adoption remain OPEN under RP-759. This is positive code/metadata evidence with
+explicit gaps, not native closure, a vulnerability assessment, redistribution
+permission, SP8/native-host or R-006 acceptance.
+
 The existing `gen-release-metadata` discovers dependencies of six Cloud Clicker
 Go commands and the built browser client. It does not inspect external CLI/
 Compose bytes. Adding these binaries to an artifact list cannot silently make

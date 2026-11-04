@@ -11054,3 +11054,60 @@ observation with actual code-range/symbol/source correlation, exact remaining
 unknowns and source/notice counterparts. Then resolve tool delivery/policy and
 applicable adoption before packaging/native producers. All handles terminal;
 no push, deployment, archival, release approval or goal pause.
+
+## 2026-11-04 — Inspect CLI native code ranges and preserve source counterpart gaps
+
+Continue RP-759 research; no shipping tool/build or license policy is selected.
+Actual CLI bytes stay SHA27f239f9. Retained Go probe parses build info, ELF,
+symbols and DWARF from the SAME byte slice. All807 compile units (595 Go/212
+other) and1,085 ranges validate against executable sections. Native330 ranges:
+192 musl-labelled units/310 ranges (8 units without ranges),12 runtime/cgo units/
+12 ranges,8 generated-CGO units/8 ranges. Paths/producers are metadata, not
+source/patch hashes or authenticated identity. No binary code is executed.
+
+Complete35,689 STT_FUNC census:35,125 Go CU-only,549 native CU,0 mixed,13 zero
+size,0 undefined,2 without CU range match. Entire symbol-type population counted;
+all unknown/zero-size function records retained. Six of209 file-symbol entries
+lack any CU basename match, including crtstuff.c twice; basename equality itself
+is not object identity. Known libc entry point maps to specific
+src/env/__libc_start_main.c native CU. Wrong/one-bit-changed binary, six extent
+cases and cross-unit/actual-unit controls execute. Final cold full metadata
+package92012d/66750→771271 passes; overlay vet677a50 passes. Initial full run/
+vet12363f/89172→95d01d and567315 also pass before strengthening that specific-CU
+assertion; final hashes/results above are authoritative.
+
+Native report257,712bytes/SHA c13ae17e80399773cef5c95aa14937a10e28ddbcbfe89a9cfba90f64864c8047.
+Go probe12,450bytes/SHA71f1af3d6141d7e43a2d677ee145064ea6ddaad288f528dfe3422069ad8533e4.
+Overlay recipe pointer .cache/worker-cli-tools/cli-native-components-work.txt;
+virtual server/cmd/gen-release-metadata/manual_cli_native_components_test.go maps
+to retained .txt source. Root make test-go GO_PACKAGES= uses explicit owning
+package before -args -native-cli-root <root> -native-cli-output <fresh-path>;
+vet uses the same overlay in its package selector. No source edits while live.
+
+Public musl release page fetched by ordinary curl after browser fetch failed;
+actual linked release/archive/signature URLs are in the dossier. Page cache
+musl-releases.html SHA5153be19; archive1080786bytes/SHAa9a118bbe84d8764da0ea0d28b3ab3fae8477fc7e4085d90102b8596fc7c75e4;
+detached signature490bytes/SHAd9030116fd03e4acfa0b665a13a5de46110296b4e30bb8e67be1f08af29f6306.
+Both transfers60216→30cd7c and28899→5f9596 complete. Signature NOT verified;
+archive hash is local identity, not an authenticated publisher checksum or proof
+of the actual Alpine patch revision. No source install/extraction/execution.
+
+Offline counterpart collector699519 exits0: all212 native units retained;
+192 upstream musl SAME-PATH counterparts,12 SDK/compiler-selected path matches,
+8 generated/unresolved. Full musl COPYRIGHT6,204bytes/SHAf9bc4423 retained in
+ignored source cache, plus SDK LICENSE hash. All candidate-source bytes come
+from immutable hashed archive snapshots. Fifteen source records carry terms
+markers; not legal classification or exhaustive applicability. Report101,655bytes/
+SHA795f944e336b3a95e9d2d606958d47174b4b8542bb1f96b00ebbff1c1ffb5bc8;
+collector7,394bytes/SHA62a5f0874c36e129bd7764c24c4d322a411f631dbd5e7bb2b88cd984fe78eb89.
+Controls6c2788 pass: changed native report/archive refuse before output, existing
+output preserved, private post-parse missing counterpart stays UNKNOWN with all
+212 units and false clearance/closure flags. Shared inputs never mutated.
+
+Complete nine-path a590aa2d..this checkpoint awaits independent research/tool
+review. RP-759 remains OPEN for exact Alpine/native/CRT/generated/header scope,
+actual source correspondence, rights/full notice/source delivery and applicable
+adoption. Source counterparts never establish exact patched code. No production,
+normal test/CI, RFC, dependency or kernel byte changes; no native-host, SP8,
+AC8/R-006, release/archival/push approval or goal pause. All handles terminal.
+Review by: Codex root, implementer first filter. Recorded by: Codex root.

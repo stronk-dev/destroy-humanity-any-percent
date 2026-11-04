@@ -1,0 +1,57 @@
+"""Manual private source-binding/unknown controls; shared inputs are untouched."""
+import importlib.machinery
+import importlib.util
+import json
+from pathlib import Path
+import subprocess
+import sys
+import tempfile
+
+sys.dont_write_bytecode = True
+probe = Path(__file__).with_name("cli-native-counterparts.py.txt")
+native = Path("planning/deployment-foundation/cli-native-components-observation.v1.json")
+musl = Path(".cache/worker-cli-tools/musl-1.2.5.tar.gz")
+outcomes = {}
+with tempfile.TemporaryDirectory(prefix="cc-native-counterpart-controls-") as directory:
+    work = Path(directory)
+    for name, original, option, diagnostic in [
+        ("changed_native_observation", native, "--native", b"native observation changed"),
+        ("changed_musl_archive", musl, "--musl", b"musl source archive changed")]:
+        data = bytearray(original.read_bytes())
+        data[-1] ^= 1
+        changed = work / name
+        changed.write_bytes(data)
+        output = work / (name + ".json")
+        result = subprocess.run([sys.executable, str(probe), option, str(changed), "--output", str(output)],
+                                capture_output=True, timeout=120)
+        assert result.returncode != 0 and diagnostic in result.stderr and not output.exists(), result.stderr
+        outcomes[name] = "refused before output"
+observation = Path("planning/deployment-foundation/cli-native-counterparts-observation.v1.json")
+before = observation.read_bytes()
+result = subprocess.run([sys.executable, str(probe), "--output", str(observation)], capture_output=True, timeout=120)
+assert result.returncode != 0 and b"refuse to overwrite" in result.stderr and observation.read_bytes() == before
+outcomes["existing_output"] = "refused; exact bytes unchanged"
+loader = importlib.machinery.SourceFileLoader("native_counterparts", str(probe))
+spec = importlib.util.spec_from_loader(loader.name, loader)
+module = importlib.util.module_from_spec(spec)
+loader.exec_module(module)
+original_loads = module.json.loads
+state = {"fired": False}
+def changed_decoded_unit(data):
+    value = original_loads(data)
+    if isinstance(value, dict) and "NativeUnits" in value:
+        unit = next(u for u in value["NativeUnits"] if u["SourceHint"] == "musl_build_path_label_1.2.5")
+        unit["Name"] = "src/private-unknown-counterpart.c"
+        state["fired"] = True
+    return value
+module.json.loads = changed_decoded_unit
+try:
+    result = module.inspect(Path.cwd(), native, musl)
+finally:
+    module.json.loads = original_loads
+assert state["fired"] and len(result["units"]) == 212
+assert result["counts"]["missing_upstream_counterpart_unknown"] == 1
+assert not result["native_closure_proven"] and not result["distribution_approved"]
+assert all(not u["binary_source_correspondence_proven"] and not u["legal_applicability_decided"] for u in result["units"])
+outcomes["private_missing_counterpart"] = "retained explicitly UNKNOWN; no unit excluded or clearance inferred"
+print(json.dumps(outcomes, indent=2, sort_keys=True))

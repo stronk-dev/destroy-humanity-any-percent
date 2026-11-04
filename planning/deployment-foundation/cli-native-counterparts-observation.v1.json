@@ -1,0 +1,2982 @@
+{
+  "binary_source_correspondence_proven": false,
+  "counts": {
+    "generated_or_unresolved_source_unknown": 8,
+    "matching_SDK_and_compiler_selected_path_only": 12,
+    "upstream_same_path_only": 192
+  },
+  "distribution_approved": false,
+  "exclusions": [],
+  "failures": [],
+  "inputs": {
+    "SDK_archive": {
+      "bytes": 76295172,
+      "sha256": "d06bad763f8820d3e29ee11f2c0c71438903c007e772a159c5760a300298302e"
+    },
+    "compiler_source_sha256": "82759175c5c47e26971da16f53b1f51df49c3b925f25321bd5871c919641d773",
+    "downloaded_unverified_signature": {
+      "bytes": 490,
+      "sha256": "d9030116fd03e4acfa0b665a13a5de46110296b4e30bb8e67be1f08af29f6306"
+    },
+    "musl_archive": {
+      "bytes": 1080786,
+      "sha256": "a9a118bbe84d8764da0ea0d28b3ab3fae8477fc7e4085d90102b8596fc7c75e4"
+    },
+    "native_observation_sha256": "c13ae17e80399773cef5c95aa14937a10e28ddbcbfe89a9cfba90f64864c8047"
+  },
+  "inspection_complete": true,
+  "limitations": [
+    "Upstream 1.2.5 is not the exact Alpine patch/package source for this binary",
+    "File paths and compiler producers do not authenticate content or prove identical generated code",
+    "Inline marker detection is neither license classification nor a complete notice inventory",
+    "Generated CGO, zero-size function symbols, crtstuff.c and remaining symbol/header/patch scope remain unresolved",
+    "Downloaded signature is not verified; no rights, packaging, SP1/SP8/R-006 or release approval"
+  ],
+  "native_closure_proven": false,
+  "probe": {
+    "bytes": 7394,
+    "sha256": "62a5f0874c36e129bd7764c24c4d322a411f631dbd5e7bb2b88cd984fe78eb89"
+  },
+  "root_notices": {
+    "SDK_LICENSE": {
+      "bytes": 1453,
+      "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad"
+    },
+    "musl_COPYRIGHT": {
+      "bytes": 6204,
+      "sha256": "f9bc4423732350eb0b3f7ed7e91d530298476f8fec0c6c427a1c04ade22655af"
+    }
+  },
+  "schema_version": 1,
+  "signature_verified": false,
+  "units": [
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 352,
+        "sha256": "f6c08ffd3125bedd3f0ec0f3c5135e7d95f3e1e5c033c99081819ef37712e99d"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "crt/crt1.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 0
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 95,
+        "sha256": "6adaa8a049cf1c5a743161832cabc36256e6ffd8f6a74dcd46a28b1568f42414"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "crt/x86_64/crti.s",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 1
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "_cgo_export.c",
+      "source_hint": "generated_cgo_build_path",
+      "status": "generated_or_unresolved_source_unknown",
+      "unit_index": 597
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "cgo_resnew.cgo2.c",
+      "source_hint": "generated_cgo_build_path",
+      "status": "generated_or_unresolved_source_unknown",
+      "unit_index": 598
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "cgo_unix_cgo.cgo2.c",
+      "source_hint": "generated_cgo_build_path",
+      "status": "generated_or_unresolved_source_unknown",
+      "unit_index": 599
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "cgo_unix_cgo_res.cgo2.c",
+      "source_hint": "generated_cgo_build_path",
+      "status": "generated_or_unresolved_source_unknown",
+      "unit_index": 600
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 466,
+        "sha256": "5e7e6d031bd63b00fcddc755e2823ef38afcb561587b12e4e45c68bddbfd07fe"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "gcc_context.c",
+      "source_hint": "go_runtime_cgo_build_path",
+      "status": "matching_SDK_and_compiler_selected_path_only",
+      "terms_marker_present": true,
+      "unit_index": 601
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 526,
+        "sha256": "d407340597efac27ac1f308b5cbf11f2381f25cd944e6fd609319054d8c70fd2"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "gcc_fatalf.c",
+      "source_hint": "go_runtime_cgo_build_path",
+      "status": "matching_SDK_and_compiler_selected_path_only",
+      "terms_marker_present": true,
+      "unit_index": 602
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 5987,
+        "sha256": "9cb51f63bd53a55e473f34b556efa45e26cac1afcd846b35e952d8e85bb0c30d"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "gcc_libinit.c",
+      "source_hint": "go_runtime_cgo_build_path",
+      "status": "matching_SDK_and_compiler_selected_path_only",
+      "terms_marker_present": true,
+      "unit_index": 603
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 2410,
+        "sha256": "d0f3b6f018c336e521368acc74c64d9aa8788f7587d434cb24d7ff9df73197ad"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "gcc_linux_amd64.c",
+      "source_hint": "go_runtime_cgo_build_path",
+      "status": "matching_SDK_and_compiler_selected_path_only",
+      "terms_marker_present": true,
+      "unit_index": 604
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 916,
+        "sha256": "d8ece6e6a4385bf0449ab50c51887946e39c49bd6d43b3a5f3757a7546c73c96"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "gcc_mmap.c",
+      "source_hint": "go_runtime_cgo_build_path",
+      "status": "matching_SDK_and_compiler_selected_path_only",
+      "terms_marker_present": true,
+      "unit_index": 605
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 487,
+        "sha256": "120a9a088f87be81a95270eff8dc431fc112a1d1b803c72176c469379eb0f96f"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "gcc_setenv.c",
+      "source_hint": "go_runtime_cgo_build_path",
+      "status": "matching_SDK_and_compiler_selected_path_only",
+      "terms_marker_present": true,
+      "unit_index": 606
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 2132,
+        "sha256": "2feadadb5a4a51c085f661417dc2d9bbf69a90c59b687919dd5fc77a26b81e95"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "gcc_sigaction.c",
+      "source_hint": "go_runtime_cgo_build_path",
+      "status": "matching_SDK_and_compiler_selected_path_only",
+      "terms_marker_present": true,
+      "unit_index": 607
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 1490,
+        "sha256": "342b71a48decef1f94306fac076375cd0e0290cd34d134ddea09effe22a93877"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "gcc_stack_unix.c",
+      "source_hint": "go_runtime_cgo_build_path",
+      "status": "matching_SDK_and_compiler_selected_path_only",
+      "terms_marker_present": true,
+      "unit_index": 608
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 1561,
+        "sha256": "1a51727ac7da836a98eb4987c897a1e1f7c73922c0de1a74b93add8ec0ddece7"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "gcc_traceback.c",
+      "source_hint": "go_runtime_cgo_build_path",
+      "status": "matching_SDK_and_compiler_selected_path_only",
+      "terms_marker_present": true,
+      "unit_index": 609
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 1894,
+        "sha256": "04d353f36b280597753a7c4a013d4b19b906227775f4ba7b2c54ec297ecfb504"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "gcc_util.c",
+      "source_hint": "go_runtime_cgo_build_path",
+      "status": "matching_SDK_and_compiler_selected_path_only",
+      "terms_marker_present": true,
+      "unit_index": 610
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 1925,
+        "sha256": "fb53e53bc37d5ba8f8df641e4f6e0abd705e3eae7815ccc87f55911d20c36133"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "linux_syscall.c",
+      "source_hint": "go_runtime_cgo_build_path",
+      "status": "matching_SDK_and_compiler_selected_path_only",
+      "terms_marker_present": true,
+      "unit_index": 611
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 1156,
+        "sha256": "47427e195996d98726efea5dfb4093c8ef8887e96067095f0053f5adb62485a9"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "gcc_amd64.S",
+      "source_hint": "go_runtime_cgo_build_path",
+      "status": "matching_SDK_and_compiler_selected_path_only",
+      "terms_marker_present": true,
+      "unit_index": 612
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "_cgo_export.c",
+      "source_hint": "generated_cgo_build_path",
+      "status": "generated_or_unresolved_source_unknown",
+      "unit_index": 613
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "params.cgo2.c",
+      "source_hint": "generated_cgo_build_path",
+      "status": "generated_or_unresolved_source_unknown",
+      "unit_index": 614
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "pkcs11.cgo2.c",
+      "source_hint": "generated_cgo_build_path",
+      "status": "generated_or_unresolved_source_unknown",
+      "unit_index": 615
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "types.cgo2.c",
+      "source_hint": "generated_cgo_build_path",
+      "status": "generated_or_unresolved_source_unknown",
+      "unit_index": 616
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 2635,
+        "sha256": "5e5487e579a3c8f14fcb38bb54f2ede10a74f94130ebb9134dcba8d5f28c0cf4"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/env/__libc_start_main.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 617
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 143,
+        "sha256": "8b4c59369bc0ff1ceea35451349728052000977fa67bb0d94c6bc8d6a228d4b1"
+      },
+      "has_code_ranges": false,
+      "legal_applicability_decided": false,
+      "name": "src/env/__environ.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 618
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 3790,
+        "sha256": "6cb2c2f1ce53b87b9c7f2452010925ddf3356c4ae40d5e8a77f7bee3960febd6"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/env/__init_tls.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 619
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 807,
+        "sha256": "2ea4d8cf6758daddecf8973913ac196ffa76fdb355cea391ca890aeafdc2ac6c"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/env/__stack_chk_fail.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 620
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 899,
+        "sha256": "647c038697cec287d793a8b6365e6ef6d381bc48fb9e623aa51203166a9bc814"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/env/setenv.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 621
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 922,
+        "sha256": "89744985a70d778f7c9f75eae5af218df4c4b3f8698219513dd9eb271466e7a2"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/env/putenv.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 622
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 288,
+        "sha256": "40d803615b9ef1e1f59cfd0a8fc025ff50d5308b56d4b76ecaec7a596bc92ec9"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/env/getenv.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 623
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 525,
+        "sha256": "47d9ee56e37ea1b678e965eab3892c1172566fec791de980e2aad7096a62bc57"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/env/unsetenv.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 624
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 166,
+        "sha256": "8ad0eaf7dc502eabbd68a6e1fb4303293f92d656b6ef9950278fb5d267ff4b60"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/errno/__errno_location.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 625
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 987,
+        "sha256": "b8f04516efae18ed1d474523e0c019229a957c791012ffe9283a5e11315e2a8d"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/errno/strerror.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 626
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 917,
+        "sha256": "741708119483358228e1ab704b5cac0bcad5226c3b85b72936757ec5cd21b957"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/exit/abort.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 627
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 142,
+        "sha256": "624597e4f70b5dd19e4a1458e6e2e6314c07ed016ac93e065c1d3de70d06fc6e"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/exit/_Exit.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 628
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 57,
+        "sha256": "09ccc9ee65b94765b5ee2966899c2ee13ca7fc461e347adedd297dc2ba4e7d1e"
+      },
+      "has_code_ranges": false,
+      "legal_applicability_decided": false,
+      "name": "src/exit/abort_lock.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 629
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 762,
+        "sha256": "49cf58aae139b0daa8900360b5cf99701f39a7e53c2f3e6197d0f9e7fed81cb8"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/exit/exit.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 630
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 37,
+        "sha256": "0ce37dda6ec22a1c02cca74ca9e7df924377790e50a04d0b286c14031d269ba8"
+      },
+      "has_code_ranges": false,
+      "legal_applicability_decided": false,
+      "name": "src/internal/defsysinfo.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 631
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 208,
+        "sha256": "d711bafee2e0ae88769f30835909455c50f16d039b73c6768f76da6ecb9395b0"
+      },
+      "has_code_ranges": false,
+      "legal_applicability_decided": false,
+      "name": "src/internal/libc.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 632
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 98,
+        "sha256": "ca552b58bc685a2a08784dc7cf33aa53fe682bcc57e3c6e065acb372c934ed94"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/ldso/dlclose.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 633
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 2058,
+        "sha256": "c2b1bef1990e37c259b98d4eeddcc62f28c51026a5bcd62b7ebdc5b606935189"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/ldso/dlerror.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 634
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 190,
+        "sha256": "71d2136173da73e3853c51cc477194befc7bc6072e2e227f4b8ec9c86d50217c"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/ldso/dlopen.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 635
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 95,
+        "sha256": "f050e596ad943db660f9c06e20caf7b0dda21b138f9e7c437c9f2086e3102484"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/ldso/x86_64/dlsym.s",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 636
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 288,
+        "sha256": "95ef9a37da276c4bcc467fd4e784dd3dbe1ccd012cba2a080e3a81fbdc221629"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/ldso/__dlsym.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 637
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 933,
+        "sha256": "aa1c7cb963c15c41b9be5c48c09a1000e090bce4d74e6b8b6362ab14de45bc19"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/linux/setgroups.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 638
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 142,
+        "sha256": "d7d4192a8265f4d5ade02b9666b9cb4e164a734c49fec3f5eca965e91404dd98"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/internal/syscall_ret.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 639
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 391,
+        "sha256": "8b0d0000e3c2d945365d57d2bb73f6ca6ce87f70708449186acac3166083345a"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/locale/__lctrans.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 640
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 921,
+        "sha256": "df5ae020c1babce30975f16831eeafed47bc2e9e3e5a60799bf31f1054c18b1d"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/malloc/calloc.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 641
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 61,
+        "sha256": "c236260612a87f37a444fb91beac28ef742149e94dc657940b03187db226ff69"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/malloc/free.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 642
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 2480,
+        "sha256": "7ee902268de1c1d3542d61ead38ca56c002630a2890f150f5959edee8f8506d9"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/malloc/lite_malloc.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 643
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 3885,
+        "sha256": "c8c06d9847b3cfce57fd1067e8c886370bdfb81c0d198573871721b20a7e817b"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/malloc/mallocng/free.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 644
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 9902,
+        "sha256": "ea50e97cccc60331d7306f6226949d2af94797ce2d39d474d226aa53cfb830d3"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/malloc/mallocng/malloc.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 645
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 88,
+        "sha256": "a633ebe5dfe39273c7b160363be6a34636e8fe02818403c0b2fab80a9f5e9366"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/malloc/realloc.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 646
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 1318,
+        "sha256": "b8ef6d11c48a1c188b8ba888b6d857c46f151f615612c014a2195944fbcbc858"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/malloc/mallocng/realloc.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 647
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 75,
+        "sha256": "e4c5e946902653fe931b7869bba9ea4cd196928a6c5ab8e3e00f259351f01fc5"
+      },
+      "has_code_ranges": false,
+      "legal_applicability_decided": false,
+      "name": "src/malloc/replaced.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 648
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 914,
+        "sha256": "f0acee38db856ed16a9dd647af69b8dce22cc950b38a1e65f16fa51c336ba37b"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/mman/mmap.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 649
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 325,
+        "sha256": "6086bef900c10b86151f427c007329a6ca843dbd466f19fab432a13dfc4c1b58"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/mman/mprotect.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 650
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 625,
+        "sha256": "efdc69408cbf46c000089e482ad31be1ac65a95b3ecebb4a891d425b5712ae23"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/mman/mremap.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 651
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 231,
+        "sha256": "a5aaf66e9bd5444866791fa0175c85a7357719812495a67f20802a12a7880018"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/mman/munmap.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 652
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 355,
+        "sha256": "f64b3a80e86155b879a3aa3a053c1b015261b4dd86dab7592dd59d8b4ea9df03"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/network/freeaddrinfo.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 653
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 552,
+        "sha256": "e6fe5731763217684cb44a48f246f68d7c83590ae85cd8b7b1165c35a43963d0"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/network/gai_strerror.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 654
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 3754,
+        "sha256": "9f421f973abe33d86df031722c9411c8cd93d3984e2459dc2b69186cc2223bba"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/network/getaddrinfo.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 655
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 170,
+        "sha256": "992e26a686ba0c72068aec62981e275d83455eec876e9e1b612db0bd93923a10"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/network/connect.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 656
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 4900,
+        "sha256": "c9732e0c95b6e865878c8778ae317b8ca439cddb040adb7dc563b7091b11dc69"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/network/getnameinfo.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 657
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 875,
+        "sha256": "65f33dceff184f13aa3f9a6d5617d1ef5c33ae144c8b0940c9a4265a51bac463"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/network/dn_expand.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 658
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 731,
+        "sha256": "96f686c4f906d1a69d660797c35d1f2e80089c417c15ed655b0401ec33c10c31"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/network/dns_parse.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 659
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 146,
+        "sha256": "3fbbb56bad58de916d95dacf94ff875cdba2961a95d1aa99128820c351b3c530"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/network/htons.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 660
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 509,
+        "sha256": "ff0e1d6117d63147f94d48e3b5ae58b4cc5d27734e6c47aa8874df98c9e644f5"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/network/if_indextoname.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 661
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 5248,
+        "sha256": "da7e3d443f3a3117faa22a50201a34e6fe21cda153b1770f2e0f2349603c5f88"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/misc/ioctl.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 662
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 1291,
+        "sha256": "f67c5afa4395699d32fe9f65e4d4fa7b94a7e5b63e7fcf08bb28b05234fab865"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/network/inet_ntop.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 663
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 1251,
+        "sha256": "1e18387d86995bb2e0e6f56f6fe22460db0c2c5be76f6bea95bc2aec3507d193"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/network/lookup_ipliteral.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 664
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 713,
+        "sha256": "b2c4bb22f74da864412a12b8c6c702d62a5789255f698aba18146cb9233a75ee"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/network/inet_aton.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 665
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 1408,
+        "sha256": "32a7094a7dc9eea10d067f5fcafbcf2651b86c459ff89cd3cd3f7b7f16e58bbe"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/network/inet_pton.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 666
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 429,
+        "sha256": "2f8327f51124d255a506b8644a7dab8430a6f040b8b25619f2376d054f7f30f6"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/network/if_nametoindex.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 667
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 12323,
+        "sha256": "dc2444b5626bb0549a1611e35174ac8722d71541000c44c96a303a16e7c43a69"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/network/lookup_name.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 668
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 158,
+        "sha256": "05ab18ff92e32721a1c7dadc6b4d07f389501762069d9022a6361b68336e9a38"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/multibyte/mbstowcs.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 669
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 2167,
+        "sha256": "008523694e6cb2a8d7c43830e8c466cab4d252e397eecd202302e3c8db275767"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/multibyte/mbsrtowcs.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 670
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 931,
+        "sha256": "925f6ac1d116631148076f868700689913ab6c2040b21be16d3abefa598514bd"
+      },
+      "has_code_ranges": false,
+      "legal_applicability_decided": false,
+      "name": "src/multibyte/internal.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 671
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 174,
+        "sha256": "2c82aaca8d3037dd57d432896d9b3771874230c763bbb1a790f216e2577bd8bf"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/ctype/isalnum.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 672
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 188,
+        "sha256": "1c4ad3381053331aa1b4c008208f328651f94fe0fa970ffa79d7d48e269ab84f"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/network/getsockname.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 673
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 2420,
+        "sha256": "012d0861a067b8736a0162a2882b265ae6e411b7fee89adeb9bd5b9df264264e"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/network/lookup_serv.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 674
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 146,
+        "sha256": "5aae3832b9ebc0325243b49bed2b9ddc5aba3f901d2a5fbdc844e7cdf5fb79fd"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/network/ntohs.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 675
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 1029,
+        "sha256": "182f2b4c11c04ab11e3783fce2d2b371b7b545c9c033f38601fdfe621c02c7cd"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/network/res_mkquery.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 676
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 9114,
+        "sha256": "0744d65d85b8dd1efbe3703b6cfb3fd88ccfd8efe9371d4823c84576d3c8db16"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/network/res_msend.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 677
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 161,
+        "sha256": "957d135b9d9f22db1275aa0d88b913a26cb006bb7120cbfb28d8f0d2de864f28"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/network/bind.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 678
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 1691,
+        "sha256": "9e7ac58c94be6f875c1d302957327bdcc2aeaeebfdd3d08ddffef6236be19bd4"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/network/recvmsg.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 679
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 562,
+        "sha256": "57776b77344ccd2a991e4b6fcb20bafb159889a8ca93151521f7296a22ce9c48"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/network/res_query.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 680
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 197,
+        "sha256": "fb97cb19fa3e8647b951640bb953e7aeb9c568c31f9c1876277013ae38d7862e"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/network/h_errno.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 681
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 446,
+        "sha256": "4cf538c7f3b0f0cafb2361d4c453c421d3cceb1ca80b896383cf801050c57f9f"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/network/res_send.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 682
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 2169,
+        "sha256": "c0bed0bcab66b3e47a0190565d8fbf1211da125777749210c3e0155452655469"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/network/resolvconf.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 683
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 866,
+        "sha256": "5ca63a4b163d41d6111c67fc5894046361d9e59f1da16cdff147f1e6ea24e62e"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/network/sendmsg.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 684
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 222,
+        "sha256": "b17763ed2450e9bdb101bc28e381ee670d74e65f3e134a1a8a22a0b0eadc79b6"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/network/sendto.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 685
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 1304,
+        "sha256": "616263cb4618cd322d368213cc09347a25280b4d51f52ec90aaefc7b0787cb76"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/network/setsockopt.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 686
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 606,
+        "sha256": "00e47104cc064ac8321d817f0cdf3eb4a30ed83831fef8a9da6d6cd869792312"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/network/socket.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 687
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 446,
+        "sha256": "8be43ce3826bc12035299d8d88443856cc2c5f139e7d2ddfdfe3fa83f9a7dedb"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/select/poll.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 688
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 815,
+        "sha256": "c0288b630002171684c42830f219ac2bc94a108f52e18dcddbd7405b3d5477e7"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/signal/block.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 689
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 246,
+        "sha256": "2c662f584cb042b82cf69608aeb11a27bde26066610877fbfc7a5f8de29d43fc"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/signal/raise.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 690
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 2369,
+        "sha256": "f552c570774c9092b83cae411681e9036550dbf8078348b06a1abf8171ce3646"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/signal/sigaction.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 691
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 259,
+        "sha256": "cd1ca87b0c108ddb9fbb90f0fb869c9f051aacb0b483d542d2a7588873f7e558"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/signal/sigaddset.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 692
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 249,
+        "sha256": "9cd943f0b64dc05f8e4e6e44ed996c37c26e11a6fcbcb6c909efc74fa3fe63b3"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/signal/sigemptyset.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 693
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 375,
+        "sha256": "3816983f1aa8c19807652ab3176d0b84375c6de10415c0739754d09cb525d1e5"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/signal/sigfillset.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 694
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 206,
+        "sha256": "48f40fc6e8a1b64d54c4084a083ea177ee1c1d5779d9f2b5a26de40ab72bf21f"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/signal/sigismember.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 695
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 148,
+        "sha256": "1aa9c1d8b1d809a64f5edcfcb518f9d95e8cf538ddeab74d6048e489e63b3ea1"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/signal/x86_64/restore.s",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 696
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 75,
+        "sha256": "c39ad7d2921c7b41f7b948b10d2d1dc70ca87a1a883de07643f28dd367e30e07"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/stdio/__fclose_ca.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 697
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 489,
+        "sha256": "7fc6f97e2409b6bb88a6bf8834d0722fb9223b56c1c02525de4eb93e739f9d0f"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/stdio/__fopen_rb_ca.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 698
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 201,
+        "sha256": "125f88ccbad7f1a6189dd20d862cd5baefb25531d9646689ac7c38564f995bcc"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/stdio/__stdio_close.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 699
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 611,
+        "sha256": "22c7bf41ecc8427ef69a2aefe4aa5f19e5504ed377a47ea9c06b62866d8c2a5f"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/stdio/__stdio_read.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 700
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 137,
+        "sha256": "02a6231c5ba3b012d097ea9646d6e85bfb396d6f49061363915a3277a25e57b6"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/stdio/__stdio_seek.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 701
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 764,
+        "sha256": "b832104a1a5453b74ae4609c911a00586e89fb4eaddb457717bdb65f7041aecb"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/stdio/fgets.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 702
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 551,
+        "sha256": "dc16d32a802123b549bd1e3ed4f473ff3ce8b5e38ad184229c398b3fd2e5cfe9"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/stdio/__lockfile.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 703
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 237,
+        "sha256": "08938f226a4dd5246eaa7fd0bd93495763de8fc0d2f7f715a2907e3f4de5fc4f"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/stdio/__uflow.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 704
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 368,
+        "sha256": "a48c3ea1a42ea1b2836d64ab97807e89a6adf5c5bf22c6094944510c8c17adca"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/stdio/__toread.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 705
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 580,
+        "sha256": "9862e7c37e38efca52e0174401c717afc49c327fcd6954e8a0d241252ff4ee56"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/stdio/__stdio_exit.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 706
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 203,
+        "sha256": "5ffb5e485efbcaf6f6918375b08f0fc1592ade56dc6df620c99e471624f32877"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/stdio/fprintf.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 707
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 91,
+        "sha256": "3f8178bfae26f9b6dec69cd13997a6316d43840db5e956eb4fadc0e74fb7a240"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/stdio/fputc.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 708
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 241,
+        "sha256": "1d4606389714e1ccd180cd411cac9d766e087e4efc9ded513c92050969366491"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/stdio/__overflow.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 709
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 413,
+        "sha256": "b9cb9369502a6d10165bc4b959b4be6a11cfcd43af62d2132d521f860c9bfa4f"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/stdio/__towrite.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 710
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 732,
+        "sha256": "91b1cbf23660e909dfe788f1c7cc46e19a937342dbaa357eda1946d2daf5c9c8"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/stdio/fwrite.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 711
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 109,
+        "sha256": "d9dfc4eb9e49e7edfa5153c1203d866d78aa0dabc27891ec1e954b0582823156"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/stdio/getc.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 712
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 279,
+        "sha256": "0cc470e24f70349bc897db361266a6f0b59f64d29e1ccba5ff770e603242deb3"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/stdio/ofl.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 713
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 219,
+        "sha256": "be661cb258170863a1372b8e5998ef345bb8ef8e3f06d38a603dfda77eed4d4d"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/stdio/snprintf.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 714
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 203,
+        "sha256": "f758fc864ff028c4d2e3430a1ff3f7d40c6c5f04a6e97e80f54784957bcb6d81"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/stdio/sprintf.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 715
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 360,
+        "sha256": "328cd28a186bec37f37df12aac17c68e08f6aa75bce3c08509b5982dbe66d14b"
+      },
+      "has_code_ranges": false,
+      "legal_applicability_decided": false,
+      "name": "src/stdio/stderr.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 716
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 824,
+        "sha256": "8b98fa3fc0fd4d423111a9eebf4c634e71eb4ebe872565f5e0d40b3b78f409dc"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/stdio/__stdio_write.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 717
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 16763,
+        "sha256": "5ae7748a197b3c334f2b6791f8613940f27d3bac6f27bcfa73706222fff4ffa8"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/stdio/vfprintf.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 718
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 287,
+        "sha256": "53e77b86e2b7cf42a4a80c4b063d05519b50070c6b5c77b18d5a3e5d07812a3c"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/math/__signbitl.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 719
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 1124,
+        "sha256": "79a2f6d1f56dd3c3cc316d6fc5891ec0bd04b69a1b0f6688e028fb29c8f85a84"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/math/__fpclassifyl.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 720
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 525,
+        "sha256": "69d438311e12c803275c68d12c541e255ed393fa8e7af3e6d1a6559ac198ac7e"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/math/frexpl.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 721
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 122,
+        "sha256": "046e38f206c7203d0b1295dcdcd3080e3b1c335ff2e1433f0626066a73e8befc"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/multibyte/wctomb.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 722
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 810,
+        "sha256": "a8f5bfa624c88f1e3214bcd46d909fb9c5b172ac9b634fb32a101161ab680693"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/multibyte/wcrtomb.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 723
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 915,
+        "sha256": "999811bfd545bdd6f953b71893ad9b6075b1784d7debc53abda6f3d6129fb50b"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/stdio/vsnprintf.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 724
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 153,
+        "sha256": "7290ad13793a6668b68d075e2aa57678f08639aa4ce7345eeff16d9f9cb4bf7c"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/stdio/vsprintf.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 725
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 316,
+        "sha256": "ba6ce7460e7b4b22d70c8d7acab2bdb5d3916f428d50b42bb29e4da5eec484d9"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/stdlib/qsort_nr.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 726
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 5131,
+        "sha256": "3a838cc7f83f4746df6063f567be1ebb2f7d204243342122acd43f44d2434ec6"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/stdlib/qsort.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": true,
+      "unit_index": 727
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 1338,
+        "sha256": "2291cd02a25622bd31de831d7dfaff5c618ed7846b3123033a714188de78e61e"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/stdlib/strtol.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 728
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 921,
+        "sha256": "0b076498bc7e64f0756692f431bf5d39ea3964a175b9eba4ce6cfe23d4c76dd2"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/internal/shgetc.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 729
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 2675,
+        "sha256": "ed96c758c94666f2557059bd8fca26db8340b9e6b417852f1599e7c30f67deca"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/internal/intscan.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 730
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 697,
+        "sha256": "9c641c12fbcc6acd2cc18f6d969d9ccdcf11b27fdfb1f47b8804206bbef05581"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/string/memchr.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 731
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 175,
+        "sha256": "826b1b5e84d3c0fb68be827c051f6dc0d67da17ee3a444e94be0e5360586916f"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/string/memcmp.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 732
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 134,
+        "sha256": "20d9a630bbcf17e072d3c1bc9081d441b9bc4839b14808fff19223964bee2068"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/string/strcat.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 733
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 147,
+        "sha256": "629d401b95d07ddff9560eb5a9cfbda1652caaec273dc6a79013a56b1790af53"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/string/strchr.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 734
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 703,
+        "sha256": "dbb7756732bb4241681ab2c8e0a1a7953ba5caf21851678ac9034a7f4a616c55"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/string/strchrnul.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 735
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 121,
+        "sha256": "3785cd5bc3e08049617db754a3677f7485e5e7bc4a7901102af1604cee290b71"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/string/strcpy.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 736
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 685,
+        "sha256": "05231b57f01b5d192d6ac50bf376e1adb987feda4ea79c22248b8bba3d64f04a"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/string/stpcpy.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 737
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 514,
+        "sha256": "cf9359c1bcee96df1f3a7ef0fb969339b7ed87b202d80dc7e7fcd6d1239b7484"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/string/strlen.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 738
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 220,
+        "sha256": "df801c43304b27dcda67f219a7a3ca34a8fb06f4e63d21e8a6bcb36b03c3c012"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/string/strncmp.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 739
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 123,
+        "sha256": "88301f7a48004250e1833e9155c7d2fa607ffdddca3b1b1804774d93c82acb96"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/string/strncpy.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 740
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 819,
+        "sha256": "12f0e4fd1005104a6c1200af5b90e1694d75ad0fb2586305b560341be0ef6481"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/string/stpncpy.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 741
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 120,
+        "sha256": "3a72ef5250b314ca0d8ff0fed2f6aa10c8b2b26605806c759faf0d1a9b835a9e"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/string/strnlen.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 742
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 452,
+        "sha256": "906d82e1ffe26848e99bcc8b3179812f00a8717c44b409c1fdfd24beae2566ef"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/string/strspn.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 743
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 3516,
+        "sha256": "11158e28318076b70bbaa40c04294b01d02cae475ff72385087c9b966aa14d44"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/string/strstr.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 744
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 295,
+        "sha256": "790bdd75f7736c83ed7a21f8813b20454ead1ccfc49e806a88692d2a471024eb"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/string/x86_64/memcpy.s",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 745
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 240,
+        "sha256": "d954e18e94bf276f8117e3bf5d67089018ed20fce837c8f8ebb5bda2d18a8373"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/string/x86_64/memmove.s",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 746
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 1128,
+        "sha256": "aa843bcfb5b75e232df8d26dab6e5cec4f7123b33bebe655ce957f95f839f2e1"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/string/x86_64/memset.s",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 747
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 1940,
+        "sha256": "6a0ff64f760ead915f4fea00cb4069052eb0753b86478bec642c435d4a38b551"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/thread/__lock.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 748
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 561,
+        "sha256": "9bf39f2e3d932dcee04e145bc7fce93f2f6908d08f3a0512a20d642450c437c2"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/thread/__syscall_cp.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 749
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 129,
+        "sha256": "99be8ab4db8a5ca9278af138db6b3bb7132170c3715f82628acc1d772e3d2680"
+      },
+      "has_code_ranges": false,
+      "legal_applicability_decided": false,
+      "name": "src/thread/default_attr.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 750
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 86,
+        "sha256": "45043b25fed46f852daac89685ecc10ed17ae8db848bf8d1baca758031d605eb"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/thread/pthread_attr_destroy.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 751
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 2281,
+        "sha256": "b1cf396094b8e276571e81b2e11d27f5913dae81837d565f983bc84c559538ae"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/thread/pthread_attr_get.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 752
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 226,
+        "sha256": "e78ddd6cf0ab1038ac2455f1a26b0c33208ea45a8447db795a02a040928469f5"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/thread/pthread_attr_init.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 753
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 252,
+        "sha256": "3d5524788c9af1bbc0dad76fab254f1bb43a5b046684866ad8c1e2d0ee3ccb5e"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/thread/lock_ptc.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 754
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 159,
+        "sha256": "e00ed158a01c382124f43622e1967f293bd2ba99fd8ca12d3c7507ef09755c53"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/thread/pthread_attr_setdetachstate.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 755
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 384,
+        "sha256": "4ba7e36f2f9a2109b21b6788111407d6c33f09bb87c19f89fa3ae39bb3cd2455"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/thread/pthread_cleanup_push.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 756
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 224,
+        "sha256": "77f06bf070fbcff36427ebb710150a66f97be8cbc3a7e3789ba824e7a121ce28"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/thread/pthread_cond_broadcast.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 757
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 5540,
+        "sha256": "2a3413f7e63a59bffb4a5a9d32692bb5f16554e1356318000ce372a9ecfbb4f8"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/thread/pthread_cond_timedwait.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 758
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 2096,
+        "sha256": "8171d93c889f41456cb50647c482bc0e6d8896fc71f759adf86525015fbe4d53"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/thread/__timedwait.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 759
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 449,
+        "sha256": "dcd6cbad9aafd635788749c407ac13e111c2ccd854cc9e15d271167daa6f3151"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/thread/__wait.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 760
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 151,
+        "sha256": "48f47766333cc87727e148cf2c081b8e1ffb23d2a9439e5c62237f8da2ae0eef"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/thread/pthread_cond_wait.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 761
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 11575,
+        "sha256": "48c232fbc6bb80e0c2cc27a95b22b208274aa424080620c078d130ece02f6dbf"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/thread/pthread_create.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 762
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 2248,
+        "sha256": "ae53fb6c10e64cfe05d2f69d5d202e79189c4061efcf1cbc7d07c719dee1c5ba"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/thread/pthread_key_create.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 763
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 269,
+        "sha256": "4ebfa08d466b5981c2319f75481d52a3f6e4efc279c0eb802a943b6517d1bbd8"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/thread/pthread_mutex_lock.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 764
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 2586,
+        "sha256": "22e02cc72f5030ba0b2e79bf8d12eef2657669ed92b88f4eb753fc5f1468f488"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/thread/pthread_mutex_timedlock.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 765
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 1872,
+        "sha256": "b980d28ac9bfb9d38c888ee54eb57fbdc9e88866dc2b23c580a1b428d464a585"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/thread/pthread_mutex_trylock.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 766
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 1306,
+        "sha256": "3eeb18d0104cf96768f708cdd765ff45ef8ebf1edcedc70246cf518a34bea49b"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/thread/pthread_mutex_unlock.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 767
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 187,
+        "sha256": "64b6258b486b305c22504fc78af8a4bde4ae8765bf0cfdbec32fa5f5b05db4e6"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/thread/pthread_rwlock_rdlock.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 768
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 708,
+        "sha256": "63142ac776ff82d0736f926962cd5757604948ff0e5eb77b2eb50a10153c2a2a"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/thread/pthread_rwlock_timedrdlock.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 769
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 362,
+        "sha256": "5dc3f7495eaee990d4a2c0b35fa8f7ae512552ab9a8be4593a38b49fb5e5344a"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/thread/pthread_rwlock_tryrdlock.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 770
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 467,
+        "sha256": "9cf1b4b79278dccf4ccb0b1a33dca77797c67b397c723f8695b7fefaf2b816f2"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/thread/pthread_rwlock_unlock.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 771
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 187,
+        "sha256": "bb40b9e8501a878f29352d6a2f881a7a41abc9587fc690712e8ebde9d444e398"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/thread/pthread_rwlock_wrlock.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 772
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 679,
+        "sha256": "32afcae34f55e92443c3ca54282795b5723b8d9e86abb608b54471865efb79d1"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/thread/pthread_rwlock_timedwrlock.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 773
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 218,
+        "sha256": "6390f4efa4f14c17daa2cc946f3223eb3c3a8c30d81a33d1bb21dd3542652bc5"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/thread/pthread_rwlock_trywrlock.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 774
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 291,
+        "sha256": "1ada511c83509d9c32c768ba516b544ee0d6c060357d90d904204aa1af040e78"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/thread/pthread_setcancelstate.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 775
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 248,
+        "sha256": "e588f3345a6c8d636fae1b0832827474c74c171fa3dd7861b2a3e5cbe87b5520"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/thread/pthread_setspecific.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 776
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 470,
+        "sha256": "a08decb52c73a8e01d47f1ff8afd9c18e7ac942a66037aba5402e5daa387b079"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/thread/pthread_sigmask.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 777
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 190,
+        "sha256": "7d2f67295f5ea33d5840400f2e20122448475c2bc9b07d218e65f243afa6efbd"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/thread/pthread_testcancel.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 778
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 3129,
+        "sha256": "220dd1bb651710e4206768856472e9853a8ab4ba25eb2e6dbd3c1cf6607d3c3d"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/thread/synccall.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 779
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 465,
+        "sha256": "125c86d2b50eade7b7c760a3e52dc5f2977f43b7fe740f3a9b693f4016926d17"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/thread/sem_post.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 780
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 84,
+        "sha256": "2662deae88df26b1e4fb2f88b67f7f7a2ce671b863153be76b928ee927363bd4"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/thread/sem_wait.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 781
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 685,
+        "sha256": "e013e5365d6b3f4bc1a9dbdf48b63ed46b46681c1c84fb008221e20ca28cffe5"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/thread/sem_timedwait.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 782
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 243,
+        "sha256": "8b8e27011d461c4b4c0108cbe4697ee7fc338c34939122d546f99eaa35febc5a"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/thread/sem_trywait.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 783
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 276,
+        "sha256": "6d651e16322418b8c9659a7190ec326a53a64751931a03ef38a53877f11761f7"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/thread/sem_init.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 784
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 67,
+        "sha256": "eade312e29b51a9812394f876088f60548ec536ac45a60fdaa1ad026988e5c72"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/thread/sem_destroy.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 785
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 354,
+        "sha256": "03cea690d4f01ba8fd88b869936d64a88e89354832aacec33bc0fb9211b87db7"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/thread/vmlock.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 786
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 395,
+        "sha256": "9a6299228be5f8f467652263e8f98c1f9ab2e0937243589b8c5642f0ebe3236d"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/thread/x86_64/__set_thread_area.s",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": true,
+      "unit_index": 787
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 345,
+        "sha256": "dab063e96f4c9874892b39545e3ea02cd6f6e71532d84705422bd0a8ad62eb00"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/thread/x86_64/__unmapself.s",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": true,
+      "unit_index": 788
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 368,
+        "sha256": "1046d162ddd8d902a657b8774bc9c0e8f029c24ea6394055b4ffb0a5c39d39f1"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/thread/x86_64/clone.s",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 789
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 2687,
+        "sha256": "b767ffab3299d29ecfff46807b3dd106ad99d503de7f853733ac592ebd51047c"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/time/clock_gettime.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 790
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 2421,
+        "sha256": "1ff322ac4f6854aa55519530f1a0ce760781f5aceb30a3162d03805a870ac8a1"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/internal/vdso.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 791
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 150,
+        "sha256": "3e1793ea2dd358e5c884c4dd232083605d0f6775f7ebe19d03d64fe97068a78f"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/string/strcmp.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 792
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 180,
+        "sha256": "5ad9738734680a61ac941173a478374a23f9bd2297336d3013a35d51e6030ff7"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/time/nanosleep.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 793
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 1247,
+        "sha256": "e4ee1b947194e1c32a9c3a669cad2a64010b98e0ef2b23c39b9622abc7affdd8"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/time/clock_nanosleep.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 794
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 292,
+        "sha256": "0a287fdef55394bdedfafc924efcec2d27e584a252cd2c71553fae0bb8ec9672"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/unistd/close.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 795
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 303,
+        "sha256": "aa3e90b93e192921f7ef455e60ab9e9f68677978ab0c9617912af3cb19578771"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/unistd/lseek.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 796
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 135,
+        "sha256": "6d34ebb2d1df14aa9c51308071779154d7d7bbd59799a554dee010892b00077a"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/unistd/setegid.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 797
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 135,
+        "sha256": "fb4332398fe35d853e11fc42e291893ca69e2d9c607643bf0ec890dc6912e6c1"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/unistd/seteuid.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 798
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 127,
+        "sha256": "d096b5c5585f6fcf1e06a44364964559f6355e6a36c05351ff0d994b8f919968"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/unistd/setgid.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 799
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 148,
+        "sha256": "760558515f54c2852588b912bd52ef3d2df0ab086a64fc1d507e38906822e075"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/unistd/setregid.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 800
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 185,
+        "sha256": "ad0f38671ecd5f170188de481ed059290e0ce425d393db8bfabc5d3ce982126e"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/unistd/setresgid.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 801
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 185,
+        "sha256": "03e52df44b9705be972d6738456c24b630b39106c0544c03352e417fbaf93f98"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/unistd/setresuid.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 802
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 148,
+        "sha256": "85df398876a5e1bc7a88b06244b189671daf1c2ab0647372ab4edf250806efb1"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/unistd/setreuid.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 803
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 127,
+        "sha256": "349044b6b5c4ee4f54d989475c743d45c2553071c26402f068d2632b275ab8c9"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/unistd/setuid.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 804
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 923,
+        "sha256": "4749040d87f264aa13d47fe74dc785b89da6612ec54b79f2a671f56bc1dfa4a7"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "src/unistd/setxid.c",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 805
+    },
+    {
+      "binary_source_correspondence_proven": false,
+      "counterpart": {
+        "bytes": 61,
+        "sha256": "0dfa9ac7ac5ebb5f2d3e81da34e72520ec4358f1d5c43d6d730c2d420b5f4f60"
+      },
+      "has_code_ranges": true,
+      "legal_applicability_decided": false,
+      "name": "crt/x86_64/crtn.s",
+      "source_hint": "musl_build_path_label_1.2.5",
+      "status": "upstream_same_path_only",
+      "terms_marker_present": false,
+      "unit_index": 806
+    }
+  ]
+}

@@ -1,0 +1,127 @@
+"""Manual source counterparts for the bounded native CLI observation.
+
+Offline; no extraction, source execution or distribution approval. Upstream musl
+paths are counterparts, NOT proof of the Alpine-patched bytes in the binary.
+Downloaded musl signature is retained but not authenticated by this tool.
+"""
+import argparse
+import hashlib
+import io
+import json
+from pathlib import Path, PurePosixPath
+import re
+import tarfile
+
+
+NATIVE_SHA = "c13ae17e80399773cef5c95aa14937a10e28ddbcbfe89a9cfba90f64864c8047"
+CLI_SOURCE_SHA = "82759175c5c47e26971da16f53b1f51df49c3b925f25321bd5871c919641d773"
+MUSL_SHA = "a9a118bbe84d8764da0ea0d28b3ab3fae8477fc7e4085d90102b8596fc7c75e4"
+SDK_SHA = "d06bad763f8820d3e29ee11f2c0c71438903c007e772a159c5760a300298302e"
+
+
+def require(ok, message):
+    if not ok:
+        raise ValueError(message)
+
+
+def sha(data):
+    return hashlib.sha256(data).hexdigest()
+
+
+def identity(data):
+    return {"bytes": len(data), "sha256": sha(data)}
+
+
+def archive_files(data, prefix, needed):
+    results, seen = {}, set()
+    with tarfile.open(fileobj=io.BytesIO(data), mode="r:gz") as archive:
+        for member in archive:
+            name = PurePosixPath(member.name)
+            require(member.name not in seen and not name.is_absolute() and ".." not in name.parts and
+                    name.parts[0] == prefix, "invalid/duplicate archive path")
+            seen.add(member.name)
+            require(member.isdir() or member.isfile(), "nonregular archive entry")
+            relative = name.relative_to(prefix).as_posix()
+            if relative in needed:
+                require(member.isfile(), "counterpart is not a file")
+                results[relative] = archive.extractfile(member).read()
+    return results
+
+
+def inspect(root, native_path, musl_path):
+    cache = root / ".cache/worker-cli-tools"
+    native_bytes = native_path.read_bytes()
+    require(sha(native_bytes) == NATIVE_SHA, "native observation changed")
+    native = json.loads(native_bytes)
+    require(native["InspectionComplete"] and not native["NativeClosureProven"] and
+            native["OtherUnits"] == len(native["NativeUnits"]) == 212, "complete bounded native population required")
+    source_bytes = (root / "planning/deployment-foundation/cli-source-inventory-observation.v1.json").read_bytes()
+    require(sha(source_bytes) == CLI_SOURCE_SHA, "compiler source observation changed")
+    source = json.loads(source_bytes)
+    musl_bytes, sdk_bytes = musl_path.read_bytes(), (cache / "go1.24.7.darwin-arm64.tar.gz").read_bytes()
+    require(sha(musl_bytes) == MUSL_SHA and len(musl_bytes) == 1080786, "musl source archive changed")
+    require(sha(sdk_bytes) == SDK_SHA and len(sdk_bytes) == 76295172, "SDK archive changed")
+    musl_names, runtime_names = set(), set()
+    for unit in native["NativeUnits"]:
+        name = PurePosixPath(unit["Name"])
+        require(not name.is_absolute() and ".." not in name.parts, "invalid native source name")
+        if unit["SourceHint"] == "musl_build_path_label_1.2.5":
+            musl_names.add(unit["Name"])
+        elif unit["SourceHint"] == "go_runtime_cgo_build_path":
+            runtime_names.add(unit["Name"])
+    musl_files = archive_files(musl_bytes, "musl-1.2.5", musl_names | {"COPYRIGHT"})
+    sdk_files = archive_files(sdk_bytes, "go", {"src/runtime/cgo/" + n for n in runtime_names} | {"LICENSE"})
+    require("COPYRIGHT" in musl_files and "LICENSE" in sdk_files, "missing counterpart root notice")
+    declared = next(p["native_source_files"] for p in source["cgo"] if p["package"] == "runtime/cgo")
+    records, counts = [], {}
+    for unit in native["NativeUnits"]:
+        record = {"unit_index": unit["Index"], "name": unit["Name"], "source_hint": unit["SourceHint"],
+                  "has_code_ranges": bool(unit["Ranges"]), "binary_source_correspondence_proven": False,
+                  "legal_applicability_decided": False}
+        data = None
+        if unit["SourceHint"] == "musl_build_path_label_1.2.5":
+            data = musl_files.get(unit["Name"])
+            record["status"] = "upstream_same_path_only" if data is not None else "missing_upstream_counterpart_unknown"
+        elif unit["SourceHint"] == "go_runtime_cgo_build_path":
+            data = sdk_files.get("src/runtime/cgo/" + unit["Name"])
+            if data is not None:
+                require(declared.get(unit["Name"]) == identity(data), "runtime counterpart differs from selected SDK source")
+            record["status"] = "matching_SDK_and_compiler_selected_path_only" if data is not None else "missing_SDK_counterpart_unknown"
+        else:
+            record["status"] = "generated_or_unresolved_source_unknown"
+        if data is not None:
+            record["counterpart"] = identity(data)
+            record["terms_marker_present"] = bool(re.search(rb"copyright|permission|redistribution|licen[cs]e|public domain", data, re.I))
+        counts[record["status"]] = counts.get(record["status"], 0) + 1
+        records.append(record)
+    signature = (cache / "musl-1.2.5.tar.gz.asc").read_bytes()
+    require(len(signature) == 490 and sha(signature) == "d9030116fd03e4acfa0b665a13a5de46110296b4e30bb8e67be1f08af29f6306",
+            "downloaded signature bytes changed; verification remains unperformed")
+    return {"schema_version": 1, "inspection_complete": True, "exclusions": [], "failures": [],
+            "distribution_approved": False, "binary_source_correspondence_proven": False,
+            "signature_verified": False, "native_closure_proven": False,
+            "inputs": {"native_observation_sha256": NATIVE_SHA, "compiler_source_sha256": CLI_SOURCE_SHA,
+                "musl_archive": identity(musl_bytes), "SDK_archive": identity(sdk_bytes),
+                "downloaded_unverified_signature": identity(signature)},
+            "root_notices": {"musl_COPYRIGHT": identity(musl_files["COPYRIGHT"]), "SDK_LICENSE": identity(sdk_files["LICENSE"])},
+            "counts": counts, "units": records,
+            "limitations": ["Upstream 1.2.5 is not the exact Alpine patch/package source for this binary",
+                "File paths and compiler producers do not authenticate content or prove identical generated code",
+                "Inline marker detection is neither license classification nor a complete notice inventory",
+                "Generated CGO, zero-size function symbols, crtstuff.c and remaining symbol/header/patch scope remain unresolved",
+                "Downloaded signature is not verified; no rights, packaging, SP1/SP8/R-006 or release approval"]}
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--native", type=Path, default=Path("planning/deployment-foundation/cli-native-components-observation.v1.json"))
+    parser.add_argument("--musl", type=Path, default=Path(".cache/worker-cli-tools/musl-1.2.5.tar.gz"))
+    parser.add_argument("--output", type=Path, required=True)
+    args = parser.parse_args()
+    require(not args.output.exists(), "refuse to overwrite existing observation")
+    result = inspect(Path.cwd(), args.native, args.musl)
+    result["probe"] = identity(Path(__file__).read_bytes())
+    with args.output.open("x") as output:
+        json.dump(result, output, sort_keys=True, indent=2)
+        output.write("\n")
+    print(json.dumps({"units": len(result["units"]), "counts": result["counts"], "output": str(args.output)}))

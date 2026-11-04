@@ -1,0 +1,371 @@
+// Manual binary-metadata research. Code ranges and source hints do not establish
+// source hash/patch identity, a complete native closure or redistribution rights.
+package main
+
+import (
+	"bytes"
+	"crypto/sha256"
+	"debug/buildinfo"
+	"debug/dwarf"
+	"debug/elf"
+	"encoding/hex"
+	"encoding/json"
+	"flag"
+	"fmt"
+	"os"
+	"path"
+	"path/filepath"
+	"sort"
+	"strings"
+	"testing"
+)
+
+var nativeRoot = flag.String("native-cli-root", "", "repository root")
+var nativeOutput = flag.String("native-cli-output", "", "fresh observation")
+
+const nativeCLIHash = "27f239f97492c434e091a70b41b8796c698f0aa2b6052c6f9c28da4ee7ae888b"
+
+type nativeSpan struct{ Start, End uint64 }
+type nativeUnit struct {
+	Index                     int
+	Name, Directory, Producer string
+	Language                  int64
+	SourceHint                string
+	Ranges                    [][2]uint64
+}
+type nativeInterval struct {
+	Start, End uint64
+	Unit       int
+	Go         bool
+}
+type nativeSymbol struct {
+	Name          string
+	Address, Size uint64
+	UnitIndices   []int
+	Status        string
+}
+type nativeReport struct {
+	InspectionComplete, DistributionApproved, NativeClosureProven, SourceCorrespondenceProven    bool
+	BinarySHA256, ProbeSHA256, GoVersion                                                         string
+	BinaryBytes, CompileUnits, GoUnits, OtherUnits, UnitsWithoutRanges, NativeUnitsWithoutRanges int
+	GoRanges, NativeRanges                                                                       int
+	ProducerComments                                                                             []string
+	NativeUnits                                                                                  []nativeUnit
+	SymbolTypes                                                                                  map[string]int
+	FileSymbols, FileSymbolsWithoutCUBasename                                                    []string
+	FunctionSymbols, GoOnlySymbols, NativeSymbols, MixedSymbols                                  int
+	ZeroSizeSymbols, UndefinedSymbols                                                            int
+	GoSymbolNamesSHA256                                                                          string
+	NativeFunctions, UnattributedFunctions, PointOnlyFunctions                                   []nativeSymbol
+	Limitations                                                                                  []string
+}
+
+func nativeHash(data []byte) string { h := sha256.Sum256(data); return hex.EncodeToString(h[:]) }
+func nativeInCode(start, end uint64, spans []nativeSpan) bool {
+	if end <= start {
+		return false
+	}
+	for _, s := range spans {
+		if start >= s.Start && end <= s.End {
+			return true
+		}
+	}
+	return false
+}
+
+// Full containment, including end, matters; an address-only match can attribute
+// a symbol that crosses its reported compilation unit's code range.
+func nativeCover(start, end uint64, intervals []nativeInterval) []nativeInterval {
+	var matches []nativeInterval
+	for _, span := range intervals {
+		if span.Start <= start && end <= span.End && end > start {
+			matches = append(matches, span)
+		}
+	}
+	return matches
+}
+
+func inspectNativeCLI(data []byte) (nativeReport, error) {
+	report := nativeReport{BinarySHA256: nativeHash(data), BinaryBytes: len(data), SymbolTypes: map[string]int{},
+		Limitations: []string{"DWARF paths/producers are metadata, not source hashes or authenticated provenance",
+			"No-range units and unclassified symbols are retained, never absence or permission to exclude",
+			"Symbol/compilation-unit correlation does not establish all linked source, headers or inline terms",
+			"No exact Alpine patch/package revision, libgcc closure, rights, shipping or SP1/SP8/R-006 approval"}}
+	if report.BinarySHA256 != nativeCLIHash {
+		return report, fmt.Errorf("actual CLI binary hash mismatch")
+	}
+	build, err := buildinfo.Read(bytes.NewReader(data))
+	if err != nil {
+		return report, err
+	}
+	if build.GoVersion != "go1.24.7" {
+		return report, fmt.Errorf("unexpected Go version")
+	}
+	report.GoVersion = build.GoVersion
+	f, err := elf.NewFile(bytes.NewReader(data))
+	if err != nil {
+		return report, err
+	}
+	defer f.Close()
+	if f.Class != elf.ELFCLASS64 || f.Machine != elf.EM_X86_64 {
+		return report, fmt.Errorf("expected ELF64 amd64")
+	}
+	var spans []nativeSpan
+	for _, s := range f.Sections {
+		if s.Flags&elf.SHF_EXECINSTR != 0 {
+			if s.Size == 0 || s.Addr+s.Size < s.Addr {
+				return report, fmt.Errorf("invalid executable section")
+			}
+			spans = append(spans, nativeSpan{s.Addr, s.Addr + s.Size})
+		}
+	}
+	if len(spans) == 0 {
+		return report, fmt.Errorf("missing executable sections")
+	}
+	comment := f.Section(".comment")
+	if comment == nil {
+		return report, fmt.Errorf("missing producer comments")
+	}
+	comments, err := comment.Data()
+	if err != nil {
+		return report, err
+	}
+	for _, value := range bytes.Split(comments, []byte{0}) {
+		if len(value) > 0 {
+			report.ProducerComments = append(report.ProducerComments, string(value))
+		}
+	}
+	dw, err := f.DWARF()
+	if err != nil {
+		return report, err
+	}
+	reader := dw.Reader()
+	var intervals []nativeInterval
+	basenames := map[string]bool{}
+	for {
+		entry, err := reader.Next()
+		if err != nil {
+			return report, err
+		}
+		if entry == nil {
+			break
+		}
+		if entry.Tag != dwarf.TagCompileUnit {
+			continue
+		}
+		unit := nativeUnit{Index: report.CompileUnits}
+		var ok bool
+		unit.Language, ok = entry.Val(dwarf.AttrLanguage).(int64)
+		if !ok {
+			return report, fmt.Errorf("missing language")
+		}
+		unit.Name, ok = entry.Val(dwarf.AttrName).(string)
+		if !ok || unit.Name == "" {
+			return report, fmt.Errorf("missing source name")
+		}
+		unit.Directory, _ = entry.Val(dwarf.AttrCompDir).(string)
+		unit.Producer, _ = entry.Val(dwarf.AttrProducer).(string)
+		unit.Ranges, err = dw.Ranges(entry)
+		if err != nil {
+			return report, err
+		}
+		basenames[path.Base(unit.Name)] = true
+		report.CompileUnits++
+		isGo := unit.Language == 22
+		if isGo {
+			report.GoUnits++
+		} else {
+			report.OtherUnits++
+		}
+		if len(unit.Ranges) == 0 {
+			report.UnitsWithoutRanges++
+			if !isGo {
+				report.NativeUnitsWithoutRanges++
+			}
+		}
+		for _, r := range unit.Ranges {
+			if !nativeInCode(r[0], r[1], spans) {
+				return report, fmt.Errorf("CU range outside executable section")
+			}
+			intervals = append(intervals, nativeInterval{r[0], r[1], unit.Index, isGo})
+			if isGo {
+				report.GoRanges++
+			} else {
+				report.NativeRanges++
+			}
+		}
+		if !isGo {
+			unit.SourceHint = "unresolved"
+			switch unit.Directory {
+			case "/home/buildozer/aports/main/musl/src/musl-1.2.5":
+				unit.SourceHint = "musl_build_path_label_1.2.5"
+			case "/_/GOROOT/src/runtime/cgo":
+				unit.SourceHint = "go_runtime_cgo_build_path"
+			case "/tmp/go-build":
+				unit.SourceHint = "generated_cgo_build_path"
+			}
+			report.NativeUnits = append(report.NativeUnits, unit)
+		}
+	}
+	if report.CompileUnits == 0 || report.OtherUnits == 0 {
+		return report, fmt.Errorf("missing compilation-unit population")
+	}
+	symbols, err := f.Symbols()
+	if err != nil {
+		return report, err
+	}
+	var goNames []string
+	for _, symbol := range symbols {
+		report.SymbolTypes[elf.ST_TYPE(symbol.Info).String()]++
+		if elf.ST_TYPE(symbol.Info) == elf.STT_FILE {
+			report.FileSymbols = append(report.FileSymbols, symbol.Name)
+			if !basenames[path.Base(symbol.Name)] {
+				report.FileSymbolsWithoutCUBasename = append(report.FileSymbolsWithoutCUBasename, symbol.Name)
+			}
+		}
+		if elf.ST_TYPE(symbol.Info) != elf.STT_FUNC {
+			continue
+		}
+		report.FunctionSymbols++
+		record := nativeSymbol{Name: symbol.Name, Address: symbol.Value, Size: symbol.Size}
+		if symbol.Section == elf.SHN_UNDEF {
+			report.UndefinedSymbols++
+			continue
+		}
+		if symbol.Size == 0 {
+			report.ZeroSizeSymbols++
+			record.Status = "zero_size_extent_unknown"
+			report.PointOnlyFunctions = append(report.PointOnlyFunctions, record)
+			continue
+		}
+		end := symbol.Value + symbol.Size
+		if end < symbol.Value || !nativeInCode(symbol.Value, end, spans) {
+			return report, fmt.Errorf("function extent outside executable section")
+		}
+		matches := nativeCover(symbol.Value, end, intervals)
+		goMatch, nativeMatch := false, false
+		seen := map[int]bool{}
+		for _, m := range matches {
+			if m.Go {
+				goMatch = true
+			} else {
+				nativeMatch = true
+				if !seen[m.Unit] {
+					record.UnitIndices = append(record.UnitIndices, m.Unit)
+					seen[m.Unit] = true
+				}
+			}
+		}
+		sort.Ints(record.UnitIndices)
+		switch {
+		case nativeMatch && goMatch:
+			report.MixedSymbols++
+			record.Status = "native_and_go_CU_ranges"
+			report.NativeFunctions = append(report.NativeFunctions, record)
+		case nativeMatch:
+			report.NativeSymbols++
+			record.Status = "native_CU_range"
+			report.NativeFunctions = append(report.NativeFunctions, record)
+		case goMatch:
+			report.GoOnlySymbols++
+			goNames = append(goNames, symbol.Name)
+		default:
+			record.Status = "no_CU_range_match_unknown"
+			report.UnattributedFunctions = append(report.UnattributedFunctions, record)
+		}
+	}
+	sort.Strings(goNames)
+	encoded, err := json.Marshal(goNames)
+	if err != nil {
+		return report, err
+	}
+	report.GoSymbolNamesSHA256 = nativeHash(encoded)
+	if report.FunctionSymbols != report.GoOnlySymbols+report.NativeSymbols+report.MixedSymbols+report.ZeroSizeSymbols+report.UndefinedSymbols+len(report.UnattributedFunctions) {
+		return report, fmt.Errorf("function census does not close")
+	}
+	report.InspectionComplete = true
+	return report, nil
+}
+
+func TestManualNativeExtentControls(t *testing.T) {
+	spans := []nativeSpan{{10, 20}}
+	for _, c := range []struct {
+		start, end uint64
+		want       bool
+	}{{10, 20, true}, {12, 19, true}, {9, 12, false}, {19, 21, false}, {15, 15, false}, {20, 10, false}} {
+		if got := nativeInCode(c.start, c.end, spans); got != c.want {
+			t.Fatalf("extent %d..%d got %t", c.start, c.end, got)
+		}
+	}
+	ranges := []nativeInterval{{10, 20, 1, false}, {20, 30, 2, true}}
+	if len(nativeCover(19, 21, ranges)) != 0 {
+		t.Fatal("cross-unit symbol attributed")
+	}
+	if got := nativeCover(20, 25, ranges); len(got) != 1 || got[0].Unit != 2 {
+		t.Fatal("wrong unit binding")
+	}
+	if _, err := inspectNativeCLI([]byte("not the binary")); err == nil || !strings.Contains(err.Error(), "hash mismatch") {
+		t.Fatal("wrong fixture accepted", err)
+	}
+}
+
+func TestManualCLINativeComponents(t *testing.T) {
+	if *nativeRoot == "" || *nativeOutput == "" {
+		t.Fatal("manual root/output required")
+	}
+	data, err := os.ReadFile(filepath.Join(*nativeRoot, ".cache/worker-cli-tools/docker"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	report, err := inspectNativeCLI(data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	// Actual independently observed population; guard against a parser that quietly
+	// drops an entire language or the ranges defining this diagnostic's subject.
+	if report.CompileUnits != 807 || report.GoUnits != 595 || report.OtherUnits != 212 || report.NativeRanges != 330 || report.NativeUnitsWithoutRanges != 8 {
+		t.Fatal("actual CU census changed")
+	}
+	found := false
+	for _, s := range report.NativeFunctions {
+		if s.Name == "__libc_start_main" {
+			for _, unit := range report.NativeUnits {
+				for _, index := range s.UnitIndices {
+					if unit.Index == index && unit.SourceHint == "musl_build_path_label_1.2.5" && unit.Name == "src/env/__libc_start_main.c" {
+						found = true
+					}
+				}
+			}
+		}
+	}
+	if !found {
+		t.Fatal("actual libc entry-point code not attributed to native CU")
+	}
+	if !strings.Contains(strings.Join(report.FileSymbolsWithoutCUBasename, "\n"), "crtstuff.c") {
+		t.Fatal("known unresolved file symbol disappeared")
+	}
+	mutated := append([]byte(nil), data...)
+	mutated[len(mutated)-1] ^= 1
+	if _, err := inspectNativeCLI(mutated); err == nil || !strings.Contains(err.Error(), "hash mismatch") {
+		t.Fatal("changed fixture accepted", err)
+	}
+	probe, err := os.ReadFile(filepath.Join(*nativeRoot, "planning/deployment-foundation/probes/cli-native-components_test.go.txt"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	report.ProbeSHA256 = nativeHash(probe)
+	output, err := os.OpenFile(*nativeOutput, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0600)
+	if err != nil {
+		t.Fatal(err)
+	}
+	encoder := json.NewEncoder(output)
+	encoder.SetIndent("", "  ")
+	if err := encoder.Encode(report); err != nil {
+		_ = output.Close()
+		t.Fatal(err)
+	}
+	if err := output.Close(); err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("%d CUs, %d native-range symbols, %d unknown function extents", report.CompileUnits, report.NativeSymbols, len(report.UnattributedFunctions))
+}
