@@ -382,7 +382,9 @@ in-place successor mutation under CR6. No retry, new window or key reconstructio
 The [native supervisor profile](deployment-native-supervisor-profile.md) now
 proposes the concrete one-shot packaging, all eight typed subjects/results,
 stage mediation, native lock/daemon binding and scheduled-service handoff.
-It is a draft pending technical review, adoption and actual producer conformance;
+Independent review requires changes at61f2461f: forward bootstrap/immutable-binding
+corrections need review, and its exact stage/plan/adapter table is still missing.
+It is a draft pending completed specification, adoption and actual producer conformance;
 its existence does not satisfy the gates below. Its explicit cgroup/native-host,
 tool-artifact and release-metric projection changes require parent reconciliation.
 

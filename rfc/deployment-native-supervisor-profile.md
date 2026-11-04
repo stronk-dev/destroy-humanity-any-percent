@@ -1,6 +1,6 @@
 # RFC: Native Deployment Supervisor Profile
 
-- **Status:** draft — proposed OP9 profile; technical review, adoption and actual producer conformance pending
+- **Status:** draft — CHANGES REQUIRED at61f2461f; forward corrections pending review, exact plan/adapter table incomplete; no adoption/implementation authority
 - **Author:** Codex
 - **Created:** 2026-11-04
 - **Parent / amends:** [Operation Evidence](deployment-operation-evidence.md), OP9; [Current Release Authority](deployment-current-release-authority.md), CR4/CR6; [Deployment Foundation](deployment-foundation.md), DP1/DP5/DP6
@@ -19,9 +19,14 @@ The native carrier and original-SQL-stream studies prove mechanisms, not this
 profile. In particular, neither study proves authenticated bootstrap, actual
 Docker HTTP ownership, scheduled-service handoff or this complete protocol.
 The [reviewed mutation map](../planning/deployment-foundation/interrupted-transition-mutation-map.md)
-is the minimum coverage inventory. Every production call must have a plan below;
+is the minimum coverage inventory. Every production call must have an exact plan;
 an unknown call refuses before dispatch, but an empty/unusable registry fails
 conformance rather than qualifying as a safe implementation.
+SP5 currently enumerates required plan families, NOT the complete exact
+stage/actor/action/kind and endpoint/body/terminal-classifier table. That is an
+explicit unfinished specification deliverable (independent finding3), not a
+routine choice deferred to an implementation agent. This proposal cannot close
+OP9 or be presented for adoption until that table and its IPC adapters exist.
 
 ## SP1 — Packaging, privileges and trust
 
@@ -50,8 +55,15 @@ plugin artifacts for command workers. Add those two tools to DP1's artifact,
 license, provenance and SBOM inventory before adoption/packaging. Their fixture
 downloads are not approved shipping provenance. Reuse the selected bundle's
 Postgres image as the worker filesystem; do not add a seventh image implicitly.
-Helpers and tools are read-only release-owned mounts. All executing bytes and
-dependencies must match ONE selected manifest, not an arbitrary mixed toolchain.
+Supervisor/producer helpers and their Docker/Compose tools are read-only mounts
+from ONE selected producer manifest under OP2. This restriction applies to that
+producer toolchain, not all runtime images. Retained source services and source
+pre-upgrade helpers must match the SOURCE identity; target services and restore/
+verification helpers match the applicable TARGET identity. Each helper role
+declares which exact source/target manifest supplies it; the selected supervisor
+must support both declared profiles/formats. Cross-version incompatibility
+refuses before effects. Never mix arbitrary uncited helpers/tools, and never
+require a running source image to match an unrelated target image.
 
 Native operator/supervisor and approved service/observer code are trusted. Worker
 input, responses, names and labels are not authority. Docker access is already
@@ -62,10 +74,11 @@ never serialize secret values, hashes of secret configuration or protocol keys.
 ## SP2 — Bootstrap, lock and daemon generation
 
 Before Started, the launcher may only validate bundles/history, acquire the
-existing real operator lock, read native identity, create private operator-state
-metadata/IPC, and start the selected inert supervisor executable. It may not
+existing real operator lock, create private operator-state metadata/IPC, and
+start the selected inert supervisor executable. The supervisor may then perform
+the bounded admission observations/input validation specified below. Neither may
 load/pull images, create/exec Docker jobs, query Postgres, contact the application,
-publish metrics or modify any live service/output. Execute an already opened,
+publish metrics or modify any live service/output before admission. Execute an already opened,
 verified regular helper file; a pathname hash followed by an unprotected reopen
 is insufficient. The executable descriptor must survive the exec boundary.
 
@@ -100,6 +113,58 @@ fresh native writer checks against that original held generation; no reconnect
 or pool retry may silently cross authority loss. Existing requests stay unknown
 until actually observed terminal. Loss of supervisor/daemon/gateway authority
 before sealing invokes CR6 refusal, not a reconstructed success or new window.
+
+Pre-admission observation is a native supervisor protocol, NOT an OP3 execution
+log/phase before Started. Under the real lock and held daemon generation, allow
+only read-only Engine version/info, container list/inspect/declared-public-file
+archive, network list/inspect, volume list/inspect and image inspect. The exact
+resources derive from the accepted ledger/source/target manifests. CR2's full
+mounted-byte/current-container proof must complete here for ordinary release;
+rollback uses CR4's damaged-scope ownership observation, not healthy CR2. Initial
+install performs the parent's read-only clean-state check, including prior OP7
+descriptors even if history is empty. No exec, start, pull, DB/HTTP probe or
+arbitrary archive path is an observation. Every original response and read-only
+handler must be terminal before Started; timeout or transport loss refuses.
+Actual archive-handler cleanup/HTTP terminal classification remains part of
+the exact adapter construction gate, not an inferred response-EOF guarantee.
+
+Rollback also authenticates its exact protected ciphertext/manifest/key BEFORE
+Started using the selected trusted Go helper IN PROCESS: current
+VerifyRestoreInputs/ExtractPackage semantics, existing private scratch placement
+and no subprocess/SQL/Engine job. This is input validation, not a restore. Track
+the original private scratch handles and finish decryption/verification/removal
+before admitting rollback. Never hash/persist plaintext, keys or secret config.
+Scratch/error cleanup failure blocks admission. This does not adopt D-019's
+separate placement/protection policy or add a new host plaintext destination.
+The current VerifyRestoreInputs ignores its context; it does not already prove
+the proposed guard. Specify cancellable/guarded processing in the adapter table.
+A fired guard invalidates admission and keeps the original supervisor/lock until
+all native/in-process work actually ends; it cannot abandon a still-writing
+goroutine and call cleanup complete.
+
+Before each such activity sync a private pending marker containing its bootstrap
+UUID, process/scope and closed activity enum; complete one final OP1
+`native_admission` object only after ALL original activities/scratch are terminal.
+Its exact keys are `schema_version:1`, `artifact_type:"native_admission"`,
+`bootstrap_id` UUIDv4, `server_id`, `producer_manifest_sha256`, `profile_sha256`,
+`anchor_prefix_bytes`, `anchor_prefix_sha256`, `engine_binding_sha256`,
+`process` Process, `mode` clean_install/ordinary_release/rollback,
+`observation_sha256` Hash, `input_validation` not_required/verified,
+`scratch` none/removed, `observed_at` Date. Observation is the complete CR2 proof,
+or exact read-only install/CR4 ownership inventory with the same prefix/tuple;
+its missing exact adapter/schema is part of finding3. Rollback requires verified;
+other modes not_required. No other fields/nulls. This object is private bootstrap
+evidence, not a new ledger or permission by itself. SP7 binds its hash; it does
+not reference that later scope hash, avoiding a self-hash cycle. Unresolved
+markers prevent a clean-install/new-operation bypass. Lost native authority
+cannot reconstruct a successful bootstrap from marker/PID/cache bytes.
+
+After OP7 descriptor and initial install work admission (or release Started),
+the NATIVE supervisor can issue the fixed admitted image-load/pull/inspect plans
+directly through its own Engine transport to acquire the exact worker image.
+It does not need a Docker worker to create that worker's filesystem. Bind full
+response/config identity before creating any worker. No pull occurs before
+the relevant admission, and no cached-image assumption qualifies as this proof.
 
 The supervisor binds private control IPC only inside the operator's0700 state.
 Attachment checks native peer credentials, held process generation, selected
@@ -164,10 +229,19 @@ admission, never labels alone.
   `pid_namespace_inode` Counter, `uid` Counter. Positive process/start/namespace;
   UID may be0. It is observation metadata tied to a retained pidfd, not permission
   to reopen/signal that numeric PID later.
-- `Container`: `container_id` CID, `image_config_sha256` Hash, `started_at`
-  nullable Date (null only before first start), `role` declared service/job enum,
-  `generation` UUIDv4, `networks` CID array sorted, `mounts` Hash array sorted,
-  `process` nullable Process. A started container requires process/start identity.
+- `Container`: `container_id` CID, `image_config_sha256` Hash, `role` declared
+  service/job enum, `generation` UUIDv4, `declared_networks` CID array sorted,
+  `mounts` Hash array sorted. This immutable CREATED-container binding has no
+  mutable PID/start fields. Inspect/validate actual creation config before binding;
+  declared networks are allowed endpoints, not a claim all are already attached.
+- `Start`: `container_sha256` Hash, `start_work_id` UUIDv4, `started_at` Date,
+  `process` Process, `networks` CID array sorted, `cgroup_scope_sha256` Hash.
+  This is a distinct native start observation, not a replacement Container.
+  Reserve start/native scope work BEFORE starting; append its once-only binding
+  on actual native return, then use the running resource. Every subsequent start
+  has a separate identity/observation; do not mutate an earlier subject or reopen
+  terminal work. Startup child effects need prior admission under the already
+  bound created-container scope; unknown start outcomes remain outstanding.
 - `Mount`: `scope` a Storage binding or a read-only input binding, `target`
   Relative relative to the container root, `access` read_only/read_write. Input
   binding has exact keys `class` release_artifact/secret_input/host_observation,
@@ -206,9 +280,12 @@ Each subject has the common exact keys `schema_version:1`, `artifact_type:
 
 Container.role is exactly one of the seven service names from the Compose
 template, or `engine_cli`, `backup_helper`, `sql_relay`, `native_observer`,
-`publisher`, `mount_inspector`, `restore_validator`. An unstarted container's
-process is null; a started container cannot substitute a different start/process
-identity. Network.internal matches the approved template (edge=false,
+`publisher`, `mount_inspector`, `restore_validator`. The once-bound Container is
+never replaced by its Start. Native scope/exit/removal evidence checks the exact
+admitted start(s), no unseen restart, and the whole namespace. Retained ordinary
+service restart policy and fresh current observation must be explicitly handled
+by the exact plan table; they are not permission to restart a closed job.
+Network.internal matches the approved template (edge=false,
 application/database/operations=true); job gateways must be internal. Shared
 physical storage/networks can appear as references in
 several service bindings but have ONE exact generation/ownership disposition.
@@ -269,7 +346,7 @@ authorize arbitrary command/path/URL interpolation. Code emits the finite table
 below and exact endpoint/body adapters; adoption cannot accept a placeholder
 table or invented plan merely because its JSON is valid.
 
-The stage enum is `prepare`, `preflight`, `checkpoint`, `drain`, `start`,
+The EXECUTION plan stage enum is `prepare`, `preflight`, `checkpoint`, `drain`, `start`,
 `verify`, `fencing`, `restore`, `finalize`, `install`, `service_handoff`.
 These are plan stages, not new ledger events: prepare/preflight/checkpoint require
 release Started or OP7 install admission; drain/start/verify require backup_ready
@@ -365,6 +442,26 @@ other-player signaling. Native backend handles/opaque stream ownership are kept
 for each active round, including key-less startup. Direct target/metric writes
 remain confined to trusted service code and its tracked publishers.
 
+For cross-UID IPC, prepare an exact leaf directory beneath the operator-owned
+0700 state parent, mount ONLY that leaf into the selected backup container, and
+give UID70 sufficient leaf permissions to create its socket/cache. The parent
+remains0700 and is not mounted; another login/container cannot traverse it.
+Never grant the service the whole operator directory or a Docker socket.
+Validate leaf native identity/mount before use. The host operator accesses that
+leaf through its own parent; service access comes through the explicit bind
+mount, not a claim its UID can traverse the host parent. Keep this leaf outside
+the backup file-scanning root. Exact mode/UID/relative-path and socket-creation
+adapters remain part of the SP5 table, not permission to expose general IPC.
+
+Authenticate the source service against the inspected full container ID/image/
+current native init generation, a retained pidfd and two fresh native challenge
+replies; match actual writer credentials, not a stale socket name/UID alone.
+The service likewise accepts only the private channel provisioned by the selected
+supervisor and exact descriptor/ledger/source-target tuple. Transfer originals
+via SCM_RIGHTS; regular metadata inputs are read-only already-open file FDs,
+native stream/pidfd/lock capabilities checked by kind. Reject missing/extra FDs,
+truncation, unexpected peer/generation and changed bindings before action.
+
 Immediately after Started, BEFORE any checkpoint or service replacement, the
 supervisor freezes source scheduler admission and syncs that service's paused
 state. Atomically enumerate its entire active round population: SQL streams,
@@ -377,6 +474,11 @@ unattachable or authority-lost controller refuses transition; no scan of activit
 rows or reconstructed PID substitutes. Before-checkpoint abort may resume the
 unchanged source controller only after preserving-prior proof and closing all
 operation work; it must not restart/replace live game, Caddy or DB.
+Specifically grant SOURCE retention conditionally before closing the phase;
+resume only after the actual pre-checkpoint failed Finished has non-null valid
+completion/preserved-prior proof, null backup authority, and the exact original
+source identity. A post-checkpoint failure cannot use this path. This is a
+scheduler-control change only, not live application/DB restart.
 
 Replacement backup starts paused, with read-only source/target identity/record
 capabilities and the expected operation tuple. The trusted supervisor grants
@@ -433,7 +535,7 @@ The scope binding referenced by OP2 contains exact keys `schema_version:1`,
 `artifact_type:"native_supervisor_scope"`, `operation_id`, `scope_id` ID,
 `scope_started_at` Date, `process` Process,
 `producer_sha256`, `control_generation` UUIDv4, `lock_device`, `lock_inode`
-Counter, `engine_binding_sha256`, `observed_at` Date. A live producer checks the
+Counter, `engine_binding_sha256`, `admission_sha256`, `observed_at` Date. A live producer checks the
 actual retained lock file/handles and private control generation. Serialized
 matching metadata alone is insufficient. The supervisor itself is OP2 authority,
 not a job that must die before it can write its own final closure.
@@ -468,7 +570,8 @@ commands have passed the install/release/rollback proof.
 
 ## SP8 — Adoption, construction and acceptance
 
-Technical review must inspect this complete profile against the actual call map,
+Technical review must inspect the completed profile, including the still-missing
+exact plan/adapter table, against the actual call map,
 OP1–OP8 and CR1–CR6, including cycles in bootstrap/finalization/service handoff.
 Then obtain owner adoption of the architecture/explicit host and artifact floor,
 with parent-body reconciliation. Technical approval alone authorizes no runtime

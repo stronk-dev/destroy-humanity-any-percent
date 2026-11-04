@@ -10291,3 +10291,50 @@ no owner adoption, ready-to-ship profile, full recovery or1.0 promotion. No
 push/deployment/archival or goal pause.
 
 Review by: Codex root, specification author first filter. Recorded by: Codex root.
+
+
+## 2026-11-04 — Native profile CHANGES REQUIRED; forward ordering/identity corrections
+
+Review by: independent Codex `/root/native_supervisor_profile_review`.
+Recorded by: Codex root, transcribing the returned final verdict.
+Exact six-path reviewed range:
+`c58f8e4854e13edff24cbb79bd95e46bbc085284..61f2461f70cee861fb3928d508f5d0db8fcacdbd`.
+Verdict CHANGES REQUIRED. Root's earlier "complete" language exceeded the actual
+specification; corrected in current plan/index/body, original log preserved.
+
+Four substantive findings: (1) no lawful pre-Started route for required CR2 source
+observation or CR4 authenticated backup validation/scratch, and no first-worker
+image-acquisition route; (2) once-bound Container incorrectly changes null start/
+process to actual started identity; (3) SP5 action/family prose is not the exact
+stage/actor/action/kind population, request-body/terminal classifiers and cross-UID
+IPC adapters demanded by OP9; (4) one-selected-manifest producer rule wrongly
+applied to both source/target runtime. Reviewer inspected complete proposal,
+OP/CR/DP contracts, actual controller/runtime/CLIs/backup/native/textfile/template/
+startup lifecycle; exact-range diff whitespace passed, clean endpoint verified.
+No software suite warranted or profile/runtime conformance claimed. Projector
+is a plausible ordering-cycle resolution, not a tested/adopted implementation.
+
+Forward author correction defines inert native admission observation plus current
+in-process protected-input validation before Started, with private pending marker/
+final admission object and no fake execution phase or live mutation. Current
+VerifyRestoreInputs ignores context: this is explicitly not a proved guard;
+invalid/unfinished work keeps original authority/lock. After OP7 admission or
+Started, native supervisor acquires worker image directly, avoiding worker-before-
+image circularity. Container becomes immutable creation identity; separate Start
+and native observations describe invocation without second subject_bound.
+Producer toolchain alone has one selected manifest; each source/target runtime/
+helper has its own authorized identity/compatibility. IPC uses a private mounted
+leaf under0700 parent/native peer-generation checks, not UID/DAC wishful access.
+Source scheduler resume is explicitly conditioned on preserved-prior completed
+pre-backup failure; post-checkpoint failure cannot take that route.
+
+These corrections are author first-filter, not independent resolution. Finding3
+stays OPEN: exact adapter/plan population, native Engine/HTTP handlers and their
+terminal classifiers, complete IPC wire schemas and current service restart/start
+routes still need construction/review. Current bootstrap observation inventory
+also needs those exact schemas; it is not an empty-registry implementation route.
+Next deliver that concrete specification table, not another positive mechanism
+census or premature adoption request. RP-754/756/757, actual packaged Go/native
+producer conformance, supported host and clean-host R-006 remain OPEN. No product,
+test/CI/kernel/balance bytes; no software rerun for normative Markdown. Diff checked.
+No push/deployment/archival or goal pause; full nine-tier1.0 remains active.
