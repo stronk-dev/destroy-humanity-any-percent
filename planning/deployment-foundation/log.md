@@ -9960,3 +9960,31 @@ independent corrective review before treating RP-753 closed. Gateway TLS/full
 supervisor/native-host/adoption/retention/R-006 and nine-tier1.0 remain open.
 
 Review by: Codex root, corrective author first filter. Recorded by: Codex root.
+
+
+## 2026-11-04 — RP-753 TLS corrective range independently APPROVED
+
+Review by: independent Codex `/root/backup_tls_corrective_review`.
+Recorded by: Codex root, transcribing returned verdict.
+Exact complete range:
+`2a02536fc72005b2232d4fbb94bda0380f7d6c29..857569facd50caeb8af4ebc240906aa88884175b`.
+Verdict **APPROVED — corrective-code scope**, no blocking findings.
+
+Private exact baseline overlay4dadf9/359e4a exits1 after Go TLS/client identity
+passes, with libpq ignoring supplied CA and using missing default root.crt.
+Corrected full Postgres8d6c90/6a2cd5 exits0: all10 top-level tests/no skips,
+including independently executed matching Go/libpq client identity, actual
+encrypted backup/restore equality and explicit wrong-CA refusal. Cold native
+package1ec9ae and vetac833a pass. d9f529/df028b check exact private baseline,
+complete7-path scope, append-only log, whitespace and clean tracked checkout.
+No tracked edits/commits; all reviewer handles terminal. Exact own project
+cc-review-backup-tls-b7d4 removed, container/network/volumeba44ca/33feda/390e26
+inventories empty. Root's evidence remains author first-filter, not relabeled.
+
+RP-753 closes the bounded real configuration defect. This does not establish
+supervisor/gateway TLS, native supported-host deployment, protected metadata,
+CR4/R-006 or full release acceptance. Editorial closeout changes no code/test/
+criterion; no identical rerun required. Retained candidate df84ce1a predates this
+helper correction as well as the already-recorded Account/Guild runtime fixes;
+rebuild before any current-bundle behavior claim. Full nine-tier1.0 remains
+active. No push, deployment, archival or goal pause.

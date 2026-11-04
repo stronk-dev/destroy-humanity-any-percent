@@ -7,6 +7,20 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Next whole-connection ownership question:** the proven key-reading gateway is
+plaintext-only; do not weaken existing verified-TLS backup support to fit it.
+Before adding a TLS-terminating/authenticating proxy, test whether an observer
+inside the exact owned Postgres namespace can bind an accepted socket's full
+native tuple/inode to a backend pidfd BEFORE signaling that same process. A
+pidfd alone is not ownership: prove socket association, exclude the postmaster/
+unrelated children, handle startup before activity rows and process exit/reuse,
+retain original EOF observation, and preserve a continuously active bystander.
+This is a research candidate, not approved production PID signaling, a selected
+host prerequisite, or permission to inspect/modify an external host. Check
+actual kernel/seccomp/UID support in disposable fixtures; unsupported/unknown
+identities must refuse. If viable, compare TLS and startup populations against
+the existing original-stream and prior-data invariants before proposing OP9.
+
 **RP-753 existing TLS-input correction,2026-11-04:** URL certificate paths reach
 Go but were dropped from libpq service config. Valid old-code25bca5 proves Go
 verified TLS/client identity while actual psql fails at default root.crt instead
@@ -18,8 +32,11 @@ encrypted backup/restore identity and explicit wrong-CA verification failure.
 Complete declared Postgres integrationff08c7/045adc, cold native packagecc2aa5/
 2a2e55 and vet211db7 pass. Native SQL skips are not that integration evidence.
 Initial key-permission and DN-format setup misses are preserved in log, not
-the bug reproduction. New implementation/tests/docs range needs independent
-corrective review. This does not close the experimental gateway TLS/native-host
+the bug reproduction. Complete2a02536f..857569fa is independently APPROVED:
+private old-source4dadf9/359e4a reproduces, corrected8d6c90/6a2cd5 all10 real
+tests/no skips,1ec9ae package/ac833a vet andd9f529/df028b scope checks pass.
+Reviewer fixtures removed; RP-753 closes only this defect. This does not close
+the experimental gateway TLS/native-host
 profile, protected-metadata/CR4 or clean-host/R-006 acceptance.
 
 **Actual backup-helper connection study,2026-11-04:** the next unknown is the
