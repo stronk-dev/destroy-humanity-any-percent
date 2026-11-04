@@ -11382,3 +11382,36 @@ Headcount ruling was also checked on resume: both accepted bodies already
 record paid hiring/producing-redirecting roles with independent translation
 approval. No duplicate reconciliation, price/rate/copy or balance change made.
 Goal stays active; no publication, deployment, archival or release approval.
+
+## 2026-11-04 — Tool-delivery review finds missing member and build oracles
+
+CHANGES REQUIRED, independent technical-spec review of complete seven-path
+070829cf7c5aded8996f5ff4a3db39d8cd5e48e0..
+7efca4b8816ec1277c4484c1e8a7edcfa0eefba5.
+Review by: independent Codex /root/native_supervisor_profile_review.
+Recorded by: Codex root, transcribing completed verdict. No review handles remain.
+
+The first draft omitted a typed identity-bound scope map and complete archive-
+member/terms accounting, and lost original grant/notice locations behind hashed
+payload names. It also named local-build URLs without a fixed runner identity
+or executable recipe/initiation. The reviewer inspected current consumers and
+primary standards; range whitespace and all local references pass. No software
+suite applies to the Markdown-only change. All other checked boundaries remain
+coherent; no adoption, artifact clearance or feature acceptance follows.
+
+Correction specifies the mandatory binary/source-bound map, original source
+origins and total regular-member associations; the runtime can now compare
+declared coverage with actual archive contents. Independent discovery still
+checks that the declaration itself is complete. Fixed assemble-release-bundle
+build-tool mode, a closed vendor-ready/pure-Go recipe, exact argv/environment/
+input/output and an illustrative JSON recipe replace unspecified build steps.
+This v1 mode does not claim CGO/patch/codegen support or reproduce the existing
+native fixture. Published acquisition remains available. Acceptance includes
+unlisted real archive member, foreign origin/map and same-commit wrong-runner
+refusals. The complete original-plus-correction range needs re-review.
+
+Correction first filter: diff whitespace passes; illustrative recipe parses with
+all17 declared keys, sorted source/SDK roles and digest syntax, and all3 local
+links resolve. These are document checks, not a tool build or software-suite
+pass. No runtime/CI/kernel/dependency/accepted-parent bytes changed.
+Review by: Codex root, implementer first filter. Recorded by: Codex root.

@@ -15,8 +15,10 @@ covered-source file catalogue and truthful acquisition/build evidence. The
 tool-only MPL policy is proposed, not adopted; app policy is unchanged. Native
 SP1/SP8 links now distinguish technical review → owner adoption → construction
 → actual native/R-006 proof. No current artifact/version or unresolved right is
-approved. Next independently review this complete normative batch, resolve any
-findings, then seek applicable policy adoption while existing host/architecture
+approved. Initial independent review of070829cf..7efca4b8 returned CHANGES
+REQUIRED for missing typed source-member/origin and local-runner/recipe oracles.
+Both are now specified in the draft; complete-range re-review is next, then
+applicable policy adoption while existing host/architecture
 questions remain pending. No production/schema implementation or software test
 claim follows from this Markdown-only proposal.
 

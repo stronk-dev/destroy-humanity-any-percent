@@ -48,7 +48,9 @@ All paths equal the following table, not arbitrary caller-selected locations:
 | `docker-cli` | `tools/docker` | `tools/metadata/docker-cli.json` | `sbom/tools/docker-cli.spdx.json` | `licenses/tools/docker-cli.txt` |
 | `docker-compose` | `tools/cli-plugins/docker-compose` | `tools/metadata/docker-compose.json` | `sbom/tools/docker-compose.spdx.json` | `licenses/tools/docker-compose.txt` |
 
-Ship `tools/inventory.schema.json` for these private records. Deployment owns
+Each tool also has a fixed scope map at `tools/metadata/<id>.scopes.json`.
+Ship `tools/inventory.schema.json` for these private records, including scope maps
+and the T5 recipe. Deployment owns
 its schema and generator; it is neither a public API nor a kernel/balance input.
 Schema, index, metadata and all referenced payloads are ordinary hashed bundle
 artifacts. Private objects reject duplicate/unknown/missing keys, wrong types,
@@ -74,8 +76,9 @@ bundle have the selected producer's tool version. No historical field changes.
 ## T2 — Metadata and delivery catalogue
 
 Each metadata file is a closed object with required `schema_version:1`,
-`tool_id`, `version`, `platform`, `acquisition`, `source_record`, `provenance`
-and `components`. The first three identity values match the index.
+`tool_id`, `version`, `platform`, `acquisition`, `source_record`, `provenance`,
+`scope_map_path` and `components`. The identity values match the index;
+`scope_map_path` equals the fixed T1 path for that tool.
 
 `acquisition` has exactly `kind`, `uri`, `container_sha256`, `member`,
 `build_record_path`; nullable values are explicit:
@@ -121,17 +124,88 @@ source inputs and the adopted policy, never the filename alone. The top-level
 is null for a raw source file, otherwise an exact safe archive member path.
 `sha256` is the `sha256:`-prefixed digest of the uncompressed file bytes. Every
 required covered file is listed; all entries are checked, including those inside
-an archive. Every source payload is used by at least one entry. Components with
-no source-delivery obligation have empty source arrays; a reviewed obligation
-cannot be removed merely by emitting empty arrays. The per-version reviewed
-scope map and independent producer check establish required coverage; runtime
-validation checks that declared coverage against the delivered files. Neither
-protects against an attacker replacing the entire trusted release and its policy.
+an archive. The union across components equals EVERY regular member of every
+source payload, not merely one used member per archive. Raw files have one null-
+member entry. Shared entries agree on their hashes. Components with no source-
+delivery obligation have empty source arrays unless delivering accounted extra
+source; a reviewed obligation cannot be removed merely by emitting empty arrays.
+
+### T2a — Required scope map and source-member closure
+
+The scope map is a closed object with exactly `schema_version:1`, `tool_id`,
+`version`, `platform`, `binary_sha256`, `source_commit`, `source_inputs`, `scopes`
+and `source_members`. Identity/commit match metadata; `binary_sha256` equals the
+manifest's binary hash. This is the reviewed per-version producer input, shipped
+and checked by the native validator, not an optional external review note.
+Scope/source-input IDs use nonempty lowercase ASCII letters/digits and `._-`,
+starting with a letter or digit; SPDX IDs retain SPDX's grammar. Hashes use
+manifest SHA256 syntax. Null path/member sorts before strings.
+
+`source_inputs` is nonempty, sorted by unique `id`. Each closed row has `id`,
+`uri` (exact public HTTPS acquisition URI), `sha256` and `format` (`tar_gz`, `zip`
+or `file`). It identifies the original immutable source/SDK/module/patch input,
+not a mutable directory name. The generator verifies actual input bytes and any
+module h1/Git/derivation evidence under T3. These parent inputs need not all be
+distributed; source delivery is the explicit `source_members` population below.
+For `file`, origin `path` and member `source_path` are null and scope prefix is
+empty: the input URI identifies the original file. For archives those paths are
+nonempty safe relative members. Readable notices show the input URI as well as
+the original path, preserving the origin of a standalone file.
+
+`scopes` is nonempty, sorted by unique `id`. Each closed row has `id`, `spdx_id`,
+`source_input_id`, `source_prefix`, `license_expression`, `selected_expression`,
+`source_required`, `grant_origins`, `notice_origins`. Prefix is an exact safe
+source path or directory prefix (empty means input root); it matches that path
+or descendants separated by `/`, never a similar spelling. Both license fields
+are SPDX expressions. `selected_expression` selects an actual permitted branch
+of `license_expression` under T4; it cannot erase an `AND` obligation.
+`source_required` is boolean and must be true for a selected MPL-covered scope.
+Other required source obligations cannot be set false by the caller.
+
+Origin arrays are sorted by unique `(source_input_id, path, bundle_path)`. Each
+closed origin has exactly those three keys plus `sha256`: original source input,
+original relative file path, delivered raw grant/notice path and exact full-file
+hash. Grant origins are nonempty. Input IDs exist; delivered paths belong to the
+same tool and their bytes match origin hashes. Origins retain inline/multiple
+grants rather than extracting a reassuring sentence. Each component's grant/
+notice arrays equal the union of its scopes' respective delivered origin paths.
+All SPDX components have at least one applicable scope; no unreferenced scopes.
+The producer verifies origin path/content against the actual source input, not
+just an emitted hash. Safe relative paths do not contain escapes or empty members.
+
+`source_members` is sorted by unique `(path, member)` and has closed rows with
+exact keys `path`, `member`, `sha256`, `source_input_id`, `source_path`, `scope_ids`,
+`required`. The first three use the `source_files` grammar. `source_path` locates
+the original input member/file; nonempty sorted unique `scope_ids` associate its
+actual component/terms scopes. Each associated scope applies to that input/path.
+`required` is boolean: required covered source versus deliberately delivered
+extra material. The producer reconciles the complete required source population
+from actual inputs and reviewed obligations, retaining required modifications;
+it cannot declare coverage from an already shortened payload. Extra material
+also needs an applicable supported scope. If covered source differs from its
+original input, retain its actual resulting bytes and modification information;
+public derivation evidence in `source_record.evidence_paths` identifies the
+input/result and preparation. A local build must stay within T5's explicit mode;
+an opaque derivation does not extend the runner's permitted steps.
+
+The source-member set equals both the full extracted regular-file population and
+the union of metadata component `source_files`. Component association equals the
+mapped scopes' SPDX IDs. Every declared hash agrees. Archive duplicate names,
+escapes, special files, missing/extra members and unassociated members refuse;
+directories are structural only. A newly inserted README or copied header cannot
+pass because some other file in the archive was accounted for.
+
+Independent producer checks compare this map against actual source/import/native
+discovery, including nested terms and additional distributed files. Runtime
+validation checks the map's declared coverage against actual bundle bytes; it
+does not rediscover absent build inputs or prove legal applicability. Neither
+protects against replacement of the entire trusted release and its reviewed policy.
 
 Grant/NOTICE/copyright bytes retain their complete original content, including
 relative source scope and any multiple grants. `licenses/tools/<id>.txt` renders
-components in SPDX-ID order, then sorted grant paths and notice paths. Each
-section identifies component/version/path and includes the referenced raw bytes,
+components in SPDX-ID order, then original origins in scope-ID/input/path order
+for grants and notices. Each section identifies component/version/origin and
+delivered path and includes the referenced raw bytes,
 adding only a separator LF when needed. The validator re-renders and compares;
 a similarly named, omitted or root-only text cannot satisfy another scope.
 Raw text payload names use their SHA256 without prefix plus `.txt`; their bytes
@@ -235,23 +309,122 @@ This section defines the release-owned `tool-build-v1` type. Its `buildType` URI
 is the immutable GitHub blob URL for this RFC at the producer release's full
 `source_commit`, with fragment `#t5--truthful-acquisitionbuild-provenance`.
 Its closed external parameters are `tool_id`, `version`, `platform`, `source_uri`,
-`recipe`: the last is a manifest-relative public recipe under the tool's
-provenance prefix. It identifies the exact commands, flags, environment and
-input preparation, without secrets. The runner verifies resolved source, recipe,
-toolchain, module, native/header, patch and generated inputs, invokes that recipe
-and hashes its actual output. List their actual immutable URIs and digests in
-`resolvedDependencies`; bind the source commit to `source_record` and the recipe
-digest to the manifest. Missing/undeclared inputs fail the producer, rather than
-emitting a guessed complete record. Record actual invocation/timestamps.
+`recipe`: the last is exactly `provenance/tools/<id>/recipe.json`. Identity and
+source URI derive from the recipe and match metadata. The fixed runner is the
+`build-tool` mode of existing `server/cmd/assemble-release-bundle/main.go`;
+`builder.id` is its immutable GitHub blob URL at that same producer commit.
+The validator compares that exact path and commit, not any same-commit blob.
+No additional operator-installed or distributed helper binary is introduced.
 
-The builder ID is the immutable blob URL of the release-owned runner at that
-same commit. The validator recognizes this build type and runner relationship;
-an arbitrary builder string does not qualify. These are trusted local producer
-claims, not a signature or proof of an independently secured builder. No operator
-secrets, secret hashes, private configuration or invented successful steps.
-Acceptance must execute the real recipe and runner; a hand-written statement
-cannot supply that evidence. The implementation supplies those executable
-producers under the adopted contract, not another future unspecified build type.
+### Tool-build-v1 recipe and initiation
+
+This mode builds **pure-Go, CGO-disabled Linux/amd64 tools from a vendor-ready
+source tree** on Linux/amd64. It does not reproduce the current CGO-enabled CLI
+fixture or support arbitrary preparation, package managers, patches or native
+compiler/linker commands. Published artifacts still have T2's acquisition route.
+A different build mode needs an explicit contract amendment, not guessed steps.
+
+The closed recipe keys are `schema_version:1`, `tool_id`, `version`, `platform`,
+`inputs`, `source_input_id`, `go_toolchain_input_id`, `source_subdirectory`,
+`import_path`, `module_mode`, `main_package`, `build_mode`, `build_tags`,
+`strip_symbols`, `strip_dwarf`, `string_overrides`. Identity matches T1.
+`inputs` has exactly one source and one Go SDK, sorted by unique `id`, with
+closed rows `id`, `kind` (`source` or `go_toolchain`), `uri` (public HTTPS),
+`sha256`, `strip_prefix` (exact archive directory prefix). Both are tar.gz
+inputs; IDs identify files `<id>.tar.gz` in the declared input directory. Hashes
+and safe members verify before extraction, with no links, duplicates or special
+files. `source_input_id`/`go_toolchain_input_id` select the corresponding rows.
+Source URI/commit/tree match the T2a map and actual T3 query; SDK platform and
+full extracted contents match the selected official archive. Do not synthesize
+a source correspondence from a release version alone.
+
+`source_subdirectory` is an existing safe relative directory, empty for root.
+`module_mode` is `module_vendor` or `gopath_vendor`: respectively require the
+source's complete `vendor/modules.txt` under Go's vendor consistency checks, or
+the source's own vendored GOPATH dependencies. No dependency download, generated
+vendor tree, code-generation hook or source patch runs in this build type.
+`import_path` is null for modules, otherwise the source's exact Go import path;
+stage it at that path inside the private GOPATH workspace. `main_package` is one
+existing relative main package (`.` or `./path`), never `...` or an absolute path.
+T3 independently reconciles compiled source/dependency identities, including
+vendor bytes against original module/Git evidence; a self-consistent modules.txt
+alone is not source authentication. Unsupported/incomplete source trees fail.
+
+`build_mode` is `default` or `pie`. `build_tags` is sorted unique ASCII identifiers
+using letters/digits/underscore. Strip fields are boolean. `string_overrides` is
+sorted by unique `symbol`, with closed `{symbol,value}` rows: a qualified Go
+string variable and its nonempty ASCII value (letters/digits and `._+:/@=-`, no
+whitespace/control characters). These become `-X symbol=value`; booleans add
+`-s`/`-w`. No arbitrary linker flags, shell command, `-toolexec`, external linker
+or caller environment override is accepted.
+The reviewed recipe stamps the tool's real version variable to its declared
+version, not a label detached from the executable. The actual isolated tool
+version output must agree during conformance before shipping eligibility.
+
+After adoption, set the existing `RELEASE_COMMIT` to the full producer revision
+and initiate through a root Make target:
+
+```sh
+make build-deployment-tool RELEASE_COMMIT="$RELEASE_COMMIT" TOOL_RECIPE=/public/recipe.json TOOL_INPUT_DIRECTORY=/public/inputs TOOL_BUILD_OUTPUT=/fresh/output
+```
+
+The target invokes the fixed runner's `build-tool` mode with `--root`,
+`--producer-commit`, `--recipe`, `--input-directory`, `--output`; output must not
+exist or must be empty. `RELEASE_COMMIT` uses the existing release-build source
+identity. The runner checks full Git HEAD and clean runner/build-contract inputs
+against that commit, records it as `internalParameters.producerSourceCommit`,
+and the final validator requires equality with manifest `source_commit`. These
+paths are staging locations, not additional behavioral parameters or secrets.
+The runner uses a private extracted workspace and the declared SDK's absolute
+`bin/go`, with argv for `go build -a -trimpath -buildvcs=false`, the declared
+build mode/tags/linker settings, a fixed private output and the exact package.
+For modules add `-mod=vendor`. Set `GO111MODULE=on` or `off` for the selected mode;
+set `GOOS=linux`, `GOARCH=amd64`, `GOAMD64=v1`, `CGO_ENABLED=0`, `GOENV=off`,
+`GOWORK=off`, `GOTOOLCHAIN=local`, `GOPROXY=off`, `GOSUMDB=off`. Only the declared
+SDK is on PATH. Use the root Makefile's existing GOCACHE; no task-specific
+compiler cache or downloaded-module cache supplies source. Inherited Go flags,
+toolchain switches, credentials, contexts and build hooks cannot alter this argv
+or environment. Never execute the resulting tool as a build hook.
+
+Successful output is exactly `tool` plus `build.intoto.json`; failed builds leave
+no successful record. Verify actual ELF/platform and Go build settings, hash the
+actual executable and emit the standard statement with actual invocation times.
+The assembler copies these to T1's binary path and
+`provenance/tools/<id>/build.intoto.json`; the latter is `build_record_path` and
+an `in_toto`/`selected_binary` provenance row. `resolvedDependencies` includes the
+exact source archive, SDK archive, recipe and discovered vendored/component
+inputs with their actual URIs/digests. Source commit matches `source_record`;
+recipe bytes match the final manifest. No guessed successful steps or omitted
+inputs. These are trusted local producer claims, not signatures, builder
+security levels or independent reproduction claims. Acceptance executes the
+actual runner/recipe and rejects foreign runner/recipe/input/settings/output.
+
+Illustrative recipe (zero digests and example URI are placeholders, NOT a
+selected artifact; missing/mismatched real inputs must refuse):
+
+```json
+{
+  "schema_version": 1,
+  "tool_id": "docker-cli",
+  "version": "28.4.0",
+  "platform": "linux/amd64",
+  "inputs": [
+    {"id":"sdk","kind":"go_toolchain","uri":"https://go.dev/dl/go1.24.7.linux-amd64.tar.gz","sha256":"sha256:0000000000000000000000000000000000000000000000000000000000000000","strip_prefix":"go/"},
+    {"id":"source","kind":"source","uri":"https://example.invalid/cli-source.tar.gz","sha256":"sha256:0000000000000000000000000000000000000000000000000000000000000000","strip_prefix":"cli/"}
+  ],
+  "source_input_id": "source",
+  "go_toolchain_input_id": "sdk",
+  "source_subdirectory": "",
+  "import_path": "github.com/docker/cli",
+  "module_mode": "gopath_vendor",
+  "main_package": "./cmd/docker",
+  "build_mode": "pie",
+  "build_tags": ["osusergo"],
+  "strip_symbols": false,
+  "strip_dwarf": false,
+  "string_overrides": [{"symbol":"github.com/docker/cli/cli/version.Version","value":"28.4.0"}]
+}
+```
 
 Do not embed the existing whole-release `BuildRecord` here: it hashes the final
 release manifest and would create a cycle. Order outputs as binary → tool
@@ -299,14 +472,21 @@ shortcut. This metadata work cannot substitute for the real native SP8/R-006.
    and executable/plugin swaps refuse before worker effects.
 3. SPDX-header-only/empty-graph/wrong-root-checksum/orphan-component fixtures
    refuse. Scoped copyright/NOTICE removal and conflicting grants refuse EVEN
-   AFTER regenerating ordinary bundle hashes. Actual notice bytes re-render.
+   AFTER regenerating ordinary bundle hashes. Actual notice bytes and original
+   source origins re-render; wrong/missing origin associations refuse.
 4. Every required source payload passes its exact version/hash/scope checks;
    removed/altered covered files or unexamined extra-source terms refuse.
+   Insert an unlisted regular member into a real archive and rebuild its bundle
+   hash: total member/catalogue/map equality must still reject it. Also reject
+   a wrong binary/source-bound map and missing/foreign component associations.
    MPL failure cannot be laundered under a permissive root; unsupported native/
    OASIS/exception terms remain refusals. Policy adoption is recorded separately.
 5. Real acquisition/archive/member and local-build records bind the selected
    bytes. Foreign image subjects and code-equal/whole-different artifacts refuse
    selected-binary provenance; compatible standard extension fields still parse.
+   Execute T5's actual recipe/runner. Foreign same-commit runner blob, wrong
+   recipe/input/producer commit, altered settings/output, incomplete vendoring
+   and inherited environment overrides must not produce a valid build record.
 6. Actual isolated CLI/plugin configuration workflows pass all declared inputs;
    sever discovery, swap/remove a plugin and plant a fallback. The wrong bytes
    must never execute or yield valid compilation evidence. No dependency skip.
