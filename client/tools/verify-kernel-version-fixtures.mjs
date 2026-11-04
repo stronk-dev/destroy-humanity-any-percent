@@ -206,6 +206,14 @@ try {
     ["future-request", `# Fixture ledger\n\n## Requested review ${reviewRange}\n\nCodex must later record **Review by:** and **Decision:** after executing the review.\n`],
     ["fenced-example", ["# Fixture ledger", "", "## Example", "```markdown", `## Independent review ${reviewRange}`, "- **Review by:** Fixture Reviewer", "- **Decision:** APPROVED", "```", ""].join("\n")],
     ["quoted-example", `# Fixture ledger\n\n> ## Independent review ${reviewRange}\n> - **Review by:** Fixture Reviewer\n> - **Decision:** APPROVED\n`],
+    ["lazy-quoted-example", `# Fixture ledger\n\n> Example only\n**Review by:** Fixture Reviewer\n**Decision:** APPROVED\nExact range ${reviewRange}\n`],
+    ["nested-lazy-quoted-example", `# Fixture ledger\n\n> > Example only\n**Review by:** Fixture Reviewer\n**Decision:** APPROVED\nExact range ${reviewRange}\n`],
+    ["mixed-lazy-quoted-example", `# Fixture ledger\n\n> Example only\n**Review by:** Fixture Reviewer\n> Continued example\n**Decision:** APPROVED\nExact range ${reviewRange}\n`],
+    ["list-lazy-quoted-example", `# Fixture ledger\n\n> - Example only\n**Review by:** Fixture Reviewer\n**Decision:** APPROVED\nExact range ${reviewRange}\n`],
+    ["indented-lazy-quoted-example", `# Fixture ledger\n\n> Example only\n    Continued paragraph\n**Review by:** Fixture Reviewer\n**Decision:** APPROVED\nExact range ${reviewRange}\n`],
+    ["tab-lazy-quoted-example", `# Fixture ledger\n\n> \tExample only\n**Review by:** Fixture Reviewer\n**Decision:** APPROVED\nExact range ${reviewRange}\n`],
+    ["ordered-text-lazy-quoted-example", `# Fixture ledger\n\n> Example paragraph\n> 2. # Still paragraph text, not an interrupting list heading\n**Review by:** Fixture Reviewer\n**Decision:** APPROVED\nExact range ${reviewRange}\n`],
+    ["invalid-fence-lazy-quoted-example", ["# Fixture ledger", "", "> ```info`not-a-fence", "**Review by:** Fixture Reviewer", "**Decision:** APPROVED", `Exact range ${reviewRange}`, ""].join("\n")],
     ["commented-example", `# Fixture ledger\n\n<!--\n## Independent review ${reviewRange}\n- **Review by:** Fixture Reviewer\n- **Decision:** APPROVED\n-->\n`],
     ["empty-fields", `# Fixture ledger\n\n## Independent review ${reviewRange}\n\n- **Review by:**\n- **Decision:**\n`],
     ["pending-decision", `# Fixture ledger\n\n## Independent review ${reviewRange}\n\n- **Review by:** Fixture Reviewer\n- **Decision:** pending; approval must be obtained later.\n`],
@@ -238,6 +246,12 @@ try {
 
   // Preserve the completed record forms used by real legacy review/remap logs.
   const completedReviews = [
+    `# Ledger\n\n## Independent review ${reviewRange}\n\n> Quoted example\n\n**Review by:** Fixture Reviewer\n**Decision:** APPROVED\n`,
+    `# Ledger\n\n## Independent review ${reviewRange}\n\n> Quoted example\n>\n**Review by:** Fixture Reviewer\n**Decision:** APPROVED\n`,
+    `# Ledger\n\n> Quoted example\n## Independent review ${reviewRange}\n\n**Review by:** Fixture Reviewer\n**Decision:** APPROVED\n`,
+    `# Ledger\n\n## Independent review ${reviewRange}\n\n> Quoted example\n- **Review by:** Fixture Reviewer\n- **Decision:** APPROVED\n`,
+    `# Ledger\n\n## Independent review ${reviewRange}\n\n> # Quoted heading\n**Review by:** Fixture Reviewer\n**Decision:** APPROVED\n`,
+    ["# Ledger", "", `## Independent review ${reviewRange}`, "", "> ```", "> Quoted code", "> ```", "**Review by:** Fixture Reviewer", "**Decision:** APPROVED", ""].join("\n"),
     `# Ledger\n\n## Independent review ${reviewRange}\n\n**Review by:** Fixture Reviewer. **Recorded by:** Fixture Recorder. **Decision:** **APPROVED for this scope.**\n`,
     `# Ledger\n\n## Independent review ${reviewRange}\n\n- **Review by:** Fixture Reviewer\n- **Decision:** CHANGES REQUIRED — completed inspection found the missed bump.\n`,
     `# Ledger\n\n## Approved hash remap\n\nExact unchanged reviewed target ${reviewRange}.\n\n**Review by:** the original independent reviewer (remap recorded by Fixture Recorder).\n**Decision:** unchanged — the reviewed correction remains bound to its remapped hash.\n`,

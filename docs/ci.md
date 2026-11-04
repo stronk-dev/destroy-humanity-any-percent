@@ -128,6 +128,12 @@ record, not instructions to obtain one. The guard reads visible reviewer/decisio
 metadata in the same section as the exact offending-commit anchor; examples in
 code fences, blockquotes, indented code or comments do not count. Empty/pending
 fields, conflicting decisions and explicitly labelled first filters refuse.
+Quoted paragraph continuation stays excluded when its `>` marker is omitted;
+blank lines and actual block boundaries restore the supported metadata forms.
+This includes nested/list quotes and tab indentation; a noninterrupting ordered
+line or invalid backtick fence cannot expose the remainder of a quotation.
+The visibility filter follows the bounded ledger forms and is not a general
+Markdown renderer. See [CommonMark §5.1](https://spec.commonmark.org/0.31.2/#block-quotes).
 When a record explicitly declares `Reviewed range`, that Git range must resolve
 and contain the offending commit. Its exclusive start is not part of the review;
 `commit^..commit` includes that commit. Invalid/duplicate range declarations refuse,

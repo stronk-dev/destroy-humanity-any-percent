@@ -5,6 +5,14 @@
 - **Started:** 2026-07-28
 - **Status:** local repairs ongoing; full local/hosted acceptance open
 
+**Correction citation/metadata review,2026-11-04:** complete seven-path
+`611273b5..fce6c3d9` (RP-540) independently approved. Original eight-path
+`a7e33b73..611273b5` (RP-131) requires changes: lazy quote metadata is falsely
+admitted. RP-716's follow-up excludes continuation while preserving legitimate
+metadata exits; full fixtures/topology/syntax pass and original50a3a514 still
+fails. Independent follow-up review remains; no history-exception adoption,
+version/row rewrite or whole-CI acceptance. Owning log holds exact evidence.
+
 **Fixture-discovery corrective review,2026-11-04:** complete seven-path
 `f423e704..663976f1` (RP-396) is independently approved. Exact-old private files
 fail both Vitest registrations; byte-identical suffix correction restores the

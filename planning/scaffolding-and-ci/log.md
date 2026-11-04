@@ -4496,3 +4496,54 @@ setup/RP-706 repairs remain separate reviewed scopes. Both handles terminal;
 reviewer creates no services/Docker resources/tracked edits/commits. Root's concurrent
 e853255b is Markdown-only. RP-613 review closes, not RP-526 reliability, default/
 hosted latency, full CI, feature/archival/release acceptance or the nine-tier goal.
+
+## 2026-11-04 — Citation paths approved; original review parser requires changes
+
+Review by: independent Codex `/root/kernel_review_citation_corrective_review`.
+Recorded by: Codex root. Complete original contexts, all8/7 paths inspected:
+
+- RP-131 CHANGES REQUIRED:
+  `a7e33b73a39a435157c7049a8d13abdd68a63c4d..611273b5f6c8ce15126f163ff473d48bb2239ed2`.
+- RP-540 APPROVED:
+  `611273b5f6c8ce15126f163ff473d48bb2239ed2..fce6c3d94a120b1d7e1188ddb7998ac6d5fd480e`.
+
+At a6fa32ac, private actualCLI11164/37946 admits lazy quoted Review by/Decision/
+anchor (RP-716), while honest visible review passes and explicit quote refuses.
+[CommonMark0.31.2§5.1](https://spec.commonmark.org/0.31.2/#example-247) confirms
+markerless paragraph continuation remains quoted; no new governance is needed.
+Fresh37946 also runs exact old611273b5/current citation checks: four aliases
+admitted old/refused current before lookup. Full52939 fixtures include NUL/
+exterior/canonical active/archive/fallback and60 literal-path refusals; topology
+99483 passes27 negatives/current Make controls; syntax/range checks pass.
+Root90711 remains expected Make2 at50a3a514. DP-E transcription correctly keeps
+Claude reviewer/recorder and CHANGES REQUIRED; actual3f58fea..65099e7 contains
+09d5027 and the original cold missing-bump finding. No new review is inferred.
+No tracked reviewer edits/services; all handles terminal. Owned fixtures retained
+under `/private/tmp/cloud-clicker-citation-review-gFk675` and `...-AzlyUe`;
+exterior files remain inside owned storage. Later scope/literal-path fixes stay
+separate; no symlink/inode/authentication, history exception or full-CI claim.
+
+## 2026-11-04 — Exclude lazy quote review metadata (first filter)
+
+Existing KV-1's quoted-example exclusion now keeps quote-paragraph continuation
+hidden after an omitted marker. Track quote fences/paragraphs and actual blank/
+heading/list/fence/thematic boundaries in the bounded ledger visibility filter;
+tabs use Markdown indentation. Noninterrupting ordered text and an invalid
+backtick fence cannot expose later quoted metadata. No renderer/dependency,
+correction-row/path registry, kernel/math/version, workflow, exception or author
+attribution change. This does not authenticate review execution.
+
+Root actual old-code17424 exits1, admitting the three initial lazy/nested/mixed
+quote shapes. Initial corrected59836 passes. Expanded final91228 fixtures pass
+eight quote negatives, six legitimate visibility exits and all existing literal/
+correction/miss/remap/immutability/ancestry/archive cases. Topology47931 passes27
+negatives/shared scripts/Make controls; both Node syntax checks and diff pass.
+Actual root `make verify-kernel-version`91964 passes checkout controls then exits
+expected Make2 at original50a3a514, not a newly refused legacy review binding.
+No Go/browser/DB/hosted run for this CLI-only change. Operations captures are
+concurrent on unchanged server/Make/Compose bytes; root never rebuilds their binary.
+Complete six-path follow-up is a6fa32ac-exclusive through this containing tools/
+tests/docs/ledger/plan/log commit; designated independent union review remains.
+Review by: Codex root, implementer first filter only. Recorded by: Codex root.
+Original CHANGES REQUIRED, unadopted history proposal and full nine-tier goal stay;
+no archival, push, release or self-approval.
