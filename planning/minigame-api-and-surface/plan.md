@@ -7,8 +7,11 @@ generated ports, real Linux-amd64/Postgres lifecycle in both scaling variants,
 old-schema/comparison overlays and affected gates pass/discriminate. The log
 separates current checks from reused historical/composed evidence and later
 corrections. No expiry/reward/retry policy, original-feature acceptance or adoption.
-Next inspect the remaining restart/test-isolation range RP-459; do not repeat
-these completed checks without a changed boundary or new failure.
+The complete six-path `e0de6299..9815b208` restart/test-isolation range RP-459
+is independently approved too: fresh same-database Linux-amd64/Postgres count2
+runs both scaling variants twice, preserving reconstructed state/receipts/payout
+and bootstrap authentication. No OS-crash/clean-host or whole-feature acceptance.
+Do not repeat these completed checks without a changed boundary or new failure.
 
 **Transaction corrective review, 2026-11-01:** fresh independent Codex approves
 complete `b0eab61f..4055b4fe` (RP-416 token-owned failed-terminal claim release)

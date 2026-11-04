@@ -2423,3 +2423,32 @@ No tracked reviewer edits/commits. Corrective reviews close, not natural24-hour
 expiry/full five-minute completion/AT/original feature/API acceptance, pending
 amendments, hosted/full CI, clean-host proof, archival or release. Next RP-459's
 remaining restart/test-isolation review; no full-suite repeat for editorial records.
+
+## 2026-11-04 — Restart and bootstrap fixture isolation independently approved
+
+Review by: fresh independent Codex `/root/minigame_restart_isolation_corrective_review`.
+Recorded by: Codex root. APPROVED, no findings, complete six-path range
+`e0de6299eb3409f819c479ceb15021a8bfaeae43..9815b2084768254a614651c89ff94646624383b5`
+(base exclusive, tip inclusive), including all original tests/docs/records.
+Only the test-owned bootstrap receipt table joins setup/cleanup; production
+authentication, receipt lifecycle and migrations remain unchanged.
+
+Fresh atfe29da5e: declared Linux-amd64/Postgres87067 terminal0, actual
+CI_TEST_COUNT=2 on the SAME database. Both scaling variants execute twice without
+skips: four reconstructed-authority workflows preserve exact create/command
+receipts and complete current snapshot, once-only payout/history/replay, authentic
+bootstrap credentials, and thirty malformed controls each. Parents36.75/37.01s,
+package73.838s. Cold native gameserver61879 passes0.399s; native DB skips supply
+no integration proof. Selected vet and exact-range whitespace pass.
+
+Old57029/73685/39033 failures are REUSED implementer evidence, not reexecuted.
+Reviewer verifies exact old TRUNCATE omission, fixed bootstrap idempotency key,
+unchanged authentication assertion and migration73's deliberate absence of an
+account FK. App/server/main and Cosmetic driver/Make/declared Compose diff from
+independently executeddf531b9b is empty; composed86769 is REUSED with GarageNov3
+reviewer attribution, not rerun. Later scaling/Exit/deletion changes remain separate.
+All handles terminal; own validated tmpfs Postgres56cd64006704 and confirmed-empty
+network54727b11 removed, pre-existing BuildKit preserved; no tracked edits/commits.
+This closes the corrective/test-proof range, not original feature acceptance,
+OS-process crash/clean-host recovery, generic async/Typer wire, browser/AT,
+full/hosted CI, archival or release. No software suite for these editorial records.
