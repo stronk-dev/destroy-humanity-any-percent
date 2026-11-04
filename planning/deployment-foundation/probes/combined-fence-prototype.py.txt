@@ -53,6 +53,20 @@ def volume_present(observation, name, project):
     raise RuntimeError("volume observation failed or wrong owner: INVALID")
 
 
+def late_start_accepted(observation, arm, container, network):
+    if (set(observation) != {"status", "container_id", "message"}
+            or type(observation["status"]) is not int
+            or observation["container_id"] != container):
+        raise RuntimeError("late-start response or target invalid: INVALID")
+    if arm != "generations":
+        if observation["status"] == 204 and observation["message"] is None:
+            return True
+    elif (observation["status"] in (404, 500)
+          and observation["message"] == "failed to set up container networking: network " + network + " not found"):
+        return False
+    raise RuntimeError("unexpected late-start failure or success: INVALID")
+
+
 def actor():
     role = sys.argv[1]
     gates = pathlib.Path("/gates")
@@ -195,7 +209,44 @@ def actor():
                     write_json(gates / (name + "-result"), dict(result, invalid=True,
                                                                error=type(error).__name__))
                     raise
-            do_POST = forward
+            def do_POST(self):
+                if self.path != "/probe/late-start":
+                    return self.forward()
+                # Driver-only stronger control, bound to the exact late-create
+                # response AND independently inspected owned container/image.
+                length = int(self.headers.get("Content-Length", "0"))
+                if length < 1 or length > 256:
+                    self.send_error(400)
+                    return
+                request = json.loads(self.rfile.read(length))
+                created = json.loads(json.loads((gates / "create-result").read_text())["body"])["Id"]
+                if request != {"container_id": created}:
+                    self.send_error(403)
+                    return
+                connection = UnixConnection("daemon", timeout=10)
+                connection.request("GET", "/v1.51/containers/" + created + "/json")
+                response = connection.getresponse()
+                data = response.read(1_048_577)
+                if response.status != 200 or len(data) > 1_048_576:
+                    raise RuntimeError("late target inspection failed: INVALID")
+                inspected = json.loads(data)
+                if (inspected.get("Id") != created or inspected.get("Image") != POSTGRES
+                        or inspected.get("Config", {}).get("Labels", {}).get("com.docker.compose.project") != config["project"]):
+                    raise RuntimeError("unowned late target: INVALID")
+                connection.close()
+                connection = UnixConnection("daemon", timeout=10)
+                connection.request("POST", "/v1.51/containers/" + created + "/start")
+                response = connection.getresponse()
+                data = response.read(1_048_577)
+                if len(data) > 1_048_576:
+                    raise RuntimeError("late-start response exceeds bound: INVALID")
+                value = {"status": response.status, "container_id": created,
+                         "message": None if response.status == 204 else json.loads(data)["message"]}
+                connection.close()
+                self.send_response(200)
+                self.end_headers()
+                self.wfile.write(json.dumps(value).encode())
+
             do_DELETE = forward
         server = http.server.ThreadingHTTPServer(("0.0.0.0", 8080), Handler)
         (gates / "proxy-started").write_text("started")
@@ -412,8 +463,10 @@ def population(arm):
         late = json.loads(forwarded["create"]["body"])["Id"]
         owned(late)
         # Extra adversarial start: the dead caller never received this ID.
-        late_start = run("start", late, expected=False)
-        if late_start.returncode == 0:
+        request_body = json.dumps({"container_id": late}).encode()
+        late_start = json.loads(text("exec", proxy, "python3", "-c",
+                                    "import urllib.request;print(urllib.request.urlopen('http://127.0.0.1:8080/probe/late-start',data=" + repr(request_body) + ").read().decode())"))
+        if late_start_accepted(late_start, arm, late, old_network):
             assert text("wait", late) == "0", "late SQL/file control failed: INVALID"
         if arm == "parent_only":
             wait(lambda: all((gates / marker).exists() for marker in ("local-wrote", "http-wrote", "daemon-wrote", "pending-wrote")))
@@ -434,13 +487,14 @@ def population(arm):
                      http_marker=(current_out / "http-marker").read_text(), volume_sentinel=sentinel)
         held = state == dict(rows=[42], metric="new", checkpoint="checkpoint-current", http_marker="new", volume_sentinel="new-volume")
         result.update(forwarded=forwarded, volume_observation=volume_observation,
-                      forced_late_start_code=late_start.returncode,
-                      forced_late_start_error=late_start.stderr.strip(), replacement_database=database,
+                      forced_late_start=late_start, replacement_database=database,
                       replacement_network=new_network, replacement_volume=new_volume,
                       state=state, candidate_held=held,
                       local_descendant_wrote=(gates / "local-wrote").exists(),
                       known_daemon_writer_wrote=(gates / "daemon-wrote").exists(),
                       old_http_writer_wrote=(gates / "http-wrote").exists())
+        if time.monotonic() >= deadline:
+            raise ResearchGuard("final collection completed after work deadline: INVALID")
         normal_complete = True
     finally:
         if locker is not None:

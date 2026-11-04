@@ -117,6 +117,18 @@ source. Original guard/error AST is unchanged and its previous controls apply;
 all6 project container/network/volume inventories are independently empty after
 both runs. Independent complete original-plus-correction review remains pending.
 
+Independent review of that union is CHANGES REQUIRED: actual-source controls
+accept an arbitrary failed late start and collection that crosses its deadline.
+Both findings are now corrected: the extra start uses a typed Engine response,
+bound to the actual late-created owned image/container and exact old network
+refusal; final deadline is checked after all collection and before completion.
+Six permission/transport/target/network/unexpected-success controls refuse, and
+actual old/new tail execution discriminates late collection. Full final29543
+again completes all3 populations, now with typed start204/204/404 and volume
+404/404/owned200; v3 binds exact final source. Original negative verdict/source/
+v1/v2 remain. Complete corrected-union re-review is pending, not a new mechanism
+adoption or acceptance. No bound/population/replacement criterion changes.
+
 **Fresh exact candidate, 2026-11-04:** replace neither historical artifacts nor
 the predecessor with a fabricated pair. Two independent committed-source
 `df84ce1a` rebuilds now match all74 bundle artifacts, six helpers, image archive,

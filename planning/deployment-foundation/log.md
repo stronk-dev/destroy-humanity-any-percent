@@ -9124,3 +9124,61 @@ protected-backup metadata change or production implementation. Concrete producti
 bindings in the candidate table, native supported-host/actual helper/backup/pair
 and R-006/adoption/full1.0 gates remain OPEN. No push, archival, deployment,
 authored-copy change or goal pause.
+
+## 2026-11-04 — Original combined-prototype union review: CHANGES REQUIRED
+
+Review by: independent Codex `/root/combined_fence_prototype_research_review`.
+Recorded by: Codex root, transcribing its returned verdict.
+Complete reviewed union, base exclusive/tip inclusive:
+
+- `59ea5552135a1bdfde21d5544db237131389a14d..98af4c8d68ce31c9f384441dd4da07a6d845ce8c`.
+- `98af4c8d68ce31c9f384441dd4da07a6d845ce8c..811db80d0aa43222726a08223666be2759254b2d`.
+
+Verdict: **CHANGES REQUIRED**, two instrument-refusal findings. Actual-ASTa78aa5
+accepts injected late-start permission denial because ANY nonzero CLI result was
+allowed; unchanged state can still set candidate_held. Actual-tailc3d2a0 advances
+final file collection59→61 at deadline60 and still sets normal_complete/held.
+RP-736/737 record these distinct failures. Neither occurred in actual measured
+runs. Independent full actual66964 exits0 and reproduces all3 expected states and
+volume404/404/owned200. V1/v2 bindings, corrected volume classifier/historical
+RP-735 reproduction, run/wait/outer-error guards and range whitespace pass.
+All handles terminal; all9 owned-project container/network/volume inventories
+empty. No tracked reviewer edits/commits or retained scratch, no full mechanism/
+runtime/adoption/release approval. Preserve this negative verdict.
+
+## 2026-11-04 — Typed late-start and final deadline corrections; final execution
+
+The extra adversarial start now passes through the fixture proxy, bound to the
+actual late-create response ID and independently inspected full ID/owned project/
+Postgres image. It records the actual Engine status/container/message, not a
+synthetic CLI exit. Weak controls require204; generation refusal requires typed
+404/500 plus the exact expected retired-network message bound to that container.
+All ordinary permission/transport/wrong-container/wrong-network and unexpected
+success responses fail the observation rather than count as fencing. No arbitrary
+Docker endpoint is exposed; the extra route is limited to that one known create.
+
+Actual-source2434cf accepts ordinary start and both declared typed retired-network
+forms, refuses six error/target/network/unexpected-success controls. Actual-tail
+6aafa4 reproduces old late acceptance and verifies corrected timely59.5 acceptance,
+exact60 refusal and61 refusal. The final deadline check follows ALL result/file
+collection immediately before normal_complete; cleanup's separate<=15s PER-command
+allowance is unchanged. No fixture/guard/population/target criterion is weakened.
+
+Full final29543 exits0, all3 populations: exact rows7/13/14/42,14/42,42 and the same
+host/HTTP/checkpoint/volume effects as before. Typed extra-start statuses are now
+204/204/404; generation404 contains the exact retired network ID. Volume statuses
+remain404/404/owned200. New source-boundv3 binds SHA256
+27ab7d15908660ead682dcef54fa7b3d4ae4f3ec879e09bc51ddb18c8502d9b8;
+originalv1/v2 and their exact committed sources remain intact. Positive replacement
+writes, old COPY and complete proxy-held requests all execute; no incomplete
+population or late result is promoted. All root handles terminal; exact final
+project cleanup checks and source/record binding precede corrective commit.
+
+The original union plus this containing corrective range needs independent
+coherent re-review. RP-735–737 are instrument corrections, not full CR4 recovery.
+The successful controlled scheme STILL permits quarantined old-generation create/
+delete after admission and is not literal quiescence or production implementation.
+Real helper/durable ownership/pre-backup non-destructive branch/all resources,
+protected encrypted backup/pair, native host and adoption/R-006/whole1.0 remain.
+No runtime/CI/kernel0.3.225/epoch8, authored-copy, acceptance or operator-policy
+change, push, archival, host deployment or goal pause.

@@ -1,0 +1,169 @@
+{
+  "objective_completed": true,
+  "guard_exhausted": false,
+  "probe_source_sha256": "sha256:27ab7d15908660ead682dcef54fa7b3d4ae4f3ec879e09bc51ddb18c8502d9b8",
+  "python_fixture_config": "sha256:d2924abe506373b6f722045c48f98350077cc5b56a50491105c1abb027dce9b2",
+  "postgres_fixture_config": "sha256:75f5a96988cdf694a215073c3e9c001b706b371e2f94df3967f2efdec2787f6b",
+  "observations": [
+    {
+      "arm": "parent_only",
+      "project": "cc-combined-fence-bdbec966ecc27145",
+      "old_network": "a02bbcc61afcd64a6f5f90ee370fcf32f69d2368080dae57adc31a8e97988318",
+      "pending_container": "be08e341260568d767c473eeff469ef0aa591caec15c19ea24aa680f68a149de",
+      "helper_pid": 7,
+      "forwarded": {
+        "create": {
+          "admission_seen": true,
+          "status": 201,
+          "body": "{\"Id\":\"11d07f8ba13dec07fdc9d37c297abd763249badfca49172ac39961e314b8206e\",\"Warnings\":[\"The requested image's platform (linux/amd64) does not match the detected host platform (linux/arm64/v8) and no specific platform was requested\"]}\n"
+        },
+        "start": {
+          "admission_seen": true,
+          "status": 204,
+          "body": ""
+        },
+        "volume": {
+          "admission_seen": true,
+          "status": 204,
+          "body": ""
+        }
+      },
+      "volume_observation": {
+        "status": 404
+      },
+      "forced_late_start": {
+        "status": 204,
+        "container_id": "11d07f8ba13dec07fdc9d37c297abd763249badfca49172ac39961e314b8206e",
+        "message": null
+      },
+      "replacement_database": "8c715c7ef69608b34d8a4d8dea8832b02128c108138625ecff9263950727b317",
+      "replacement_network": "a02bbcc61afcd64a6f5f90ee370fcf32f69d2368080dae57adc31a8e97988318",
+      "replacement_volume": "cc-combined-fence-bdbec966ecc27145-old-volume",
+      "state": {
+        "rows": [
+          7,
+          13,
+          14,
+          42
+        ],
+        "metric": "old",
+        "checkpoint": null,
+        "http_marker": "old",
+        "volume_sentinel": null
+      },
+      "candidate_held": false,
+      "local_descendant_wrote": true,
+      "known_daemon_writer_wrote": true,
+      "old_http_writer_wrote": true,
+      "objective_completed": true,
+      "guard_exhausted": false
+    },
+    {
+      "arm": "reused_names",
+      "project": "cc-combined-fence-136ef9582b37afeb",
+      "old_network": "d2a54c10e1a4ff2ebc927df2023c987d16b6b9d057b562a211d1d5b7f2a3a519",
+      "pending_container": "aaae7a4a13f76afc435fc2f182fa8fd0c8d667e9f612c04c9f6d07404183230f",
+      "helper_pid": 6,
+      "old_lock_client_exit": 137,
+      "forwarded": {
+        "create": {
+          "admission_seen": true,
+          "status": 201,
+          "body": "{\"Id\":\"87755ccfa8f8efe5d7c7d01d4255c5a06d78de228654c1a57fc1500bc2d3129d\",\"Warnings\":[\"The requested image's platform (linux/amd64) does not match the detected host platform (linux/arm64/v8) and no specific platform was requested\"]}\n"
+        },
+        "start": {
+          "admission_seen": true,
+          "status": 404,
+          "body": "{\"message\":\"No such container: aaae7a4a13f76afc435fc2f182fa8fd0c8d667e9f612c04c9f6d07404183230f\"}\n"
+        },
+        "volume": {
+          "admission_seen": true,
+          "status": 204,
+          "body": ""
+        }
+      },
+      "volume_observation": {
+        "status": 404
+      },
+      "forced_late_start": {
+        "status": 204,
+        "container_id": "87755ccfa8f8efe5d7c7d01d4255c5a06d78de228654c1a57fc1500bc2d3129d",
+        "message": null
+      },
+      "replacement_database": "288440fb39b305daa158494ef17fd74ef26cd16a800d26a18b1ac6c45ba7b347",
+      "replacement_network": "5662848482f367c05d6e78daf88aa3ebbbfac4ca7bddd88c0a75e6e752fdfc56",
+      "replacement_volume": "cc-combined-fence-136ef9582b37afeb-old-volume",
+      "state": {
+        "rows": [
+          14,
+          42
+        ],
+        "metric": "old",
+        "checkpoint": null,
+        "http_marker": "new",
+        "volume_sentinel": null
+      },
+      "candidate_held": false,
+      "local_descendant_wrote": false,
+      "known_daemon_writer_wrote": false,
+      "old_http_writer_wrote": false,
+      "objective_completed": true,
+      "guard_exhausted": false
+    },
+    {
+      "arm": "generations",
+      "project": "cc-combined-fence-0970c9d38c9a87a7",
+      "old_network": "4e82be51706ae3fbe4e11a746b32f1c0b4e051f65d38c33ca0e35dedd20492d1",
+      "pending_container": "3048dd123be73292d195395e39cd3cb11e7e999a72a0f168cd4cae0f47cf6a67",
+      "helper_pid": 7,
+      "old_lock_client_exit": 137,
+      "forwarded": {
+        "create": {
+          "admission_seen": true,
+          "status": 201,
+          "body": "{\"Id\":\"a55052497e88bfa797b3ddbf47c57061ca39d3f33e0c0c470356e0df4fbf93c2\",\"Warnings\":[\"The requested image's platform (linux/amd64) does not match the detected host platform (linux/arm64/v8) and no specific platform was requested\"]}\n"
+        },
+        "start": {
+          "admission_seen": true,
+          "status": 404,
+          "body": "{\"message\":\"No such container: 3048dd123be73292d195395e39cd3cb11e7e999a72a0f168cd4cae0f47cf6a67\"}\n"
+        },
+        "volume": {
+          "admission_seen": true,
+          "status": 204,
+          "body": ""
+        }
+      },
+      "volume_observation": {
+        "status": 200,
+        "name": "cc-combined-fence-0970c9d38c9a87a7-new-volume",
+        "project": "cc-combined-fence-0970c9d38c9a87a7"
+      },
+      "forced_late_start": {
+        "status": 404,
+        "container_id": "a55052497e88bfa797b3ddbf47c57061ca39d3f33e0c0c470356e0df4fbf93c2",
+        "message": "failed to set up container networking: network 4e82be51706ae3fbe4e11a746b32f1c0b4e051f65d38c33ca0e35dedd20492d1 not found"
+      },
+      "replacement_database": "943fd3ded45cd848c54fc19368de6af9da42f466ebca717ad6f5256479c7f9f9",
+      "replacement_network": "814f1ee5a7b47177dbed54f774420a35e2c252d2f466a01be6595567384f26b1",
+      "replacement_volume": "cc-combined-fence-0970c9d38c9a87a7-new-volume",
+      "state": {
+        "rows": [
+          42
+        ],
+        "metric": "new",
+        "checkpoint": "checkpoint-current",
+        "http_marker": "new",
+        "volume_sentinel": "new-volume"
+      },
+      "candidate_held": true,
+      "local_descendant_wrote": false,
+      "known_daemon_writer_wrote": false,
+      "old_http_writer_wrote": false,
+      "objective_completed": true,
+      "guard_exhausted": false
+    }
+  ],
+  "discrimination_established": true,
+  "combined_candidate_supported": true
+}
