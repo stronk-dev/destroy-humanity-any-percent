@@ -1129,3 +1129,38 @@ Complete six-path research/tool/record range afterc7a9e385 through this batch
 awaits independent review. Canonical docs disclose the LIVE limitation; ledger
 stays OPEN. No shipped fix, eligibility, feature/hosted-CI/native-release,
 archival/publication or1.0-completion/goal-pause claim follows.
+
+
+## 2026-11-04 — RP-767 candidate/probe approval; live defect and delivery hold remain
+
+Citation correction to the preceding entry: the archived Guild resolver authority
+is **G5**, not the nonexistent S7. This corrects the record, not the accepted body.
+
+Review by: independent Codex `/root/membership_shutdown_candidate_review`.
+Recorded by: Codex root, transcribing that agent's actual verdict. APPROVED for
+complete six-path research/tool/docs rangec7a9e385436fb730ac360527b5346083e45c6188..
+d446a17f18d207a274ab607f512c1e1d386d17ea. Complete generated nine-file candidate,
+prep/probe and accepted authority inspected; no actionable technical finding.
+Fresh independent final V2 Linux-amd64/Postgres/race89801 passes all four:
+Guild caller/configured1.65/1.46s, Cohort1.20/1.15s. Baseline84150 exits expected
+Make2, all four fail3.83/16.31/3.36/16.31s; configured cases observe successful
+Drain/4003 then surviving SQL through bound. Three candidate arms briefly retain
+backend wait after Drain before cancellation completes: bounded, not instantaneous.
+
+Independent intact prep produces identical patch/exit0; stale source and missing
+Guild guard each refuse1. Independent five-package overlay vet/whitespace pass.
+All nine live files equal pinned base; V1/V2 runtime/test patch identical. Final
+probe/bindings hashes agree. Root's broad V1 five-package771 PASS/zero FAIL/one
+opt-in timer skip log is inspected/reused with attribution, not reviewer-executed
+or relabelled a complete V2 run. No new natural progression/whole AC5 proof.
+
+Reviewed HEAD/worktree stay fixed; reviewer makes no live edits or commits. All
+root/reviewer handles terminal. Root verifies no test workers remain and owned
+Postgres7179d9a54f87 belongs to this repository's declared test configuration,
+removes it, and confirms only the two pre-existing BuildKit containers remain.
+Shared caches/builders untouched. Plan/ledger reconcile this bounded approval;
+no software rerun for editorial records. RP-767 stays OPEN in active product.
+This verdict does NOT authorize landing, qualify the guarded Guild file, adopt
+draft N1/guard authority or complete feature/CI/release/archival gates. No false
+version, publication, owner-answer inference or goal pause. Continue authorized
+work; lawful delivery/eligibility remains the candidate's named next action.

@@ -9,7 +9,8 @@ can survive successful configured15s drain; the2s caller population also times o
 The complete nine-file context-propagation candidate is UNAPPLIED. Native/five-
 package Linux-amd64/Postgres race and final four-case old/current proof pass for
 the candidate; baseline failures and source versions are retained in the log.
-Independent candidate/tool review is pending. Exactly `server/guild/intents.go`
+Complete six-pathc7a9e385..d446a17f candidate/tool/research range is independently
+APPROVED, including fresh final old/current configured-bound SQL proof. Exactly `server/guild/intents.go`
 is guarded: lawful delivery and exact eligibility under adopted authority remain,
 not an inferred exception or false replay-version bump. The pending guard draft's
 N1 is not automatically satisfied by unchanged math/permission predicates.
