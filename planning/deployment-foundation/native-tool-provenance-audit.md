@@ -77,7 +77,7 @@ The [manual comparison](probes/compose-standalone-comparison.py.txt) executes
 the actual cached2.39.4 binary both directly and through CLI28.4.0/plugin
 discovery, using the explicit standalone entry in the pinned
 [main](https://github.com/docker/compose/blob/a32dc3da722e6b2e4fbfc72e40b1a697c4686460/cmd/main.go).
-The [observation](compose-standalone-observation.v1.json) records complete
+The corrected [v2 observation](compose-standalone-observation.v2.json) records complete
 parsed-model equality for a minimal fixture and the actual current production
 base/rotation templates rendered by the existing release renderer. The real
 production model has7 services/4 networks/5 volume families; nothing is applied.
@@ -85,12 +85,22 @@ Inputs use public synthetic values/placeholder image references, not operator
 secrets. No raw resolved models are retained in the observation.
 
 Both modes pass3 valid cases and reject4 invalid cases each. Direct workers have
-no external Docker CLI, network or Engine socket; exact tool hashes, actual
+no mounted Docker CLI, network or Engine socket, and child PATH excludes external
+tools; exact tool hashes, actual
 nonroot/capability/read-only/mount boundaries are checked. Removed/swapped binary
 controls refuse. A changed read-only field in the actual parsed production model
 fails the complete-model comparison. All4 owned fixture containers are removed.
 Initial sandbox attempts failed before container creation; the permitted local
 Docker launcher completes. Full range awaits independent research/tool review.
+
+The retained [v1 observation](compose-standalone-observation.v1.json) used Python
+equality, which accepts JSON boolean true versus numeric1. RP-764 records the
+independent executed counterexample. Its actual successful stdout pairs were
+byte-identical, so no tool divergence is inferred. The v2 full rerun uses sorted
+finite JSON serialization, rejects actual false and numeric1 replacements and
+accepts object-key reordering. All3 pairs are also byte-identical. Public models
+pass through Docker stdout/logs; final observations omit them. This is not a
+private-model handling/transport witness and makes no memory-only claim.
 
 This supports a **proposal** to use one directly invoked Compose compiler,
 avoiding a separate native-linked CLI executable and plugin discovery. Compose's

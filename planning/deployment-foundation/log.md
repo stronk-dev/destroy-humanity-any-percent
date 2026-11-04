@@ -11508,3 +11508,43 @@ rights/policy closure, native Linux/amd64/SP8/R-006 or release acceptance follow
 from this ARM64 Desktop fixture. No production, CI or kernel change, publication,
 deployment, archival or pause. All root handles terminal. Review by: Codex root,
 implementer first filter. Recorded by: Codex root.
+
+## 2026-11-04 — Standalone study review catches a typed-comparison defect
+
+CHANGES REQUIRED, independent research/tool review of complete six-path
+539e1bb4b8500f75a2e6d93e1daa7a6beac59ff0..
+6b8c892124e5472515323fcafca52ca4159b0f75.
+Review by: independent Codex /root/native_supervisor_profile_review.
+Recorded by: Codex root, transcribing completed verdict. Reviewer re-executes
+the complete real Docker population/cleanup and no-overwrite control. All3 actual
+successful stdout pairs are byte-identical, independently of the comparator;
+no actual direct/wrapped divergence is observed. Random project/diagnostic hashes
+vary between runs as expected, not a silently rewritten observation.
+
+RP-764: Python equality wrongly accepts read_only:true versus read_only:1.
+Reviewer executes that exact helper counterexample; root018a7e reproduces before
+correction. The false-only control did not discriminate JSON type changes.
+Correction uses sorted finite JSON serialization, retains the actual false-field
+refusal, adds actual numeric1 replacement refusal and object-key-order acceptance.
+V1 remains historical, not deleted or restamped; current probe will emit v2.
+
+Reporting correction: my preceding 'Raw resolved models stay in memory' claim
+was wrong. Public fixture models traverse worker stdout and Docker logs, which
+the daemon may persist. Only the final observation omits full models. No operator
+private input was used; no private-model transport guarantee is measured. The
+bounded study stays public-fixtures-only; no new private transport is invented.
+No normal-product/CI/kernel change. Complete original-plus-correction needs
+re-review after the actual corrected population completes.
+
+Corrected actual helper786932 rejects the earlier bool/int counterexample and
+accepts reordered keys. Full corrected Docker study4c8973/59764→548d34 passes
+all3 model pairs (also byte-identical),8 bad-input refusals,2 binary controls,
+both false/numeric1 policy mutations and key-order acceptance. Owned cleanup
+passes; no guards changed. V2 observation12,990bytes/
+SHA333bda655008b8614feed44ea679dcb4ba95a107d839e338fdeb05ae5d87ccca;
+probe17,733bytes/SHA748cfd8aa25f4e3c024632fd3e9528c204d064c0518c4fda43e51f6331696e18.
+06124d verifies current source binding and v2 complete/cleanup/control fields.
+Current dossier/plan explicitly distinguish logged public models from omitted
+final models. The retained v1 is not restamped. All handles terminal; complete
+seven-path original-plus-correction after539e1bb4 awaits independent re-review.
+Review by: Codex root, implementer first filter. Recorded by: Codex root.

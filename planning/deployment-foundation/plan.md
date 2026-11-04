@@ -42,9 +42,14 @@ negative result stays bounded and cannot silently change the two-tool draft.
 
 Executed first filter: all3 complete valid models match; both modes reject all4
 invalid cases; missing/swapped binary controls and an actual parsed policy-field
-change refuse. Exact binaries run inside checked nonroot/read-only/no-cap/no-
-network boundaries without Engine sockets, and direct mode has no CLI executable.
-Owned cleanup passes. Artifact/probe are retained under this plan; the full
+change refuse. RP-764's original Python bool/int equality defect is corrected:
+v2 rejects numeric1 in the actual boolean field and accepts object-key reordering;
+its full actual population passes, including3 byte-identical successful pairs.
+Exact binaries run inside checked nonroot/read-only/no-cap/no-network boundaries
+without Engine sockets; direct mode has no CLI mount and no PATH fallback.
+Only synthetic public model output is used: Docker stdout/logs may persist it,
+while final observations omit models. No private-model transport is measured.
+Owned cleanup passes. Both observations/probe are retained under this plan; the full
 research/tool range needs independent review. Next obtain that verdict, then
 draft a single directly invoked Compose compiler amendment for review/owner
 adoption, preserving all current native/manifest and source/rights criteria.

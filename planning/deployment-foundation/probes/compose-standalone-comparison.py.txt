@@ -3,6 +3,8 @@
 Run from the repository root with --output pointing at a fresh JSON file.
 Only cached public tools/image, synthetic public inputs and owned containers.
 No services are applied. No operator configuration, credentials or sockets mount.
+Public models traverse Docker stdout/logging; final observation omits them.
+This script must not be repurposed as a private-configuration transport witness.
 """
 import argparse
 import copy
@@ -86,7 +88,9 @@ def require(ok, message):
 
 
 def equal_models(left, right):
-    require(left == right, "complete parsed model mismatch")
+    options = dict(sort_keys=True, separators=(",", ":"), allow_nan=False)
+    require(json.dumps(left, **options) == json.dumps(right, **options),
+            "complete parsed model mismatch")
 
 
 def main():
@@ -199,18 +203,23 @@ def main():
                 equal_models(results["wrapped"]["models"][case["id"]], results["direct"]["models"][case["id"]])
         production = results["direct"]["models"]["production_base"]
         require(len(production["services"]) == 7 and len(production["networks"]) == 4 and len(production["volumes"]) == 5 and production["services"]["gameserver"]["read_only"] is True, "production model did not exercise real boundaries")
-        altered = copy.deepcopy(production)
-        altered["services"]["gameserver"]["read_only"] = False
-        try:
-            equal_models(production, altered)
-        except RuntimeError as error:
-            require(str(error) == "complete parsed model mismatch", "unexpected discrimination refusal")
-        else:
-            raise RuntimeError("model comparison accepted a real altered policy field")
+        for wrong in (False, 1):
+            altered = copy.deepcopy(production)
+            altered["services"]["gameserver"]["read_only"] = wrong
+            try:
+                equal_models(production, altered)
+            except RuntimeError as error:
+                require(str(error) == "complete parsed model mismatch", "unexpected discrimination refusal")
+            else:
+                raise RuntimeError("model comparison accepted a real altered policy field/type")
+        equal_models(production, dict(reversed(list(production.items()))))
+        byte_equal_pairs = sum(a['stdout_sha256'] == b['stdout_sha256']
+                               for a, b in zip(results['wrapped']['rows'], results['direct']['rows'])
+                               if a['case'] in results['direct']['models'])
         for mode in ("wrapped", "direct"):
             results[mode].pop("models")
         require(time.monotonic() < deadline, "work guard: INVALID")
-        observation = dict(schema_version=1, objective_completed=True, research_only=True, project=project, engine=engine, fixture_image=image, binary_inputs=metadata["binaries"], fixture_hashes=fixture_hashes, cases=cases, results=results, profiles=profiles, model_comparisons=3, policy_field_change_refused=True, source_sha256=hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest(), boundary_source_sha256=hashlib.sha256(BOUNDARY.read_bytes()).hexdigest(), guards=dict(work=WORK_SECONDS, command=COMMAND_SECONDS, cleanup=CLEANUP_SECONDS, build=BUILD_SECONDS), limitations=["Desktop ARM64 fixture with AMD64 tool execution; not supported native Linux/amd64", "Configuration compilation only; no service applied or native supervisor proved", "Synthetic public configuration and placeholder image references; no release artifact eligibility", "No operator Docker config/credentials/network/Engine socket available inside workers", "No rights/artifact/profile adoption or acceptance inferred"])
+        observation = dict(schema_version=2, objective_completed=True, research_only=True, project=project, engine=engine, fixture_image=image, binary_inputs=metadata["binaries"], fixture_hashes=fixture_hashes, cases=cases, results=results, profiles=profiles, model_comparisons=sum(c['success'] for c in cases), byte_equal_pairs=byte_equal_pairs, policy_field_change_refused=True, boolean_numeric_change_refused=True, object_key_order_accepted=True, source_sha256=hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest(), boundary_source_sha256=hashlib.sha256(BOUNDARY.read_bytes()).hexdigest(), guards=dict(work=WORK_SECONDS, command=COMMAND_SECONDS, cleanup=CLEANUP_SECONDS, build=BUILD_SECONDS), limitations=["Desktop ARM64 fixture with AMD64 tool execution; not supported native Linux/amd64", "Configuration compilation only; no service applied or native supervisor proved", "Synthetic public configuration and placeholder image references; no release artifact eligibility", "Public models traverse Docker stdout/logs; only final observation excludes models", "No private-model transport or memory-only handling guarantee", "No operator Docker config/credentials/network/Engine socket available inside workers", "No rights/artifact/profile adoption or acceptance inferred"])
         completed = True
     finally:
         for container, mode in reversed(containers):
@@ -232,7 +241,7 @@ def main():
     with output.open("x") as handle:
         json.dump(observation, handle, sort_keys=True, indent=2)
         handle.write("\n")
-    print(json.dumps(dict(objective_completed=True, cleanup_complete=True, output=str(output), comparisons=observation['model_comparisons'], failure_cases=sum(not c['success'] for c in cases)*2, binary_controls=2, policy_field_change_refused=True)), flush=True)
+    print(json.dumps(dict(objective_completed=True, cleanup_complete=True, output=str(output), comparisons=observation['model_comparisons'], failure_cases=sum(not c['success'] for c in cases)*2, binary_controls=2, policy_field_change_refused=True, boolean_numeric_change_refused=True, object_key_order_accepted=True)), flush=True)
 
 
 if __name__ == "__main__":
