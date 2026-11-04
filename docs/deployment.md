@@ -1114,6 +1114,31 @@ receiver recovery, not public DNS/TLS, a browser game session, supported-host pe
 host journald/retention, exact release artifacts or full AC7/R-006. The local cached services
 retain their disclosed mixed-architecture boundary.
 
+`make test-deployment-gameserver-profile` separately starts the actual current
+`cmd/gameserver` executable inside that private fixture. It uses the real migrated
+Postgres database, read-only checkout content and disposable development credentials;
+the fixture's controlled HTTP/metrics upstream is not started for this population.
+Actual readiness through Caddy and the gameserver's scraped ready gauge must first
+be healthy. The test sends SIGTERM to its owned child, requires successful process
+exit, and observes Caddy still serving while upstream readiness returns502 and the
+gameserver scrape becomes unavailable.
+
+The shared pending observer binds the exact `gameserver` producer, requires one
+complete successful JSON response and refuses malformed, stale, premature-firing
+or substituted-producer observations. The unchanged4m45 quiet/five-minute firing
+bound must reach the configured receiver. Starting a new copy of the executable
+must restore actual Caddy readiness, scrape health and the ready gauge, followed
+by resolution with the original alert start time. Explicit named child PASS and
+exact unique-project cleanup are required; missing/skipped output does not pass.
+This target joins manual operations verification, outside push CI, using the
+existing twelve-minute fixture guard/fourteen-minute outer cleanup timeout.
+
+This exercises a real game process and its readiness/metrics composition, not a
+browser/player persistence journey, production configuration or key continuity,
+an automatic restart policy, public DNS/TLS, actual host journald/retention or an
+exact-manifest clean-host R-006 rehearsal. The locally cached services retain the
+mixed-architecture boundary; full AC7 and the release claim gate remain separate.
+
 `make test-deployment-storage-profile` focuses a separate named population in that same private
 fixture. The default `test-deployment-operations-profile` runs both populations. Two distinct,
 empty 20 MiB tmpfs subjects bound the test's writes; no host filesystem is filled. The production

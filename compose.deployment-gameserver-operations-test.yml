@@ -1,0 +1,8 @@
+# Only this population starts the actual current gameserver command instead of
+# the monitoring fixture's controlled upstream. Checkout-backed development
+# configuration is deliberate; this is not the clean-host release package.
+services:
+  operations-test:
+    volumes:
+      - ./.cache/bin/operations-gameserver:/test/gameserver:ro
+      - ./:/workspace:ro

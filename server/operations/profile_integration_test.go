@@ -40,9 +40,13 @@ func TestPrivateOperationsIngressIntegration(t *testing.T) {
 	runPrivateOperationsProfile(t, "ingress")
 }
 
+func TestPrivateOperationsGameserverIntegration(t *testing.T) {
+	runPrivateOperationsProfile(t, "gameserver")
+}
+
 func runPrivateOperationsProfile(t *testing.T, population string) {
 	switch population {
-	case "full", "storage", "restart", "backup", "ingress":
+	case "full", "storage", "restart", "backup", "ingress", "gameserver":
 	default:
 		t.Fatal("unknown private operations population")
 	}
@@ -126,7 +130,12 @@ func runPrivateOperationsProfile(t *testing.T, population string) {
 		// This population tests the real proxy process and scrape availability.
 		metrics.HandleFunc("/readyz", func(response http.ResponseWriter, _ *http.Request) { response.WriteHeader(http.StatusNoContent) })
 	}
-	start(":8080", metrics)
+	var game *profileGameserverProcess
+	if population == "gameserver" {
+		game = startOperationsGameserver(t, ctx)
+	} else {
+		start(":8080", metrics)
+	}
 	var rejecting atomic.Bool
 	receiver := http.NewServeMux()
 	receiver.HandleFunc("/healthz", func(response http.ResponseWriter, _ *http.Request) { response.WriteHeader(http.StatusNoContent) })
@@ -176,6 +185,10 @@ func runPrivateOperationsProfile(t *testing.T, population string) {
 	}
 	if population == "ingress" {
 		runIngressProfile(t, ctx, client, received)
+		return
+	}
+	if population == "gameserver" {
+		runGameserverProfile(t, ctx, client, received, game)
 		return
 	}
 

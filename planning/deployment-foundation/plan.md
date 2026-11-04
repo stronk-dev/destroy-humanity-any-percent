@@ -7,6 +7,16 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Actual game-process availability proof, 2026-11-04 (RP-721):** construct the
+missing DP7 producer-to-receiver path using the current gameserver executable,
+real Postgres and existing private monitoring/Caddy stack. Actual process stop,
+unchanged five-minute rule, exact alert resolution after executable restart and
+owned cleanup are required. It replaces no production code or rule and does not
+claim full AC7/clean-host acceptance. First actual manual71301 passes396.085s
+before the final observer cancellation refinement; final native/race/vet controls
+pass. Complete exact-range independent review and final-source service execution
+remain; the log preserves source coordinates and cleanup evidence.
+
 **Journal collection correction, 2026-11-04:** DP7's measurement command now reads
 the requested directory and refuses exit-zero diagnostics before emitting evidence.
 Original six-pathb6744226..c09bb854 retains CHANGES REQUIRED: newly supplied

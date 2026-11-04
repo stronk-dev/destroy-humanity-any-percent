@@ -8250,3 +8250,55 @@ coordinates with the browser owner. Unrelated parent010be676 changes no affected
 source/Make/Compose bytes. Root updates plan/defects; no suite for editorial records.
 Host-journal completeness, workload/capacity ratification, retention/eviction,
 full AC7, R-006, hosted/full CI and release remain open. No archival/publication.
+
+## 2026-11-04 — Actual gameserver outage and private alert recovery (first filter)
+
+Accepted DP7/AC7 still lacks actual game-process producer evidence: the approved
+proxy population controls its upstream response/registry. RP-721 adds a separate
+named manual population, reusing the private stack, receiver and owned-project
+cleanup. It launches the current compiled gameserver command with a closed set
+of disposable development credentials, real migrated Postgres and read-only
+checkout content. The controlled metrics/HTTP upstream is not started. Real204
+readiness, private scrape and ready gauge establish baseline; SIGTERM must finish
+with successful process exit, while Caddy remains reachable and returns502.
+
+Actual gameserver pending timestamp, unchanged4m45 quiet/five-minute firing bound,
+receiver delivery, new executable startup and exact original-alert resolution
+must all complete. Shared pending parsing retains the Caddy wrapper, binds either
+fixed producer and refuses incomplete/trailing JSON, HTTP/query/malformed/stale/
+premature-firing observations. Both producer controls execute, including wrong/
+missing producer cancellation. Named-pass guard refuses empty/skipped/wrong/log-only
+output. No production/rule/interval/kernel/version/content/copy/workflow changes.
+The existing twelve-minute observation guard/fourteen-minute cleanup timeout
+remain; this is outside push CI and cannot claim all of AC7.
+
+Cold31718 passes before observer controls;78089 operations1.672s/command5.706s
+and selected vet pass. Focused race40332 passes both producers/negative controls,
+1.350s. Static CI topology/diff checks pass. Initial16346 is Docker access denied,
+no private tests. Authorized manual71301 terminal0: child392.94s/parent395.93s/
+package396.085s, unique project
+`cloud-clicker-gameserver-profile-j7ljhycltdx22yzdhc3pcxxdev`. Source uses actual204
+readiness. External private inspection confirms stopped game process (only
+operations.test remains), real pending alert jobgameserver activeAt
+2026-11-04T01:48:40.964276279Z, and new gameserver PID75014 after restart. Receiver
+firing and same-alert resolution complete. Caddy/Prometheus warn amd64-on-ARM:
+mixed-architecture local fixture, not supported clean-host evidence. All owned
+containers/network/volume are removed; direct exact-project inventories are empty.
+
+Independent PRE-INSPECTION finds a matching-response cancellation gap in shared
+pending parsing, also present in the extracted Caddy logic: a transport cancels
+the request and still returns matching JSON, which succeeds before the next loop.
+Root13815 fails both producer controls with nonzero timestamp/nil error. Check
+ctx.Err before returning the timestamp. Final cold56458 operations1.700s/command
+5.790s and vet pass; final focused race32716 passes1.362s, all22 controls across
+both producers. No binary/source mutation occurred during71301; its real-service
+pass PRECEDES this cancellation refinement and a Logf-only cleanup. Do not cite
+it as execution of the final revision. Final-source actual service run remains
+part of designated independent review, rather than an unchanged reassurance rerun.
+
+Review by: Codex root, implementer first filter only. Recorded by: Codex root.
+Complete eleven-path batch starts aftera636b315 through this containing Make/
+Compose/three operations tests/shared fixture/parent test/docs/ledger/plan/log
+commit. Independent exact-range review remains; pre-inspection is not approval.
+Browser/auth/key continuity, automatic restarts, host journald/retention,
+full AC7 and exact-artifact clean-host R-006 remain separate obligations.

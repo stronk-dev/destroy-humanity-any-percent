@@ -3,6 +3,7 @@ package operations
 import (
 	"context"
 	"encoding/json"
+	"io"
 	"net/http"
 	"testing"
 	"time"
@@ -61,11 +62,22 @@ func runIngressProfile(t *testing.T, ctx context.Context, client *http.Client, r
 
 func waitForIngressPending(t *testing.T, ctx context.Context, client *http.Client, after time.Time) time.Time {
 	t.Helper()
+	at, err := waitForAvailabilityPending(ctx, client, "caddy", after)
+	if err != nil {
+		t.Fatalf("actual proxy outage pending observation failed: %v", err)
+	}
+	return at
+}
+
+func waitForAvailabilityPending(ctx context.Context, client *http.Client, job string, after time.Time) (time.Time, error) {
+	if (job != "caddy" && job != "gameserver") || after.IsZero() {
+		return time.Time{}, ErrInvalid
+	}
 	for ctx.Err() == nil {
 		request, _ := http.NewRequestWithContext(ctx, http.MethodGet, "http://prometheus:9090/api/v1/alerts", nil)
 		response, err := client.Do(request)
 		if err != nil {
-			t.Fatal("pending-state observation unavailable")
+			return time.Time{}, ErrInvalid
 		}
 		var payload struct {
 			Status string `json:"status"`
@@ -77,25 +89,29 @@ func waitForIngressPending(t *testing.T, ctx context.Context, client *http.Clien
 				} `json:"alerts"`
 			} `json:"data"`
 		}
-		err = json.NewDecoder(response.Body).Decode(&payload)
+		decoder := json.NewDecoder(response.Body)
+		err = decoder.Decode(&payload)
+		complete := decoder.Decode(&struct{}{}) == io.EOF
 		_ = response.Body.Close()
-		if err != nil || response.StatusCode != http.StatusOK || payload.Status != "success" {
-			t.Fatal("pending-state observation incomplete")
+		if err != nil || !complete || response.StatusCode != http.StatusOK || payload.Status != "success" {
+			return time.Time{}, ErrInvalid
 		}
 		for _, alert := range payload.Data.Alerts {
-			if alert.Labels["alertname"] != "CloudClickerPublicEndpointOrReadinessUnavailable" || alert.Labels["job"] != "caddy" {
+			if alert.Labels["alertname"] != "CloudClickerPublicEndpointOrReadinessUnavailable" || alert.Labels["job"] != job {
 				continue
 			}
 			if alert.State != "pending" || alert.ActiveAt.IsZero() || alert.ActiveAt.Before(after) {
-				t.Fatal("outage entered firing before its declared pending population")
+				return time.Time{}, ErrInvalid
 			}
-			return alert.ActiveAt
+			if err := ctx.Err(); err != nil {
+				return time.Time{}, err
+			}
+			return alert.ActiveAt, nil
 		}
 		select {
 		case <-ctx.Done():
 		case <-time.After(time.Second):
 		}
 	}
-	t.Fatal("actual outage never reached its pending state")
-	return time.Time{}
+	return time.Time{}, ctx.Err()
 }

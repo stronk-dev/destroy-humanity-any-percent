@@ -8,6 +8,7 @@
 .PHONY: test-deployment-restart-profile
 .PHONY: test-deployment-backup-profile
 .PHONY: test-deployment-ingress-profile
+.PHONY: test-deployment-gameserver-profile
 .PHONY: verify-combat-go-boundary
 
 # Keep ordinary Go builds inside the writable repository sandbox. Override either
@@ -141,6 +142,7 @@ test-deployment-operations:
 	$(MAKE) test-deployment-restart-profile
 	$(MAKE) test-deployment-backup-profile
 	$(MAKE) test-deployment-ingress-profile
+	$(MAKE) test-deployment-gameserver-profile
 	$(MAKE) test-deployment-operations-profile
 
 # Real one-minute job timing belongs to manual Deployment acceptance, not push
@@ -181,6 +183,16 @@ test-deployment-ingress-profile:
 	mkdir -p $(REPO_CACHE_DIR)/bin
 	cd server && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go test -c -o ../.cache/bin/operations.test ./operations
 	$(MAKE) test-go GO_PACKAGES='./cmd/deployment-operations' GO_TEST_FLAGS='-run TestActualCaddyOutagePrivateProfileIntegration -v -count=1 -timeout=14m'
+
+# Actual gameserver executable stop/restart through the private monitoring stack.
+# Manual Deployment evidence only; no public service or release-artifact claim.
+test-deployment-gameserver-profile: export CLOUD_CLICKER_GAMESERVER_PROFILE_TEST = 1
+test-deployment-gameserver-profile: export CLOUD_CLICKER_OPERATIONS_ROOT = $(CURDIR)
+test-deployment-gameserver-profile:
+	mkdir -p $(REPO_CACHE_DIR)/bin
+	cd server && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o ../.cache/bin/operations-gameserver ./cmd/gameserver
+	cd server && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go test -c -o ../.cache/bin/operations.test ./operations
+	$(MAKE) test-go GO_PACKAGES='./cmd/deployment-operations' GO_TEST_FLAGS='-run TestActualGameserverOutagePrivateProfileIntegration -v -count=1 -timeout=14m'
 
 # Focus the existing real-service fixture without skipping or changing the
 # aggregate above. This is not the full operations or clean-host release gate.
