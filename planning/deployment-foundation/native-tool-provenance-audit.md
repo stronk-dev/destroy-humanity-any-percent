@@ -91,7 +91,9 @@ nonroot/capability/read-only/mount boundaries are checked. Removed/swapped binar
 controls refuse. A changed read-only field in the actual parsed production model
 fails the complete-model comparison. All4 owned fixture containers are removed.
 Initial sandbox attempts failed before container creation; the permitted local
-Docker launcher completes. Full range awaits independent research/tool review.
+Docker launcher completes. Complete eight-path539e1bb4..7a5368b5 is independently
+APPROVED as bounded research/tool; the owning log records the exact verdict and
+fresh complete execution. This is not profile/artifact adoption.
 
 The retained [v1 observation](compose-standalone-observation.v1.json) used Python
 equality, which accepts JSON boolean true versus numeric1. RP-764 records the
@@ -111,6 +113,9 @@ spellings remain exact. Actual precision, number/string and boolean/number
 counterexamples refuse, as do duplicate keys and nonfinite constants. The entire
 real v3 population passes; all3 actual successful stdout pairs remain identical.
 Prior observations/verdicts are retained and do not imply observed divergence.
+Independent v3 review reproduces the earlier failures, checks raw numeric-token
+transport and executes all actual populations/controls/cleanup. RP-764 closes
+only the instrument defect; RP-759 still owns shipping inventory/terms/adoption.
 
 This supports a **proposal** to use one directly invoked Compose compiler,
 avoiding a separate native-linked CLI executable and plugin discovery. Compose's

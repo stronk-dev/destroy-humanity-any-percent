@@ -11586,3 +11586,29 @@ criterion changed. Current dossier/plan name v3; v1/v2 remain historical evidenc
 All root/review handles terminal. Complete eight-path original-plus-corrections
 after539e1bb4 needs independent review; RP-764 stays OPEN until that verdict.
 Review by: Codex root, implementer first filter. Recorded by: Codex root.
+
+## 2026-11-04 — Complete standalone comparison and instrument correction approved
+
+APPROVED, bounded research/tool only, complete eight-path union
+539e1bb4b8500f75a2e6d93e1daa7a6beac59ff0..
+7a5368b55650692e3f7857e6fa0003c6b9b2e3f5.
+Review by: independent Codex /root/native_supervisor_profile_review.
+Recorded by: Codex root, transcribing completed verdict. No remaining blockers.
+
+Reviewer executes the entire v3 Docker population/owned cleanup, reproduces v2's
+precision loss, checks raw numeric text through the JSON envelope, and verifies
+precision/type/spelling/array-order/missing-extra-key/duplicate/nonfinite refusal
+plus nested object-key-order acceptance. Actual3 positive stdout pairs match
+hashes and lengths. Fresh v3 differs only in random project identity and required-
+environment diagnostic hashes. Source/report bindings, no-overwrite, prior
+observations/log prefix, whitespace and product/normal-test/CI/RFC exclusions
+pass. Fresh independent report13,194bytes/SHAbfcaa50ab2658f2cfeb9185e03254023c80c38b116184f7055c1379262c1d9d1
+is retained at /private/tmp/compose-standalone-independent-v3-20261104.json.
+
+RP-764 closes this instrument correction; current plan/dossier/RP-759 route to
+the direct-Compose-only compiler amendment next. Its actual embedded dependency
+inventory/terms, policy/artifact/profile adoption, native producers and supported
+Linux/amd64/SP8/R-006 remain. No other commands, private-model handling, exhaustive
+image census, rights clearance or release acceptance is claimed. No shipping pin,
+product/kernel/CI change, publication, deployment, archival or goal pause. All
+root/review handles terminal; the full nine-tier objective remains active.

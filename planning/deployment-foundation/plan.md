@@ -52,9 +52,11 @@ Exact binaries run inside checked nonroot/read-only/no-cap/no-network boundaries
 without Engine sockets; direct mode has no CLI mount and no PATH fallback.
 Only synthetic public model output is used: Docker stdout/logs may persist it,
 while final observations omit models. No private-model transport is measured.
-Owned cleanup passes. All observations/probe are retained under this plan; the full
-research/tool range needs independent review. Next obtain that verdict, then
-draft a single directly invoked Compose compiler amendment for review/owner
+Owned cleanup passes. Complete eight-path539e1bb4..7a5368b5 is independently
+APPROVED as bounded research/tool, including reproduced old failures, exact
+numeric transport, all current controls and a full fresh Docker run. RP-764 is
+CLOSED for this instrument correction. All observations/verdicts remain intact.
+Next draft a single directly invoked Compose compiler amendment for review/owner
 adoption, preserving all current native/manifest and source/rights criteria.
 This result does not modify the currently reviewed two-tool contract or select
 the old research version as a shipping pin. No native-host release proof claimed.
