@@ -224,8 +224,11 @@ dotenv file at the exact argv path and Docker config
 `/run/private/compose/docker/config.json` with `{"auths":{}}`, each0600 in its
 UID-owned0700 scratch, then executes this command. No operator dotenv/Docker
 context/credential file or
-discovery directory is read by this worker. The child receives the effective
-validated interpolation values in Config.Env, using C01's clean role environment.
+discovery directory is read by this worker. The supervisor constructs one exact
+child environment from the effective validated interpolation values and C01's
+fixed execution controls. It supplies that map in Config.Env AND in the
+authenticated C01 release below; the gate explicitly replaces its inherited
+environment at exec rather than treating Config.Env as an inheritance barrier.
 These are nonsecret settings/key IDs/file-path references, not secret contents.
 Both the native loader and actual compiler use the SAME values, original file
 bytes, virtual root and rotation selection. Held-root translation is checked
@@ -248,14 +251,35 @@ required rotation behavior.
 Add only fixed execution controls: PATH=/run/private/compose/no-tools (no lookup),
 DOCKER_CONFIG=/run/private/compose/docker (the auths-only config directory),
 DOCKER_HOST=unix:///run/private/compose/no-engine.sock (must be absent),
-DOCKER_CLI_HINTS=false. Build a clean role environment without inherited image/
-host values; COMPOSE_*, other DOCKER_*, proxy/plugin/credential helpers and caller
+DOCKER_CLI_HINTS=false. Encode the child environment as a sorted unique array of
+`{name,value}` string objects, with no NULs, duplicates or unknown names. Omitted
+optional interpolation values stay omitted so that the original template's
+defaults apply identically in both loaders; image defaults never fill that gap.
+The gate execs the absolute binary with exactly this environment, not an overlay
+on os.Environ. COMPOSE_*, other DOCKER_*, proxy/plugin/credential helpers and caller
 extras cannot change it. No interpolation value is a shell fragment. There is
 no compose_input or Engine broker FD: public files arrive through fixed mounts,
 values through the validated environment. Other helpers retain their actual
 secret/SQL/HTTP grants. Docker's ordinary container configuration can retain
 these nonsecret environment values on the trusted node; no memory-only claim
 is made about that store. Actual credential values never enter Config.Env.
+
+Docker DOES merge image environment defaults into container configuration. The
+selected image's full Config.Env must therefore match the finite, reviewed
+per-image producer template under SP5, including exact names/values; no duplicate,
+malformed, credential-bearing or unenumerated default is accepted. That template
+comes from the selected manifest-bound image config, not a worker/host override.
+Compute the expected effective container environment with the pinned Engine's
+merge rules (requested names override image defaults) and compare the complete
+E04 result after E07, BEFORE E08/shim start. Refuse any unexpected key/value or
+unsupported default; do not start a shim under unchecked image settings.
+The pinned [create path](https://github.com/moby/moby/blob/v28.4.0/daemon/create.go)
+and [merge implementation](https://github.com/moby/moby/blob/v28.4.0/daemon/commit.go)
+establish this distinction. A matching merged container environment still does
+not become the compiler environment: only the authenticated C01 map is passed
+to exec. Image defaults that remain in ordinary nonsecret daemon configuration
+are excluded from the compiler process. This adds no new image or generic
+environment-setting capability to another role.
 
 Private compiler output MUST use LogConfig.Type=none with empty Config.
 Config.AttachStdout/AttachStderr are true; stdin and Tty remain false. Admit
@@ -294,7 +318,14 @@ Corrupt LogConfig, delay/sever attach before release, truncate model output,
 swap source/target/env/path data and force child failure: all must fail the
 required observation. Seed missing-binary host/PATH fallbacks and attempt worker
 Engine/secret grants; no fallback or extra privilege may execute. Current public
-input studies establish only their recorded compatibility facts. Native
+input studies use explicit exec environment replacement, not suppression of
+Engine's image merge. Native acceptance must additionally seed an unrecognized
+image default and altered effective container environment (refuse before start),
+and a declared benign image-only default (absent from the actual compiler
+environment and unable to fill an omitted interpolation value). A release map
+that differs from admitted inputs must refuse at supervisor dispatch; malformed
+or extra gate fields/fixed-control changes must refuse before compiler exec.
+The studies establish only their recorded compatibility facts. Native
 Linux/amd64, full admitted-input conformance and SP8/R-006 stay mandatory.
 
 ## A2 — Exact command/lifecycle plans
@@ -424,7 +455,17 @@ process receives the fixed in-process observation release directly. It may keep
 its authenticated control connection until its own fixed entry/local IO returns;
 it does not exec a command or gain another role's output/mutation capability.
 
-`release` payload is `{action, inputs}`; inputs is an ordered array of exact
+`release` payload is `{action, inputs}`, except C01 compose_config requires
+exactly `{action, inputs, environment}` with inputs=[] and the exact C01 sorted
+name/value array. The supervisor derives it from the same admitted native model
+inputs as the create request and validates the complete encoded map against
+those inputs before sending; the fixed gate validates its closed names/types/
+uniqueness and fixed controls, then explicitly supplies exactly that array to
+exec. It never reads/merges inherited variables to construct compiler inputs.
+Unknown/missing/extra environment fields refuse; other roles retain their old
+payload and cannot receive this field. No map/value/hash enters retained control
+diagnostics or receipts. This uses the existing authenticated control message,
+not a new descriptor or environment file. For the other roles, inputs is an ordered array of exact
 `{role, fd_index, access}` objects. access is read_only/duplex. The closed role
 population is release_manifest, epoch, alert_config, database_url,
 libpq_password, tls_rootcert, tls_clientcert, tls_clientkey, age_identity,
@@ -646,8 +687,10 @@ an unspecified future converter). Config.Image is manifest config ID; User,
 Entrypoint, Cmd, WorkingDir, Healthcheck, StopSignal/StopTimeout and ExposedPorts
 come from the selected image defaults overridden ONLY by the exact approved
 role/command template. Environment merges those same defaults/template into one
-unique-key map, encoded in key order, except C01 starts from its clean explicit
-map. Nonsecret values may enter ordinary trusted daemon configuration; actual
+unique-key map, encoded in key order. C01's request uses its explicit map, then
+validates the actual image-default merge before shim start and replaces the child
+exec environment through its authenticated release; Config.Env alone does not
+remove inherited defaults. Nonsecret values may enter ordinary trusted daemon configuration; actual
 credentials remain authorized FD inputs. No environment/inspect payload or
 private-config hash is copied into operator evidence. Jobs replace
 Entrypoint with the fixed shim and carry the fixed command from A2. AttachStdin,

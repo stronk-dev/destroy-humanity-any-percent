@@ -59,10 +59,11 @@ Owned cleanup passes. Complete eight-path539e1bb4..7a5368b5 is independently
 APPROVED as bounded research/tool, including reproduced old failures, exact
 numeric transport, all current controls and a full fresh Docker run. RP-764 is
 CLOSED for this instrument correction. All observations/verdicts remain intact.
-Next draft a single directly invoked Compose compiler amendment for review/owner
-adoption, preserving all current native/manifest and source/rights criteria.
-This result does not modify the currently reviewed two-tool contract or select
-the old research version as a shipping pin. No native-host release proof claimed.
+At that historical study boundary, the next action was to draft a single directly
+invoked compiler amendment; the study itself did not change the then-reviewed
+two-tool contract. The current amendment and its review status are at the top
+of this plan. The old research version is not selected as a shipping pin, and no
+native-host release proof is claimed.
 
 **Compiler input construction study, predeclared 2026-11-04:** before specifying
 the direct worker's grants, test whether an explicit environment plus an empty

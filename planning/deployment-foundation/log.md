@@ -11672,3 +11672,42 @@ stdio readers precede stream handoff, logs are requested only for logs=1, and
 AttachStdout/AttachStderr are explicit fields. C01 names their non-TTY framing
 and original stream readiness/terminal distinction; no private/native run was
 performed. No unrelated software suite is claimed for Markdown changes.
+
+## 2026-11-04 — Direct compiler review catches image-default inheritance
+
+CHANGES REQUIRED, complete11-path765aae446dc78d52f72dbb22a2ba137ef87565c9..
+5950a28420043ce842af48a86015541a59d40f28. Review by: independent Codex
+/root/native_supervisor_profile_review. Recorded by: Codex root. Both new
+actual Docker arms independently pass their complete valid/invalid/binary/token
+populations and owned cleanup; all6 process-env positive hashes/lengths match
+v3, and absent references are0/6/8 in both modes. Fresh reports at
+/private/tmp/compose-process-env-independent-20261104.json SHA
+ aa2245ff2b004083bd18fcce1d9cbeb1c7d75366b0517c550ffb43f5ce9aa2b1 and
+/private/tmp/compose-absent-secret-independent-20261104.json SHA
+ 1e66d5540255ab0adb5125ab2c774d8729efc71af5e08df43b595e47ab3c1403.
+Selector/no-overwrite, retained bindings, paths/names, whitespace and historical
+log/observation preservation also pass. All review handles terminal.
+
+Two normative findings prevent approval. Moby's actual create/merge code appends
+image ENV defaults; a clean Config.Env request is not a clean compiler environ.
+C01/W00 now require an explicit exact environment on exec through the existing
+authenticated release, plus a reviewed exact image-default population and full
+effective-container comparison before shim start. No other role gets the new
+field; no input FD, environment file or generic channel is introduced. The child
+map comes solely from admitted input/control values, never inherited defaults.
+Daemon nonsecret storage stays disclosed. Actual native acceptance must check
+image/default/container/control tampering and observed child inheritance; no
+public research is relabelled private/native proof. The second finding removes
+T2a's stale invocation of T5's withdrawn runner, preserving full source-member
+coverage and requiring separate future build adoption. The earlier plan's then-
+next draft/two-tool statements are explicitly historical.
+
+Root read the pinned Moby28.4.0 create.go/commit.go through the official repository
+and confirmed the merge. This revision changes only proposal/plan/log text;
+research script and both actual reports stay unchanged. No additional Docker
+rerun or unrelated software suite is needed for these normative corrections.
+The original negative verdict is retained; the complete amended range requires
+independent re-review. No adoption, implementation, artifact pin/rights clearance,
+private/native/SP8/R-006 acceptance, CI promotion, publication, deployment,
+archival or goal pause follows. Review by: Codex root, implementer first filter.
+Recorded by: Codex root.

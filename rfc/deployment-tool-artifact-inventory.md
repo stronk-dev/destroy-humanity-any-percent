@@ -201,8 +201,10 @@ it cannot declare coverage from an already shortened payload. Extra material
 also needs an applicable supported scope. If covered source differs from its
 original input, retain its actual resulting bytes and modification information;
 public derivation evidence in `source_record.evidence_paths` identifies the
-input/result and preparation. A local build must stay within T5's explicit mode;
-an opaque derivation does not extend the runner's permitted steps.
+input/result and preparation. This describes source-delivery derivation, not
+permission to replace T2's upstream executable. A release-owned build/repack
+requires the separate accepted contract described in T5; no runner or local-build
+mode is admitted by this source map.
 
 The source-member set equals both the full extracted regular-file population and
 the union of metadata component `source_files`. Component association equals the
