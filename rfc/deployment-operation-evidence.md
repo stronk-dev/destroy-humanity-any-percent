@@ -383,9 +383,9 @@ The [native supervisor profile](deployment-native-supervisor-profile.md) now
 proposes the concrete one-shot packaging, all eight typed subjects/results,
 stage mediation, native lock/daemon binding and scheduled-service handoff.
 Independent review requires changes at61f2461f: forward bootstrap/immutable-binding
-corrections need review, and its exact stage/plan/adapter table is still missing.
+corrections and its newly proposed exact stage/plan/adapter companion need re-review.
 It is a draft pending completed specification, adoption and actual producer conformance;
-its existence does not satisfy the gates below. Its explicit cgroup/native-host,
+its existence does not satisfy the gates below. Its explicit namespace/native-host,
 tool-artifact and release-metric projection changes require parent reconciliation.
 
 This RFC is **not acceptance-ready** without a concrete native producer/profile

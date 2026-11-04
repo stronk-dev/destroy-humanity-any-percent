@@ -1,0 +1,50 @@
+{
+  "criterion": "FIRED: successful counter movement does not establish test nonce delivery",
+  "excluded_execution": {
+    "launch": "94cdad",
+    "reason": "Make expansion consumed dollar-end selector: no tests ran; not completion evidence",
+    "terminal": "0b96c0"
+  },
+  "execution": {
+    "all_handles_terminal": true,
+    "go_test_exit": 1,
+    "launch": "33a7fa",
+    "make_exit": 2,
+    "terminal": "3364bd",
+    "test_selector": "-count=1 -run TestDiagnosticVerifyAlertDeliveryRejectsUnrelatedNotification -v"
+  },
+  "guard_seconds_per_population": 3,
+  "limitations": [
+    "No actual Alertmanager or real external receiver",
+    "No production or CI tests changed",
+    "No replacement helper, manual receipt flow, native profile or release gate proved"
+  ],
+  "objective_completed": true,
+  "populations": [
+    {
+      "actual_matching_http_deliveries": 1,
+      "actual_unrelated_http_deliveries": 0,
+      "name": "matching_positive",
+      "result": "PASS",
+      "returned_nonce_matches_received": true,
+      "submitted_test": 1
+    },
+    {
+      "actual_matching_http_deliveries": 0,
+      "actual_unrelated_http_deliveries": 1,
+      "helper_error": false,
+      "name": "unrelated_negative",
+      "result": "CRITERION_FIRED",
+      "returned_nonce_length": 32,
+      "submitted_test": 1
+    }
+  ],
+  "probe_file": "planning/deployment-foundation/probes/alert-delivery-attribution_test.go.txt",
+  "probe_sha256": "891a43aa8c4b5edc23eee165c210a5624a9be912f5d206fd08bce5ee418e23e2",
+  "question": "Can unrelated successful notification counts satisfy the helpers exact test-delivery claim?",
+  "schema_version": 1,
+  "scope": "unchanged actual Go helper; modeled Alertmanager HTTP API; actual local webhook HTTP delivery; NOT actual Alertmanager/Compose/receiver integration",
+  "source_commit": "9c4f1b182f5e85cd6d4555a18cc9ceb53660c46f",
+  "source_file": "server/operations/alert.go",
+  "source_sha256": "a673816c4878df0b0c45299126ffb5de1dde88f6e9b4dd74dcb55ab5ec89783d"
+}

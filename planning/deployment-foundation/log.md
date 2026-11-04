@@ -10338,3 +10338,71 @@ census or premature adoption request. RP-754/756/757, actual packaged Go/native
 producer conformance, supported host and clean-host R-006 remain OPEN. No product,
 test/CI/kernel/balance bytes; no software rerun for normative Markdown. Diff checked.
 No push/deployment/archival or goal pause; full nine-tier1.0 remains active.
+
+
+## 2026-11-04 — Concrete native adapter proposal and fired delivery-attribution diagnostic
+
+Previous goal turn made progress through61f2461f/9c4f1b18, preserving the
+independent CHANGES REQUIRED verdict. The9c4f1b18 checkout was clean. This
+batch supplies `rfc/deployment-native-supervisor-adapters.md` A0–A7 and reconciles
+SP/OP9/index/current plan; no production, normal-test, CI or kernel/balance bytes.
+
+The table is an exact proposed finite expansion with E00–E21, command/lifecycle,
+SQL/HTTP/file/native, cross-UID IPC/cache and bootstrap schemas. Native Go is the
+sole Docker mutation dispatcher; actual pinned Compose model compilation remains
+inert/checked, workers get no mutation channel. Explicit source/target producer
+bindings, create-versus-start, v1 install grants, source ordinary-work origin
+versus new cleanup admission, cache receipt DAG and projection ownership are
+spelled out. Native process/invocation completion does not erase independent
+external children. Private job scope uses bound PID namespace INIT death plus
+restart prevention (not generic parent exit); shared-PG observers/source routines
+have explicitly distinct trusted-code contracts. These replace the unproved
+cgroup-v2 zero-populated assumption, not whole-scope proof. Native conformance,
+source/compatibility review and original full SP8/R-006 gates remain mandatory.
+Pre-admission E20 is not a fabricated fresh device/inode stat: combine admitted
+non-reused physical generation with current Engine metadata, then physically
+recheck before mount/reset/delete after Started. Unknown/unsupervised cases refuse.
+
+Primary sources checked: pinned Moby28.4.0 API1.51 and container/image/network/
+volume handlers, Go serial HTTP connection loop, Linux PID namespace manual.
+These justify proposed wire/inference boundaries only, not runtime evidence.
+Native terminal requires full original upload/response plus same-connection
+ordered reply or actual server EOF, with children separate; no generic status/
+transport error becomes proof. Closed body construction, pure-Go observer trust,
+private application completion and exact source export still require independent
+challenge and actual packaged implementation. No "table passes => feature works".
+
+RP-758 now has EXECUTED evidence. Manual probe calls unchanged actual
+operations.VerifyAlertDelivery with modeled manager endpoints and actual local
+webhook deliveries. Final33a7fa/3364bd: matching_positive PASS (actual received
+nonce equals returned); unrelated_negative FAILS as required by the diagnostic:
+helper returns nil/32-character nonce with submitted1/unrelated1/MATCHING0.
+Make exit2 / Go exit1, not green. Both receiver health and notification are the
+actual local receiver. Context3s per population; actual total0.21s. No actual
+Alertmanager, Compose, external receiver, credentials or native release proof.
+Source-bound observation retains a673816c helper and891a43aa probe hashes.
+Initial94cdad/0b96c0 ran ZERO tests because Make consumed the dollar-end selector;
+excluded. Corrected a9fcff/c0813e first reproduced the negative; final adds positive
+control and exact receiver health. New exact H06 observation/manual checkpoint is
+PROPOSED and needs DP7 adoption, not a silently implemented fix/new provider API.
+
+Reproduce by mapping virtual server/operations/alert_delivery_attribution_probe_test.go
+to the manual .txt via a temporary Go compiler overlay, then root
+`make test-go GO_PACKAGES=./operations GO_TEST_FLAGS='-count=1 -run TestDiagnosticVerifyAlertDeliveryRejectsUnrelatedNotification -v' GOFLAGS=-overlay=<absolute-overlay.json>`.
+Final overlay vetf9a2a2 exits0. All execution handles terminal; httptest servers
+closed, no Docker/global/native-host resource created. Documentation expansion
+sanity d08e0f checks unique plan IDs/E00–E21/worker-only negotiation; it is not
+producer/runtime proof. Whole proposal + diagnostic range needs independent
+technical/research re-review. Original negative verdict remains; RP-754/756/757/
+758 and host/producer/adoption/R-006 remain OPEN. Full nine-tier1.0 remains active;
+no publication, deployment, archival, goal pause or release promotion.
+
+Review by: Codex root, proposal/probe author first filter. Recorded by: Codex root.
+
+Final author consistency pass makes ciphertext publication/deletion trusted
+in-supervisor leaves (no cross-UID output-write assumption), closes authorized
+secret-FD/private libpq-file handling, and separates plaintext scratch from
+encrypted-only protected staging. Failed publication cannot fabricate backup
+success or discard an unrecorded backup. Source cache restart keeps incomplete
+round markers paused; source/target recovery ownership remains explicit. These
+are proposed producer contracts, not executed native conformance.

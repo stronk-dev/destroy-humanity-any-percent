@@ -1,0 +1,117 @@
+// Manual diagnostic for DP7's helper claim; not a normal CI test or real
+// Alertmanager population. Run through the root Make compiler-overlay selector.
+package operations
+
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
+	"net/http/httptest"
+	"strings"
+	"sync/atomic"
+	"testing"
+	"time"
+)
+
+func diagnosticAlertDelivery(t *testing.T, deliverTest bool) (string, error, int32, int32, int32, string) {
+	t.Helper()
+	var unrelated, matching, submitted atomic.Int32
+	var received atomic.Value
+	received.Store("")
+	receiver := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path == "/healthz" {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+		var alerts []struct {
+			Labels      map[string]string `json:"labels"`
+			Annotations map[string]string `json:"annotations"`
+		}
+		if json.NewDecoder(r.Body).Decode(&alerts) != nil || len(alerts) != 1 {
+			http.Error(w, "invalid diagnostic input", http.StatusBadRequest)
+			return
+		}
+		switch alerts[0].Labels["alertname"] {
+		case "DiagnosticOtherAlert":
+			unrelated.Add(1)
+		case "CloudClickerReceiverTest":
+			if len(alerts[0].Annotations["proof_nonce"]) != 32 {
+				http.Error(w, "invalid nonce", http.StatusBadRequest)
+				return
+			}
+			received.Store(alerts[0].Annotations["proof_nonce"])
+			matching.Add(1)
+		default:
+			http.Error(w, "unknown diagnostic input", http.StatusBadRequest)
+			return
+		}
+		w.WriteHeader(http.StatusNoContent)
+	}))
+	defer receiver.Close()
+	manager := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch r.URL.Path {
+		case "/healthz":
+			w.WriteHeader(http.StatusNoContent)
+		case "/metrics":
+			_, _ = fmt.Fprintf(w, "alertmanager_notification_requests_total %d\nalertmanager_notification_requests_failed_total 0\n", unrelated.Load()+matching.Load())
+		case "/api/v2/alerts":
+			var alerts []struct {
+				Labels      map[string]string `json:"labels"`
+				Annotations map[string]string `json:"annotations"`
+			}
+			if json.NewDecoder(r.Body).Decode(&alerts) != nil || len(alerts) != 1 || alerts[0].Labels["alertname"] != "CloudClickerReceiverTest" || len(alerts[0].Annotations["proof_nonce"]) != 32 {
+				http.Error(w, "invalid helper submission", http.StatusBadRequest)
+				return
+			}
+			submitted.Add(1)
+			payload := []byte(`[{"labels":{"alertname":"DiagnosticOtherAlert"}}]`)
+			if deliverTest {
+				var err error
+				payload, err = json.Marshal(alerts)
+				if err != nil {
+					http.Error(w, "marshal failed", 500)
+					return
+				}
+			}
+			response, err := receiver.Client().Post(receiver.URL, "application/json", strings.NewReader(string(payload)))
+			if err != nil {
+				http.Error(w, "unrelated notification failed", http.StatusBadGateway)
+				return
+			}
+			_, _ = io.Copy(io.Discard, response.Body)
+			_ = response.Body.Close()
+			if response.StatusCode != http.StatusNoContent {
+				http.Error(w, "unrelated notification refused", http.StatusBadGateway)
+				return
+			}
+			w.WriteHeader(http.StatusAccepted)
+		default:
+			http.NotFound(w, r)
+		}
+	}))
+	defer manager.Close()
+	ctx, stop := context.WithTimeout(context.Background(), 3*time.Second)
+	defer stop()
+	nonce, err := VerifyAlertDelivery(ctx, manager.Client(), manager.URL, receiver.URL+"/healthz")
+	return nonce, err, submitted.Load(), unrelated.Load(), matching.Load(), received.Load().(string)
+}
+
+func TestDiagnosticVerifyAlertDeliveryRejectsUnrelatedNotification(t *testing.T) {
+	t.Run("matching_positive", func(t *testing.T) {
+		nonce, err, submitted, unrelated, matching, received := diagnosticAlertDelivery(t, true)
+		if err != nil || submitted != 1 || unrelated != 0 || matching != 1 || len(nonce) != 32 || received != nonce {
+			t.Fatalf("positive invalid: err=%v submitted=%d unrelated=%d matching=%d actual_nonce_matches=%t", err, submitted, unrelated, matching, received == nonce)
+		}
+	})
+	t.Run("unrelated_negative", func(t *testing.T) {
+		nonce, err, submitted, unrelated, matching, received := diagnosticAlertDelivery(t, false)
+		if submitted != 1 || unrelated != 1 || matching != 0 || received != "" {
+			t.Fatalf("invalid population: submitted=%d unrelated=%d matching=%d", submitted, unrelated, matching)
+		}
+		if err == nil {
+			t.Fatalf("false delivery proof: helper accepted nonce length=%d; actual HTTP deliveries unrelated=1 matching=0", len(nonce))
+		}
+	})
+}

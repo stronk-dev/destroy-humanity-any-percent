@@ -14,10 +14,23 @@ and overbroad single-manifest wording. Forward SP1/SP2/SP4 corrections now split
 native admission observations/input validation from execution, provide native
 post-admission worker-image acquisition, separate Container from Start, and bind
 toolchain versus source/target runtime separately. Those corrections need review.
-The exact table/IPC schemas/handler-terminal classifiers remain an unfinished
-SPECIFICATION deliverable, not authorized implementation choices. Next construct
-that concrete table and reconcile all remaining start/restart/HTTP/cache routes;
-then resubmit the complete profile. No whole-profile technical approval/adoption.
+The [adapter companion](../../rfc/deployment-native-supervisor-adapters.md) now
+proposes that finite population, closed wire/FD/cache schemas and terminal
+classifiers. Native Go alone dispatches Docker mutations; Compose is the pinned
+model/compiler, and workers have no mutation proxy. It includes v1-install
+handoff, source runtime-work import, trusted in-process invocations, actual
+namespace-init closure and private application completion. All new mechanisms/
+assumptions need whole-range re-review and actual native conformance; no whole-
+profile technical approval/adoption. Next independent review of the complete
+corrected union, addressing any fired criterion before an adoption request.
+
+Actual alert-helper diagnostic now fires RP-758: matching-positive HTTP delivery
+passes, but an unrelated delivery with ZERO matching test delivery also returns
+helper success (33a7fa/3364bd). This is an actual helper plus modeled-manager/
+local-webhook boundary, not real Alertmanager. H06 proposes exact native/operator
+observation; no receiver protocol/key is assumed. Source artifacts retain the
+negative; no current delivery/release claim may cite aggregate counts as exact
+nonce attribution. See source-bound observation and owning log.
 [draft SP1–SP8](../../rfc/deployment-native-supervisor-profile.md) proposes the
 one-shot operator-owned native supervisor, retained original lock/daemon handle,
 isolated broker/gateway jobs and all eight typed work subjects/results. It covers
@@ -26,7 +39,7 @@ services/four networks/five volume families, startup SQL and changed Postgres
 image handling. Source checking exposes the final-success metric ordering cycle;
 the draft removes the CLI writer and proposes a verified-ledger projector in the
 EXISTING backup service. That is an explicit reporting-contract change, not an
-already allowed move before Finished. New native/cgroup prerequisites, tool
+already allowed move before Finished. New native/namespace prerequisites, tool
 artifacts, cache and service control likewise require review/adoption and parent
 reconciliation. RP-757 records the open proposal. After exact specification and
 independent review, actual native producer conformance/adoption remain under OP9;

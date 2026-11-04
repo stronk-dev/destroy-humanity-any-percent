@@ -1,6 +1,6 @@
 # RFC: Native Deployment Supervisor Profile
 
-- **Status:** draft — CHANGES REQUIRED at61f2461f; forward corrections pending review, exact plan/adapter table incomplete; no adoption/implementation authority
+- **Status:** draft — CHANGES REQUIRED at61f2461f; forward corrections and concrete adapter companion pending re-review; no adoption/implementation authority
 - **Author:** Codex
 - **Created:** 2026-11-04
 - **Parent / amends:** [Operation Evidence](deployment-operation-evidence.md), OP9; [Current Release Authority](deployment-current-release-authority.md), CR4/CR6; [Deployment Foundation](deployment-foundation.md), DP1/DP5/DP6
@@ -22,11 +22,11 @@ The [reviewed mutation map](../planning/deployment-foundation/interrupted-transi
 is the minimum coverage inventory. Every production call must have an exact plan;
 an unknown call refuses before dispatch, but an empty/unusable registry fails
 conformance rather than qualifying as a safe implementation.
-SP5 currently enumerates required plan families, NOT the complete exact
-stage/actor/action/kind and endpoint/body/terminal-classifier table. That is an
-explicit unfinished specification deliverable (independent finding3), not a
-routine choice deferred to an implementation agent. This proposal cannot close
-OP9 or be presented for adoption until that table and its IPC adapters exist.
+The [adapter companion](deployment-native-supervisor-adapters.md) now supplies
+the proposed finite plan expansion, request/body/terminal policies and private
+IPC. It is unreviewed construction for independent finding3, not its resolution.
+This proposal cannot close OP9 or be presented for adoption until the complete
+specification and native producer prerequisites pass their required review/gates.
 
 ## SP1 — Packaging, privileges and trust
 
@@ -51,7 +51,7 @@ a version number or the Desktop model alone.
 
 The selected source/target bundle supplies the actual supervisor, backup and
 operations helpers, profile and plan table, plus pinned Docker CLI and Compose
-plugin artifacts for command workers. Add those two tools to DP1's artifact,
+plugin artifacts for the isolated preflight configuration compiler. Add those two tools to DP1's artifact,
 license, provenance and SBOM inventory before adoption/packaging. Their fixture
 downloads are not approved shipping provenance. Reuse the selected bundle's
 Postgres image as the worker filesystem; do not add a seventh image implicitly.
@@ -150,9 +150,10 @@ Its exact keys are `schema_version:1`, `artifact_type:"native_admission"`,
 `anchor_prefix_bytes`, `anchor_prefix_sha256`, `engine_binding_sha256`,
 `process` Process, `mode` clean_install/ordinary_release/rollback,
 `observation_sha256` Hash, `input_validation` not_required/verified,
-`scratch` none/removed, `observed_at` Date. Observation is the complete CR2 proof,
+`scratch` none/removed, `activities` Hash array in native activity order,
+`observed_at` Date. Observation is the complete CR2 proof,
 or exact read-only install/CR4 ownership inventory with the same prefix/tuple;
-its missing exact adapter/schema is part of finding3. Rollback requires verified;
+the companion A0 defines its exact inventory/activity shapes (review pending). Rollback requires verified;
 other modes not_required. No other fields/nulls. This object is private bootstrap
 evidence, not a new ledger or permission by itself. SP7 binds its hash; it does
 not reference that later scope hash, avoiding a self-hash cycle. Unresolved
@@ -178,8 +179,11 @@ After loss, stale IPC/PID records do not authorize a replacement supervisor.
 Each command worker is a distinct admitted Docker job: private PID/IPC namespace,
 read-only root, no restart policy, no-new-privileges, all capabilities dropped,
 no host socket, ports, host PID/cgroup namespace or writable host outputs. It
-receives a private broker channel, read-only selected inputs/authorized secret
-files, private scratch and only its declared gateway network. No Docker context,
+receives read-only selected inputs/authorized secret
+files, private scratch and only its declared gateway network. The preflight
+Compose compiler alone has a READ-ONLY broker for ping/version; all mutating
+Engine calls belong to the native supervisor under the companion table. No
+opaque Compose up/down/run command supplies hidden mutation authority. No Docker context,
 plugin, credential helper, environment override or mount may supply another
 daemon or executable. Reject privileged/devices/extra mounts/network connections,
 Docker exec into retained services and daemon API hijacks outside fixed plans.
@@ -228,14 +232,17 @@ admission, never labels alone.
 - `Process`: `host_boot_id` UUID, `pid` Counter, `start_ticks` Counter,
   `pid_namespace_inode` Counter, `uid` Counter. Positive process/start/namespace;
   UID may be0. It is observation metadata tied to a retained pidfd, not permission
-  to reopen/signal that numeric PID later.
+  to reopen/signal that numeric PID later. The PID is interpreted in the named
+  observer PID namespace; never compare integer PIDs across namespace views.
+  Live kernel credentials/held handles and actual container init mapping, not a
+  self-reported PID, bind cross-namespace producer identity.
 - `Container`: `container_id` CID, `image_config_sha256` Hash, `role` declared
   service/job enum, `generation` UUIDv4, `declared_networks` CID array sorted,
   `mounts` Hash array sorted. This immutable CREATED-container binding has no
   mutable PID/start fields. Inspect/validate actual creation config before binding;
   declared networks are allowed endpoints, not a claim all are already attached.
 - `Start`: `container_sha256` Hash, `start_work_id` UUIDv4, `started_at` Date,
-  `process` Process, `networks` CID array sorted, `cgroup_scope_sha256` Hash.
+  `process` Process, `networks` CID array sorted, `native_scope_sha256` Hash.
   This is a distinct native start observation, not a replacement Container.
   Reserve start/native scope work BEFORE starting; append its once-only binding
   on actual native return, then use the running resource. Every subsequent start
@@ -250,11 +257,16 @@ admission, never labels alone.
   actual opened source and mount mode must match; no secret value/digest/path.
   Each Container.mounts entry hashes one OP1 Mount object, in hash order.
 - `Storage`: `family` one of five persistent DP1 volume families, `job_scratch`,
-  `backup_target`, `metrics_target`, `operator_state`, `service_cache`;
-  `generation` UUIDv4, `driver` enum `local_volume`/`host_directory`,
+  `backup_target`, `metrics_target`, `operator_state`, `service_cache`,
+  `protected_staging`; `generation` UUIDv4, `driver` enum `local_volume`/`host_directory`,
   `native_name` nullable ID, `device` Counter, `inode` Counter, `owner_uid` Counter.
-  Native name required only for a Docker volume. Device/inode observed through
+  `engine_created_at` nullable Date is also required; non-null only for a Docker
+  volume. Native name required only for a Docker volume. Device/inode observed through
   the approved trusted mount inspector. No absolute path is persisted.
+  owner_uid is the observed state at binding, not permission for an unrecorded
+  ownership change. Governed Postgres initialization may change0 to its approved
+  runtime UID; a separate current storage observation must validate that transition
+  without rewriting the original binding. Other changes refuse.
 - `Network`: `network_id` CID, `generation` UUIDv4, `role` one of `edge`,
   `application`, `database`, `operations`, `job_gateway`, `internal` boolean.
 - `Socket`: `connection_id` UUIDv4, `database_container_sha256` Hash,
@@ -272,11 +284,11 @@ Each subject has the common exact keys `schema_version:1`, `artifact_type:
 | engine_request | `engine_binding_sha256`, `request_id` UUIDv4, `action` plan action enum, `resource_sha256` nullable Hash, `reserved_children` UUID array in admission order |
 | job_namespace | `container` Container, `scratch` Storage array in declaration order |
 | runtime_scope | `owner` source/target, `identity` CR1 Identity, `containers` Container array in service order, `networks` Network array in DP1 order, `storage` Storage array in DP1/host-scope order |
-| sql_stream | `socket` Socket |
-| http_stream | `request_id` UUIDv4, `action` fixed health/bootstrap/state/socket/alert enum, `server_scope_sha256` nullable Hash, `children` UUID array; null server scope ONLY for the configured read-only receiver-health probe |
+| sql_stream | `socket` Socket, `runtime_origin_sha256` nullable Hash (null for a newly dialed operation stream; original service-round admission/handoff proof for imported streams under A6) |
+| http_stream | `request_id` UUIDv4, `action` fixed health/bootstrap/state/socket/alert/readiness enum, `route` H01/H02/H03/H04/H05/alert_health/alert_metrics/alert_post, `server_scope_sha256` nullable Hash, `children` UUID array; null server scope ONLY for the configured read-only receiver-health probe |
 | host_publication | `scope` Storage, `target` Relative, `publisher_work_id` UUIDv4, `format` backup_ciphertext/operation_metric/service_cache |
 | host_deletion | `scope` Storage, `target` Relative, `target_sha256` Hash, `policy_sha256` Hash, `publisher_work_id` UUIDv4 |
-| native_job | `role` supervisor-dispatch/observer/publisher/restore-validation enum, `container_sha256` nullable Hash, `process` Process, `children` UUID array |
+| native_job | `role` supervisor-dispatch/observer/publisher/restore-validation enum, `container_sha256` nullable Hash, `process` Process, `runtime_origin_sha256` nullable Hash, `invocation` nullable object with `invocation_id` UUIDv4 and `entry` stream_end/scratch_remove/freeze_scheduler/export_scheduler/start_services/go_snapshot/opaque_forwarder/private_scratch_cleanup/publish_cache/publish_metric/publish_ciphertext/delete_retained_object, `children` UUID array |
 
 Container.role is exactly one of the seven service names from the Compose
 template, or `engine_cli`, `backup_helper`, `sql_relay`, `native_observer`,
@@ -294,12 +306,27 @@ omit a resource or assign contradictory owners to it.
 
 `native_scope` (hashed by job_namespace evidence) has exact keys
 `schema_version:1`, `artifact_type:"native_job_scope"`, `container_sha256`,
-`host_boot_id`, `cgroup_device`, `cgroup_inode` Counter, `init_process` Process,
-`observed_at` Date. Retain the actual native cgroup directory/observation handle;
-require cgroup-v2 populated=0 for the WHOLE scope plus exact container removal/
-restart prevention. A path read, parent exit or lost scope handle is insufficient.
-Workers cannot write/escape cgroup membership. This adds an explicit cgroup-v2
-functional prerequisite to SP1 and must pass actual native-host escape controls.
+`host_boot_id`, `mode` private_pid_namespace/trusted_go_leaf, `namespace_device`,
+`namespace_inode` Counter, `init_process` Process, `observed_at` Date.
+For private_pid_namespace retain the actual private PID-namespace
+FD and ORIGINAL namespace-init pidfd, bound before releasing the fixed shim.
+Kernel namespace type must be PID, distinct from the host, and the exact native
+init must be PID1 inside that namespace. Require original init pidfd EXIT plus
+exact CID removal/restart prevention and every external Engine/SQL/HTTP/file
+child terminal. Linux kills all members when this namespace init terminates and
+cannot admit new processes there; this is not a generic parent/ExecID exit claim.
+Prove worker cannot enter ancestor namespaces or obtain a host/Docker escape.
+Actual native-host descendant/blocked-IO controls remain mandatory. This replaces
+the earlier unproved cgroup-v2 populated=0 requirement with a specific kernel
+namespace lifetime contract; it does not waive whole-scope terminality. Shared
+Postgres-PID-namespace observers/retained backup are NOT this private job scope;
+A6 defines their distinct trusted native origins and closure obligations. A temporary native_observer alone may use trusted_go_leaf in the exact
+Postgres PID namespace: pinned CGO-free Go entry observe_native, no exec/fork/
+plugin/healthcheck or accepted Docker-exec route, one initial thread group and
+only in-process tasks. Verify that entry/closed membership in source and native
+conformance; require original init pidfd group exit and all external children
+separately terminal. It cannot use the Postgres PID1 exit test or kill that
+namespace. No arbitrary CLI/serial tool/worker may select this trusted leaf mode.
 For not_started only, native_scope hash is null and the daemon observer must
 prove no admitted/pending start and the exact created container disposed.
 
@@ -310,14 +337,14 @@ producer. `result` is the corresponding CLOSED object below, not free text:
 
 | Kind | Result keys and required interpretation |
 |---|---|
-| engine_request | `request_id`, `response_status` integer100..599, `response_end` complete/not_dispatched, `bound_children` UUID array. Entire original handler/response observed under held daemon; exact native status classified by plan. Every reserved child bound or proved natively uncreated. Error/EOF/404 alone is not an unknown-create disposition. |
-| job_namespace | `container_sha256`, `disposition` removed/not_started, `exit_code` nullable integer0..255, `native_scope_sha256`, `children` terminal UUID array. Whole task/cgroup terminal and restart prevented; not merely parent PID/ExecID exit. |
+| engine_request | `request_id`, `response_status` integer100..599, `response_end` complete/not_dispatched, `handler_end` ordered_reply/server_eof/readonly_hijack_eof, `writer` Process, `socket_cookie` Counter, `bound_children` UUID array. Entire original handler/response observed under held daemon; exact native status classified by plan. Every reserved child bound or proved natively uncreated. Error/EOF/404 alone is not an unknown-create disposition. |
+| job_namespace | `container_sha256`, `disposition` removed/not_started, `exit_code` nullable integer0..255, `native_scope_sha256`, `children` terminal UUID array. Whole declared native scope terminal and restart prevented; not merely parent PID/ExecID exit. |
 | runtime_scope | `binding_sha256`, `disposition` removed/retained_source/retained_target, `observations` Hash array in subject order. Covers ALL containers/networks/storage and actual service ownership; unknown or omitted scope refuses. |
 | sql_stream | `socket_sha256`, `backend_end` pidfd_exit, `stream_end` eof/reset, `forwarder_jobs` terminal UUID array. Both original held native process exit AND original server stream/forwarders terminal; cancellation-delivery socket is not this stream. Other errors/guards remain unresolved. |
 | http_stream | `request_id`, `response_status` nullable integer100..599, `stream_end` response_complete/socket_closed/server_scope_removed, `disposition` known_handler_complete/owned_scope_terminal, `children` terminal UUID array. Plan-specific actual handler/SQL completion or full owned server-scope cleanup, never client cancel alone. |
-| host_publication | `scope_sha256`, `target`, `format`, `content_sha256`, `bytes` Counter, `publication` no_replace/replace_metric/cache_snapshot, `directory_sync` completed, `publisher_receipt_sha256`. Exact permitted final object and no remaining publisher; backup authentication/protection is separate. No hash of plaintext/secret input. |
+| host_publication | `scope_sha256`, `target`, `format`, `content_sha256` nullable Hash, `bytes` Counter, `publication` no_replace/replace_metric/cache_snapshot/not_published, `directory_sync` completed, `publisher_receipt_sha256`, `protected_staging_sha256` nullable Hash. Successful publication requires actual final identity/non-null content. not_published requires proven no new final object, all owned temporaries disposed or explicitly protected, no remaining publisher/IO; null content/bytes0 cannot become backup/metric success. An existing untouched foreign target is never deleted. |
 | host_deletion | `scope_sha256`, `target`, `target_sha256`, `policy_sha256`, `unlink` completed, `directory_sync` completed, `publisher_receipt_sha256`. Exact generation/protection decision, confirmed removal and no remaining delete request. |
-| native_job | `process`, `disposition` exited, `exit_code` integer0..255, `children` terminal UUID array. Retained native handle and whole declared descendant/container scope, not PID metadata alone. |
+| native_job | `process`, `disposition` exited/invocation_returned, `exit_code` nullable integer0..255, `invocation_id` nullable UUIDv4, `children` complete bound UUID array. External effect children remain independently outstanding; only local contained descendants/IO must end before this native process/invocation receipt. Process exit requires exact native scope/null invocation. Record actual wait/daemon status when known (signaled Unix status as128+signal); null means unknown business outcome and can NEVER satisfy success, even when physical terminality is proved. Only the eight declared trusted supervisor entries, the I05 trusted service cache-writer leaf, or the three exact I04 imported source-routine entries with valid runtime origin, may return while their original producer lives: non-null matching invocation/null exit, actual entry return with closed child-spawn registry and every native/IO task settled. An arbitrary helper's reply/parent exit cannot use this case. |
 
 An unbound refusal uses a separate result with EXACT keys `reason` (one of
 admission_closed/stage_forbidden/subject_mismatch/unsupported_profile/native_precondition),
@@ -329,7 +356,9 @@ the admitted graph, including dynamically admitted streams, not just a count.
 For publisher graphs the order is publication/deletion → job_namespace →
 native_job leaf; the native job exits, its namespace is removed, then the
 publication observer validates final bytes/sync and references that namespace's
-terminal receipt. A publisher receipt cannot depend on its own parent publication
+terminal receipt. F01/F02/F03's trusted in-supervisor writers and I05's trusted service
+cache writer instead reference their leaf invocation receipt, without a namespace
+that would require the whole trusted authority process to die. A publisher receipt cannot depend on its own parent publication
 receipt. All receipt/child references must be acyclic; no self-hash cycle.
 
 ## SP5 — Finite stage plans and Engine mediation
@@ -390,15 +419,15 @@ the reviewed release-bound generated table AND their actual route/body adapter.
 | Preflight | Compose config; fixed gameserver validate-config and amtool check-config jobs; backup inspect read-only SQL; configured receiver-health GET. Jobs/streams have their own admissions. No bootstrap, account mutation, service start or final output write. |
 | Pre-upgrade backup | Fixed actual backup helper; all exporter/libpq streams; encrypted staging, trusted ciphertext publication and metric. Current source exact identity/header/authentication and durable checkpoint precede drain. |
 | Drain | Fixed source bootstrap/state/WebSocket plans only AFTER checkpoint; source gameserver stop by exact CID, native exit/readiness/socket observations. Pending remote effects must end before fence. |
-| Start / install | Exact selected Compose service creates/starts with full network IDs and allowed mounted generations. Reserve job/runtime children BEFORE each create. Include startup migration/epoch jobs, backup controller and all background services. No automatic recreation of an absent/unowned resource inferred from names. |
+| Start / install | Exact selected Compose-model service creates/starts with full network IDs and allowed mounted generations. Reserve job/runtime children BEFORE each create. Include startup migration/epoch jobs, backup controller and all background services. No automatic recreation of an absent/unowned resource inferred from names. |
 | Verify / smoke | Exact identity-inspect helper/SQL, fixed application bootstrap/state/socket and alert test job. Response and service-side effects must complete. Actual alert delivery remains the parent's separate receiver proof; aggregate metrics alone are not attribution. |
 | Rollback fencing | Close old worker admission; account for original requests/jobs, scheduled service, SQL/HTTP, output/deletion. Validate exact protected backup and source/target ownership BEFORE destructive scope cleanup. Pre-backup abort has read-only/own-job cleanup plans only. |
 | Rollback execution | Only after synced recovery_fenced: remove exact failed owned scopes/DB generation, start clean target DB, restore actual protected backup, inspect identity, start/verify/smoke. Preserve other declared storage as required; no name-reused volume substitution. |
 | Finalization | All operation-owned helper metrics/publishers BEFORE verification_closed/operation_completion/Finished. Remove runRelease/runInstall's outer write. Entire-release/install result is projected by the retained service only from actual final ledger authority (SP6), never pre-published as success. |
 | Initial-install failure | Governed OP7 attempt/log, exact admitted cleanup including volumes only under parent install contract. Empty v1 history does not bypass unfinished descriptor/logs. No invented v2 install row or legacy adoption. |
 
-Every Engine request is decoded as a fixed supported API route/action with exact
-query/body validation, not a generic method/path allowlist. Enforce manifest
+Every native Engine request is built as a fixed supported API route/action with exact
+query/body validation, not a generic method/path allowlist or worker mutation proxy. Enforce manifest
 image config, exact service template, generation/network/mount binding and the
 current synced ledger stage in memory before forwarding. Translate only approved
 worker input-root paths into pinned host bundle/secret/scratch roots; no worker
@@ -450,8 +479,8 @@ Never grant the service the whole operator directory or a Docker socket.
 Validate leaf native identity/mount before use. The host operator accesses that
 leaf through its own parent; service access comes through the explicit bind
 mount, not a claim its UID can traverse the host parent. Keep this leaf outside
-the backup file-scanning root. Exact mode/UID/relative-path and socket-creation
-adapters remain part of the SP5 table, not permission to expose general IPC.
+the backup file-scanning root. Companion A6 specifies the exact leaf modes, message/FD shapes and source/cache
+adapters; that proposal is not permission to expose general IPC.
 
 Authenticate the source service against the inspected full container ID/image/
 current native init generation, a retained pidfd and two fresh native challenge
@@ -484,7 +513,9 @@ Replacement backup starts paused, with read-only source/target identity/record
 capabilities and the expected operation tuple. The trusted supervisor grants
 conditional retained ownership before phase closure; the service may resume
 normal scheduling only after verifying the corresponding complete Finished/
-completion graph in the ORIGINAL ledger and its exact target identity. Pass
+completion graph in the ORIGINAL ledger and its exact target identity; initial
+installation instead requires the successful v1 row and complete OP7 InstallHandoff,
+never a nonexistent v2 install event. Pass
 read-only already-open metadata descriptors over the private channel, not a
 claim that an open directory bypasses UID permissions. Persist the verified
 service-cache snapshot/paused state using trusted service code; wrong tuple,
@@ -494,7 +525,7 @@ protected from ungoverned deletion; it is not another deployment ledger.
 
 Read-only status/proof-descriptor transfer is not new worker/effect admission and
 does not reopen a sealed work log. After verification_closed the supervisor may
-only publish its closure, append its referring ledger row, serve such read-only
+only publish its closure/OP7 install handoff, append its referring ledger row, serve such read-only
 metadata and close handles/exit. It cannot publish an extra metric, resume an
 operation worker or issue a new effect to make handoff look complete. Service
 cache/scheduling is the explicitly transferred retained service's work, never
@@ -545,7 +576,7 @@ bootstrap; a new process cannot recreate that scope from its serialized fields.
 Retained runtime inventory includes seven services in template order; four
 networks; caddy_data, caddy_config, postgres_data, prometheus_data and
 alertmanager_data; declared backup and metric targets; operator/service-cache
-state; and every read-only release/config/secret mount's allowed logical scope.
+state and every encrypted-only protected staging generation; and every read-only release/config/secret mount's allowed logical scope.
 Do not hash secret contents. Inventory read-only inputs separately from writable
 storage. Subject generation, actual mount mode/source and release-owned bytes
 must match. Missing/unowned/extra services, mounts, pending jobs or resources
@@ -570,8 +601,8 @@ commands have passed the install/release/rollback proof.
 
 ## SP8 — Adoption, construction and acceptance
 
-Technical review must inspect the completed profile, including the still-missing
-exact plan/adapter table, against the actual call map,
+Technical review must inspect the completed profile and its proposed exact
+adapter companion together against the actual call map,
 OP1–OP8 and CR1–CR6, including cycles in bootstrap/finalization/service handoff.
 Then obtain owner adoption of the architecture/explicit host and artifact floor,
 with parent-body reconciliation. Technical approval alone authorizes no runtime
