@@ -1033,3 +1033,32 @@ Complete seven-path range after082de7a7 through this batch awaits independent
 corrective review. Docs/plan/ledger reconcile here. RP-765 stays closed in its
 periodic scope; RP-450 original cause, whole Transport/CI/latency, artifact rebuild,
 owner adoptions and full nine-tier1.0 remain open. No archival/publication or goal pause.
+
+
+## 2026-11-04 — RP-766 independent corrective approval and cleanup
+
+Review by: independent Codex `/root/socket_connect_shutdown_corrective_review`.
+Recorded by: Codex root, transcribing that agent's actual verdict. APPROVED, no
+findings, complete seven-path082de7a7a4f38ca635fb9b486829d3fb664a0177..
+8833d82de5c8a48b190733783e60bcd5af63d81f. Full diff, accepted authority,
+Centrifuge admission/hub/OnConnect ordering and original caller/SQL contexts inspected.
+
+Fresh independent Linux-amd64/Postgres/race77245 passes initial two arms0.13s,
+real-library handoff0.03s, held initial Account SQL/drain4003 witness1.81s and
+actual family-revocation23.44s, not skipped. Exact-old overlay77946 reproduces
+both initial-auth failures, handoff deadline1.02s and actual SQL socket surviving
+completed drain3.62s; expected Make2. Reviewer independently matches old bytes
+and hash to082de7a7. Fresh affected vet/whitespace pass. First unquoted regex-pipe
+selector ran no tests; corrected77245 is the executed current evidence.
+
+Root's complete three-package race652 PASS/zero FAIL/one existing opt-in skip
+log/digest is independently inspected and reused with attribution, not called a
+reviewer whole-suite run. Handoff remains an explicit model permitting a produced
+connect reply before closure; actual Account proof is the separate SQL witness.
+Reviewed HEAD/worktree stay fixed; no reviewer edits/commits. All handles terminal.
+Root confirms no test workers remain, verifies exact root-owned PosteSQL container
+e640901690a1 belongs to this repository's compose.save-test.yml, removes it, and
+verifies only the two pre-existing BuildKit containers remain. Shared caches and
+builders untouched. Plan/ledger close RP-766; no software rerun for this editorial
+record. RP-450 cause, full-feature/CI/latency, release-artifact rebuilding, held
+adoptions and all broader1.0 requirements remain; no archival/publication or goal pause.

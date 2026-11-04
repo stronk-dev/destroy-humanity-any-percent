@@ -9,7 +9,8 @@ late results are refused and late library registrations close before queue setup
 Exact-old unit and actual locked-Postgres/socket controls fail; corrected cases,
 the prior periodic witness, revocation and full affected native/Linux SQL race
 populations pass. The deliberate library-handoff model is separate from actual
-Account proof. The seven-path corrective batch awaits independent review; no
+Account proof. Complete seven-path082de7a7..8833d82d is independently APPROVED
+after fresh exact-old/current unit/model and actual SQL/socket checks; no
 token/timer policy, whole-feature or release acceptance follows.
 
 2026-11-04 RP-765: periodic reauthentication's uncancelable query blocks client
