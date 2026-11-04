@@ -10549,3 +10549,26 @@ and supported host/SP8/R-006 remain separate gates. Diff checked; no unrelated
 software suite, source build, Docker/host operation, publication or goal pause.
 This whole audit/tool range requires independent research review.
 Review by: Codex root, implementer first filter. Recorded by: Codex root.
+
+## 2026-11-04 — Native tool audit independently approved, rights closure still open
+
+APPROVED, bounded research/tool scope, exact six-path
+ad1d23c118746600451e651047ebd46692cf09c8..
+3fd7483c7ae8c3ed2743b59da5be6c2ae059afe6.
+Review by: independent Codex /root/native_supervisor_profile_review.
+Recorded by: Codex root, transcribing its completed verdict. Actual probe exits0;
+stable facts and every retained input/probe hash match. Independent rebounded
+wrong-subject/missing-compose-go controls, truncated-tool metadata and existing-
+output refusal pass with no new output/unchanged prior bytes. All shared inputs
+stay hash-identical. Actual license/notice/revision and existing six-command/
+browser generator boundaries checked; range whitespace passes and checkout clean.
+
+No distribution/rights clearance, signed/reproduced provenance, native closure,
+shipping-tool selection, profile adoption/runtime/R-006/release approval. RP-759
+stays open. Next collect every exact declared module source by its binary h1
+identity and corresponding scoped license/NOTICE bytes, then establish CLI's
+Go/vendor/native link closure. Read-only cache census found59 exact Compose source
+directories and121 missing; it is availability only, not authenticated source or
+partial release clearance. The full180-module population remains the required
+collection scope; no package/term may disappear to make an inventory pass.
+No product/CI/balance/copy change, publication or goal pause.

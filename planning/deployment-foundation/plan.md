@@ -21,8 +21,10 @@ The [tool provenance audit](native-tool-provenance-audit.md) now executes that
 first inventory: actual Compose publisher graph covers180 modules but leaves182
 licenses unknown; actual CGO-enabled CLI has no dependency module list. RP-759
 keeps source/native closure and license/NOTICE delivery OPEN. Existing app SBOM
-cannot silently cover either new binary. Source-bound manual tool/audit needs
-independent research review; no clearance/distribution or shipping version adopted.
+cannot silently cover either new binary. Source-bound manual tool/audit is independently APPROVED
+ad1d23c1..3fd7483c; no clearance/distribution or shipping version adopted. Next
+collect all180 exact module sources against their binary h1 identities and scoped
+license/NOTICE bytes, plus actual CLI Go/vendor/native closure.
 
 Next complete the exact CLI/Compose provenance/rights/artifact inventory and
 DP7 projection/reboot-cache adoption evidence required by SP1/SP6; obtain explicit
