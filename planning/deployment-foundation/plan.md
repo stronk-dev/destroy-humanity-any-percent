@@ -93,6 +93,16 @@ remain explicit. Complete Go/LLVM/real-ELF controls pass; complete nine-path
 reproduction. RP-763 closes its bounded identification/instrument route; RP-759
 remains open. No package identity, rights, build or source-body closure follows.
 
+Publisher OCI counterpart now has a complete offline descriptor/subject/diff-id/
+member check. Its executable sections and330 known native ranges match, but its
+whole binary differs from the static download in four sections. Real wrong-
+subject/data-only identity controls discriminate. Full metadata overlay/vet pass;
+complete OCI research batch awaits independent review. Do not attach the image's
+statement to the original or silently substitute the artifact. DP1 does not
+implicitly demand universal signed/reproduced upstream builds; finish truthful
+per-tool inventory, terms/delivery and provenance, then the concrete artifact/
+policy proposal and applicable adoption. Further path/code equality cannot do that.
+
 Next complete the exact CLI/Compose provenance/rights/artifact inventory and
 DP7 projection/reboot-cache adoption evidence required by SP1/SP6; obtain explicit
 architecture/host/artifact-floor adoption and reconcile parent bodies before

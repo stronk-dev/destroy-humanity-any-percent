@@ -403,6 +403,57 @@ license-policy adoption, native conformance or release status. Reproduce with
 the owning log's complete Go/LLVM/compiler commands, then run the collector
 with a fresh `--output`; recorded raw inputs and source archives are prerequisites.
 
+### Publisher OCI counterpart: valid image binding, different executable
+
+The [offline OCI observation](cli-oci-counterpart-observation.v1.json) and
+[manual probe](probes/cli-oci-counterpart_test.go.txt) verify the cached public
+`dockereng/cli-bin:28.4.0` descriptor chain. The pinned
+[publisher workflow](https://github.com/docker/cli/blob/d8eb465f86cfceeb57f8582e373d41a558d35503/.github/workflows/build.yml)
+names that image; its tag is not used as immutable authority. Exact OCI index
+digest`8c8f13345422afb0a34cd132fccc2998b9a88f83380828cdb816185f8aa3e3e2`
+selects one Linux/amd64 image and its one linked attestation. Other platform
+descriptors remain outside this explicitly selected platform population.
+
+Every selected manifest, config, statement and layer matches its parent digest
+and size. Runtime OS/architecture, layer diff-id and the sole regular `/docker`
+member are checked from immutable byte snapshots. The SLSA0.2 statement's
+subjects bind the selected **image manifest**
+`1aee659fbf601566d6432e9a377df50c7ed41fdd61ddf75e92b421e326eb74e1`.
+This is integrity/subject consistency, not verified publisher signatures.
+
+The image contains43,556,144bytes with SHA256
+`507681e01b00c28dc74523c0108c16075f552eb01877d6f240d8f3536575d8b0`.
+That differs from the actual static-download fixture
+`27f239f97492c434e091a70b41b8796c698f0aa2b6052c6f9c28da4ee7ae888b`.
+All41 ELF sections are compared, treating NOBITS as virtual metadata and using
+decompressed bytes for compressed sections. Executable sections and all330
+known native ranges are identical at the same addresses. Four other sections
+differ: `.rodata`, `.go.buildinfo`, `.note.go.buildid`, `.note.gnu.build-id`.
+No range/code equality is promoted to whole-executable identity.
+
+The statement claims source commit`d8eb465`, Go1.24.7/Alpine and a resolved
+`golang:1.24.7-alpine3.21` material digest
+`dedeeec59c120b5b73a2db6918e90b05d59e3410580dee2e7c5cc2b48ae0c328`;
+it declares `reproducible:false`. These are publisher metadata for the counterpart.
+Neither a material's package database nor its declared base accounts by itself
+for later `apk add` operations or proves the original binary's installed package
+set. No container is started and no image is substituted for the fixture.
+
+Cold full metadata overlay tests and vet pass. A foreign parsed statement
+subject refuses; the actual different binary refuses original-identity binding;
+the exact same member accepts that narrow byte-identity check. A private real-ELF
+data-only change preserves executable bytes but still refuses identity. This
+discriminates the tempting wrong inference from code equality. No shared input
+bytes change. This complete OCI research batch awaits independent review.
+
+DP1/AC8 require truthful artifact hashes, SBOM, license delivery and source/image
+provenance validation. This audit does not add a universal requirement to
+independently sign or reproduce every upstream build. Missing checks are limits,
+not new owner rulings. The genuine open work is the selected tool inventory,
+actual applicable terms and source/notice delivery, honest artifact-specific
+provenance, a concrete artifact/policy proposal and its required adoption. This
+counterpart's statement cannot fill the original artifact's provenance field.
+
 The existing `gen-release-metadata` discovers dependencies of six Cloud Clicker
 Go commands and the built browser client. It does not inspect external CLI/
 Compose bytes. Adding these binaries to an artifact list cannot silently make

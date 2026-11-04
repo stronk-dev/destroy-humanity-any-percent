@@ -11260,3 +11260,48 @@ provenance. No more path/checksum census can recover the absent musl source-body
 checksums. Full rights/source delivery, artifact/profile adoption and actual
 native/SP8/R-006 remain. All root/review handles terminal; no push, deployment,
 archival, release approval, product promotion or goal pause.
+
+## 2026-11-04 — Verify OCI counterpart scope without laundering original provenance
+
+Continue RP-759 with the accepted DP1/AC8 requirements, not an invented universal
+signature/reproduction gate. New offline Go probe verifies exact cached index,
+selected Linux/amd64 descriptor, linked attestation, all selected digest/size
+bindings, runtime config, uncompressed diff-id and sole regular /docker member.
+One image/attestation is selected from20 index descriptors; no other platform
+is claimed covered. Immutable snapshots, no network/daemon or Linux execution.
+
+All41 ELF sections compare (virtual NOBITS reported as metadata, compressed
+sections compared after standard ELF decompression). All executable sections
+and330 known native ranges match at identical addresses. Whole executable bytes
+DIFFER: original27f239f9 versus counterpart507681e0. Differences are exactly
+.rodata/.go.buildinfo/.note.go.buildid/.note.gnu.build-id. Image statement
+subject is its1aee659f manifest, not a standalone original executable.
+Publisher source/base materials are claims; reproducible:false and no verified
+signature/source authentication. Base material cannot inventory later apk ops.
+
+Full cold metadata overlay383d20/74092→ba0c4d passes; overlay vet0a6252 passes.
+Foreign parsed subject rejects. Actual counterpart rejects original binding;
+its exact own bytes accept identity. Real-ELF private rodata mutation preserves
+code but still rejects whole identity. This prevents promoting code equality
+or a matching revision string to original-artifact provenance. Shared inputs
+remain unchanged. Original static fixture is neither replaced nor relabelled.
+
+Report17,870bytes/SHA78f764f39578b88144998de2422ef46c1b3b25159381940383d185960f94fd00;
+probe13,419bytes/SHA7cc9f1eeae9a39ef5b347f2d7fc62d40ea8aaee57b4d1dc09dd3aaada0ed4663.
+Overlay pointer .cache/worker-cli-tools/cli-oci-counterpart-work.txt maps the
+reviewed native probe plus new OCI .txt into virtual owning-package test files.
+Root make test-go GO_PACKAGES= uses explicit ./cmd/gen-release-metadata before
+-args -native-cli-root <root> -native-cli-output <fresh1>
+-oci-counterpart-output <fresh2>; same overlay in root vet package selector.
+Cached public OCI inputs and acquisition provenance are in prior checkpoint;
+ordinary CI does not fetch/run these studies. All handles terminal.
+
+Complete six-path dc0c652c..this checkpoint awaits independent research/tool
+review. RP-759 remains OPEN for selected tools/terms/full source-notice delivery,
+artifact-specific source/image provenance, concrete artifact/policy proposal and
+applicable adoption. Exact source-body unknowns remain honest; this study does
+not invent signature/reproduced-build owner requirements or solve actual native
+package/header/CRT scope by naming a base. No production, normal tests/CI, RFC,
+dependency or kernel change. No packaging/native/SP8/R-006, release/archival/
+push approval or goal pause. Review by: Codex root, implementer first filter.
+Recorded by: Codex root.

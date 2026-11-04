@@ -1,0 +1,376 @@
+// Manual offline OCI/binary correspondence research. A matching code section
+// does not let an image attestation stand in for a different executable.
+package main
+
+import (
+	"archive/tar"
+	"bytes"
+	"compress/gzip"
+	"debug/elf"
+	"encoding/json"
+	"errors"
+	"flag"
+	"fmt"
+	"io"
+	"os"
+	"path/filepath"
+	"sort"
+	"strings"
+	"testing"
+)
+
+var ociOutput = flag.String("oci-counterpart-output", "", "fresh observation")
+
+type cliOCIDescriptor struct {
+	MediaType, Digest string
+	Size              int64
+	Platform          struct{ OS, Architecture string }
+	Annotations       map[string]string
+}
+type cliOCIManifest struct {
+	SchemaVersion int
+	MediaType     string
+	Manifests     []cliOCIDescriptor
+	Config        cliOCIDescriptor
+	Layers        []cliOCIDescriptor
+}
+type cliOCISubject struct {
+	Name   string
+	Digest map[string]string
+}
+type cliOCIStatement struct {
+	Type          string `json:"_type"`
+	PredicateType string
+	Subject       []cliOCISubject
+	Predicate     struct {
+		BuildType string
+		Materials []struct {
+			URI    string
+			Digest map[string]string
+		}
+		Metadata struct{ Reproducible bool }
+	}
+}
+type cliSectionComparison struct {
+	Name, OriginalSHA256, CounterpartSHA256 string
+	OriginalAddress, CounterpartAddress     uint64
+	Equal, Executable, VirtualOnly          bool
+}
+
+func cliSubject(stmt cliOCIStatement, expected string) error {
+	if stmt.Type != "https://in-toto.io/Statement/v0.1" || stmt.PredicateType != "https://slsa.dev/provenance/v0.2" || len(stmt.Subject) == 0 {
+		return errors.New("unsupported provenance statement")
+	}
+	for _, subject := range stmt.Subject {
+		if len(subject.Digest) != 1 || subject.Digest["sha256"] != strings.TrimPrefix(expected, "sha256:") {
+			return errors.New("attestation subject is not the selected image manifest")
+		}
+	}
+	return nil
+}
+func cliOriginalBinding(original, counterpart []byte) error {
+	if !bytes.Equal(original, counterpart) {
+		return errors.New("attested image does not contain original fixture bytes")
+	}
+	return nil
+}
+func cliCompare(original, counterpart []byte) ([]cliSectionComparison, error) {
+	left, err := elf.NewFile(bytes.NewReader(original))
+	if err != nil {
+		return nil, err
+	}
+	defer left.Close()
+	right, err := elf.NewFile(bytes.NewReader(counterpart))
+	if err != nil {
+		return nil, err
+	}
+	defer right.Close()
+	if left.Class != elf.ELFCLASS64 || right.Class != elf.ELFCLASS64 || left.Machine != elf.EM_X86_64 || right.Machine != elf.EM_X86_64 {
+		return nil, errors.New("expected ELF64 amd64 pair")
+	}
+	if len(left.Sections) != len(right.Sections) {
+		return nil, errors.New("section population differs")
+	}
+	var result []cliSectionComparison
+	for _, a := range left.Sections {
+		b := right.Section(a.Name)
+		if b == nil {
+			return nil, errors.New("counterpart section missing")
+		}
+		row := cliSectionComparison{Name: a.Name, OriginalAddress: a.Addr, CounterpartAddress: b.Addr, Executable: a.Flags&elf.SHF_EXECINSTR != 0}
+		if a.Type == elf.SHT_NOBITS || b.Type == elf.SHT_NOBITS {
+			row.VirtualOnly = true
+			row.Equal = a.Type == b.Type && a.Size == b.Size && a.Addr == b.Addr
+		} else {
+			x, err := a.Data()
+			if err != nil {
+				return nil, err
+			}
+			y, err := b.Data()
+			if err != nil {
+				return nil, err
+			}
+			row.OriginalSHA256 = nativeHash(x)
+			row.CounterpartSHA256 = nativeHash(y)
+			row.Equal = bytes.Equal(x, y)
+		}
+		result = append(result, row)
+	}
+	return result, nil
+}
+func cliRange(data []byte, start, end uint64) ([]byte, error) {
+	f, err := elf.NewFile(bytes.NewReader(data))
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+	if end <= start {
+		return nil, errors.New("invalid comparison extent")
+	}
+	for _, s := range f.Sections {
+		if s.Flags&elf.SHF_EXECINSTR != 0 && s.Addr <= start && end >= start && end <= s.Addr+s.Size {
+			source, err := s.Data()
+			if err != nil {
+				return nil, err
+			}
+			return source[start-s.Addr : end-s.Addr], nil
+		}
+	}
+	return nil, errors.New("extent outside executable sections")
+}
+
+func TestManualCLIOCIComparison(t *testing.T) {
+	if *nativeRoot == "" || *ociOutput == "" {
+		t.Fatal("manual root/output required")
+	}
+	cache := filepath.Join(*nativeRoot, ".cache/worker-cli-tools")
+	inputs := map[string]string{}
+	read := func(name, digest string, size int64) []byte {
+		t.Helper()
+		data, err := os.ReadFile(filepath.Join(cache, name))
+		if err != nil {
+			t.Fatal(err)
+		}
+		if nativeHash(data) != strings.TrimPrefix(digest, "sha256:") || (size >= 0 && int64(len(data)) != size) {
+			t.Fatal("cached OCI digest/size mismatch", name)
+		}
+		inputs[name] = nativeHash(data)
+		return data
+	}
+	decode := func(data []byte, target any) {
+		t.Helper()
+		if err := json.Unmarshal(data, target); err != nil {
+			t.Fatal(err)
+		}
+	}
+	const indexID = "sha256:8c8f13345422afb0a34cd132fccc2998b9a88f83380828cdb816185f8aa3e3e2"
+	const imageID = "sha256:1aee659fbf601566d6432e9a377df50c7ed41fdd61ddf75e92b421e326eb74e1"
+	var index cliOCIManifest
+	decode(read("cli-bin-28.4.0-index.json", indexID, 7677), &index)
+	if index.SchemaVersion != 2 || index.MediaType != "application/vnd.oci.image.index.v1+json" {
+		t.Fatal("unsupported index")
+	}
+	var target, attestation cliOCIDescriptor
+	targets, attestations := 0, 0
+	for _, descriptor := range index.Manifests {
+		if descriptor.Platform.OS == "linux" && descriptor.Platform.Architecture == "amd64" {
+			target = descriptor
+			targets++
+		}
+		if descriptor.Annotations["vnd.docker.reference.digest"] == imageID {
+			if descriptor.Annotations["vnd.docker.reference.type"] != "attestation-manifest" {
+				t.Fatal("unsupported reference type")
+			}
+			attestation = descriptor
+			attestations++
+		}
+	}
+	if targets != 1 || attestations != 1 || target.Digest != imageID {
+		t.Fatal("target/attestation population mismatch")
+	}
+	var image, attest cliOCIManifest
+	decode(read("cli-bin-28.4.0-amd64-manifest.json", target.Digest, target.Size), &image)
+	decode(read("cli-bin-28.4.0-amd64-attestation-0.json", attestation.Digest, attestation.Size), &attest)
+	if image.SchemaVersion != 2 || attest.SchemaVersion != 2 || len(image.Layers) != 1 || len(attest.Layers) != 1 {
+		t.Fatal("expected exact single-layer populations")
+	}
+	var config struct {
+		Architecture, OS string
+		RootFS           struct {
+			Type    string
+			DiffIDs []string `json:"diff_ids"`
+		} `json:"rootfs"`
+	}
+	decode(read("cli-bin-28.4.0-amd64-config.json", image.Config.Digest, image.Config.Size), &config)
+	if config.Architecture != "amd64" || config.OS != "linux" || config.RootFS.Type != "layers" || len(config.RootFS.DiffIDs) != 1 {
+		t.Fatal("wrong runtime config")
+	}
+	var stmt cliOCIStatement
+	decode(read("cli-bin-28.4.0-amd64-statement-0-0.json", attest.Layers[0].Digest, attest.Layers[0].Size), &stmt)
+	if err := cliSubject(stmt, imageID); err != nil {
+		t.Fatal(err)
+	}
+	bad := stmt
+	bad.Subject = append([]cliOCISubject(nil), stmt.Subject...)
+	bad.Subject[0].Digest = map[string]string{"sha256": strings.Repeat("0", 64)}
+	if cliSubject(bad, imageID) == nil {
+		t.Fatal("foreign image subject accepted")
+	}
+	layer := read("cli-bin-28.4.0-amd64-layer-0.tgz", image.Layers[0].Digest, image.Layers[0].Size)
+	gzipReader, err := gzip.NewReader(bytes.NewReader(layer))
+	if err != nil {
+		t.Fatal(err)
+	}
+	tarBytes, err := io.ReadAll(gzipReader)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := gzipReader.Close(); err != nil {
+		t.Fatal(err)
+	}
+	if "sha256:"+nativeHash(tarBytes) != config.RootFS.DiffIDs[0] {
+		t.Fatal("layer diff-id mismatch")
+	}
+	tarReader := tar.NewReader(bytes.NewReader(tarBytes))
+	header, err := tarReader.Next()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if header.Name != "docker" || header.Typeflag != tar.TypeReg {
+		t.Fatal("expected sole regular /docker member")
+	}
+	counterpart, err := io.ReadAll(tarReader)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if int64(len(counterpart)) != header.Size {
+		t.Fatal("member extent mismatch")
+	}
+	if _, err := tarReader.Next(); err != io.EOF {
+		t.Fatal("extra layer member", err)
+	}
+	if nativeHash(counterpart) != "507681e01b00c28dc74523c0108c16075f552eb01877d6f240d8f3536575d8b0" {
+		t.Fatal("unexpected counterpart binary")
+	}
+	original := read("docker", nativeCLIHash, 43556144)
+	if cliOriginalBinding(original, counterpart) == nil {
+		t.Fatal("different image binary treated as original provenance")
+	}
+	if cliOriginalBinding(counterpart, counterpart) != nil {
+		t.Fatal("intact exact-byte binding rejected")
+	}
+	sections, err := cliCompare(original, counterpart)
+	if err != nil {
+		t.Fatal(err)
+	}
+	executableEqual := true
+	var different []string
+	for _, section := range sections {
+		if !section.Equal {
+			different = append(different, section.Name)
+		}
+		if section.Executable && (!section.Equal || section.OriginalAddress != section.CounterpartAddress) {
+			executableEqual = false
+		}
+	}
+	if !executableEqual || len(different) == 0 {
+		t.Fatal("actual code-equal/whole-different distinction lost")
+	}
+	// Real ELF private data-only fault preserves executable bytes but must still
+	// refuse identity. This oracle cannot promote code equality to full provenance.
+	f, err := elf.NewFile(bytes.NewReader(original))
+	if err != nil {
+		t.Fatal(err)
+	}
+	dataSection := f.Section(".rodata")
+	if dataSection == nil || dataSection.Size == 0 {
+		t.Fatal("missing data control")
+	}
+	mutation := append([]byte(nil), original...)
+	mutation[dataSection.Offset] ^= 1
+	_ = f.Close()
+	altered, err := cliCompare(original, mutation)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, s := range altered {
+		if s.Executable && !s.Equal {
+			t.Fatal("data-only control changed code")
+		}
+	}
+	if cliOriginalBinding(original, mutation) == nil {
+		t.Fatal("code equality disguised changed executable bytes")
+	}
+	source, err := os.ReadFile(filepath.Join(*nativeRoot, "planning/deployment-foundation/cli-native-components-observation.v1.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if nativeHash(source) != "c13ae17e80399773cef5c95aa14937a10e28ddbcbfe89a9cfba90f64864c8047" {
+		t.Fatal("native observation changed")
+	}
+	var native nativeReport
+	decode(source, &native)
+	compared, equal := 0, 0
+	var rangeHashes []string
+	for _, unit := range native.NativeUnits {
+		for _, span := range unit.Ranges {
+			a, err := cliRange(original, span[0], span[1])
+			if err != nil {
+				t.Fatal(err)
+			}
+			b, err := cliRange(counterpart, span[0], span[1])
+			if err != nil {
+				t.Fatal(err)
+			}
+			compared++
+			if bytes.Equal(a, b) {
+				equal++
+			}
+			rangeHashes = append(rangeHashes, fmt.Sprintf("%d:%x:%x:%s:%s", unit.Index, span[0], span[1], nativeHash(a), nativeHash(b)))
+		}
+	}
+	if compared != 330 || equal != 330 {
+		t.Fatal("known native range comparison changed")
+	}
+	sort.Strings(different)
+	rangeBytes, err := json.Marshal(rangeHashes)
+	if err != nil {
+		t.Fatal(err)
+	}
+	probe, err := os.ReadFile(filepath.Join(*nativeRoot, "planning/deployment-foundation/probes/cli-oci-counterpart_test.go.txt"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	report := struct {
+		InspectionComplete, ImageSubjectBindingValid, OriginalInAttestedImage, SignatureVerified, DistributionApproved bool
+		OriginalSHA256, CounterpartSHA256, IndexDigest, ImageManifestDigest, StatementScope, ProbeSHA256               string
+		IndexDescriptors, SelectedPlatforms, SelectedAttestations, NativeRanges, EqualNativeRanges                     int
+		ExecutableSectionsEqual                                                                                        bool
+		Inputs                                                                                                         map[string]string
+		DifferentSections                                                                                              []string
+		Sections                                                                                                       []cliSectionComparison
+		NativeRangeManifestSHA256                                                                                      string
+		PublisherClaimedMaterials                                                                                      any
+		PublisherClaimedReproducible                                                                                   bool
+		Limitations                                                                                                    []string
+	}{true, true, false, false, false, nativeHash(original), nativeHash(counterpart), indexID, imageID, "OCI image manifest, not standalone original fixture", nativeHash(probe),
+		len(index.Manifests), targets, attestations, compared, equal, executableEqual, inputs, different, sections, nativeHash(rangeBytes), stmt.Predicate.Materials, stmt.Predicate.Metadata.Reproducible,
+		[]string{"Registry digests bind cached bytes; this does not authenticate a signed publisher attestation",
+			"Different whole executable bytes cannot inherit original-build provenance from equal code sections/ranges",
+			"Equal instructions/debug metadata do not prove source/comment/header/patch identity",
+			"Base image materials do not inventory later apk operations or prove exact original native packages",
+			"No tool selection, native/rights/source closure, packaging, adoption, SP8/R-006 or release approval"}}
+	output, err := os.OpenFile(*ociOutput, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0600)
+	if err != nil {
+		t.Fatal(err)
+	}
+	encoder := json.NewEncoder(output)
+	encoder.SetIndent("", "  ")
+	if err := encoder.Encode(report); err != nil {
+		_ = output.Close()
+		t.Fatal(err)
+	}
+	if err := output.Close(); err != nil {
+		t.Fatal(err)
+	}
+}

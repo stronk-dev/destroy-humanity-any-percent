@@ -1,0 +1,481 @@
+{
+  "InspectionComplete": true,
+  "ImageSubjectBindingValid": true,
+  "OriginalInAttestedImage": false,
+  "SignatureVerified": false,
+  "DistributionApproved": false,
+  "OriginalSHA256": "27f239f97492c434e091a70b41b8796c698f0aa2b6052c6f9c28da4ee7ae888b",
+  "CounterpartSHA256": "507681e01b00c28dc74523c0108c16075f552eb01877d6f240d8f3536575d8b0",
+  "IndexDigest": "sha256:8c8f13345422afb0a34cd132fccc2998b9a88f83380828cdb816185f8aa3e3e2",
+  "ImageManifestDigest": "sha256:1aee659fbf601566d6432e9a377df50c7ed41fdd61ddf75e92b421e326eb74e1",
+  "StatementScope": "OCI image manifest, not standalone original fixture",
+  "ProbeSHA256": "7cc9f1eeae9a39ef5b347f2d7fc62d40ea8aaee57b4d1dc09dd3aaada0ed4663",
+  "IndexDescriptors": 20,
+  "SelectedPlatforms": 1,
+  "SelectedAttestations": 1,
+  "NativeRanges": 330,
+  "EqualNativeRanges": 330,
+  "ExecutableSectionsEqual": true,
+  "Inputs": {
+    "cli-bin-28.4.0-amd64-attestation-0.json": "e5d38eb37181f937871a3af3225124c260ee932c35f93a4e7775ad9d0b89f7f2",
+    "cli-bin-28.4.0-amd64-config.json": "f1b615441afaf9f42b8ed108c2fd888e23202f33315897baec01abb51e13eede",
+    "cli-bin-28.4.0-amd64-layer-0.tgz": "1c8e9c3661f1ff145d0897f08a3b2c1cc58ecfcbf8dd30cc67a89f295889a652",
+    "cli-bin-28.4.0-amd64-manifest.json": "1aee659fbf601566d6432e9a377df50c7ed41fdd61ddf75e92b421e326eb74e1",
+    "cli-bin-28.4.0-amd64-statement-0-0.json": "fd8346457f26d95eee6b70493d651cdb68e7eb9db11a0149f4e3cc1115fc9586",
+    "cli-bin-28.4.0-index.json": "8c8f13345422afb0a34cd132fccc2998b9a88f83380828cdb816185f8aa3e3e2",
+    "docker": "27f239f97492c434e091a70b41b8796c698f0aa2b6052c6f9c28da4ee7ae888b"
+  },
+  "DifferentSections": [
+    ".go.buildinfo",
+    ".note.gnu.build-id",
+    ".note.go.buildid",
+    ".rodata"
+  ],
+  "Sections": [
+    {
+      "Name": "",
+      "OriginalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "CounterpartSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "OriginalAddress": 0,
+      "CounterpartAddress": 0,
+      "Equal": true,
+      "Executable": false,
+      "VirtualOnly": false
+    },
+    {
+      "Name": ".note.go.buildid",
+      "OriginalSHA256": "6cb43dfa1ef4262a41303a3ea86eaed4fa8ddc5600e47774fada5b8770730c71",
+      "CounterpartSHA256": "c274459e9b25a119a53e6b3fd57fe9a36e7046567d1276491169046d1fe6dc48",
+      "OriginalAddress": 2097776,
+      "CounterpartAddress": 2097776,
+      "Equal": false,
+      "Executable": false,
+      "VirtualOnly": false
+    },
+    {
+      "Name": ".note.gnu.build-id",
+      "OriginalSHA256": "97a6ed8af2fcb5c5009a862f81a4a28b8a3fd25f6831aa8472bfccc2132c6965",
+      "CounterpartSHA256": "a92822aa1916e31aeacff8fb1739247eeb33fd8b0ce1a4da6c825ccab1c168fd",
+      "OriginalAddress": 2097876,
+      "CounterpartAddress": 2097876,
+      "Equal": false,
+      "Executable": false,
+      "VirtualOnly": false
+    },
+    {
+      "Name": ".rodata",
+      "OriginalSHA256": "509240d46006ccd057736b897cdc3991b7e3d0d27a48f2f2b5d845ecd207083a",
+      "CounterpartSHA256": "ee812c5b2d03e1b61903adfbaaabb6a22ec0feb39d908e75d8491bf3bb599521",
+      "OriginalAddress": 2097920,
+      "CounterpartAddress": 2097920,
+      "Equal": false,
+      "Executable": false,
+      "VirtualOnly": false
+    },
+    {
+      "Name": ".eh_frame_hdr",
+      "OriginalSHA256": "d90727e39a8f086b3156ec8adb3787275ec8b876d79100ef71e67a43c47974f0",
+      "CounterpartSHA256": "d90727e39a8f086b3156ec8adb3787275ec8b876d79100ef71e67a43c47974f0",
+      "OriginalAddress": 4389764,
+      "CounterpartAddress": 4389764,
+      "Equal": true,
+      "Executable": false,
+      "VirtualOnly": false
+    },
+    {
+      "Name": ".eh_frame",
+      "OriginalSHA256": "f0b39b0ccb6e7486a5c9dc960549ebbd34aeb790ab08509dd233b0f1a53a2bfe",
+      "CounterpartSHA256": "f0b39b0ccb6e7486a5c9dc960549ebbd34aeb790ab08509dd233b0f1a53a2bfe",
+      "OriginalAddress": 4391256,
+      "CounterpartAddress": 4391256,
+      "Equal": true,
+      "Executable": false,
+      "VirtualOnly": false
+    },
+    {
+      "Name": ".text",
+      "OriginalSHA256": "cb59185d50f80bc8c3e61007c2771387664eb82ade100ec0ca34eba199be5f0c",
+      "CounterpartSHA256": "cb59185d50f80bc8c3e61007c2771387664eb82ade100ec0ca34eba199be5f0c",
+      "OriginalAddress": 4403904,
+      "CounterpartAddress": 4403904,
+      "Equal": true,
+      "Executable": true,
+      "VirtualOnly": false
+    },
+    {
+      "Name": ".init",
+      "OriginalSHA256": "8c06b21b312a976233ba9b2f201dd96e838b1c63238bfe2f44bb5b63a8693b95",
+      "CounterpartSHA256": "8c06b21b312a976233ba9b2f201dd96e838b1c63238bfe2f44bb5b63a8693b95",
+      "OriginalAddress": 17622072,
+      "CounterpartAddress": 17622072,
+      "Equal": true,
+      "Executable": true,
+      "VirtualOnly": false
+    },
+    {
+      "Name": ".fini",
+      "OriginalSHA256": "8c06b21b312a976233ba9b2f201dd96e838b1c63238bfe2f44bb5b63a8693b95",
+      "CounterpartSHA256": "8c06b21b312a976233ba9b2f201dd96e838b1c63238bfe2f44bb5b63a8693b95",
+      "OriginalAddress": 17622075,
+      "CounterpartAddress": 17622075,
+      "Equal": true,
+      "Executable": true,
+      "VirtualOnly": false
+    },
+    {
+      "Name": ".tbss",
+      "OriginalSHA256": "",
+      "CounterpartSHA256": "",
+      "OriginalAddress": 17622080,
+      "CounterpartAddress": 17622080,
+      "Equal": true,
+      "Executable": false,
+      "VirtualOnly": true
+    },
+    {
+      "Name": ".fini_array",
+      "OriginalSHA256": "928228a412944189682e1ee9c3865a6c35bc01ef0a9f9f9a03dc254612228f83",
+      "CounterpartSHA256": "928228a412944189682e1ee9c3865a6c35bc01ef0a9f9f9a03dc254612228f83",
+      "OriginalAddress": 17626176,
+      "CounterpartAddress": 17626176,
+      "Equal": true,
+      "Executable": false,
+      "VirtualOnly": false
+    },
+    {
+      "Name": ".init_array",
+      "OriginalSHA256": "38a9e4ef4ed3f47ecaa15a2d646487b7cb0eae37923d00c6c07da54244db1c2d",
+      "CounterpartSHA256": "38a9e4ef4ed3f47ecaa15a2d646487b7cb0eae37923d00c6c07da54244db1c2d",
+      "OriginalAddress": 17626184,
+      "CounterpartAddress": 17626184,
+      "Equal": true,
+      "Executable": false,
+      "VirtualOnly": false
+    },
+    {
+      "Name": ".data.rel.ro",
+      "OriginalSHA256": "1268d185762516e4f9eb64c832a8d15396268b1314ace4a78a0d444ba8d496de",
+      "CounterpartSHA256": "1268d185762516e4f9eb64c832a8d15396268b1314ace4a78a0d444ba8d496de",
+      "OriginalAddress": 17626208,
+      "CounterpartAddress": 17626208,
+      "Equal": true,
+      "Executable": false,
+      "VirtualOnly": false
+    },
+    {
+      "Name": ".got",
+      "OriginalSHA256": "2c34ce1df23b838c5abf2a7f6437cca3d3067ed509ff25f11df6b11b582b51eb",
+      "CounterpartSHA256": "2c34ce1df23b838c5abf2a7f6437cca3d3067ed509ff25f11df6b11b582b51eb",
+      "OriginalAddress": 30709592,
+      "CounterpartAddress": 30709592,
+      "Equal": true,
+      "Executable": false,
+      "VirtualOnly": false
+    },
+    {
+      "Name": ".got.plt",
+      "OriginalSHA256": "9d908ecfb6b256def8b49a7c504e6c889c4b0e41fe6ce3e01863dd7b61a20aa0",
+      "CounterpartSHA256": "9d908ecfb6b256def8b49a7c504e6c889c4b0e41fe6ce3e01863dd7b61a20aa0",
+      "OriginalAddress": 30709632,
+      "CounterpartAddress": 30709632,
+      "Equal": true,
+      "Executable": false,
+      "VirtualOnly": false
+    },
+    {
+      "Name": ".relro_padding",
+      "OriginalSHA256": "",
+      "CounterpartSHA256": "",
+      "OriginalAddress": 30709656,
+      "CounterpartAddress": 30709656,
+      "Equal": true,
+      "Executable": false,
+      "VirtualOnly": true
+    },
+    {
+      "Name": ".data",
+      "OriginalSHA256": "b9ba3ac98db5e8f406c9f176eeb4f2518b1495910b0dba5338c085b1a67d9063",
+      "CounterpartSHA256": "b9ba3ac98db5e8f406c9f176eeb4f2518b1495910b0dba5338c085b1a67d9063",
+      "OriginalAddress": 30713760,
+      "CounterpartAddress": 30713760,
+      "Equal": true,
+      "Executable": false,
+      "VirtualOnly": false
+    },
+    {
+      "Name": ".tm_clone_table",
+      "OriginalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "CounterpartSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "OriginalAddress": 30922720,
+      "CounterpartAddress": 30922720,
+      "Equal": true,
+      "Executable": false,
+      "VirtualOnly": false
+    },
+    {
+      "Name": ".go.buildinfo",
+      "OriginalSHA256": "207032fe5ea4e8aa6477bfc1c790883ae62a8b159555e414bae7ab680bd914ef",
+      "CounterpartSHA256": "ffd2d84863d7f2819dbfa604da0b490a93b45e78c4698c1a6a11435105f81126",
+      "OriginalAddress": 30922720,
+      "CounterpartAddress": 30922720,
+      "Equal": false,
+      "Executable": false,
+      "VirtualOnly": false
+    },
+    {
+      "Name": ".go.fipsinfo",
+      "OriginalSHA256": "26bc3d375da3764301c376a67f733237fb813393eef5d90fc638283fa4410613",
+      "CounterpartSHA256": "26bc3d375da3764301c376a67f733237fb813393eef5d90fc638283fa4410613",
+      "OriginalAddress": 30923648,
+      "CounterpartAddress": 30923648,
+      "Equal": true,
+      "Executable": false,
+      "VirtualOnly": false
+    },
+    {
+      "Name": ".noptrdata",
+      "OriginalSHA256": "1156273d33893443b97ada55e7a84a669f6e9317e2aa3e32efa29f4ca2a72401",
+      "CounterpartSHA256": "1156273d33893443b97ada55e7a84a669f6e9317e2aa3e32efa29f4ca2a72401",
+      "OriginalAddress": 30923776,
+      "CounterpartAddress": 30923776,
+      "Equal": true,
+      "Executable": false,
+      "VirtualOnly": false
+    },
+    {
+      "Name": ".bss",
+      "OriginalSHA256": "",
+      "CounterpartSHA256": "",
+      "OriginalAddress": 31367392,
+      "CounterpartAddress": 31367392,
+      "Equal": true,
+      "Executable": false,
+      "VirtualOnly": true
+    },
+    {
+      "Name": ".noptrbss",
+      "OriginalSHA256": "",
+      "CounterpartSHA256": "",
+      "OriginalAddress": 31552832,
+      "CounterpartAddress": 31552832,
+      "Equal": true,
+      "Executable": false,
+      "VirtualOnly": true
+    },
+    {
+      "Name": ".debug_info",
+      "OriginalSHA256": "ccddef8d173e007d7afbb18f396d67a229e43755c59a16b86081a8d8273f9aa6",
+      "CounterpartSHA256": "ccddef8d173e007d7afbb18f396d67a229e43755c59a16b86081a8d8273f9aa6",
+      "OriginalAddress": 0,
+      "CounterpartAddress": 0,
+      "Equal": true,
+      "Executable": false,
+      "VirtualOnly": false
+    },
+    {
+      "Name": ".debug_abbrev",
+      "OriginalSHA256": "e44c9733d31c2c07495bc71deae0e980fe6324e18b603a1bc02df037f2970c48",
+      "CounterpartSHA256": "e44c9733d31c2c07495bc71deae0e980fe6324e18b603a1bc02df037f2970c48",
+      "OriginalAddress": 0,
+      "CounterpartAddress": 0,
+      "Equal": true,
+      "Executable": false,
+      "VirtualOnly": false
+    },
+    {
+      "Name": ".debug_loclists",
+      "OriginalSHA256": "999cb7ee248ab5a593505eabcf5fa40862d8b75520bb3b7e08b26a052e4dd9d3",
+      "CounterpartSHA256": "999cb7ee248ab5a593505eabcf5fa40862d8b75520bb3b7e08b26a052e4dd9d3",
+      "OriginalAddress": 0,
+      "CounterpartAddress": 0,
+      "Equal": true,
+      "Executable": false,
+      "VirtualOnly": false
+    },
+    {
+      "Name": ".debug_aranges",
+      "OriginalSHA256": "ddde304c579d35a75ba5b842c630a3a3660ba4ad593daa14b5608e824220855f",
+      "CounterpartSHA256": "ddde304c579d35a75ba5b842c630a3a3660ba4ad593daa14b5608e824220855f",
+      "OriginalAddress": 0,
+      "CounterpartAddress": 0,
+      "Equal": true,
+      "Executable": false,
+      "VirtualOnly": false
+    },
+    {
+      "Name": ".debug_rnglists",
+      "OriginalSHA256": "e7c44e15f80d2a4048ede21c6d82d220fde8cba220b9716c175aaa752110e081",
+      "CounterpartSHA256": "e7c44e15f80d2a4048ede21c6d82d220fde8cba220b9716c175aaa752110e081",
+      "OriginalAddress": 0,
+      "CounterpartAddress": 0,
+      "Equal": true,
+      "Executable": false,
+      "VirtualOnly": false
+    },
+    {
+      "Name": ".debug_line",
+      "OriginalSHA256": "3cb69a9d37a11f1798502fc5ce2b060916f0528984fe8036b14d55d2142219fd",
+      "CounterpartSHA256": "3cb69a9d37a11f1798502fc5ce2b060916f0528984fe8036b14d55d2142219fd",
+      "OriginalAddress": 0,
+      "CounterpartAddress": 0,
+      "Equal": true,
+      "Executable": false,
+      "VirtualOnly": false
+    },
+    {
+      "Name": ".debug_str",
+      "OriginalSHA256": "33ab6b0d5985a971ce1bc2d517f69e9a1e79c3e7ff4767d9bcf8852d3d7c1b94",
+      "CounterpartSHA256": "33ab6b0d5985a971ce1bc2d517f69e9a1e79c3e7ff4767d9bcf8852d3d7c1b94",
+      "OriginalAddress": 0,
+      "CounterpartAddress": 0,
+      "Equal": true,
+      "Executable": false,
+      "VirtualOnly": false
+    },
+    {
+      "Name": ".debug_line_str",
+      "OriginalSHA256": "fa95a65a123b8f992b5abccc4dc190732c4caa5c281c2a35e1e035499cbbd8a0",
+      "CounterpartSHA256": "fa95a65a123b8f992b5abccc4dc190732c4caa5c281c2a35e1e035499cbbd8a0",
+      "OriginalAddress": 0,
+      "CounterpartAddress": 0,
+      "Equal": true,
+      "Executable": false,
+      "VirtualOnly": false
+    },
+    {
+      "Name": ".comment",
+      "OriginalSHA256": "2d4308be6b38366ca83db696b75c06b2cfcf2e0c3849c12c6f0add128fcea950",
+      "CounterpartSHA256": "2d4308be6b38366ca83db696b75c06b2cfcf2e0c3849c12c6f0add128fcea950",
+      "OriginalAddress": 0,
+      "CounterpartAddress": 0,
+      "Equal": true,
+      "Executable": false,
+      "VirtualOnly": false
+    },
+    {
+      "Name": ".debug_frame",
+      "OriginalSHA256": "d3a56f1ef2f8e3b1a78e7d6c86a4b42a7e69cc3d9469b504ff6387de7e89c239",
+      "CounterpartSHA256": "d3a56f1ef2f8e3b1a78e7d6c86a4b42a7e69cc3d9469b504ff6387de7e89c239",
+      "OriginalAddress": 0,
+      "CounterpartAddress": 0,
+      "Equal": true,
+      "Executable": false,
+      "VirtualOnly": false
+    },
+    {
+      "Name": ".debug_gdb_scripts",
+      "OriginalSHA256": "4a1700d421effc437b6f864a1d94264a6d76fcbdf2dfc426855b3804b4b0b2ad",
+      "CounterpartSHA256": "4a1700d421effc437b6f864a1d94264a6d76fcbdf2dfc426855b3804b4b0b2ad",
+      "OriginalAddress": 0,
+      "CounterpartAddress": 0,
+      "Equal": true,
+      "Executable": false,
+      "VirtualOnly": false
+    },
+    {
+      "Name": ".debug_loc",
+      "OriginalSHA256": "126b4dc98cb6070bbb6f33b9d7c4aa8745d2cdde170181a4eadbda148821e05e",
+      "CounterpartSHA256": "126b4dc98cb6070bbb6f33b9d7c4aa8745d2cdde170181a4eadbda148821e05e",
+      "OriginalAddress": 0,
+      "CounterpartAddress": 0,
+      "Equal": true,
+      "Executable": false,
+      "VirtualOnly": false
+    },
+    {
+      "Name": ".debug_ranges",
+      "OriginalSHA256": "947aaae89f9bbf5c91734546f3e3a15c2965a8768813c290d46e84162b723737",
+      "CounterpartSHA256": "947aaae89f9bbf5c91734546f3e3a15c2965a8768813c290d46e84162b723737",
+      "OriginalAddress": 0,
+      "CounterpartAddress": 0,
+      "Equal": true,
+      "Executable": false,
+      "VirtualOnly": false
+    },
+    {
+      "Name": ".debug_str_offsets",
+      "OriginalSHA256": "006103c1bae63dac76d0940c3ecf1c4c999942072aad039314b14a149d7a42d4",
+      "CounterpartSHA256": "006103c1bae63dac76d0940c3ecf1c4c999942072aad039314b14a149d7a42d4",
+      "OriginalAddress": 0,
+      "CounterpartAddress": 0,
+      "Equal": true,
+      "Executable": false,
+      "VirtualOnly": false
+    },
+    {
+      "Name": ".debug_addr",
+      "OriginalSHA256": "1352c767cc4259a05ec678fbd9b82d8b8386353c75ef5dc052ba48dbd2d5055b",
+      "CounterpartSHA256": "1352c767cc4259a05ec678fbd9b82d8b8386353c75ef5dc052ba48dbd2d5055b",
+      "OriginalAddress": 0,
+      "CounterpartAddress": 0,
+      "Equal": true,
+      "Executable": false,
+      "VirtualOnly": false
+    },
+    {
+      "Name": ".symtab",
+      "OriginalSHA256": "586a1b0953a6ec490338fa56d07936db671362f1d2771540b2acab3bba71d591",
+      "CounterpartSHA256": "586a1b0953a6ec490338fa56d07936db671362f1d2771540b2acab3bba71d591",
+      "OriginalAddress": 0,
+      "CounterpartAddress": 0,
+      "Equal": true,
+      "Executable": false,
+      "VirtualOnly": false
+    },
+    {
+      "Name": ".shstrtab",
+      "OriginalSHA256": "6d318b064bdc94e99ebd505cfbcc1b54186455f3dffb40dee1156023f7cd44e2",
+      "CounterpartSHA256": "6d318b064bdc94e99ebd505cfbcc1b54186455f3dffb40dee1156023f7cd44e2",
+      "OriginalAddress": 0,
+      "CounterpartAddress": 0,
+      "Equal": true,
+      "Executable": false,
+      "VirtualOnly": false
+    },
+    {
+      "Name": ".strtab",
+      "OriginalSHA256": "f3975385c1c2ddf32d3026e0e279bf507c1208653b4abae0ab211bde6854b5b2",
+      "CounterpartSHA256": "f3975385c1c2ddf32d3026e0e279bf507c1208653b4abae0ab211bde6854b5b2",
+      "OriginalAddress": 0,
+      "CounterpartAddress": 0,
+      "Equal": true,
+      "Executable": false,
+      "VirtualOnly": false
+    }
+  ],
+  "NativeRangeManifestSHA256": "7c0449671da324d995f7199fa263f7bca5856f2f596669e6f71fe9e734f5a663",
+  "PublisherClaimedMaterials": [
+    {
+      "URI": "pkg:docker/docker/dockerfile@1",
+      "Digest": {
+        "sha256": "38387523653efa0039f8e1c89bb74a30504e76ee9f565e25c9a09841f9427b05"
+      }
+    },
+    {
+      "URI": "pkg:docker/golang@1.24.7-alpine3.21?platform=linux%2Famd64",
+      "Digest": {
+        "sha256": "dedeeec59c120b5b73a2db6918e90b05d59e3410580dee2e7c5cc2b48ae0c328"
+      }
+    },
+    {
+      "URI": "pkg:docker/tonistiigi/xx@1.6.1?platform=linux%2Famd64",
+      "Digest": {
+        "sha256": "923441d7c25f1e2eb5789f82d987693c47b8ed987c4ab3b075d6ed2b5d6779a3"
+      }
+    },
+    {
+      "URI": "https://github.com/docker/cli.git#d8eb465f86cfceeb57f8582e373d41a558d35503",
+      "Digest": {
+        "sha1": "d8eb465f86cfceeb57f8582e373d41a558d35503"
+      }
+    }
+  ],
+  "PublisherClaimedReproducible": false,
+  "Limitations": [
+    "Registry digests bind cached bytes; this does not authenticate a signed publisher attestation",
+    "Different whole executable bytes cannot inherit original-build provenance from equal code sections/ranges",
+    "Equal instructions/debug metadata do not prove source/comment/header/patch identity",
+    "Base image materials do not inventory later apk operations or prove exact original native packages",
+    "No tool selection, native/rights/source closure, packaging, adoption, SP8/R-006 or release approval"
+  ]
+}
