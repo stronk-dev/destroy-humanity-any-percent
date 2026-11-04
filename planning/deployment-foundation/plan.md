@@ -7,6 +7,19 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Tool delivery proposal, 2026-11-04 (RP-759):** the new
+[companion draft](../../rfc/deployment-tool-artifact-inventory.md) makes the
+separate CLI/Compose inventory and delivery contract concrete. It reuses the
+existing flat manifest and gives each tool its own SPDX, raw grants/notices,
+covered-source file catalogue and truthful acquisition/build evidence. The
+tool-only MPL policy is proposed, not adopted; app policy is unchanged. Native
+SP1/SP8 links now distinguish technical review → owner adoption → construction
+→ actual native/R-006 proof. No current artifact/version or unresolved right is
+approved. Next independently review this complete normative batch, resolve any
+findings, then seek applicable policy adoption while existing host/architecture
+questions remain pending. No production/schema implementation or software test
+claim follows from this Markdown-only proposal.
+
 **Nested attribution correction,2026-11-04 (RP-761):** independently APPROVED
 complete six-path957dfa6b..a8168b63. Actual old imported-GDDO BSD omission
 reproduces; corrected full affected tests/vet and fresh53-dependency generator
@@ -66,9 +79,9 @@ Four real-query source/graph faults plus no-overwrite refuse. Full overlaid
 metadata tests/vet and actual corrected90,355-function probe pass. Complete
 source/symbol batch independently APPROVED a6592af3..571b0d8c, with both complete
 observations byte-identically reproduced; see latest log/probes.
-Next resolve covered-source/notices delivery and inline/header terms, plus
-published-binary/source correspondence and CLI's exact native linked components
-before shipping/adoption readiness. Source selection is not a rights decision.
+The companion above proposes covered-source/notices delivery. Actual inline/
+header terms, published-binary/source correspondence and CLI's native-component
+closure remain shipping prerequisites; source selection is not a rights decision.
 
 CLI native follow-up now inspects807 CUs/35,689 function symbols from the actual
 ELF:212 non-Go units,330 executable-backed native ranges and549 native-range
@@ -103,10 +116,11 @@ implicitly demand universal signed/reproduced upstream builds; finish truthful
 per-tool inventory, terms/delivery and provenance, then the concrete artifact/
 policy proposal and applicable adoption. Further path/code equality cannot do that.
 
-Next complete the exact CLI/Compose provenance/rights/artifact inventory and
-DP7 projection/reboot-cache adoption evidence required by SP1/SP6; obtain explicit
-architecture/host/artifact-floor adoption and reconcile parent bodies before
-production implementation. Then construct native producers/adapters/service
+Next review the proposed exact tool-delivery contract and DP7 projection/reboot-
+cache contract required by SP1/SP6; obtain explicit architecture/host/artifact-
+floor and tool-policy adoption and reconcile parent bodies before production
+implementation. Actual selected-tool rights and inventory must be settled before
+shipping eligibility. Then construct native producers/adapters/service
 control with complete dependent review and actual SP8/native-host/manifest R-006
 proof. The currently cached tools remain research-only, not approved shipping
 provenance. No empty registry/table validation substitutes for that work.

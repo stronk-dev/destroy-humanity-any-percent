@@ -11352,3 +11352,33 @@ not endless path-only matching or new cryptographic gates. Resolve applicable
 adoption before packaging/native producers; preserve host/SP8/R-006/full1.0
 requirements. All handles terminal; no push, deployment, archival, release
 approval, tool substitution, product promotion or goal pause.
+
+## 2026-11-04 — Concrete tool inventory and delivery companion proposed
+
+RP-759 now routes to `rfc/deployment-tool-artifact-inventory.md`, a draft contract
+for the two tools under SP1/DP1/AC8. It keeps manifest v1 as byte authority and
+separates tool SPDX/component inventories from the app/image scopes. Fixed paths,
+raw grant/NOTICE delivery, covered source-file hashes, truthful acquisition/build
+subjects and actual isolated CLI/plugin consumption are specified. The proposed
+tool-only MPL policy requires owner adoption; unknown native/header/OASIS terms
+remain unresolved, and no current fixture/version is selected for shipping.
+
+Native SP1/SP8 linkage now explicitly preserves review → adoption → construction
+→ real native/R-006 acceptance. The prior core/adapters verdict througha836e92b
+is scoped to its reviewed bytes, not this new companion. Actual source/terms
+closure still gates shipping; absent signatures/reproduced vendor builds are not
+invented universal requirements. The standard SLSA envelope retains compatible
+parsing, while the local build recipe/type is concretely source-commit-bound.
+
+First filter: inspected current manifest/assembler/metadata code and parent
+DP1/AC8, OP2 and SP1/SP8 against the proposal; checked primary MPL2 §§3.1–3.4
+and SLSA1.2 build-provenance terms. `git diff --check` passes; the new draft's
+three local links resolve. No runtime/schema/CI/product change and no
+software suite just for Markdown. Complete seven-path range after070829cf needs
+independent technical-spec review; no adoption or completion inferred.
+Review by: Codex root, implementer first filter. Recorded by: Codex root.
+
+Headcount ruling was also checked on resume: both accepted bodies already
+record paid hiring/producing-redirecting roles with independent translation
+approval. No duplicate reconciliation, price/rate/copy or balance change made.
+Goal stays active; no publication, deployment, archival or release approval.

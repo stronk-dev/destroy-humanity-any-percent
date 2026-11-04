@@ -60,6 +60,14 @@ not proof of the exact native link closure in this fixture.
 
 ## Consequence and next construction
 
+The [tool inventory/delivery draft](../../rfc/deployment-tool-artifact-inventory.md)
+now specifies separate bundle paths, component/covered-source coverage, notices,
+acquisition/build subjects and actual worker consumption. It is a proposal,
+not new evidence about these research fixtures or permission to ship them.
+Technical review and owner policy/artifact adoption remain separate from actual
+selected-tool rights closure and native/R-006 acceptance. It does not create a
+universal signature or reproduced-vendor-build gate.
+
 ### Exact Compose source and root-text follow-up
 
 The complete [v2 source collection](compose-source-notices-observation.v2.json)

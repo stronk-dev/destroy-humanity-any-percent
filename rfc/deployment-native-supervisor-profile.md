@@ -1,6 +1,6 @@
 # RFC: Native Deployment Supervisor Profile
 
-- **Status:** draft — complete corrected proposal independently technically approved througha836e92b; adoption/native producers/conformance pending; no implementation authority
+- **Status:** draft — core/adapters independently technically approved througha836e92b; new tool-delivery companion/linkage pending technical review; adoption/native producers/conformance pending; no implementation authority
 - **Author:** Codex
 - **Created:** 2026-11-04
 - **Parent / amends:** [Operation Evidence](deployment-operation-evidence.md), OP9; [Current Release Authority](deployment-current-release-authority.md), CR4/CR6; [Deployment Foundation](deployment-foundation.md), DP1/DP5/DP6
@@ -24,10 +24,13 @@ an unknown call refuses before dispatch, but an empty/unusable registry fails
 conformance rather than qualifying as a safe implementation.
 The [adapter companion](deployment-native-supervisor-adapters.md) now supplies
 the proposed finite plan expansion, request/body/terminal policies and private
-IPC. The complete corrected union is independently technically approved through
-a836e92b; the owning log retains the exact ranges and original negative verdicts.
-This proposal cannot close OP9 or be presented for adoption until the complete
-specification and native producer prerequisites pass their required review/gates.
+IPC. The corrected core/adapter union is independently technically approved
+througha836e92b; the owning log retains exact ranges and original negative verdicts.
+The new [tool-delivery companion](deployment-tool-artifact-inventory.md) is a
+separate, not-yet-reviewed draft, not covered by that verdict. Complete technical
+review of the amended contract precedes owner adoption under SP8; native producer
+construction and actual conformance follow adoption, not as a circular prerequisite
+to permission to implement. OP9 remains open until its actual acceptance proof.
 
 ## SP1 — Packaging, privileges and trust
 
@@ -52,9 +55,12 @@ a version number or the Desktop model alone.
 
 The selected source/target bundle supplies the actual supervisor, backup and
 operations helpers, profile and plan table, plus pinned Docker CLI and Compose
-plugin artifacts for the isolated preflight configuration compiler. Add those two tools to DP1's artifact,
-license, provenance and SBOM inventory before adoption/packaging. Their fixture
-downloads are not approved shipping provenance. Reuse the selected bundle's
+plugin artifacts for the isolated preflight configuration compiler. The proposed
+[inventory/delivery contract](deployment-tool-artifact-inventory.md) supplies their
+separate DP1 artifacts, license/source payloads, provenance and SPDX inventory.
+Its technical review and owner policy/artifact adoption precede implementation;
+actual pins/rights must be resolved before shipping eligibility. Fixture downloads
+are not approved shipping provenance. Reuse the selected bundle's
 Postgres image as the worker filesystem; do not add a seventh image implicitly.
 Supervisor/producer helpers and their Docker/Compose tools are read-only mounts
 from ONE selected producer manifest under OP2. This restriction applies to that
@@ -622,8 +628,8 @@ commands have passed the install/release/rollback proof.
 
 ## SP8 — Adoption, construction and acceptance
 
-Technical review must inspect the completed profile and its proposed exact
-adapter companion together against the actual call map,
+Technical review must inspect the completed profile, proposed exact adapter
+companion and tool inventory/delivery companion together against the actual call map,
 OP1–OP8 and CR1–CR6, including cycles in bootstrap/finalization/service handoff.
 Then obtain owner adoption of the architecture/explicit host and artifact floor,
 with parent-body reconciliation. Technical approval alone authorizes no runtime
