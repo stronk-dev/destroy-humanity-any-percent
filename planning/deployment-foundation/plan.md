@@ -14,11 +14,13 @@ and all eight real Linux-amd64/Postgres backup functions pass without skips,
 including concurrent snapshot/cancellation/lock-release observations. The log
 separates fresh execution from historical old-SQL evidence. Separate dump binding,
 production RPO/RTO, metadata authority and clean-host/full-feature gates remain.
-DP7 writer/storage RP-521 now has complete independent approval too. Original
-receiver RP-523 requires changes for ordering/canceled-ready observations;
-RP-714/715 follow-up is locally corrected, awaiting final independent actual
-restart-profile execution. Do not repeat completed backup/storage captures or
-call the old storage capture evidence for the changed receiver.
+DP7 writer/storage RP-521 has complete independent approval too. Original receiver
+RP-523 retains CHANGES REQUIRED, and its complete original-plus-six-path
+RP-714/715 follow-up union is independently approved throughb0fd04ad after actual
+restart-profile execution, cold owners/vet and race. Do not repeat completed
+backup/storage captures or call old storage evidence execution of the new receiver.
+Next remaining actual scheduled-backup/ingress proof review; original full AC7,
+host/journal/retention, exact release pair and clean-host gates remain open.
 
 **Drain/restart corrective checkpoint, 2026-11-02:** independent review approves
 RP-138's complete `1908762f..c9c9dde7` marker correction and RP-143's complete
@@ -249,9 +251,10 @@ The final root lane also proves canceled-CLI one-off cleanup. Its early-notifica
 loss finding (RP-523), failed attempt, final checks and range after `cdc78050`
 live in the log. Complete original `cdc78050..c4279b66` requires changes: its
 requeued early notifications can be overtaken by later resolution, and a canceled
-ready control can falsely pass. RP-714/715's follow-up isolates nonce delivery
-from the unchanged real-alert FIFO and checks cancellation; native/race controls
-pass, final independent actual restart execution remains pending. No production
+ready control can falsely pass. The complete original-plus-follow-up union is now
+independently approved throughb0fd04ad: RP-714/715 isolate nonce delivery from the
+unchanged real-alert FIFO and check cancellation; fresh cold/race and actual restart
+44339 pass137.936s including matching resolution/owned cleanup. No production
 bytes or alert policies change. Continue remaining actual backup/game-process/host
 journal/retention, older-container restart history and exact release-artifact
 evidence; full AC7/R-006 remain open.

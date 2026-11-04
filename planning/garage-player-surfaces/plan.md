@@ -28,8 +28,10 @@ or expand an uninformative diagnosis into another research campaign.
    Recovery detached-terminal/watchdog RP-452/464/465 and restart/test-isolation
    RP-459 have complete independent approvals too. Deployment backup parser/
    snapshot RP-489/490 is reviewed with actual encrypted restores and SQL controls.
-   Continue remaining DP7 writer/receiver corrections RP-521/RP-523 in that owning
-   lane; no new expiry/retry/reward/acceptance contract or clean-host claim.
+   DP7 writer/storage RP-521 and corrected receiver RP-523/714/715 now have complete
+   independent approvals; original receiver CHANGES REQUIRED is preserved. Continue
+   remaining scheduled-backup/ingress proof review in Deployment's owning lane;
+   no new expiry/retry/reward/acceptance contract or clean-host claim.
 4. Keep RP-348/RP-351 causes open. R-013's report is reviewed, but the temporary
    profile is now absent and cannot be independently revalidated. No stall repair
    or cache/compiler/hosted-causality claim follows.

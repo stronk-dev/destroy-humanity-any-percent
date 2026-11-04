@@ -8072,3 +8072,40 @@ keeps its source identity. Complete follow-up range is e1aa4c50-exclusive throug
 this containing source/tests/docs/ledger/plan/log commit. Review by: Codex root,
 implementer first filter only. Recorded by: Codex root. No self-approval, original
 AC7/feature acceptance, R-006, full CI, archival, push, deployment or release.
+
+## 2026-11-04 — Corrected receiver union independently approved
+
+Review by: independent Codex `/root/operations_writer_receiver_corrective_review`.
+Recorded by: Codex root. APPROVED, no remaining findings, complete original-plus-
+follow-up contexts (base exclusive, tip inclusive), all12/6 paths inspected:
+
+- `cdc780502bd37d09be14adf5f3a554cc27afcb41..c4279b6621d54e3b65a91aa337db0da46e396221`.
+- `e1aa4c507e659ca6e204e1103399e4fdbdbbdf7a..b0fd04adfbbde860969e07e49063f01fd36d8a39`.
+
+Original CHANGES REQUIRED and failures4938/5528 remain intact; correction does
+not retrospectively approve the original helper. Actual HTTP handler preserves
+real FIFO while preflight reads only structured controls. Cancellation cannot
+accept an already-ready control. Cleanup mirror/rejection/body/overflow guards stay.
+
+Fresh atb0fd04ad: cold78352 operations1.522s/command5.373s and vet pass; race62219
+all nine receiver parents/negative cases plus32 canceled-ready schedules pass1.239s.
+Actual declared restart44339 terminal0: canceled-CLI cleanup negative0.88s;
+complete journey136.90s, child87.56s, package137.936s. Real automatic count3 and
+inspected birth reach production observer/private services/new receiver; actual
+replacement count0 delivers resolution of the SAME alert. Exact-range whitespace
+passes. No extra old-binary restart or full operations profile is represented.
+
+Live pinned Alertmanager config confirms five-minute resolve timeout, alertname
+grouping, zero group wait, one-minute grouping interval, four-hour repeat and
+resolved delivery. VerifyAlertDelivery posts one nonce. Room for its consumed
+firing plus one later resolution is a CONFIGURATION/SOURCE INFERENCE, not observed
+natural expiry or duplicate/retry tolerance. Extra pending controls fail loud.
+RP-521 storage44377 retains pre-fix e1aa source; not repeated/relabelled as this
+new receiver. This review closes corrective/tool scopes, not full AC7, actual
+gameserver/journald retention, R-006, hosted/full CI, archival or release.
+
+All handles terminal. Exact fixture-container and both unique-project container/
+network inventories empty; only two pre-existing BuildKit remain. No tracked
+reviewer edits/commits. Root reconciles statuses with this verdict; next remaining
+scheduled-backup/ingress proof review. No suite for editorial records or publication;
+full nine-tier1.0 goal remains active.
