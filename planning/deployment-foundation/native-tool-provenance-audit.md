@@ -106,6 +106,34 @@ Keep the source/build correspondence and complete final delivery gates separate.
 The probe, v1/v2 sources and actual-refusal observation remain manual research
 inputs; they are not normal CI tests or a package eligibility verifier.
 
+### Nested-scope observation and application counterexample
+
+The [binary/source observation](compose-nested-scopes-observation.v1.json) parses
+the actual pinned Compose ELF/Go metadata from one byte slice, checks all180
+module identities and the complete source-inventory binding, then inspects all37
+nested text candidates. All90,355 decoded functions have actual code-section
+ranges. Twelve candidates have matching package/subtree function-name evidence;
+25 do not. Every zero-match record says **unknown**, never absent or excluded.
+Samples are limited to5 functions with explicit full counts/truncation flags.
+This is positive binary evidence, not a complete compiler/package provenance map.
+
+`github.com/docker/buildx@v0.28.0/bake/hclparser/LICENSE` contains MPL2.0 text,
+SHA256`28ca54ff46a27183631aa262673d13e3c829d909059f5c861da835fe1783fbec`.
+Its scope has zero function-name matches here; that does not establish whether
+it contributes inlined code/data. The four module-root refusals therefore cannot
+be presented as an exhaustive inventory of every potentially applicable MPL scope.
+The37 filename candidates also include a workflow `license-check.yml` and
+`license.go` source: a filename/detector label is not a separate legal grant.
+
+A separate actual-application diagnostic finds a current DP1/AC8 omission:
+the six-command compiler import graph includes
+`github.com/prometheus/client_golang/internal/github.com/golang/gddo/httputil`
+at modulev1.23.2, but the current generator's delivered attribution omits the
+copy's full nested BSD text and its2013 Go Authors copyright. This uses actual
+source/import and actual metadata/formatter, not a package assumed present merely
+because its module appears in an inventory. RP-761 owns the corrective route.
+The root-NOTICE correction RP-760 remains closed within its original scope.
+
 The existing `gen-release-metadata` discovers dependencies of six Cloud Clicker
 Go commands and the built browser client. It does not inspect external CLI/
 Compose bytes. Adding these binaries to an artifact list cannot silently make

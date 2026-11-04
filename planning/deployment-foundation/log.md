@@ -10727,3 +10727,42 @@ and whole1.0 remain OPEN. No release acceptance, publication/deployment/archival
 or goal pause follows. Next resume those concrete source/delivery scopes under
 RP-759 and the reviewed native-profile prerequisites; do not reopen the corrected
 root NOTICE omission or infer clearance from its closure.
+
+## 2026-11-04 — Nested source/binary observation finds another actual attribution omission
+
+Previous turn closes RP-760 under independent corrective review through1cc6762a;
+clean state revalidated. New manual Go overlays only; no production/normal-test/
+CI/kernel/balance/copy bytes in this research batch. All inputs are existing
+public source corpus and pinned actual Compose binary.
+
+Actual267f24/54722→d7a581 parses90,355 Go functions from the actual ELF's code/
+function table, checks input SHA and all180 module identities on the SAME byte
+slice, then observes all37 nested candidates.12 have positive function-prefix
+matches;25 have no such evidence and remain explicitly UNKNOWN, never absent or
+excluded. Samples limited5 with total/truncation fields. A main-package positive
+and unrelated-prefix zero control run. Go vet673772 and full-overlay173c27 pass.
+Private wrong-binary8308dc/10870→e26e02 and wrong-textf68a44/84498→fad2d8 refuse
+before any report; originals unchanged. All handles terminal; private fixtures
+retained under the path in .cache/worker-cli-tools/nested-scopes-work.txt.
+
+Buildx bake/hclparser's nested LICENSE contains MPL2.0, but zero function evidence
+here cannot rule out inline/data contribution. Root's4 MPL refusals are therefore
+not claimed exhaustive. The37 filename candidates also include workflow/code;
+no bare filename or detector label becomes legal applicability. No distribution,
+source/build correspondence, signature, policy adoption or release clearance.
+
+Actual application diagnostic6d256a/68527→615980 executes the existing six-command
+Go import graph and metadata producer: imported client_golangv1.23.2 internal
+GDDO httputil lacks its nested BSD/license copyright in delivered attribution.
+Go1/Make2 at the exact missing-text assertion. Earlier023cbb/76862→d2c7d3 was an
+INVALID probe: it passed the unsorted discoverGoDependencies slice directly to
+ThirdPartyNotices. Corrected probe applies the actual SortDependencies boundary;
+only the final exact omission is defect evidence. RP-761 records the finding.
+Source-read-only import/text inspection corroborates it; RP-760 is not reopened.
+
+Next independent research/tool review, then repair actual linked Go scope
+attribution under existing DP1/AC8. Keep root-NOTICE's approved behavior; do not
+use all unknown tool scopes as a reason to stall an accepted corrective fix.
+Full tool/native/rights/architecture adoption and R-006/whole1.0 gates remain.
+Diff checked; no unrelated suite, host/secret/Docker/publication or goal pause.
+Review by: Codex root, implementer first filter. Recorded by: Codex root.

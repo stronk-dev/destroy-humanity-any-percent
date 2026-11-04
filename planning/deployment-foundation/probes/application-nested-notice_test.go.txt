@@ -1,0 +1,73 @@
+// Manual diagnostic against the actual shipped-command import graph and current
+// producer. This is not a claim about an unexecuted source-only dependency.
+package main
+
+import (
+	"bytes"
+	"encoding/json"
+	"io"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"strings"
+	"testing"
+
+	"cloud-clicker/server/releasepackage"
+)
+
+func TestManualApplicationNestedAttribution(t *testing.T) {
+	root := *nestedScopeRoot
+	if root == "" {
+		t.Fatal("manual repository root required")
+	}
+	args := append([]string{"list", "-deps", "-json"}, shippedGoCommands...)
+	command := exec.Command("go", args...)
+	command.Dir = filepath.Join(root, "server")
+	data, err := command.Output()
+	if err != nil {
+		t.Fatal(err)
+	}
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	const imported = "github.com/prometheus/client_golang/internal/github.com/golang/gddo/httputil"
+	var moduleDir, version string
+	for {
+		var pkg struct {
+			ImportPath string
+			Module     *struct{ Path, Version, Dir string }
+		}
+		err := decoder.Decode(&pkg)
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			t.Fatal(err)
+		}
+		if pkg.ImportPath == imported && pkg.Module != nil {
+			moduleDir, version = pkg.Module.Dir, pkg.Module.Version
+		}
+	}
+	if moduleDir == "" || version == "" {
+		t.Fatal("no actual shipped-command package witness")
+	}
+	license, err := os.ReadFile(filepath.Join(moduleDir, "internal/github.com/golang/gddo/LICENSE"))
+	if err != nil || len(license) == 0 {
+		t.Fatal("actual nested license missing", err)
+	}
+	dependencies, err := discoverGoDependencies(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	dependencies, err = releasepackage.SortDependencies(dependencies)
+	if err != nil {
+		t.Fatal(err)
+	}
+	output, err := releasepackage.ThirdPartyNotices(dependencies)
+	if err != nil {
+		t.Fatal(err)
+	}
+	normalize := func(data []byte) string { return strings.Join(strings.Fields(string(data)), " ") }
+	if !strings.Contains(normalize(output), normalize(license)) {
+		t.Fatalf("actual imported %s in module%s omits its nested BSD attribution from delivered output", imported, version)
+	}
+	t.Logf("actual imported%s nested license delivered", imported)
+}

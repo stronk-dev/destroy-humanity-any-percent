@@ -1,0 +1,209 @@
+// Manual bounded source/binary observation. Missing function-name evidence is
+// UNKNOWN, never permission to omit a scope or an assertion that code is absent.
+package main
+
+import (
+	"bytes"
+	"crypto/sha256"
+	"debug/buildinfo"
+	"debug/elf"
+	"debug/gosym"
+	"encoding/hex"
+	"encoding/json"
+	"flag"
+	"os"
+	"path"
+	"path/filepath"
+	"sort"
+	"strings"
+	"testing"
+
+	"cloud-clicker/server/releasepackage"
+)
+
+var nestedScopeRoot = flag.String("nested-scope-root", "", "repository root")
+var nestedScopeOutput = flag.String("nested-scope-output", "", "fresh observation")
+
+func scopeHash(data []byte) string {
+	hash := sha256.Sum256(data)
+	return hex.EncodeToString(hash[:])
+}
+
+func scopeFunctions(names []string, prefix string) []string {
+	var found []string
+	for _, name := range names {
+		if strings.HasPrefix(name, prefix+".") || strings.HasPrefix(name, prefix+"/") {
+			found = append(found, name)
+		}
+	}
+	return found
+}
+
+func TestManualComposeNestedSourceScopes(t *testing.T) {
+	if *nestedScopeRoot == "" || *nestedScopeOutput == "" {
+		t.Fatal("manual root/output required")
+	}
+	root := *nestedScopeRoot
+	sourceBytes, err := os.ReadFile(filepath.Join(root, "planning/deployment-foundation/compose-source-notices-observation.v2.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var source struct {
+		ObjectiveCompleted bool   `json:"objective_completed"`
+		InventorySHA256    string `json:"inventory_sha256"`
+		Modules            []struct {
+			Path, Version string
+			Notices       []struct {
+				ModulePath string `json:"module_path"`
+				SHA256     string
+				Bytes      int
+				Scope      string
+			}
+		}
+	}
+	if json.Unmarshal(sourceBytes, &source) != nil || !source.ObjectiveCompleted || len(source.Modules) != 180 {
+		t.Fatal("complete source population required")
+	}
+	inventoryBytes, err := os.ReadFile(filepath.Join(root, "planning/deployment-foundation/native-tool-inventory-observation.v1.json"))
+	if err != nil || scopeHash(inventoryBytes) != source.InventorySHA256 {
+		t.Fatal("source/inventory binding mismatch")
+	}
+	var inventory struct {
+		Compose struct {
+			Binary struct {
+				SHA256  string
+				Modules []struct{ Path, Version, Sum string }
+			}
+		}
+	}
+	if json.Unmarshal(inventoryBytes, &inventory) != nil {
+		t.Fatal("invalid inventory")
+	}
+	binary, err := os.ReadFile(filepath.Join(root, ".cache/worker-cli-tools/plugins/docker-compose"))
+	if err != nil || scopeHash(binary) != inventory.Compose.Binary.SHA256 {
+		t.Fatal("binary binding mismatch")
+	}
+	// All parsers observe the SAME byte slice, not independently reopened paths.
+	build, err := buildinfo.Read(bytes.NewReader(binary))
+	if err != nil || build.Path != "github.com/docker/compose/v2/cmd" {
+		t.Fatal("actual Compose build info required", err)
+	}
+	actualModules := make(map[string]string)
+	for _, module := range build.Deps {
+		if module.Replace != nil {
+			t.Fatal("unhandled module replacement")
+		}
+		key := module.Path + "@" + module.Version
+		if _, exists := actualModules[key]; exists {
+			t.Fatal("duplicate actual module")
+		}
+		actualModules[key] = module.Sum
+	}
+	if len(actualModules) != 180 || len(inventory.Compose.Binary.Modules) != 180 {
+		t.Fatal("actual complete module population mismatch")
+	}
+	for _, module := range inventory.Compose.Binary.Modules {
+		if actualModules[module.Path+"@"+module.Version] != module.Sum {
+			t.Fatal("actual module sum disagrees with inventory")
+		}
+	}
+	file, err := elf.NewFile(bytes.NewReader(binary))
+	if err != nil || file.Machine != elf.EM_X86_64 || file.Class != elf.ELFCLASS64 {
+		t.Fatal("actual amd64 ELF required", err)
+	}
+	defer file.Close()
+	text := file.Section(".text")
+	pcln := file.Section(".gopclntab")
+	if pcln == nil {
+		pcln = file.Section(".data.rel.ro.gopclntab")
+	}
+	if text == nil || pcln == nil {
+		t.Fatal("required Go code/function metadata missing")
+	}
+	lines, err := pcln.Data()
+	if err != nil {
+		t.Fatal(err)
+	}
+	table, err := gosym.NewTable(nil, gosym.NewLineTable(lines, text.Addr))
+	if err != nil || len(table.Funcs) == 0 {
+		t.Fatal("no parsed Go function population", err)
+	}
+	names := make([]string, 0, len(table.Funcs))
+	for _, function := range table.Funcs {
+		if function.Entry < text.Addr || function.End > text.Addr+text.Size || function.End <= function.Entry {
+			t.Fatal("function outside actual code section")
+		}
+		names = append(names, function.Name)
+	}
+	sort.Strings(names)
+	if len(scopeFunctions(names, "main")) == 0 {
+		t.Fatal("missing positive main-package control")
+	}
+	if len(scopeFunctions(names, "github.com/cloud-clicker/nonexistent-scope-control")) != 0 {
+		t.Fatal("unrelated scope falsely matched")
+	}
+	type observation struct {
+		Module, Version, NoticePath, NoticeSHA256, Prefix string
+		RecognizerLabel, RecognitionStatus                string
+		MPLMarkerPresent                                  bool
+		FunctionCount                                     int
+		FunctionSample                                    []string
+		SampleTruncated                                   bool
+		NoMatchMeans                                      string
+	}
+	var observations []observation
+	seen := make(map[string]bool)
+	for _, module := range source.Modules {
+		key := module.Path + "@" + module.Version
+		if _, ok := actualModules[key]; !ok || seen[key] {
+			t.Fatal("source module duplicated or not in actual binary")
+		}
+		seen[key] = true
+		for _, notice := range module.Notices {
+			if notice.Scope != "nested" {
+				continue
+			}
+			data, err := os.ReadFile(filepath.Join(root, ".cache/worker-cli-tools/module-sources/notices", notice.SHA256+".txt"))
+			if err != nil || scopeHash(data) != notice.SHA256 || len(data) != notice.Bytes {
+				t.Fatal("actual scoped text binding mismatch")
+			}
+			prefix := module.Path + "/" + path.Dir(notice.ModulePath)
+			matched := scopeFunctions(names, prefix)
+			sample := matched
+			if len(sample) > 5 {
+				sample = sample[:5]
+			}
+			label, err := releasepackage.DetectPermissiveLicense(string(data))
+			status := "recognized_by_current_detector"
+			if err != nil {
+				status = "detector_refused"
+			}
+			observations = append(observations, observation{module.Path, module.Version, notice.ModulePath, notice.SHA256, prefix,
+				label, status, strings.Contains(strings.ToLower(string(data)), "mozilla public license"),
+				len(matched), sample, len(matched) > len(sample), "unknown; never exclusion or absence proof"})
+		}
+	}
+	if len(observations) != 37 {
+		t.Fatal("complete nested candidate population required")
+	}
+	report := struct {
+		ObjectiveCompleted, DistributionApproved bool
+		BinarySHA256, SourceSHA256, GoVersion    string
+		FunctionPopulation, NestedCandidates     int
+		SampleLimit                              int
+		Observations                             []observation
+	}{true, false, scopeHash(binary), scopeHash(sourceBytes), build.GoVersion,
+		len(names), len(observations), 5, observations}
+	output, err := os.OpenFile(*nestedScopeOutput, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0o600)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := json.NewEncoder(output).Encode(report); err != nil {
+		_ = output.Close()
+		t.Fatal(err)
+	}
+	if err := output.Close(); err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("observed%d actual Go functions and all%d nested candidates; no-match is unknown", len(names), len(observations))
+}
