@@ -18,8 +18,10 @@ closed by that verdict. The append-only log owns evidence and provenance.
 with `guild missing` at0ff2f614. Correction rechecks membership under a historical
 Guild row lock rather than requiring the Guild still be active. Already-closed
 history must anonymize without a second departure/disband/presence. Focused
-old/current SQL/race and independent review remain required; kernel0.3.225 records
-this second concurrent persistence correction, with epoch8 unchanged.
+old/current SQL/race and affected checks pass. Complete9-path0ff2f614..78d75546
+is independently APPROVED; kernel0.3.225 records this second concurrent persistence
+correction, with epoch8 unchanged. Full Account/Guild/rights and release acceptance
+remain separate. Exact review and owned-resource cleanup are in the owning log.
 
 1. [x] Add the strict Guild catalog and schema, register it as an append-only epoch artifact,
    mint the required balance epoch, and prove the epoch/baseline protocol.

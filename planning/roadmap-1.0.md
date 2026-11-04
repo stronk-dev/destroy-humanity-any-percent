@@ -16,6 +16,12 @@ Later exact-artifact checkpoint: source`df84ce1a` now has two byte-identical loc
 candidate trees and an independently approved retained build record at`593e54b4`.
 Fresh source rebuild, actual package/tampering checks and registry identities
 support that evidence; it supplies neither a previous release nor clean-host proof.
+Later Account/Guild concurrency corrections are independently approved through
+`78d75546`: Founder archival, overlapping membership admission and automatic
+disbanding now satisfy their tested deletion boundaries. Current kernel0.3.225,
+epoch8 unchanged; the retained candidate predates those runtime fixes. Owning
+Account/Guild logs preserve old/current SQL, race/composed checks and exact review
+ranges. This advances existing correctness, not a new tier or complete1.0 gate.
 
 **Whole-product classification baseline (2026-10-16):** see the [whole-product overview](CURRENT-STATE.md#whole-product-overview)
 and [current verification](CURRENT-STATE.md#current-verification-and-closeout).

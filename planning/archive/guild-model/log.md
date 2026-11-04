@@ -378,3 +378,33 @@ Independent corrective review is pending. Root owns exact DB/network IDs above; 
 other agent/default-DB suite is running. No full Account/rights/retention, hosted
 CI, archival, supported-host/R-006 or release claim. RP-731 remains open pending
 review, and the full nine-tier1.0 objective stays active.
+
+## 2026-11-04 — Independent RP-731 corrective review — APPROVED
+
+Review by: independent Codex `/root/guild_deletion_sweep_corrective_review`.
+Recorded by: Codex root, transcribing the reviewer's returned verdict.
+Reviewed range: `0ff2f614ab7dbf4514ec6d2336f928363137949c..78d7554628059e3ae542b57bc0f2b5902fecf987` (complete9paths).
+Verdict: **APPROVED**, no findings, bounded sweep/deletion correction only.
+
+Reviewer independently executes complete actual Guild SQL/race51160: package
+3.751s, sweep0.46s/admission1.10s, no skips. Exact historical`deletion.go` private
+overlay74649 reproduces `guild missing`/expected Make2 in0.43s, never mutating
+main source. Native70871 passes Guild0.130s/Kernel0.040s and affected Guild/Kernel/
+Gameserver vet. Formatting and complete-range whitespace pass. Reviewer confirms
+historical-Guild locking, active-membership recheck, preserved single sweep facts,
+continued failure on actual query errors and all three genuine0.3.225 identities.
+Root composed-server and TypeScript results are inspected, not independently
+rerun. The historical version guard remains unresolved, with no waiver.
+
+All reviewer/root execution handles terminal; private overlay/source verified
+and removed, no tracked reviewer edits/commits, checkout clean at final inspection.
+After exclusive DB use is returned, root re-verifies exact PostgreSQL ID/project/
+service and network's sole attachment, removes only owned DB
+`db6406a837c272526622b5d3aeda3cc483dd2fe6332f7cf0b287b4bf40db4732`,
+rechecks empty network, then removes only owned network
+`2512f88d4cdb5502ad41375293cc886de99d4896f8ec01b8cbe69c67ef2e7d59`.
+Final exact-ID container/network inventories are empty. Shared named Go caches
+and preexisting builders remain. The unused empty root scratch file is removed.
+RP-731 closes, as RP-730 already did under its separate exact verdict; neither
+approval supplies full Account/Guild/rights/retention, hosted CI, archival or1.0
+readiness. No push/deployment or owner adoption is inferred. Goal stays active.

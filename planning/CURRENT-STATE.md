@@ -32,6 +32,17 @@ root's broader server/Guild and race passes are separately attributed in the
 workflow acceptance remains open. The retained`df84ce1a` package predates this
 runtime correction; rebuild before citing it as evidence for current behavior.
 
+**Guild deletion corrections,2026-11-04:** admission/deletion
+`0a9b0107..a61ade8e` and sweep/deletion`0ff2f614..78d75546` receive separate complete
+independent approvals. Old real SQL runs reproduce both overlapping join/admission
+trigger failures and the post-sweep `guild missing` rollback. Corrected cold
+Postgres/race suites pass both orders, exact refusals and preserved history; the
+actual composed Guild/HTTP/socket deletion check also passes. The [Guild log](archive/guild-model/log.md)
+distinguishes independent executions from inspected root checks and records cleanup.
+Current kernel is0.3.225, epoch8 unchanged. The retained`df84ce1a` candidate also
+predates these runtime corrections. No new playable tier or whole-feature/release
+acceptance follows; the27 Clout failures and historical version guard remain open.
+
 **Latest hosted verification,2026-11-02:** published main is `d6b1c668`;
 [CI41476621196](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/41476621196)
 passes browser (all phases), composed-player, harness and schema. Server still

@@ -5823,3 +5823,28 @@ predecessor/current-release authority, hosted CI, actual retention, supported cl
 host/R-006 and the full product/rights/accessibility/pacing/ending scope remain.
 No owner adoption is inferred, historic artifact rewritten or acceptance loosened.
 The full nine-tier1.0 objective remains active.
+
+## 2026-11-04 — Account/Guild deletion concurrency checkpoint
+
+Runtime source`78d7554628059e3ae542b57bc0f2b5902fecf987`, kernel0.3.225/epoch8.
+The previously approved Account correction`2d7ebbfd..13a56c11` fixes missed
+Founder stream archival. This continuation independently approves complete Guild
+admission range`0a9b0107..a61ade8e` and sweep range`0ff2f614..78d75546` after real
+old/current Postgres execution: joins/officer admissions no longer make deletion
+fail the immutable-history trigger, and a completed due sweep no longer makes
+deletion fail `guild missing`. Both-order/exact-refusal/key-share checks and
+complete Guild race suite pass; root broader Account/Guild/Gameserver plus final
+composed Guild/HTTP/socket checks pass. The [Guild log](archive/guild-model/log.md)
+holds exact verdicts, executed/inspected boundaries, invalid setup attempts and
+verified owned DB/network cleanup. No skips in the final complete Guild SQL/race
+population; native SQL skips and the separate composed timer exclusion stay explicit.
+
+These close RP-729–731's bounded defects, not full Account/Guild/rights/retention,
+natural progression or a playable-tier milestone. The retained`df84ce1a` package
+predates the runtime fixes and needs rebuilding before current-behavior claims.
+Historical guard50a3a514,27 Clout failures, pending exact contract/copy adoptions,
+Headcount/full Tier2 integration, remaining world/combat/Tier3–8/endings and
+clean-host/release/rights/accessibility/preservation proof remain. Continue safe
+accepted construction/corrections while owner-specific adoptions are pending;
+do not repeat already-resolved Headcount model decisions or completed measurements.
+No push, host deployment, archival, acceptance promotion or goal pause.
