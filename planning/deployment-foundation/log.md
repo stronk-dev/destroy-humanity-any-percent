@@ -8616,3 +8616,109 @@ previous pair, full Deployment/hosted CI/supported-host R-006 or release readine
 Root reconciles owning plan and bounded whole-product artifact checkpoint only;
 no new suite for records or full-feature/archival promotion. Continue the full
 nine-tier1.0 scope and all separate source/product/operator/acceptance gates.
+
+## 2026-11-04 — Predeclare restore-client/database quiescence experiment
+
+Question for draft CR4: does exact client-container removal fence an already
+admitted real pg_restore database mutation, and does separately terminating the
+identified restore backend change that outcome? Current docker.go sends the
+restore through a Compose one-off; deleting the client is a proposed containment
+step, not an adopted implementation. Earlier local-process/ExecID observations
+cannot answer the database boundary. Actual inspected pair: Engine28.4.0 ARM64
+Desktop daemon, Compose2.39.4-desktop.1, Linux/amd64 pinned Postgres16 image;
+this is a local precursor, not the supported native host.
+
+Three arms on separate disposable target databases: normal completion; exact
+owned restore-client removal while its CREATE TABLE waits on a held pg_class
+lock; the same removal plus termination of its identified database backend before
+unlock. Use actual custom-format pg_dump and the runtime's pg_restore flags,
+not a mocked runner, an altered production helper or a pre-existing target table.
+Observe exact backend/application/database/query and lock wait before intervention,
+then release the real database lock. The normal control must create its table and
+row. Record whether each interrupted arm's table exists, not an expected success
+chosen in advance. If the target query never reaches CREATE TABLE/lock wait, or
+any handshake10s/whole-experiment1m guard fires, the observation is INVALID.
+No sleeping absence test or raised guard may replace the backend/command outcomes.
+
+Only the unique labelled local Compose project/client IDs may be removed. No
+official project, provider, secret, production dataset or external host is used.
+Results may choose/refuse a CR4 operation-specific containment proposal; they
+cannot establish all pending Engine-request/Compose-lifecycle quiescence, a real
+backup/rollback rehearsal, new runtime authority or adoption. Retain failures and
+controls, review any draft body change independently; full1.0 goal remains active.
+
+### Instrument correction before further measurement
+
+Initial34516 fails before database startup with its command diagnostic hidden.
+The diagnostic-only repeat reveals Docker's `cannot overwrite digest` cache
+collision: the declared index resolves locally to ARM64. Resolve/verify/pull its
+EXACT existing amd64 child075f7ba6/config75f5a969 (no version/image-policy change,
+shared ARM image not deleted). Initial catalog-lock run54193 is INVALID at its
+unchanged10s handshake; diagnostic repeat34649 also INVALID, last tagged backend
+empty. Neither measures an admitted restore statement, so no client/backend
+quiescence outcome follows and no time bound is raised.
+
+Revised instrument, predeclared before execution: the actual custom dump contains
+a synthetic table CHECK calling a source-defined function that obtains one
+transaction-scoped advisory lock. Hold that lock from the target's own separate
+fixture session, without adding any target object/trigger or changing pg_restore.
+All three arms must reach an observed active COPY/Lock backend in that otherwise
+ordinary restore. Normal completion must restore row7; interrupted arms record
+actual persisted row count after unlock and backend disappearance. Same10s/1m
+guards, three interventions, unique ownership/cleanup and precursor-only limits.
+This is controlled database-object instrumentation, not current game content or
+the complete encrypted restore helper. A missing COPY wait invalidates this
+replacement too; no sleeping absence or altered expected outcome is allowed.
+
+## 2026-11-04 — Actual restore COPY survives client-container removal (RP-726)
+
+Outcome changes CR4's next mechanism requirement. Actual three-arm7871 terminal0
+observes normal row1, removed-client row1 and removed-client+backend-termination
+row0; backend survives removal in both interrupted arms. Stronger causal
+instrument13042 terminal0 additionally requires actual COPY/advisory wait and
+zero committed rows BEFORE each intervention, then publishes complete JSON only
+after successful cleanup. All three arms reproduce the same results. Normal
+control restores exact row7. Both interrupted arms retain the table created
+before COPY; session termination is demonstrably not rollback. The lock is opened
+only after full client-ID removal, with backend disappearance awaited before the
+final row observation. No arbitrary delay supplies the absence claim.
+
+The preserved Python source runs actual declared Compose Postgres, pg_dump and
+pg_restore with the runtime's exit-on-error/no-owner/no-privileges flags and
+separate disposable target databases. Its synthetic source-defined CHECK function
+provides the database gate; no target trigger or production source is installed.
+Exact project/service/full-ID and image config ownership is checked before client
+removal. Third arm terminates only the observed PID under its unique database/
+application predicate, then independently observes its disappearance. This is a
+bounded positive containment control, not a proposed production PID/application
+authority or all-session/request fence. Source/balance/migrations are untouched.
+
+Initial startup and catalog-lock errors remain in the preceding predeclaration/
+instrument-correction entries. No successful outcome is inferred from them and no
+10s/1m guard is raised. Final source additionally reports incomplete/guard fields
+on exceptions and ensures project cleanup is attempted even if local-client
+cleanup fails; these error/cleanup-only refinements follow13042's data run.
+Every owned invalid/completed project was removed. Final exact name inventory
+has no restore-fence containers; script checks its network (and final source its
+volume inventory) before emitting completion. All handles terminal, no official
+project/host/database/key operation or Docker cache deletion. No full Go/browser
+suite for this manual SQL research; execute its real subject rather than trackers.
+
+Primary PostgreSQL16 docs explain optional connection-loss polling and distinguish
+signal delivery from confirmed backend termination; actual observed data, not
+those descriptions, establishes this result:
+[connection checks](https://www.postgresql.org/docs/16/runtime-config-connection.html#GUC-CLIENT-CONNECTION-CHECK-INTERVAL),
+[termination](https://www.postgresql.org/docs/16/functions-admin.html#FUNCTIONS-ADMIN-SIGNAL).
+Docker's force removal uses SIGKILL, which is insufficient for work already sent
+to another service; its [remove reference](https://docs.docker.com/reference/cli/docker/container/rm/)
+does not promise a database fence. The real experiment supplies the cross-service
+counterexample. No global Postgres setting, signal privilege or recovery mechanism
+is adopted merely because a local fixture can terminate its own backend.
+
+Draft author reconciles CR4/body/open-question/evidence, not just an appended
+warning. RP-726 remains OPEN until the complete Engine/client/database lifetime
+mechanism is specified, supported-host proved and adopted. Review by: Codex root,
+research implementer/draft author first filter only. Recorded by: Codex root.
+Exact five-path range after5b9dbb2c through this containing commit needs fresh
+independent technical review: draft, new probe source, backlog, owning plan/log.
+This is no production correction, release acceptance or narrower1.0 goal.

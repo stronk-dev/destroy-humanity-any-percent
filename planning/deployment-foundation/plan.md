@@ -7,6 +7,15 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Interrupted restore boundary, 2026-11-04 (RP-726):** real pg_restore COPY
+commits after exact owned client-container removal when its held database lock
+is released. The separately identified backend-termination arm prevents that
+row but preserves earlier DDL. Draft CR4 now explicitly requires database-side
+quiescence too; no production recovery policy is adopted. Both successful
+three-arm runs and invalid initial instruments are in the owning log. Five-path
+research/draft range awaits independent technical review; next specify/prove the
+complete pending-Engine/client/database fence, not more client-death positive checks.
+
 **Fresh exact candidate, 2026-11-04:** replace neither historical artifacts nor
 the predecessor with a fabricated pair. Two independent committed-source
 `df84ce1a` rebuilds now match all74 bundle artifacts, six helpers, image archive,

@@ -236,6 +236,15 @@ diagnostic below observes successful parent completion/restart refusal before an
 gated descendant later writes. A proposed mechanism must account for the actual operation's
 descendant/process and outstanding-request lifetimes, not silently equate parent exit with
 that guarantee. This diagnostic does not show a shipped backup command leaking descendants.
+Removing the exact one-off container is insufficient for database work already
+admitted by Postgres too. RP-726's real pg_restore COPY waits in its identified
+backend; client-container removal succeeds, yet opening the database gate then
+commits the row. CR4 must account for outstanding database sessions/statements
+as well as Engine requests and client descendants. The controlled separate
+backend-termination arm prevents that row, but earlier restored DDL remains:
+session termination is neither rollback nor a complete operation fence. No
+unscoped backend termination, application-name-only authority, new database
+permission or recovery implementation is authorized by this observation.
 No new backup decryption placement, protection-metadata resolution or deletion policy is adopted.
 
 ### CR5 — Consumers and compatibility
@@ -304,6 +313,12 @@ questions remain; the author must reconcile their results into CR2/CR4 before ac
   the actual supported Engine/Compose pair and retain process/request ordering, not an arbitrary
   sleep. Results authorize the exact supervisor/recovery mechanism, never automatic rollback or
   a changed deployment window. If that mechanism cannot be established, this proposal must change.
+  Include already-admitted Postgres work: job-container removal alone cannot fence
+  that work (RP-726). Bind every operation-owned connection before mutation and
+  establish its terminal outcome, while also preventing late client/Engine actions
+  from creating replacement work. Exact recovery ownership/permissions and the
+  complete mechanism remain to be specified and proved; the experiment's synthetic
+  application tag/PID selector is not that production protocol.
 
 Docker documentation/source inspection is partial support for those instruments, not a runtime
 witness. Parent holds remain separate; no claim that every R-006 population has a producer.
@@ -360,6 +375,27 @@ not Docker exec. This is a controlled shell payload, not pg_dump/restore, native
 proof, a delayed-request fence or evidence of a complete safe recovery mechanism. It excludes
 process-group cancellation as the sole solution without inventing an accepted replacement.
 
+The [restore-backend diagnostic](../planning/deployment-foundation/probes/restore-backend-fence-probe.py.txt)
+adds a real database boundary on the same Desktop pair, using the exact amd64
+child of the pinned Postgres16 image and three disposable databases. An actual
+custom dump contains a synthetic CHECK function whose transaction advisory lock
+holds COPY after the target connection/DDL are established. Every arm observes
+the exact COPY/advisory wait and zero committed rows before intervention. Normal
+completion restores row7. Removing the exact owned client leaves its backend
+alive; releasing the lock afterward still commits row7. Removing the client and
+then terminating that observed backend leaves zero rows, while the table created
+before COPY remains. Completion follows backend disappearance and owned-project
+cleanup, not a sleeping absence check. Initial catalogue-lock attempts are invalid
+and excluded in the owning log; no guard was raised.
+
+This refutes a client-container-only fence and narrows the proposed mechanism.
+The workload is controlled SQL content through actual pg_dump/pg_restore, not
+the encrypted application helper, game dataset, native supported host or complete
+pending-request/recovery proof. PostgreSQL16's documented optional
+[connection checks](https://www.postgresql.org/docs/16/runtime-config-connection.html#GUC-CLIENT-CONNECTION-CHECK-INTERVAL)
+and [backend termination semantics](https://www.postgresql.org/docs/16/functions-admin.html#FUNCTIONS-ADMIN-SIGNAL)
+are consistent with the observation, not substitutes for it. CR4/adoption remain open.
+
 ## Changelog
 
 - 2026-10-13: source-grounded RP-558/DESIGN-GAP10 proposal. No product implementation, owner
@@ -370,3 +406,6 @@ process-group cancellation as the sole solution without inventing an accepted re
   generic ExecID-only quiescence; actual-operation/native-host proof and adoption remain open.
 - 2026-10-16: actual Compose one-off survives whole local CLI process-group termination;
   reject process-group-only recovery fencing. Controlled Desktop result, not backup acceptance.
+- 2026-11-04: RP-726 actual pg_restore COPY commits after its client container is
+  removed. Require database-side quiescence too; identified backend termination is
+  a bounded positive control, not a complete recovery mechanism or adoption.
