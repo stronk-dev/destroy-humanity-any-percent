@@ -2,7 +2,7 @@
 
 Normative companion proposal to [SP1–SP8](deployment-native-supervisor-profile.md).
 **Draft; direct upstream-Compose amendment independently technically approved
-through70acee7f; P01 projector amendment pending review; owner adoption pending,
+through70acee7f and P01 throughdcc151f2; parent linkage/package review and owner adoption pending,
 no implementation authority.** This enumerates the proposed
 plan population and adapters. Native conformance remains unproved. A successful
 table/schema check cannot establish a real handler, filesystem or service result.

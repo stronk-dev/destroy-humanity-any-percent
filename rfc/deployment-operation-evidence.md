@@ -1,6 +1,6 @@
 # RFC: Deployment Operation Evidence
 
-- **Status:** draft — record envelopes/phase reduction independently technically approved; OP9 native profile/producers and adoption pending, not implementation authority
+- **Status:** draft — prior envelope/native-contract reviews retained; OP9 linkage/adoption sequence reconciliation pending technical review; no producer implementation or adoption
 - **Author:** Codex
 - **Created:** 2026-11-04
 - **Design refs:** `design/06-tech.md` §stack; `design/00-vision.md` pillar6
@@ -385,17 +385,20 @@ stage mediation, native lock/daemon binding and scheduled-service handoff.
 The complete corrected profile/adapter union is independently technically approved
 througha836e92b; exact ranges and prior negative verdicts remain in the owning log.
 That approval establishes proposed technical coherence, not native conformance.
-It is a draft pending completed specification, adoption and actual producer conformance;
-its existence does not satisfy the gates below. Its explicit namespace/native-host,
+The direct-Compose and P01 amendments have separate exact verdicts in the owning
+log; earlier verdicts do not cover later bytes. It remains a draft pending
+adoption and actual producer construction/conformance; its existence does not
+satisfy the gates below. Its explicit namespace/native-host,
 tool-artifact and release-metric projection changes require parent reconciliation.
 
-This RFC is **not acceptance-ready** without a concrete native producer/profile
-amendment. It must define exact plan/subject/native-receipt schemas and producer
-bindings for EVERY work kind, supervisor/daemon generation, admission isolation,
-lock attachment/handoff, retained scope inventory and inert bootstrap. Record
-all prerequisites/privileges and reconcile parent no-service/host-floor promises
-before adoption. Unknown profiles/plans/native evidence refuse; this document
-does not supply an empty registry as a usable implementation.
+The linked SP1–SP8 and adapters now propose exact plan/subject/native-receipt
+schemas and producer bindings for EVERY work kind, supervisor/daemon generation,
+admission isolation, lock attachment/handoff, retained scope inventory and inert
+bootstrap. Complete technical review and owner adoption, with SP8's explicit
+parent/no-service/host-floor reconciliation, precede producer construction.
+This RFC remains **not implemented or acceptance-ready** until all those actual
+producers/readers pass conformance. Unknown profiles/plans/native evidence
+refuse; a linked specification or empty registry is not a usable implementation.
 
 The [isolated command-worker study](../planning/deployment-foundation/combined-fence-candidate.md#isolated-command-worker-mechanism)
 is preliminary mechanism evidence for per-job Docker namespaces/private broker
@@ -414,7 +417,10 @@ not replace runtime conformance or the exact-manifest clean-host/RPO/RTO gates.
 
 ## Adoption and implementation
 
-Requires independent technical review, complete OP9 profile/producers and owner
-adoption with parent-body reconciliation. Existing v1 artifacts/journals remain
+Requires independent technical review of the complete proposed OP9 contract and
+owner adoption with parent-body reconciliation before construction. Construct
+the actual profile producers/readers, then independently prove their full native
+and exact-artifact acceptance population; no pre-construction conformance is
+invented as a condition of permission to build. Existing v1 artifacts/journals remain
 historical; no retroactive completion or archive/publication authorization. The
 entire nine-tier1.0 and existing Deployment/backup/retention gates stay intact.

@@ -1,6 +1,6 @@
 # RFC: Native Deployment Supervisor Profile
 
-- **Status:** draft — prior core/adapter/tool reviews retained through70acee7f; P01 projection/restart amendment pending technical review; owner adoption/native producers/conformance pending; no implementation authority
+- **Status:** draft — prior reviews retained, including P01 throughdcc151f2; parent-contract linkage/adoption package pending technical review; owner adoption/native producers/conformance pending; no implementation authority
 - **Author:** Codex
 - **Created:** 2026-11-04
 - **Parent / amends:** [Operation Evidence](deployment-operation-evidence.md), OP9; [Current Release Authority](deployment-current-release-authority.md), CR4/CR6; [Deployment Foundation](deployment-foundation.md), DP1/DP5/DP6
@@ -31,8 +31,10 @@ and linkage had separate independent technical approval through1648e792. The
 current direct upstream-Compose amendment has its own complete independent
 technical/research approval765aae44..70acee7f, including both input-construction
 arms and the image-environment correction. Prior verdicts are not extended to
-new bytes. P01 projection/restart semantics and its isolated rule fixtures are a
-new amendment awaiting their own review; those earlier verdicts do not cover it.
+new bytes. P01 projection/restart semantics and its isolated rule fixtures have
+their own complete independent approval407b641d..dcc151f2. Parent-contract linkage
+and the SP8 adoption package below are a further amendment pending review; older
+verdicts do not cover it.
 Technical approval precedes owner adoption under SP8; native producer
 construction and actual conformance follow adoption, not as a circular prerequisite
 to permission to implement. OP9 remains open until its actual acceptance proof.
@@ -650,6 +652,36 @@ with parent-body reconciliation. Technical approval alone authorizes no runtime
 change. Implement profile validation, native producers, all stage adapters and
 service control together as reviewable dependent batches under the adopted
 contract; keep existing v1 history append-only.
+
+### Exact proposed adoption and parent-reconciliation scope
+
+The proposed control design is CR1–CR6, OP1–OP9, SP1–SP8 and this profile's
+adapter companion (including C01/P01). Adoption authorizes construction of that
+substantial native deployment-control subsystem; it is not a claim the subsystem
+exists. The existing tool-packaging/terms-policy question is separate and remains
+unanswered until Marco answers it. Selecting native control does not silently
+adopt the tool-only MPL policy, backup signing metadata, a shipping artifact or
+another pending proposal.
+
+The adopting/delegated normative edit must reconcile these parent subjects in
+one reviewed range; this table is the concrete proposed change, not permission
+to edit the accepted owner-authored body before adoption:
+
+| Parent subject | Proposed reconciliation |
+|---|---|
+| DP1 supported-host/tool floor | SP1's native Linux/amd64, direct local rootful Docker Unix endpoint, `/proc`, usable pidfds and SCM_RIGHTS/SCM_CREDENTIALS become explicit prerequisites for this profile. Desktop/rootless/remote/proxied endpoints are not supported by it. Use the one-shot operator-launched release binary, existing backup service and existing Postgres image; no new installed daemon, seventh runtime image or cloud account. The bundled standalone compiler/tool inventory still requires its separate adopted contract; actual pins/rights gate shipping eligibility. |
+| DP5 current release and recovery | CR1–CR6/OP/SP replace caller-supplied current identity and terminal-only completion with the one existing ledger's governed identity, durable operation events, actual work ownership and typed full closure. Keep manual release/rollback, strict candidate/migration ordering, seven-day rollback and no live Down migrations. Preserve v1 bytes. Before-checkpoint abort must preserve live services/data; post-checkpoint recovery fences before restore. Lost authority refuses in-place successor mutation; no automatic rollback, host/daemon reboot permission or invented disaster-recovery route. |
+| DP6 backup scheduler/handoff | Preserve six-hour backup cadence, existing retention tiers, protected-checkpoint policy, encryption and original RPO/RTO. Add SP6/A6's paused startup, durable active-round/freeze markers, exact stream/host-IO ownership transfer and guarded restart. The15s result-observation loop is not a new backup cadence. Protected staged ciphertext remains protected. RP-505's signing/protection contract and unresolved retention subjects remain separate; native adoption introduces no new key or deletion permission. |
+| DP7 results/alerts/logs | P01's retained projector owns event-backed release-result metrics; only diagnostic gauges belong to the admitted supervisor's status loop. Add its exact availability alert alongside all seven existing families, with real firing/resolution required. Apply C01's narrowly scoped unlogged private compiler output exception; retain structured journald/service logs and14-day evidence, optional raw-IP7-day policy and existing pressure alert. No metric or cache becomes release authority. |
+| DP8/AC10 and full release floor | Preserve current CI topology/sub-five-minute target, no deployment secrets/workflow deployment, all existing acceptance thresholds and exact-manifest supported-host R-006. This contract is not current CI green. Local unit/rule/prototype evidence cannot replace real helper/backup/receiver/private-output/native/clean-host proof or any nine-tier1.0 criterion. |
+
+No new permanent OS service is selected: the one-shot supervisor and retained
+backup service roles above preserve the no-additional-resident-service promise.
+The host/platform prerequisites and changed scheduler/metrics behavior remain
+explicit proposed changes requiring Marco's adoption. The accepted parent is
+unchanged until that decision and the applicable body-reconciliation delegation.
+Construction may proceed only on adopted contract dependencies; acceptance still
+requires every actual producer/consumer below, not a linked spec or static table.
 
 Acceptance is an ACTUAL packaged workflow: clean supervised install and all v1
 attempts → exact-current ordinary release → post-checkpoint failure/rollback,

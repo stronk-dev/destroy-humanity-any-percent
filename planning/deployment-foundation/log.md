@@ -11941,3 +11941,48 @@ applicable. Only two body/ledger corrections plus this append-only record. Full
 original-plus-correction union needs independent re-review. All root/review handles
 terminal. No software suite/rerun merely for these text repairs, inferred adoption,
 publication, release or goal pause.
+
+## 2026-11-04 — P01 approved; reconcile the full proposed contract graph
+
+APPROVED, technical-specification and bounded rule-fixture only, complete8-path
+407b641dffa169f07c931164c6211bb0db8de631..
+dcc151f277c862c2b78a1d5d16befc97de6fbaac. Review by: independent Codex
+/root/native_supervisor_profile_review. Recorded by: Codex root. Both text findings
+resolved, no remaining blockers. Rule/fixture bytes unchanged; independent35/37
+PASS, one exact age-arm failure and three exact histogram failures remain valid.
+Original negative verdict/log prefix, links, whitespace, exclusions and clean
+tree pass; all handles terminal. No duplicate Docker run for text-only corrections.
+This is neither actual producer/restart/receiver/native proof nor owner adoption.
+
+Before asking for architecture adoption, root inspects the linked CR/OP bodies.
+CR6/Open questions still say the native record/profile contract needs specification;
+OP9 both links that proposed contract and still demands completed native producers
+before adoption. Those are stale own-draft gates, not an excuse to implement or
+weaken acceptance. Bodies now distinguish concrete linked schema/profile contracts,
+applicable review/adoption/parent reconciliation BEFORE construction, and complete
+actual producer/native/R-006 proof BEFORE acceptance. Historical counterexamples,
+quiescence/ownership, useful successful paths and lost-authority refusals remain.
+No inventory or completed mechanism experiment is repeated as a substitute.
+
+SP8's adoption package now names CR1–CR6/OP1–OP9/SP1–SP8/adapters and enumerates
+exact proposed DP1/DP5/DP6/DP7/DP8 reconciliation. It explicitly discloses the
+substantial native supervisor, rootful/direct Linux/amd64 prerequisites, reused
+backup service/image, no additional resident service, paused scheduler/guarded
+restart, status-only versus business-metric writers, P01 alert and C01 narrowly
+unlogged compiler. Existing seven alerts,14-day evidence, RPO/RTO/retention,
+manual rollback/seven-day window, no Down migrations, provider-off and full1.0
+remain. It does not adopt tool-only MPL, backup signatures/keys, any shipping
+artifact or another pending proposal, and does not silently edit the accepted
+parent/owner-authored body. All construction depends on adopted contracts.
+
+Verification for this new normative reconciliation is direct full-diff/source/
+contract trace and local reference/whitespace checks, not a software suite for
+Markdown or a table validator pretending native effects. P01 rule/fixture bytes
+stay fixed; no public/runtime/schema/kernel/CI/content or accepted-parent edit.
+One initial patch context miss applies nothing; corrected exact-context edit
+succeeds. New complete eight-path range afterdcc151f2 through this containing
+commit requires independent technical review, including the whole linked adoption
+scope and absence of weakened accepted gates. Pending owner questions remain
+unanswered and are not repeated. No adoption request until that concrete package
+passes review. Full nine-tier goal active; no publication/deployment/archival/pause.
+Review by: Codex root, author first filter. Recorded by: Codex root.

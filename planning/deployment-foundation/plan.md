@@ -43,8 +43,24 @@ DP7's additional native-only alert and C01 logging exception without changing
 accepted parent text. The draft's circular before-adoption native-cache-test line
 is reconciled with SP8: isolated predicate proof before adoption; actual producer/
 restart/receiver/native proof after adoption before acceptance. Complete new
-research/tool/technical-spec range after407b641d needs independent review; no owner
-adoption or native/release proof. Do not repeat pending adoption questions.
+research/tool/technical-spec union407b641d..dcc151f2 is independently APPROVED
+with full actual35/37 and both controls, after factual rollback-mapping and stale-
+ledger-sequencing corrections. No owner adoption or native/release proof follows.
+Do not repeat pending adoption questions.
+
+**Contract-graph adoption preparation,2026-11-04:** complete P01 review exposes
+stale CR6/Open-question and OP9 text still calling now-proposed schemas/profile
+unspecified or demanding actual producers before permission to construct them.
+Author reconciles those own-draft bodies to the linked concrete contracts while
+preserving ALL actual native/clean-host acceptance. SP8 now enumerates the exact
+proposed DP1/DP5/DP6/DP7/DP8 changes and full control-contract adoption scope,
+including rootful local Linux/amd64 prerequisites, no new resident service,
+paused scheduler/verified-result ownership, C01 logging exception and extra
+projection alert. Accepted parent and owner-authored rulings remain untouched.
+New full normative-linkage range afterdcc151f2 needs independent review before
+one concrete architecture/parent-reconciliation adoption request. Static tool/
+MPL, signing-metadata, native-host access and other unanswered questions are
+separate; do not duplicate or assume them. No product implementation or goal pause.
 
 **Current exact-artifact construction,2026-11-04:** clean source893bb1e7 now has
 fresh independent artifact trees `.cache/release-current-893bb1e7/bundle-a` and
@@ -240,10 +256,10 @@ implicitly demand universal signed/reproduced upstream builds; finish truthful
 per-tool inventory, terms/delivery and provenance, then the concrete artifact/
 policy proposal and applicable adoption. Further path/code equality cannot do that.
 
-Next review the proposed exact tool-delivery contract and DP7 projection/reboot-
-cache contract required by SP1/SP6; obtain explicit architecture/host/artifact-
-floor and tool-policy adoption and reconcile parent bodies before production
-implementation. Actual selected-tool rights and inventory must be settled before
+The tool-delivery and P01 predicate/contracts now have their own exact technical
+approvals; new CR/OP linkage and the complete SP8 parent-adoption package await
+review above. Obtain explicit architecture/host-floor and separate tool-policy
+adoption, then reconcile parent bodies before dependent production implementation. Actual selected-tool rights and inventory must be settled before
 shipping eligibility. Then construct native producers/adapters/service
 control with complete dependent review and actual SP8/native-host/manifest R-006
 proof. The currently cached tools remain research-only, not approved shipping

@@ -1,6 +1,6 @@
 # RFC: Current Release Authority and Interrupted Transitions
 
-- **Status:** draft — RP-558 / Deployment DESIGN-GAP10; proposed safety contract, not implementation authority
+- **Status:** draft — ordering corrections reviewed; concrete native-contract linkage/adoption sequence reconciliation pending technical review; RP-558 remains unimplemented
 - **Author:** Codex
 - **Created:** 2026-10-13
 - **Design refs:** `design/06 §stack`; `design/00` pillar6 (honest claims)
@@ -447,9 +447,15 @@ a later admission needs a verified predecessor-fence binding to the current
 prefix, not a circular hash or an unbound sidecar. Prefix changes, missing work
 receipts and any later unsealed protected intent refuse.
 
-**Not acceptance-ready:** the exact artifact/request-log schemas, native profile,
-first-install/v1 handoff and supported-host producers/readers still need complete
-specification and independent execution. These semantic fields are not permission
+**Not implemented or acceptance-ready:** the proposed
+[Operation Evidence contract](deployment-operation-evidence.md),
+[Native Supervisor Profile](deployment-native-supervisor-profile.md) and its
+[adapters](deployment-native-supervisor-adapters.md) now specify artifact/request
+logs, native plans/subjects/results, bootstrap, first-install/v1 handoff and
+service ownership. These are concrete proposed contracts, not supported-host
+producers/readers or evidence that those effects occurred. Construction follows
+explicit adoption and parent reconciliation; full actual conformance precedes
+feature acceptance. These semantic fields are not permission
 to insert placeholder proofs, a no-op verifier, a fake certificate or a tracking
 validator as implementation. The existing prototype artifacts are research,
 never these new proof types. No new resident service, native-unit prerequisite
@@ -457,8 +463,11 @@ or privilege is adopted by naming the supervisor. Selecting such packaging must
 reconcile this draft's no-service promise and the parent's host floor explicitly.
 The proposed [Operation Evidence](deployment-operation-evidence.md) specifies
 the descriptor, phase logs, receipt envelope, closure and install-handoff shapes.
-Its OP9 native plan/subject/receipt producers and profile are STILL required;
-the proposed shapes are neither accepted authority nor a completed supervisor.
+OP9's proposed native profile supplies the plan/subject/receipt contracts; actual
+producer construction and conformance are STILL required. The proposed shapes
+are neither accepted authority nor a completed supervisor. SP8 enumerates the
+exact proposed parent/host changes; no installed service or platform prerequisite
+is silently adopted by this linkage.
 Rollback fencing and subsequent execution use separate sealed phase logs, so
 its predecessor proof does not prematurely seal the execution it authorizes.
 
@@ -516,9 +525,13 @@ independent implementation reviews and all existing clean-host populations open.
 
 ## Open questions
 
-The proposal selects a concrete policy for review rather than asking Marco to choose data shapes.
-It is **not acceptance-ready**. Adoption/designated normative review and these bounded mechanical
-questions remain; the author must reconcile their results into CR2/CR4 before acceptance:
+The proposal selects concrete policies and linked native contracts for review
+rather than asking Marco to choose data shapes. It is **not implemented or
+acceptance-ready**. Complete technical review, explicit adoption and parent-body
+reconciliation precede construction. The following are actual construction and
+acceptance populations, not a circular requirement to build the unadopted native
+system before permission to implement it. Failed measurements must reconcile the
+implemented contract honestly; they never waive CR2/CR4 or authorize a no-op path.
 
 - **Mounted-byte reader:** on the supported pinned engine, run the same observer against all nine
   listed mounted roots. Intact controls must return exact sets/hashes; one changed site/helper/
@@ -541,14 +554,15 @@ questions remain; the author must reconcile their results into CR2/CR4 before ac
   that work (RP-726). Bind every operation-owned connection before mutation and
   establish its terminal outcome, while also preventing late client/Engine actions
   from creating replacement work. Exact recovery ownership/permissions and the
-  complete mechanism remain to be specified and proved; the experiment's synthetic
+  complete mechanism are now specified as the linked SP/adapters proposal and
+  remain to be constructed and proved; the experiment's synthetic
   application tag/PID selector is not that production protocol.
   The network-generation candidate also requires a complete mutation-path mapping:
   pending creates/starts, project-wide Compose operations, volume/name reuse and
   host-mounted outputs cannot silently inherit the SQL worker's narrower result.
   Persisting a generation label or full network ID alone is not this mapping.
   The source inventory is now retained in the mutation map; the unresolved task
-  is the COMBINED mechanism and its execution, not another inventory of the same
+  is construction/conformance of the linked COMBINED mechanism, not another inventory of the same
   root calls. Include admitted mutating application HTTP, post-controller CLI
   metrics, every helper's host writer and scheduled deletion of retained material.
   Separately name any excluded install/rehearsal/rotation path rather than
@@ -558,10 +572,11 @@ questions remain; the author must reconcile their results into CR2/CR4 before ac
   versus literal quiescence explicitly, pre-backup non-destructive abort,
   packaged supervisor, all production resources and checkpoint authority before
   promoting the mechanism. Native supported-host execution remains required.
-- **Closure/protocol producers:** CR6 now closes the normative ordering gaps, not
-  its own construction gates. Specify exact fence/completion/work-log schemas,
-  initial-install/v1 handoff, supervisor ownership/lock attachment, non-bypassable
-  admission and native job receipts. Prove actual successful completion as well
+- **Closure/protocol producers:** CR6's ordering and OP1–OP9/SP/adapters now name
+  the proposed fence/completion/work-log schemas, initial-install/v1 handoff,
+  supervisor ownership/lock attachment, non-bypassable admission and native
+  receipts. Construct those actual producers/readers under the adopted contracts;
+  their linked descriptions do not execute them. Prove successful completion as well
   as lost-authority refusal; neither the experimental booleans nor a universally
   refusing implementation can satisfy this contract. If native services are
   selected, reconcile both host prerequisites and the no-service promise before
