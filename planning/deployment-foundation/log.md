@@ -12051,3 +12051,50 @@ untouched pending actual adoption/delegation. The full1.0 goal stays active;
 proper construction and all actual private/cache/restart/receiver/native/SP8/R-006,
 CI/gameplay/rights/accessibility/ending gates still remain. No new tier, publication,
 deployment, archival, feature/release acceptance or goal pause.
+
+## 2026-11-04 — Refresh the exact artifact after socket-authentication corrections
+
+DP1/AC1/AC8 local construction at clean source
+9768d681ae0227d59126a060b22f3b481f740236, epoch1793829295 /
+2026-11-04T21:54:55Z. The older893bb1e7 artifact predates approved RP-765/RP-766;
+this rebuild includes them. RP-767 remains OPEN/unapplied. Kernel0.3.225/epoch8
+and the LOCAL0.1.0-preview.2 label are unchanged; this is no release call.
+
+Fresh roots `.cache/release-current-9768d681/bundle-a` and
+`.cache/release-rebuild-9768d681/bundle-b` match all75 files, modes and74 bound
+artifact hashes. Root Make targets rebuild client, six static Linux/amd64 ELF
+executables, content and54-package application metadata twice. Compilation uses
+the normal shared Make cache. Both pinned no-cache image builds yield config
+SHA2e8f584a59c7a0f4ba59b89faa32998ac591c069f0ee6b8c4d0fe587f84b3003,
+archive SHA847070a3fc7909aed5672bab299036e58fb2bb1ceff947fdb8baecc7808d8ece,
+manifest SHAaf8408c7737c7dd34816301899f818adc52d189c754a9018972a3c141ab174b2.
+Only the gameserver executable differs from the previous candidate's six binaries.
+
+All14 actual pinned Syft scans complete:220/179/41/50/51/433 packages plus663
+rehearsal-only Playwright packages. Each pair has distinct raw creation times
+and identical normalized inventories. All6 upstream/rehearsal registry/config
+Linux/amd64 identities are freshly inspected. The fresh native helper accepts
+the build record and intact package; all9 rebound package mutations return exact
+exit3/fixture_rejected. These two identical candidate trees are not a legitimate
+predecessor pair. Source/image secret scan passes2560 tracked files plus actual
+archive, zero findings, objective_completed=true/guard_exhausted=false, bound
+to the exact source/manifest. Local comparison.json, package-probes.json,
+registry-proof.json, scan/build logs and secret-scan.json retain the details.
+
+Invalid setup is disclosed: the first frozen pnpm install was sandbox-denied,
+and compilation started before that result was inspected. That output is retained
+separately as release-provisional-9768d681 and receives no verification credit.
+The identical install then succeeds; both counted roots are freshly rebuilt
+afterward. First image attempt is denied writing Docker builder activity before
+building; the same target succeeds under its narrow authorization. All counted
+handles terminate, probe work is empty, scanner-container inventory is empty;
+tracked source stays fixed through verification. No production byte changes here.
+
+The new candidate-9768d681.json is derived from actual outputs and validates.
+Engine28.4.0/ARM64 Desktop and Compose2.39.4-desktop.1 are observed: these are local
+cross-build/package checks, not native clean-host/runtime acceptance. Genuine
+predecessor, current hosted CI, rights, proposed native architecture, SP8/R-006,
+all nine tiers and other gameplay/accessibility/preservation requirements remain.
+No push, deployment, archival, policy adoption or goal pause. Complete four-path
+9768d681..this commit needs independent corrective artifact-evidence review.
+Review by: Codex root (implementer first filter). Recorded by: Codex root.

@@ -213,21 +213,21 @@ batches and the exact clean-host R-006 rehearsal remain required before the proj
 can claim supported self-hosting.
 
 The latest retained local candidate build record is
-[`candidate-893bb1e7.json`](../planning/deployment-foundation/release-builds/candidate-893bb1e7.json).
-Two independent trees rebuild exact source `893bb1e7`, including the approved
-Account/Guild concurrency, backup and application-attribution corrections, into
-byte-identical 74-artifact bundles. Each has six fresh Linux/amd64 executables,
-client/content/application metadata and seven independently scanned, normalized
-image inventories. The package validator, nine rebound tampering fixtures and
-manifest-bound source/image secret scan pass locally. Independent corrective
-evidence review approves complete range `893bb1e7..40d33bb7`, including a fresh
-six-executable rebuild and executed package/tampering checks. Both trees are the
-same candidate; the earlier
-[`df84ce1a` record](../planning/deployment-foundation/release-builds/candidate-df84ce1a.json)
-remains historical evidence, not an approved predecessor. The existing source
-correctness, hosted CI, predecessor provenance and clean-host gates remain open;
-this local rebuild does not establish runtime acceptance, implement the proposed
-native supervisor or change the release call.
+[`candidate-9768d681.json`](../planning/deployment-foundation/release-builds/candidate-9768d681.json).
+Two independent trees rebuild exact source `9768d681`, adding the reviewed
+periodic-authentication and initial-connection shutdown corrections (RP-765/RP-766)
+to the previous candidate. All 75 files match, including six Linux/amd64 executables,
+client/content/application metadata, the image archive and seven independently
+scanned, normalized image inventories. The package validator, nine rebound
+tampering fixtures and manifest-bound source/image secret scan pass locally.
+Independent review of this new artifact-evidence batch is pending. RP-767's
+membership-query cancellation correction remains unapplied and open. Both trees
+are the same candidate; the earlier
+[`893bb1e7` record](../planning/deployment-foundation/release-builds/candidate-893bb1e7.json)
+remains historical evidence, not an approved predecessor. Current source correctness,
+hosted CI, predecessor provenance and clean-host gates remain open. Local packaging
+checks do not establish runtime acceptance, implement the proposed native supervisor
+or change the release call.
 
 The bundled `deployment-rehearsal` command validates retained release-build records and final R-006
 evidence. Its `run-plan` lane executes a reviewed, manifest-bound command plan directly—never via a

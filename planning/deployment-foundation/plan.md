@@ -68,17 +68,18 @@ reconcile parent bodies under the actual delegation and implement adopted
 contract dependencies with their full producer/native/clean-host proof. No
 product implementation or goal pause is claimed at this checkpoint.
 
-**Current exact-artifact construction,2026-11-04:** clean source893bb1e7 now has
-fresh independent artifact trees `.cache/release-current-893bb1e7/bundle-a` and
-`.cache/release-rebuild-893bb1e7/bundle-b`, with all75 files byte-identical. New
-[retained candidate record](release-builds/candidate-893bb1e7.json) includes the
-reviewed Account/Guild, backup and attribution corrections missing from df84ce1a.
-Both full builds,14 actual platform-selected image scans, six upstream/rehearsal
-config identities, intact/nine semantic-tampering probes and exact-manifest source/
-image secret scan pass locally. Complete four-path893bb1e7..40d33bb7 is
-independently APPROVED after fresh six-binary rebuild and actual intact/tampering/
-registry checks; no full feature/hosted/native/SP8/R-006 or predecessor claim.
-The existing local preview label is neither publication nor a smaller1.0 objective.
+**Current exact-artifact construction, 2026-11-04:** clean source `9768d681`
+has fresh independent trees `.cache/release-current-9768d681/bundle-a` and
+`.cache/release-rebuild-9768d681/bundle-b`, with all 75 files byte-identical.
+The [retained candidate record](release-builds/candidate-9768d681.json) adds the
+reviewed RP-765/RP-766 socket-authentication shutdown fixes missing from `893bb1e7`.
+Both full builds, 14 actual platform-selected image scans, six upstream/rehearsal
+config identities, intact/nine semantic-tampering checks and manifest-bound source/
+image secret scan pass locally. This new four-path evidence batch needs independent
+review; the previous approval covers its historical range only. RP-767 membership
+cancellation remains unapplied/open. No full feature, hosted CI, native/SP8/R-006
+or predecessor proof follows. The local preview label is unchanged; full nine-tier
+1.0 remains the objective.
 
 **Direct upstream-Compose proposal, 2026-11-04 (RP-759):** the current
 [tool companion](../../rfc/deployment-tool-artifact-inventory.md), native SP1/SP3/
