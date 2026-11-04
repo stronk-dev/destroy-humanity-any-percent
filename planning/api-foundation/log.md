@@ -4892,3 +4892,45 @@ only validated new tmpfs Postgres container and confirmed-empty network removed,
 peer attachments/caches untouched, no tracked reviewer edits/commits/publication.
 Not approval of original early API batches/full privacy/API/adoption/hosted CI/
 archival/release. Historical guard and27 accounting failures remain open.
+
+## 2026-11-04 — Component dispatch and Recovery error corrections approved
+
+Review by: fresh independent Codex `/root/api_component_error_corrective_review`.
+Recorded by: Codex root. APPROVED, no findings, both complete original ranges
+(base exclusive, tip inclusive), including all tests/docs/planning:
+
+- RP-374/375, all14 paths:
+  `ec74899a4cb4ce1a197cc1b4eef12c2fb01dce65..27ffb9c735490de4942445a87923ea9927666a6b`.
+- RP-376, all11 paths:
+  `27ffb9c735490de4942445a87923ea9927666a6b..d82e76c2e25b405470048e8d91902a096e082091`.
+
+Nine existing ports use generated dispatch with the same token ownership/error
+classes. Undeclared status refuses; malformed JSON does not echo reply bytes;
+body-read failures remain distinct. Only two existing Recovery detail literals
+are added; handlers and compatibility baseline remain unchanged. Later fatal-byte,
+detail-enum and operation-literal corrections retain their separate verdicts.
+
+Fresh at6076a1c4: Node262/four files; Linux78930 terminal0,837/fifteen files,
+279 each Chromium/Firefox/WebKit (including17 mounted Garden cases each),3.76s.
+Cold four Go owners70212/vet, types34631 zero errors/warnings, build217 modules,
+api-check and exact-range whitespace pass. Unit35471 runs all eight handler/
+mapper leaves plus invented-detail refusal. Declared Postgres9702 runs ALL five
+authenticated HTTP leaves, no skip: four unavailable routes and missing Company,
+parent0.95s/package1.032s. These are error conformance, not attended recovery.
+
+Independent exact-Git TS probe6156e4 reproduces oldec74899a HTTP418→APIError
+and fictional JSON prefix, versus current TransportError/body-free diagnostic;
+one fetch each. First probe wrongly expected the entire marker; Node echoes a
+prefix, corrected harness checks that documented defect, no product assertion
+changed. First SQL selector lost `$` through Make and ran ZERO tests; no credit.
+Initial restricted Docker refusal also ran none; corrected/authorized runs above
+supply evidence. Historical RP-377 whole-target red remains in its original entry.
+
+Full composeddf531b9b/86769 is REUSED from its independent GarageNov3 verdict,
+not this reviewer's execution. Relevant app/server/main driver/Make/declared Compose
+diff to6076a1c4 is empty; later manual-observer/helper-fixture edits are excluded
+from that correspondence. All handles terminal; own disposable Postgres1a8a908d34e0
+and confirmed-empty networke3d90799 removed, pre-existing BuildKit untouched.
+No tracked reviewer edits/commits. This closes these corrective reviews only,
+not original SDK construction/full API, pending amendment adoption, hosted/full CI,
+natural pacing, clean-host proof, feature acceptance, archival or release.

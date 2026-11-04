@@ -2,6 +2,14 @@
 
 RFC: `rfc/api-foundation.md`
 
+**Component error-boundary review,2026-11-04:** complete fourteen-path
+`ec74899a..27ffb9c7` (RP-374/375) and eleven-path `27ffb9c7..d82e76c2`
+(RP-376) are independently approved. Fresh exact-old/current status/diagnostic
+execution discriminates; current Node, three-engine Linux, cold Go/vet,
+types/build/generation and all five actual authenticated Postgres error cases pass.
+The log distinguishes this review from original SDK construction, later decoder/
+literal corrections, reused composed evidence and still-unadopted amendments.
+
 **Reader/error-boundary corrective review, 2026-11-04:** complete
 `a4bae5af..21ff5578` (RP-367) and `7226ec7b..ce626440` (RP-390) are independently
 approved. Actual old iteration/cancellation controls and old Account import
