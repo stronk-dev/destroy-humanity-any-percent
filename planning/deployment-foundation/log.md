@@ -10766,3 +10766,22 @@ use all unknown tool scopes as a reason to stall an accepted corrective fix.
 Full tool/native/rights/architecture adoption and R-006/whole1.0 gates remain.
 Diff checked; no unrelated suite, host/secret/Docker/publication or goal pause.
 Review by: Codex root, implementer first filter. Recorded by: Codex root.
+
+## 2026-11-04 — Nested observation and actual omission independently approved
+
+APPROVED, bounded research/tool scope, exact seven-path
+1cc6762a74978f25c1c9782309eb9aecd501ef87..
+7623cf9367aa93ecfb29930afcd6aa0d7da61da7.
+Review by: independent Codex /root/native_supervisor_profile_review.
+Recorded by: Codex root, transcribing completed verdict. Independently reproduces
+exact90,355/180/37 report,12positive/25UNKNOWN and complete sample/truncation fields.
+Wrong binary/text aliases refuse before publication; shared inputs unchanged.
+Actual six-command import→discovery→sorting→formatter reproduces precise nested
+GDDO BSD omission, Go1/Make2. Earlier unsorted failure is explicitly not evidence.
+Full overlay vet/range whitespace pass; checkout clean and no tracked reviewer edits.
+
+RP-761 remains OPEN for correction under DP1/AC8; its actual producer failure is
+independently confirmed. Next implement compiler-linked Go attribution scopes,
+retaining approved root NOTICE behavior and refusing unknown nested grants. No
+complete provenance map, fifth compiled MPL claim, remedy/rights/tool/adoption/
+distribution/release acceptance or goal pause follows from this research verdict.

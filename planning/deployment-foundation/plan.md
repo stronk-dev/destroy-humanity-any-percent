@@ -10,8 +10,8 @@
 **Nested attribution finding,2026-11-04 (RP-761):** an actual six-command import
 and metadata diagnostic now reproduces missing nested BSD attribution for the
 client_golangv1.23.2 GDDO httputil copy. The new binary/source observation keeps
-all37 tool candidates,12 positive function scopes/25 UNKNOWN. Both manual tools
-need independent review; next repair actual linked Go attribution under DP1/AC8,
+all37 tool candidates,12 positive function scopes/25 UNKNOWN. Complete seven-path1cc6762a..7623cf93 manual-tool/diagnostic batch is independently
+APPROVED as bounded research; next repair actual linked Go attribution under DP1/AC8,
 then return to the separately held tool/source/adoption work. Root-NOTICE's
 approved correction remains closed.
 
