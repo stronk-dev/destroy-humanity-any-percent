@@ -454,3 +454,85 @@ exit0, both named tests actually passing without skips, all original stream
 rows and verified empty owned container/network/volume inventories.
 Next construct the complete native supervisor/job/write/publication binding;
 do not repeat this intact round trip or infer whole CR4 from its2 connections.
+
+### Opaque TLS and native backend references
+
+The [manual native observer](probes/pidfd-backend-observer.py.txt),
+[actual package study](probes/pidfd-backend_test.go.txt) and
+[root fixture runner](probes/pidfd-backend.py.txt) test an alternative to TLS
+termination or protocol cancellation-key parsing. The trusted relay registers
+its actual upstream TCP endpoints BEFORE forwarding any client bytes. An
+observer in the exact disposable Postgres PID/network namespace opens a pidfd
+before checking the original accepted socket inode/full tuple, PostgreSQL OS
+UID and direct parent. It excludes PID1, requires a unique match and retains
+that reference for later signaling/exit observation. A supplied PID or pidfd
+by itself is not accepted ownership.
+
+The [original observation](pidfd-backend-observation.v1.json) is a **failed,
+partial run**, not a full positive. Actual3eb05d/901c0e stops after the backup
+child succeeds because native upstream TCP returns ECONNRESET instead of EOF.
+Only2 native bindings were observed, no SIGTERM; restore, interrupted and
+startup populations did not execute. Original source9bf8fdba and v1 remain.
+No claim is made that a reset alone establishes backend completion.
+
+The [current observation](pidfd-backend-observation.v2.json) binds a stronger
+experimental producer: original backend PIDFD EXIT is required in addition to
+the original connection ending by EOF or exact ECONNRESET and all forwarding
+actors ending. All other upstream errors invalidate; a reset or EOF without
+the retained native-process exit remains incomplete. This candidate has not
+been adopted as OP9 evidence. No release bound or product criterion changes.
+
+Final actual cb4352/5cfaec exits0, all3 populations:
+
+| Population | Actual native/stream/data result |
+|---|---|
+| Existing actual encrypted backup/restore over verify-full TLS and client certificate | Full canonical identity equality;2 native bindings each; all4 streams reset and all4 original pidfds observe process exit. No TLS termination or key parsing. |
+| Kill actual backup helper with snapshot exporter and blocked pg_dump | Wrong binding hash refuses with0 signals and dump still blocked. Exact retained dump reference receives SIGTERM; all2 native processes and streams end BEFORE relation unlock. Original streams here end EOF. |
+| First helper connection held before client protocol forwarding | Native accepted socket/backend exists but activity-row count0. Owned helper killed; exact retained native reference receives SIGTERM and original stream ends EOF. This is pre-handshake startup, not a completed TLS session. |
+
+Both terminated old references subsequently yield ESRCH3 with signal0, rather
+than reopening their integer PIDs. This is an exited-reference control, **not
+forced kernel PID reuse**. The same continuous bystander PID and postmaster
+remain; prior row7 persists and the control writes42. Observer seals only after
+all7 retained subjects exit; exactly2 real SIGTERMs were sent. Eleven actual
+terminal-method controls reject reset/EOF alone, unknown stream errors, open
+admission, unbound/missing actors and permission/deadline failures. The reused
+manual helper's14 framing/4 deadline controls also pass. No test skips.
+Linux/amd64 overlay vet2b7282 passes; new complete union needs independent review.
+
+The native observer runs UID70, CapEff/Prm/Bnd0, NoNewPrivs1, read-only root and
+the exact selected PID/network namespace. It is a TRUSTED fixture observer,
+with same-UID process access; namespace sharing is not a grant to an untrusted
+worker. Only generated fixture credentials/certificates are used. Public
+tuple/response files are experimental IPC, not authenticated OP1/OP3 work logs
+or durable restart authority. Initial tuple-to-job admission, adversarial
+pre-binding socket inode/tuple reuse, original daemon/container lifetime,
+complete bypass/resource inventory and full CLI/metrics/output publishers are
+not proved. No arbitrary production backend signaling is authorized. This is
+Desktop Linux/arm64 with amd64 PostgreSQL/Go and arm64 Python, not the supported
+native Linux/amd64 host. Actual snapshot/backup functions and synthetic release
+metadata do not supply a release pair or R-006 evidence.
+
+The Linux documentation explains [pidfd references](https://man7.org/linux/man-pages/man2/pidfd_open.2.html),
+[signal permissions/namespace requirements](https://man7.org/linux/man-pages/man2/pidfd_send_signal.2.html)
+and [proc socket links/access checks](https://man7.org/linux/man-pages/man5/proc_pid_fd.5.html).
+Those are API semantics, not substitute runtime ownership proof.
+
+Reproduce from the repository root with the cached config-pinned PG/Python
+fixtures, no ports/pulls/real secrets:
+
+```sh
+python3 planning/deployment-foundation/probes/pidfd-backend.py.txt
+make vet GO_PACKAGES=./deploymentbackup GOFLAGS="-overlay=$PWD/.cache/pidfd-backend-research/overlay.json" GOOS=linux GOARCH=amd64 CGO_ENABLED=0
+```
+
+The root Make compiler overlay reuses the existing manual child/controls and
+normal TLS certificate fixture helper; no tracked production input is changed.
+Setup30s/each of3 populations60s and ordinary observations10s are checked;
+build180s/actor-observer240s are setup/observation guards, not RTO budgets.
+Root collection10s follows hashes/serialization; Docker cleanup15s PER command
+is outside work. Completion requires exact named tests actually passing,
+observer exit0 and empty owned container/network/volume inventories.
+Next specify the trusted per-job native admission/lifetime/receipt producer
+against the whole mutation map. Do not promote this candidate or repeat its
+unchanged positives instead of constructing those missing bindings.

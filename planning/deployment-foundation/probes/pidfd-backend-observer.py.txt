@@ -168,7 +168,7 @@ def main():
                 digest = hashlib.sha256(json.dumps(binding, sort_keys=True).encode()).hexdigest()
                 subjects[name] = fd, digest, binding
                 result.update(outcome='bound', binding=binding, binding_sha256=digest)
-            elif action in ('terminate', 'dead_reference'):
+            elif action in ('terminate', 'dead_reference', 'observe_exit'):
                 subject = subjects.get(request['subject'])
                 if subject is None:
                     result.update(outcome='refused', code='unknown_subject')
@@ -185,6 +185,11 @@ def main():
                             require_time(until)
                             time.sleep(0.005)
                         result.update(outcome='terminated', signals_sent=sent, native_exit=True)
+                    elif action == 'observe_exit':
+                        while not exited(fd):
+                            require_time(until)
+                            time.sleep(0.005)
+                        result.update(outcome='exited', native_exit=True)
                     else:
                         if not exited(fd):
                             raise RuntimeError('dead-reference control is still live: INVALID')

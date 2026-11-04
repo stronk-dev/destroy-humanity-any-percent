@@ -110,12 +110,15 @@ func (m *nativeRPC) call(ctx context.Context, request map[string]any) (nativeRep
 }
 
 type opaqueSession struct {
-	name                string
-	front, back         *net.TCPConn
-	bound               nativeReply
-	forward             chan bool
-	once                sync.Once
-	frontEOF, serverEOF bool
+	name          string
+	front, back   *net.TCPConn
+	bound         nativeReply
+	forward       chan bool
+	once          sync.Once
+	frontTerminal bool
+	frontEnd      string
+	serverEnd     string
+	nativeExit    bool
 }
 
 type opaqueRelay struct {
@@ -260,12 +263,28 @@ func (r *opaqueRelay) serve(s *opaqueSession) {
 			target = back
 		}
 		_, err := io.Copy(target, s.front)
+		end := "peer_eof"
+		if errors.Is(err, net.ErrClosed) {
+			end = "locally_closed"
+			err = nil
+		}
+		if errors.Is(err, syscall.ECONNRESET) {
+			end = "reset"
+			err = nil
+		}
+		if errors.Is(err, syscall.EPIPE) {
+			end = "broken_pipe"
+			err = nil
+		}
 		if err == nil && allow {
-			err = back.CloseWrite()
+			if closeErr := back.CloseWrite(); closeErr != nil && !errors.Is(closeErr, net.ErrClosed) && !errors.Is(closeErr, syscall.ENOTCONN) && !errors.Is(closeErr, syscall.EPIPE) && !errors.Is(closeErr, syscall.ECONNRESET) {
+				err = closeErr
+			}
 		}
 		r.mu.Lock()
 		if err == nil {
-			s.frontEOF = true
+			s.frontTerminal = true
+			s.frontEnd = end
 		}
 		r.mu.Unlock()
 		frontDone <- err
@@ -277,10 +296,7 @@ func (r *opaqueRelay) serve(s *opaqueSession) {
 		n, err := back.Read(buffer)
 		if n > 0 && !downstreamLost {
 			if writeErr := researchWrite(s.front, buffer[:n]); writeErr != nil {
-				r.mu.Lock()
-				expected := r.killExpected
-				r.mu.Unlock()
-				if expected && (errors.Is(writeErr, syscall.EPIPE) || errors.Is(writeErr, syscall.ECONNRESET)) {
+				if errors.Is(writeErr, syscall.EPIPE) || errors.Is(writeErr, syscall.ECONNRESET) {
 					downstreamLost = true
 				} else {
 					serverErr = writeErr
@@ -290,7 +306,13 @@ func (r *opaqueRelay) serve(s *opaqueSession) {
 		}
 		if errors.Is(err, io.EOF) {
 			r.mu.Lock()
-			s.serverEOF = true
+			s.serverEnd = "eof"
+			r.mu.Unlock()
+			break
+		}
+		if errors.Is(err, syscall.ECONNRESET) {
+			r.mu.Lock()
+			s.serverEnd = "reset"
 			r.mu.Unlock()
 			break
 		}
@@ -299,10 +321,12 @@ func (r *opaqueRelay) serve(s *opaqueSession) {
 			break
 		}
 	}
+	// End our forwarding actor. This local close is NOT native completion;
+	// terminal() separately requires the retained original backend pidfd exit.
+	s.front.Close()
+	s.once.Do(func() { s.forward <- false })
 	if serverErr != nil {
-		s.front.Close()
 		back.Close()
-		s.once.Do(func() { s.forward <- false })
 	}
 	if err := <-frontDone; serverErr == nil {
 		serverErr = err
@@ -322,14 +346,36 @@ func (r *opaqueRelay) terminal() (bool, error) {
 		return false, nil
 	}
 	for _, s := range r.sessions {
-		if s.bound.Outcome != "bound" || !s.frontEOF || !s.serverEOF {
+		if s.bound.Outcome != "bound" || !s.frontTerminal || (s.serverEnd != "eof" && s.serverEnd != "reset") || !s.nativeExit {
 			return false, nil
 		}
 	}
 	return true, nil
 }
 
-func (r *opaqueRelay) report(t *testing.T, minimum int) []nativeReply {
+func (r *opaqueRelay) collectNativeExits(t *testing.T, ctx context.Context) {
+	t.Helper()
+	r.mu.Lock()
+	sessions := append([]*opaqueSession(nil), r.sessions...)
+	r.mu.Unlock()
+	for _, s := range sessions {
+		r.mu.Lock()
+		bound := s.bound
+		r.mu.Unlock()
+		if bound.Outcome != "bound" {
+			t.Fatal("unbound original session: INVALID")
+		}
+		reply := nativeCall(t, ctx, r.monitor, map[string]any{"action": "observe_exit", "subject": s.name, "binding_sha256": bound.SHA}, "exited")
+		if !reply.NativeExit {
+			t.Fatal("missing retained original pidfd exit")
+		}
+		r.mu.Lock()
+		s.nativeExit = true
+		r.mu.Unlock()
+	}
+}
+
+func (r *opaqueRelay) report(t *testing.T, minimum int) []map[string]any {
 	t.Helper()
 	complete, err := r.terminal()
 	if err != nil || !complete {
@@ -341,9 +387,9 @@ func (r *opaqueRelay) report(t *testing.T, minimum int) []nativeReply {
 	if len(r.sessions) < minimum {
 		t.Fatal("missing real helper connections")
 	}
-	result := make([]nativeReply, 0, len(r.sessions))
+	result := make([]map[string]any, 0, len(r.sessions))
 	for _, s := range r.sessions {
-		result = append(result, s.bound)
+		result = append(result, map[string]any{"binding": s.bound, "front_end": s.frontEnd, "server_end": s.serverEnd, "native_exit": s.nativeExit})
 	}
 	return result
 }
@@ -501,6 +547,7 @@ func TestManualPIDfdBackendIntegration(t *testing.T) {
 	_, done := researchChild(t, config)
 	researchWaitChild(t, positive, done, true)
 	backupRelay.closeAdmission()
+	backupRelay.collectNativeExits(t, positive)
 	researchPoll(t, positive, backupRelay.terminal)
 	data, err := os.ReadFile(config.Report)
 	if err != nil {
@@ -515,6 +562,7 @@ func TestManualPIDfdBackendIntegration(t *testing.T) {
 	_, done = researchChild(t, restore)
 	researchWaitChild(t, positive, done, true)
 	restoreRelay.closeAdmission()
+	restoreRelay.collectNativeExits(t, positive)
 	researchPoll(t, positive, restoreRelay.terminal)
 	after, err := InspectRecoveryIdentity(positive, RecoveryIdentityInput{DatabaseURLFile: targetSecret})
 	if err != nil || CompareRecoveryIdentity(before, after) != nil {
@@ -574,7 +622,7 @@ func TestManualPIDfdBackendIntegration(t *testing.T) {
 			return false, r.err
 		}
 		for _, s := range r.sessions {
-			if !s.frontEOF {
+			if !s.frontTerminal {
 				return false, nil
 			}
 		}
@@ -591,6 +639,7 @@ func TestManualPIDfdBackendIntegration(t *testing.T) {
 	if !termination.NativeExit || termination.Signals != 1 {
 		t.Fatal("native original process exit missing")
 	}
+	r.collectNativeExits(t, interrupted)
 	researchPoll(t, interrupted, r.terminal)
 	dead := nativeCall(t, interrupted, monitor, map[string]any{"action": "dead_reference", "subject": blocked.name, "binding_sha256": blocked.bound.SHA}, "old_reference_dead")
 	if dead.Errno != int(syscall.ESRCH) {
@@ -599,7 +648,7 @@ func TestManualPIDfdBackendIntegration(t *testing.T) {
 	if _, err := control.ExecContext(interrupted, "COMMIT"); err != nil {
 		t.Fatal(err)
 	}
-	interruptedResult := map[string]any{"bindings": r.report(t, 2), "wrong_binding": wrong, "termination": termination, "old_reference": dead, "all_eof_before_unlock": true}
+	interruptedResult := map[string]any{"bindings": r.report(t, 2), "wrong_binding": wrong, "termination": termination, "old_reference": dead, "all_native_and_stream_terminal_before_unlock": true}
 	if researchDeadline(interrupted) != nil {
 		t.Fatal("interrupted population deadline: INVALID")
 	}
@@ -641,6 +690,7 @@ func TestManualPIDfdBackendIntegration(t *testing.T) {
 		t.Fatal("startup original native exit missing")
 	}
 	pending.once.Do(func() { pending.forward <- false }) // Drain client bytes; never forward after closure.
+	sr.collectNativeExits(t, startup)
 	researchPoll(t, startup, sr.terminal)
 	startupDead := nativeCall(t, startup, monitor, map[string]any{"action": "dead_reference", "subject": pending.name, "binding_sha256": pending.bound.SHA}, "old_reference_dead")
 	if startupDead.Errno != int(syscall.ESRCH) {
@@ -664,7 +714,7 @@ func TestManualPIDfdBackendIntegration(t *testing.T) {
 			t.Fatal("killed helper published completion")
 		}
 	}
-	startupResult := map[string]any{"bindings": sr.report(t, 1), "activity_rows": 0, "termination": startupTermination, "old_reference": startupDead, "original_eof": true}
+	startupResult := map[string]any{"bindings": sr.report(t, 1), "activity_rows": 0, "termination": startupTermination, "old_reference": startupDead, "original_stream_terminal": true}
 	stopped := nativeCall(t, startup, monitor, map[string]any{"action": "stop"}, "stopped")
 	if stopped.Subjects != 7 || stopped.Signals != 2 {
 		t.Fatal("observer population incomplete")
@@ -689,4 +739,32 @@ func TestManualPIDfdBackendIntegration(t *testing.T) {
 		t.Fatal("report write late: INVALID")
 	}
 	t.Log("real TLS backup/restore, interrupted original and pre-activity startup native ownership complete")
+}
+
+func TestManualPIDfdTerminalControls(t *testing.T) {
+	for _, c := range []struct {
+		name, server, binding           string
+		closed, front, native, complete bool
+		err                             error
+	}{
+		{"reset alone", "reset", "bound", true, true, false, false, nil},
+		{"EOF alone", "eof", "bound", true, true, false, false, nil},
+		{"native exit alone", "", "bound", true, true, true, false, nil},
+		{"unknown stream error", "timeout", "bound", true, true, true, false, nil},
+		{"forwarder unfinished", "reset", "bound", true, false, true, false, nil},
+		{"unbound subject", "eof", "", true, true, true, false, nil},
+		{"admission open", "eof", "bound", false, true, true, false, nil},
+		{"native EOF completion", "eof", "bound", true, true, true, true, nil},
+		{"native reset completion", "reset", "bound", true, true, true, true, nil},
+		{"permission error", "reset", "bound", true, true, true, false, os.ErrPermission},
+		{"deadline error", "reset", "bound", true, true, true, false, context.DeadlineExceeded},
+	} {
+		t.Run(c.name, func(t *testing.T) {
+			r := &opaqueRelay{closed: c.closed, err: c.err, sessions: []*opaqueSession{{bound: nativeReply{Outcome: c.binding}, frontTerminal: c.front, serverEnd: c.server, nativeExit: c.native}}}
+			complete, err := r.terminal()
+			if complete != c.complete || !errors.Is(err, c.err) {
+				t.Fatal("native terminal producer accepted incomplete/error work or refused complete work")
+			}
+		})
+	}
 }

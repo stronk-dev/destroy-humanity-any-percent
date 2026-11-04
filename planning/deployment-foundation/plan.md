@@ -41,6 +41,24 @@ No image pulls/ports/real secrets or production signaling. Initial tuple-to-job
 authorization, adversarial kernel tuple/inode reuse, durable restart/native-host/
 full CLI/OP9 adoption remain separate even if these native populations pass.
 
+The initial EOF-only criterion FIRES3eb05d/901c0e after actual TLS backup child
+success: original native TCPread is ECONNRESET. Preserve original9bf8fdba/v1;
+restore/interruption/startup did not run. New experimental producer requires
+BOTH retained original backend pidfd exit AND exact original EOF/reset plus
+ended forwarding actors. Resets alone never close work, all other read errors
+remain invalid. This is additional native evidence, not an adopted OP9 change.
+Final cb4352/5cfaec exits0 (v2): verified-TLS encrypted roundtrip, interrupted
+actual helper and held pre-activity startup all execute. Seven distinct native
+bindings close with retained-pidfd exit: four positive streams reset, interrupted
+two/startupone EOF. Wrong binding refuses without signaling; actual SIGTERM2,
+old references yield ESRCH3; same continuous control/postmaster/rows7 then7/42.
+All11 new terminal plus unchanged14 framing/4 deadline controls pass, no skips.
+Roota8517b binds v2 to final sources;2b7282 Linux/amd64 overlay vet passes.
+Full original-plus-native-producer range needs independent review. Native tuple/
+job admission, adversarial pre-binding inode/tuple reuse, trusted observer
+permissions, complete CLI/outer writers/daemon lifetime/native host/adoption
+and R-006 remain. No TLS interception or BackendKeyData parsing is introduced.
+
 **RP-753 existing TLS-input correction,2026-11-04:** URL certificate paths reach
 Go but were dropped from libpq service config. Valid old-code25bca5 proves Go
 verified TLS/client identity while actual psql fails at default root.crt instead

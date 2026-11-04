@@ -10027,3 +10027,54 @@ CLI/supervisor, arbitrary tuple/inode reuse proof, job admission authority,
 supported Linux/amd64 host, OP9 adoption, recovery or nine-tier1.0 gate closes.
 
 Review by: Codex root, research/tool author first filter. Recorded by: Codex root.
+
+
+## 2026-11-04 — Stronger opaque-stream + retained-native-exit candidate
+
+Preserve original failed9bf8fdba/v1. The experimental producer now requires
+retained ORIGINAL pidfd exit for EVERY registered connection, in addition to
+exact original server EOF or ECONNRESET and terminal forwarding actors. It
+never reopens a saved integer PID. No reset/error alone closes work; unknown
+read errors still invalidate. The observer exposes bounded observe_exit on the
+same held native reference. A local forwarding close is recorded distinctly
+from peer EOF. This is additional independent native proof, not relabeling
+ECONNRESET as EOF or weakening an adopted release/product criterion. OP9 remains
+unadopted and incomplete. No TLS decryption or BackendKeyData parsing.
+
+Development actuala3a138/4b5ccd exits0, all3 populations; rootc69a55 records
+actual end-state distributions. Add11 actual terminal-method controls, then
+final cb4352/5cfaec exits0. Existing14 framing and4 deadline controls also pass,
+no skips. Positive full actual encrypted backup/restore identity equal with
+verify-full TLS/client certificate. All4 positive streams reset and all4 held
+original pidfds observe exit. Interrupted actual helper has2 real bound streams;
+wrong binding hash refuses before any signal and actual dump remains blocked.
+Correct retained dump reference receives SIGTERM; all2 native processes AND
+streams end BEFORE unlocking. Both original streams here are EOF. Startup is
+held BEFORE client protocol forwarding: accepted native backend/socket exists
+with activity-row count0; killed actual helper and exact retained SIGTERM lead
+to native exit and original EOF. Startup is not a completed TLS handshake.
+
+Both terminated old references subsequently give ESRCH3 using signal0. This is
+an exited-reference control, NOT forced PID reuse. Exactly7 subjects and2 actual
+SIGTERMs; all7 references observe exit before observer stop. Same continuous
+control PID and postmaster retained, row7 then control inserts42. Neither killed
+helper publishes its completion report. Roota8517b validates final source/runner/
+dependency bindings and retains v2, no fixture password/age private key. Final
+Go source d62c5fb4, observer5bd33c27, runner1220dc41. Prior child helper remains
+ca26d970 and normal TLS fixture2315262e. Native Linux/amd64 overlay vet2b7282
+passes. Root-owned a3031788fa22e897/ba5ab7836c2ff1ac fixtures removed, every own
+container/network/volume inventory empty before completed output. All handles
+terminal; no production/normal test/CI/kernel/balance byte changed.
+
+Limits: trusted same-UID observer shares exact PG PID/network namespaces with
+no capabilities and NoNewPrivs1; not an untrusted worker permission. Public
+experimental IPC files are not OP1/OP3/authenticated job admission or durable
+restart authority. Initial tuple/job authorization, adversarial pre-binding
+inode/tuple reuse, daemon/container lifetime, all effects/outer CLI publishers,
+full native supported host/permissions and OP9 adoption remain. No production
+PID signaling, new host prerequisite, TLS interception, release authority or
+CR4/R-006 completion follows. Existing mutation-map/protected-metadata/full
+nine-tier1.0 gates remain. Complete e3beb00d..9bf8fdba plus this next producer
+range requires fresh independent delegated review; root is first-filter only.
+
+Review by: Codex root, research/tool author first filter. Recorded by: Codex root.

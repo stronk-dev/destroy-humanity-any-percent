@@ -52,7 +52,7 @@ def main():
                         '        target: /probe\n        read_only: true\n'
                         '      - type: bind\n        source: '+json.dumps(str(observation))+'\n'
                         '        target: /observation\n    entrypoint: [/probe]\n'
-                        '    command: [-test.run, "^TestManual(PIDfdBackendIntegration|OperationGatewayControls)$", -test.count=1, -test.v, -test.timeout=240s]\n')
+                        '    command: [-test.run, "^TestManual(PIDfdBackendIntegration|PIDfdTerminalControls|OperationGatewayControls)$", -test.count=1, -test.v, -test.timeout=240s]\n')
     compose = ['compose','--project-name',project,'-f',str(root/'compose.deployment-backup-test.yml'),'-f',str(override)]
 
     def run(*args,timeout=10):
@@ -92,7 +92,7 @@ def main():
             time.sleep(0.005)
         actor = run(*compose,'run','--rm','--no-deps','--pull','never','backup-test',timeout=240)
         end = time.monotonic()+10
-        assert '--- PASS: TestManualPIDfdBackendIntegration' in actor and '--- PASS: TestManualOperationGatewayControls' in actor and '--- SKIP:' not in actor
+        assert all('--- PASS: '+name in actor for name in ('TestManualPIDfdBackendIntegration','TestManualPIDfdTerminalControls','TestManualOperationGatewayControls')) and '--- SKIP:' not in actor
         result = json.loads((observation/'result.json').read_text())
         assert result['objective_completed'] is True and result['positive']['identity_equal'] is True
         assert len(result['positive']['backup'])==len(result['positive']['restore'])==len(result['interrupted']['bindings'])==2
@@ -100,7 +100,9 @@ def main():
         assert result['interrupted']['wrong_binding']['code']=='binding_mismatch' and result['interrupted']['wrong_binding']['signals_sent']==0
         assert result['interrupted']['termination']['native_exit'] is True and result['startup']['termination']['native_exit'] is True
         assert result['interrupted']['old_reference']['errno']==result['startup']['old_reference']['errno']==3
-        assert result['interrupted']['all_eof_before_unlock'] is True and result['startup']['original_eof'] is True
+        assert result['interrupted']['all_native_and_stream_terminal_before_unlock'] is True and result['startup']['original_stream_terminal'] is True
+        for group in (result['positive']['backup'],result['positive']['restore'],result['interrupted']['bindings'],result['startup']['bindings']):
+            assert all(item['native_exit'] is True and item['server_end'] in ('eof','reset') and item['front_end'] in ('peer_eof','locally_closed','reset','broken_pipe') for item in group)
         assert result['rows']=='7,42' and result['same_bystander_and_postmaster'] is True
         assert result['protocol_key_parsing'] is False and result['tls_termination'] is False
         assert result['transcript'][-1]['outcome']=='stopped' and result['transcript'][-1]['subjects']==7 and result['transcript'][-1]['signals_sent']==2
