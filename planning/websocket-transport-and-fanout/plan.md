@@ -4,6 +4,14 @@
 - **RFC:** `rfc/websocket-transport-and-fanout.md`
 - **Started:** 2026-07-29
 
+2026-11-04 RP-765: periodic reauthentication's uncancelable query blocks client
+closure during shutdown. The actual callback regression and real locked-Postgres/
+socket witness fail against old source and pass with node-owned cancellation.
+Full affected Transport/Gameserver/Account native race and Linux-amd64/Postgres
+race populations plus vet pass; the log records the existing opt-in skip and
+exact evidence. Complete corrective batch awaits independent review. This does
+not establish RP-450's original hosted cause or full Transport acceptance.
+
 2026-10-15 current-run cohort correction (RP-651): subscribe-time permission now requires the
 projected membership to match the current non-archived Company head's run and member flag.
 The old real HTTP/Postgres/socket witness admits a new non-member subscription after Exit;

@@ -50,6 +50,8 @@ type Node struct {
 	stop      chan struct{}
 	done      chan struct{}
 	startErr  error
+	authCtx   context.Context
+	authStop  context.CancelFunc
 }
 
 func NewNode(policy Policy, auth Authenticator, memberships Memberships) (*Node, error) {
@@ -88,7 +90,8 @@ func newNode(policy Policy, auth Authenticator, memberships Memberships, registe
 	if err != nil {
 		return nil, err
 	}
-	result := &Node{policy: policy, auth: auth, memberships: memberships, node: engine, queues: map[string]*ConnectionQueue{}, stop: make(chan struct{}), done: make(chan struct{})}
+	authCtx, authStop := context.WithCancel(context.Background())
+	result := &Node{policy: policy, auth: auth, memberships: memberships, node: engine, queues: map[string]*ConnectionQueue{}, stop: make(chan struct{}), done: make(chan struct{}), authCtx: authCtx, authStop: authStop}
 	result.bindHandlers()
 	return result, nil
 }
@@ -177,7 +180,7 @@ func (n *Node) bindHandlers() {
 				client.Disconnect(disconnectAuthExpired)
 				return
 			}
-			if _, err := n.auth.Authenticate(context.Background(), token); err != nil {
+			if _, err := n.auth.Authenticate(n.authCtx, token); err != nil && n.authCtx.Err() == nil {
 				client.Disconnect(disconnectAuthExpired)
 			}
 		})
@@ -297,7 +300,10 @@ func (n *Node) CloseForDrain() {
 }
 
 func (n *Node) Shutdown(ctx context.Context) error {
-	n.stopOnce.Do(func() { close(n.stop) })
+	n.stopOnce.Do(func() {
+		n.authStop()
+		close(n.stop)
+	})
 	select {
 	case <-n.done:
 	case <-ctx.Done():

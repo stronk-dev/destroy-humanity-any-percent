@@ -180,3 +180,9 @@ flushes the player-message outbox to empty, stops the relay, closes sockets with
 shuts down Centrifuge under the configured 15-second bound. New intents during that interval receive HTTP 503
 with `server_draining/retry_same_intent_id`; health remains process-liveness while readiness also
 checks Postgres.
+
+Periodic socket reauthentication uses a node-owned context. Shutdown cancels it
+before stopping Centrifuge, so a pending Account query releases the presence
+callback instead of preventing client cleanup. Cancellation during node shutdown
+leaves connection closure to shutdown; ordinary authentication failures while the
+node runs still close with4001. Token policy and the presence cadence are unchanged.

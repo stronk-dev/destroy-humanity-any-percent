@@ -909,3 +909,51 @@ children for absent TEST_DATABASE_URL; no SQL credit. No browser/Docker/Linux/ho
 API generation, whole feature, specification adoption, archival or release approval.
 Existing arithmetic/history red gates are not rerun or concealed. These two corrections
 no longer wait on Claude; other Transport review debt and policy contracts remain separate.
+
+
+## 2026-11-04 — RP-765 cancel periodic authentication before node shutdown
+
+Accepted Transport T1/T5/T6/AC5 authorizes this corrective conformance repair.
+Centrifuge holds presenceMu while OnAlive calls Account authentication, and client
+closure waits for that mutex. Background makes a blocked query outlive shutdown.
+Node now owns/cancels that query context before engine shutdown. A canceled node
+leaves closure to shutdown instead of mislabelling it auth-expired; ordinary
+failures retain4001. No token/TTL/cadence, API, schema, kernel, balance or CI change.
+Transport is outside the actual kernel-affecting registry; kernel0.3.225 stays.
+
+Actual registered-callback controlled-authenticator test72276 fails old source
+with shutdown deadline14.45s; corrected8208 passes15.10s. It uses unchanged actual
+presence cadence and HTTP/WebSocket over net.Pipe, not direct callback invocation.
+New real composer/Account/Postgres/native-socket test58943 passes18.27s: keep
+access_tokens exclusively locked, observe the actual periodic SELECT lock wait,
+drain under the existing2s witness bound, require wire4003/query cancellation
+while the lock remains held and no token revocation. Exact-old production overlay
+58036 fails drain deadline22.40s. Overlay changes only node.go, not the test or
+whole historical tree. Source1992ce15 old-node SHA256
+74d947ff192c6c145e05c8539863fde8bd255ee26ce31e0c65b3c88edcb989bd;
+recipe/bytes retained under ignored.cache/transport-auth-shutdown-1992ce15/.
+An exploratory immediate-close hypothesis survived200 executions and was removed,
+not called a bug/fix. An initial Make-anchor selector executed zero tests; an
+unused test import first failed compilation. Neither supplies executed evidence.
+
+Finished native `make test-go GO_PACKAGES='./transport ./gameserver ./account'
+GO_TEST_FLAGS=-race`78139→0 (39.262/1.911/4.470s); DB cases can skip there.
+`make vet GO_PACKAGES='./transport ./gameserver ./account'`→0; gofmt/whitespace pass.
+Full actual `make test-go-ci CI_TEST_PACKAGES='./transport ./gameserver ./account'
+CI_TEST_FLAGS='-race -v'`80563→0, Linux/amd64 image593dc3550e0514c6ec0f7861c9bf7bf415aeabc9f4852f83f7469bfe06db1335,
+real Postgres16 image6a2e324ebe59af6031c4c1cd96c1d5072c2ebc36563d2196365e43b8297c062d.
+All three packages pass41.480/168.896/23.109s,647 PASS rows (including subtests),
+zero FAIL rows. Only existing opt-in one-minute cleanup-runtime case skips.
+New callback18.12s, actual SQL/drain24.11s and existing family-revocation20.05s
+all pass, not skip. Initial Docker-socket sandbox denial runs no tests; permitted
+identical command supplies80563. Retained linux-race.log SHA256
+ e06e9532d7d7968dd1fbb492fdafc8b6a0458ff1650d3a6d3974e79a0a04ea2e.
+Source/tests remain fixed through these runs; all handles terminal. Owned test
+Postgres76ba2235783f remains for independent review, not a live test execution.
+
+Review by: Codex root (implementer first filter). Recorded by: Codex root.
+Complete seven-path range after1992ce15 through this batch awaits independent
+corrective review. Canonical docs/plan/ledger reconcile in this commit; no feature
+checkbox, archival or release promotion. RP-450 original cause, whole CI/latency,
+owner adoptions and full nine-tier1.0 remain open. The retained893bb1e7 release
+artifact predates this runtime correction; rebuild at the next release boundary.
