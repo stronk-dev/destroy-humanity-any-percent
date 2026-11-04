@@ -4,6 +4,14 @@
 - **RFC:** `rfc/websocket-transport-and-fanout.md`
 - **Started:** 2026-07-29
 
+2026-11-04 RP-766: pending initial authentication now inherits node cancellation;
+late results are refused and late library registrations close before queue setup.
+Exact-old unit and actual locked-Postgres/socket controls fail; corrected cases,
+the prior periodic witness, revocation and full affected native/Linux SQL race
+populations pass. The deliberate library-handoff model is separate from actual
+Account proof. The seven-path corrective batch awaits independent review; no
+token/timer policy, whole-feature or release acceptance follows.
+
 2026-11-04 RP-765: periodic reauthentication's uncancelable query blocks client
 closure during shutdown. The actual callback regression and real locked-Postgres/
 socket witness fail against old source and pass with node-owned cancellation.

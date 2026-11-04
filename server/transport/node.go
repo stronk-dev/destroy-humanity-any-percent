@@ -124,10 +124,20 @@ func (n *Node) bindHandlers() {
 		return true
 	})
 	n.node.OnConnecting(func(ctx context.Context, event centrifuge.ConnectEvent) (centrifuge.ConnectReply, error) {
+		if n.authCtx.Err() != nil {
+			return centrifuge.ConnectReply{}, disconnectServerDrain
+		}
 		if event.Token == "" {
 			return centrifuge.ConnectReply{}, disconnectAuthExpired
 		}
-		claims, err := n.auth.Authenticate(ctx, event.Token)
+		authCtx, cancelAuth := context.WithCancel(ctx)
+		stopNodeCancellation := context.AfterFunc(n.authCtx, cancelAuth)
+		defer stopNodeCancellation()
+		defer cancelAuth()
+		claims, err := n.auth.Authenticate(authCtx, event.Token)
+		if n.authCtx.Err() != nil {
+			return centrifuge.ConnectReply{}, disconnectServerDrain
+		}
 		if err != nil {
 			return centrifuge.ConnectReply{}, disconnectAuthExpired
 		}
@@ -143,6 +153,10 @@ func (n *Node) bindHandlers() {
 	})
 
 	n.node.OnConnect(func(client *centrifuge.Client) {
+		if n.authCtx.Err() != nil {
+			client.Disconnect(disconnectServerDrain)
+			return
+		}
 		queue, _ := NewConnectionQueue(n.policy)
 		n.queueMu.Lock()
 		n.queues[client.ID()] = queue

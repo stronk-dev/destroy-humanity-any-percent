@@ -186,3 +186,9 @@ before stopping Centrifuge, so a pending Account query releases the presence
 callback instead of preventing client cleanup. Cancellation during node shutdown
 leaves connection closure to shutdown; ordinary authentication failures while the
 node runs still close with4001. Token policy and the presence cadence are unchanged.
+
+Initial socket authentication inherits both the request context and node shutdown
+cancellation. The connect callback rejects results returned after shutdown starts,
+including otherwise valid credentials. A final `OnConnect` guard also disconnects
+late library registrations before allocating application queues or handlers. That
+cleanup can follow a connect reply already produced by the library.

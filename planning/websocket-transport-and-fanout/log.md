@@ -984,3 +984,52 @@ Plan/ledger now close RP-765's corrective scope; this record-only commit needs n
 software rerun. Original RP-450 cause, full Transport acceptance, current release
 artifact rebuilding, whole hosted CI/latency and all broader1.0 gates remain open.
 No publication, archival, acceptance promotion or goal pause.
+
+
+## 2026-11-04 — RP-766 cancel pending connects and close late registration
+
+Accepted Transport T1/T5/T6/AC5 owns this corrective lifetime boundary. Unlike
+RP-765's periodic callback, initial authentication uses only the request context
+and is not yet in Centrifuge's authenticated-client hub. Actual cold43276 fails:
+its query survives completed shutdown, then both cancellation-aware and delayed-
+valid-result arms receive successful connect replies. New code links caller and
+node cancellation, rejects results after shutdown, and closes late registrations
+in actual OnConnect before allocating queues/handlers. No token/TTL/cadence,
+public schema, numeric/kernel/epoch, gameplay or workflow change.
+
+Corrected pending-connect arms35726 and handoff26095 pass with race detection.
+The handoff deliberately replaces OnConnecting to model a valid result crossing
+library registration after shutdown: it requires a real connect reply followed
+by4003, zero hub connections/queues. This is not Account authentication proof or
+an assertion that no already-produced frame can follow shutdown. Exact-old-node
+Linux overlay46113 fails both pending arms plus handoff; the unchanged prior
+periodic test is explicitly deselected only in this bounded negative command.
+Old node bytes equal082de7a7, SHA256
+08f8a123f6c1657be544ee28a2b0e93ffa5f8a28d526fc8e92bcafd32e4bedc0,
+retained with overlay recipe under.cache/transport-connect-shutdown-082de7a7/.
+
+Real Linux-amd64/Postgres/socket test81467 passes1.04s. The existing locked-query
+fixture now also holds access_tokens before the initial connect request, observes
+the actual Account SELECT wait, then requires cancellation/4003 while still locked
+and unchanged revocation state. Its original periodic population remains intact;
+closed-socket observation now explicitly shares the existing2s drain bound.
+Exact-old overlay83739 fails `socket survived completed drain`3.02s. These controls
+replace only node.go, not assertions or the whole historical source tree.
+
+Finished native full Transport/Gameserver/Account race87409 passes34.561/1.889/
+4.565s; DB cases can skip there. Affected vet passes; gofmt/whitespace pass.
+Actual complete `make test-go-ci CI_TEST_PACKAGES='./transport ./gameserver ./account'
+CI_TEST_FLAGS='-race -v'`63809 terminates0: Linux/amd64/Postgres, three packages
+41.662/172.470/21.902s,652 PASS rows including subtests, zero FAIL rows. Only
+existing opt-in one-minute cleanup-runtime case skips. New pending/model cases,
+actual initial SQL1.29s, original periodic SQL21.72s/callback18.41s and actual
+family-revocation16.31s pass, not skip. Retained linux-race.log SHA256
+ df9b471c0cb1446c9c0fb86aee0093abb11eaead8a6b7fb69d354b183f75fa7f.
+Source/test bytes remain fixed through each run; all handles terminal. Root-created
+Postgres e640901690a1 remains for independent review, not as a live test handle.
+
+Review by: Codex root (implementer first filter). Recorded by: Codex root.
+Complete seven-path range after082de7a7 through this batch awaits independent
+corrective review. Docs/plan/ledger reconcile here. RP-765 stays closed in its
+periodic scope; RP-450 original cause, whole Transport/CI/latency, artifact rebuild,
+owner adoptions and full nine-tier1.0 remain open. No archival/publication or goal pause.

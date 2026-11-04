@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"io"
+	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
@@ -15,6 +16,15 @@ import (
 )
 
 func TestComposedDrainCancelsBlockedSocketAuthenticationIntegration(t *testing.T) {
+	testComposedDrainCancelsBlockedSocketAuthentication(t, false)
+}
+
+func TestComposedDrainCancelsBlockedSocketConnectIntegration(t *testing.T) {
+	testComposedDrainCancelsBlockedSocketAuthentication(t, true)
+}
+
+func testComposedDrainCancelsBlockedSocketAuthentication(t *testing.T, pendingConnect bool) {
+	t.Helper()
 	ctx, cancel := context.WithTimeout(context.Background(), 40*time.Second)
 	defer cancel()
 	database := newCredentialCleanupDatabase(t, ctx)
@@ -36,7 +46,19 @@ func TestComposedDrainCancelsBlockedSocketAuthenticationIntegration(t *testing.T
 	}
 	httpServer := httptest.NewServer(composition.Server.Handler())
 	defer httpServer.Close()
-	peer := dialCompositionSocket(t, "ws"+strings.TrimPrefix(httpServer.URL, "http")+"/connection/websocket", httpServer.Client(), pair.AccessToken)
+	endpoint := "ws" + strings.TrimPrefix(httpServer.URL, "http") + "/connection/websocket"
+	var peer *compositionSocket
+	if pendingConnect {
+		connection, _, err := websocket.Dial(ctx, endpoint, &websocket.DialOptions{
+			HTTPClient: httpServer.Client(), HTTPHeader: http.Header{"Origin": []string{"http://localhost:5173"}},
+		})
+		if err != nil {
+			t.Fatal(err)
+		}
+		peer = &compositionSocket{connection: connection}
+	} else {
+		peer = dialCompositionSocket(t, endpoint, httpServer.Client(), pair.AccessToken)
+	}
 	defer peer.connection.CloseNow()
 	closed := make(chan websocket.StatusCode, 1)
 	go func() { closed <- waitSocketCloseStatus(t, peer.connection, 35*time.Second) }()
@@ -48,8 +70,11 @@ func TestComposedDrainCancelsBlockedSocketAuthenticationIntegration(t *testing.T
 	if _, err := lock.ExecContext(ctx, "LOCK TABLE access_tokens IN ACCESS EXCLUSIVE MODE"); err != nil {
 		t.Fatal(err)
 	}
-	// Observe the actual Account SQL from the real periodic callback. No
-	// shortened heartbeat, direct callback, mock query or backend kill is used.
+	if pendingConnect {
+		writeWS(t, peer, map[string]any{"id": 1, "connect": map[string]any{"token": pair.AccessToken}})
+	}
+	// Observe actual Account SQL from pending connect or the periodic callback.
+	// No shortened heartbeat, direct callback, mock query or backend kill is used.
 	const blockedAuthentication = `SELECT a.pid FROM pg_stat_activity a JOIN pg_locks l USING(pid)
 		WHERE a.datname=current_database() AND l.relation='access_tokens'::regclass
 		AND NOT l.granted AND l.mode='AccessShareLock'
@@ -65,7 +90,7 @@ func TestComposedDrainCancelsBlockedSocketAuthenticationIntegration(t *testing.T
 		}
 		select {
 		case <-ctx.Done():
-			t.Fatal("periodic Account authentication never blocked on the held table lock")
+			t.Fatal("Account authentication never blocked on the held table lock")
 		case status := <-closed:
 			t.Fatalf("healthy socket closed before blocked authentication: %d", status)
 		case <-time.After(10 * time.Millisecond):
@@ -76,8 +101,13 @@ func TestComposedDrainCancelsBlockedSocketAuthenticationIntegration(t *testing.T
 	if err := composition.Server.Drain(drainCtx, clock.Time()); err != nil {
 		t.Fatalf("drain with actual blocked Account SQL: %v", err)
 	}
-	if status := <-closed; status != websocket.StatusCode(transport.CloseServerDrain) {
-		t.Fatalf("healthy drain close=%d want=%d", status, transport.CloseServerDrain)
+	select {
+	case status := <-closed:
+		if status != websocket.StatusCode(transport.CloseServerDrain) {
+			t.Fatalf("healthy drain close=%d want=%d", status, transport.CloseServerDrain)
+		}
+	case <-drainCtx.Done():
+		t.Fatal("socket survived completed drain")
 	}
 	// Keep the exclusive lock held: success must come from cancellation, not
 	// the fixture releasing the query or destroying the database.
