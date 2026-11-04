@@ -10840,3 +10840,30 @@ Tree stays clean, all handles terminal. Next fresh independent corrective review
 of complete957dfa6b..this checkpoint, including old-code real-import failure,
 full affected checks and source-scope refusal controls. RP-761 remains OPEN;
 no blanket nested/tool/MPL/source-rights, adoption or release promotion.
+
+## 2026-11-04 — Imported Go attribution correction independently approved
+
+APPROVED, scoped corrective code under existing DP1/AC8, complete six-path
+957dfa6b83f96d62b2e767bcfafdbdcd62db2204..
+a8168b63d6275046f15dec87684c6dbcbd4c5563.
+Review by: fresh independent Codex /root/go_scope_attribution_corrective_review.
+Recorded by: Codex root, transcribing completed verdict. No material findings.
+
+Independent cold full affected packages/vet pass, including imported-ancestor/
+dedup/unrelated-subtree and all five refusal cases. Private base-main overlay
+executes real imported-GDDO regression and fails exactly on missing nested BSD;
+current suite passes. An initial Make-consumed anchored selector ran no tests and
+is discarded, per reviewer's progress disclosure. Production tree untouched.
+Fresh reviewed-HEAD generator completes53 dependencies plus application, relative
+BSD/copyright heading and correct Apache/BSD Prometheus plus0BSD/BSD stdlib
+expressions. Notices SHA256 exactly matches recorded
+21900c836ec78e2cb516c3e2cc8d4d93fa450073290ecd87c89793bae0823c35.
+Gofmt/range whitespace/final clean-tree checks pass; no tracked reviewer changes.
+
+RP-761 closes the actual application imported-scope attribution defect. Scope
+bounds/root grant/regular files/per-file known grants/separate notices and existing
+browser semantics inspected; no allowlist widening. Full attribution/source-rights,
+external tools/MPL adoption, native profile/host/SP8, AC8/R-006 and whole1.0 remain
+OPEN. Next continue RP-759's concrete tool-source/notice delivery and remaining
+native prerequisites; do not turn zero function evidence into exclusion. No
+publication, deployment, archival, release approval or goal pause.

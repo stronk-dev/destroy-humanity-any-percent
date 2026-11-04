@@ -7,17 +7,16 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
-**Nested attribution correction,2026-11-04 (RP-761):** independently reproduced
-actual GDDO BSD omission now has a normal real-import regression and compiler-
-imported scope collection. Root+actual package ancestors retain license/NOTICE
-terms; unknown/invalid scopes fail before output and unrelated subtrees are not
-inventoried. Real regression/full affected metadata packages/vet pass. Actual
-committedef9e1ed8 generator completes53 dependencies and delivers full copied BSD
-under its relative path with combined Apache/BSD expression; stdlib scopes also
-retain their supported0BSD/BSD terms. Next fresh independent corrective review of
-the complete range; no license allowlist or tool/MPL policy adoption. The prior
-seven-path research batch1cc6762a..7623cf93 is independently approved;
-12positive/25UNKNOWN tool scopes remain bounded evidence. RP-760 stays closed.
+**Nested attribution correction,2026-11-04 (RP-761):** independently APPROVED
+complete six-path957dfa6b..a8168b63. Actual old imported-GDDO BSD omission
+reproduces; corrected full affected tests/vet and fresh53-dependency generator
+pass. Imported ancestor scopes retain their license/NOTICE text under relative
+paths, with known-grant union and complete refusal controls. Reviewer output hash
+matches recorded attribution. RP-761 is CLOSED for this application defect;
+external-tool/MPL/source-rights, native/adoption and full release gates remain.
+The prior seven-path nested-observation batch1cc6762a..7623cf93 is independently
+approved;12positive/25UNKNOWN tool scopes remain bounded evidence. RP-760 stays
+closed within its original root-NOTICE scope.
 
 **Application attribution correction,2026-11-04 (RP-760):** independently
 APPROVED complete8-path9cde3a64..0c746ca1. Old actual Prometheus NOTICE omission
