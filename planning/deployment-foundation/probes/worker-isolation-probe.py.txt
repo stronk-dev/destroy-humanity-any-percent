@@ -167,13 +167,17 @@ def main():
     completed = False
 
     def run(*args, cleanup=False):
+        until = time.monotonic() + 15 if cleanup else min(deadline, time.monotonic() + 10)
+        timeout = until - time.monotonic()
+        if timeout <= 0:
+            raise ResearchGuard("command guard exhausted: INVALID")
         reply = subprocess.run(["docker", *args], capture_output=True, text=True,
-                               timeout=15 if cleanup else bounded(deadline))
-        if not cleanup:
-            bounded(deadline)
+                               timeout=timeout)
         if reply.returncode:
             raise RuntimeError("owned fixture command failed: " + reply.stdout + reply.stderr)
-        return reply.stdout.strip()
+        output = reply.stdout.strip()
+        bounded(until)
+        return output
 
     def owned(container, role, cleanup=False):
         fields = run("inspect", "--format", '{{.Id}} {{.Image}} {{index .Config.Labels "com.docker.compose.project"}} {{index .Config.Labels "com.docker.compose.service"}}', container, cleanup=cleanup)
@@ -265,6 +269,7 @@ def main():
                       source_sha256=hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest(),
                       work_guard_seconds=60, command_handshake_seconds=10,
                       cleanup_per_command_seconds=15, cleanup_outside_work_guard=True)
+        bounded(deadline)
         completed = True
     finally:
         for container, role in reversed(containers):

@@ -9648,3 +9648,37 @@ that limit. Review by: Codex root, implementer first filter. Recorded by:
 Codex root. Complete after9a17aa2a range plus containing correction needs fresh
 independent research/tool/technical review. No runtime/CI/kernel/copy change,
 push/deployment/archival or goal pause.
+
+## 2026-11-04 — Correct worker probe's final and command completion boundaries
+
+Preserve original source/v1 ataa765a4026fce0b5311fbcbe4401ec092eab1c68.
+Root actual-wrappera41a20 also exposes that requesting subprocess timeout10
+does not itself reject a matching return observed at11 under global60. RP-749
+now records both missing post-completion boundaries. No real timed-out native
+event occurred in either retained actual population.
+
+Forward correction: local deadline starts before each Docker invocation, covers
+output collection and is checked afterward; cleanup has its original15s local
+deadline outside work. Global work guard is checked AFTER metadata/source-hash
+collection, before completed=True. Actuald110f3 compiles the historical/current
+functions and reproduces old61s acceptance, passes timely collection and9s/14s
+ordinary/cleanup, rejects exact60/late61 final, exact10/late11 ordinary and
+exact15/late16 cleanup. No guard or population is increased/dropped.
+
+Fresh actual76328 exits0, every original worker/control/broker population matches:
+typed101/2/30/30, Engine200/OK, UID/route403, native/kernel profiles, before/after
+PGN and local-marker writes. V2 is the normalized actual second output and binds
+source3d672aa9771eb1d70455aea4daa648b78e9584fd5cf91bdcadad607815b042c6;
+only project/network/source identities differ from v1. Actualdc6858 exercises
+the actual broker AST: allow/UID/route discrimination, native500/bad body and
+permission failures cannot turn into policy refusals. Actual native-profile AST
+accepts intended projection and refuses altered user/network/read-only/caps/
+privilege/mounts. Earlier545c35's actual errno negatives still apply unchanged.
+
+All root actor handles terminal and source cleanup verifies its entire owned
+project removed. Syntax/bindings/whitespace pass before corrective commit;
+independent resource inventories are rechecked too. Complete original seven-path
+plus containing correction needs fresh independent review. Review by: Codex root,
+corrective author first filter. Recorded by: Codex root. RP-749/750 remain open
+pending review/full-profile construction respectively; no OP9/adoption/runtime/
+supported-host/release claim or goal pause.

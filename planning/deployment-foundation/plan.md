@@ -38,6 +38,15 @@ and still claim completed. Preserve original source/v1, then forward-correct
 the collection boundary and rerun the changed instrument. RP-750 is a narrow
 native mechanism candidate, not a complete supervisor/profile or adoption.
 
+Original source/v1 is preserved aa765a40. Roota41a20 additionally shows local
+command timeout alone accepts a simulated11s matching return under global60.
+Correction checks command/cleanup local deadlines AFTER output collection and
+global work AFTER all final metadata/hash collection. Actuald110f3 reproduces old
+acceptance, passes timely, refuses exact/late final/command/cleanup. Fresh76328
+exits0, all original native outcomes unchanged, v2 binds3d672aa9. Actualdc6858
+passes broker allow/UID/route/native-error and native-profile corruption controls.
+Complete original-plus-correction review remains; no bounds/populations changed.
+
 **Operation evidence proposal,2026-11-04:** new draft
 `rfc/deployment-operation-evidence.md` specifies canonical private hash-bound
 Supervisor, phase work-log, receipt-envelope, predecessor/completion and

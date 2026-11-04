@@ -248,11 +248,18 @@ make vet GO_PACKAGES=./cmd/deployment-backup GOFLAGS="-overlay=$PWD/.cache/conne
 ### Isolated command-worker mechanism
 
 The [manual worker study](probes/worker-isolation-probe.py.txt) and
-[initial source-bound observation](worker-isolation-observation.v1.json) test a
-Docker-backed worker boundary for OP9. The initial observation retains a known
+[current source-bound observation](worker-isolation-observation.v2.json) test a
+Docker-backed worker boundary for OP9. The [initial observation](worker-isolation-observation.v1.json)
+binds committed sourceaa765a40 and retains a known
 instrument defect: source-binding collection follows its last deadline check
 (RP-749). Its actual native outcomes below are recorded, but final deadline
 discrimination needs correction before instrument approval.
+The corrected source checks AFTER final collection and enforces each command's
+local completion deadline, including cleanup. Actual old-source controls accept
+61s final collection/deadline60 and11s command/local10; current timely controls
+pass and exact/late controls refuse. Fresh actual76328 completes every original
+population with unchanged native outcomes; v2 binds source3d672aa9. Both versions
+remain. Independent complete-range review is pending, not OP9 acceptance.
 
 Actual57766 compares UID65532/cap-drop writable network controls BEFORE and AFTER
 an isolated network-none/read-only worker. Both controls reach real pinned
