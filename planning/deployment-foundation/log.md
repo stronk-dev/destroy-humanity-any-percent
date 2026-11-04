@@ -9390,3 +9390,28 @@ protocol and critical-loss refusal, then bind the complete real helper, not more
 identical pg_dump positives. Review by: Codex root, author/first filter.
 Recorded by: Codex root. Complete after20cbb5b8 research/tool/draft range needs
 fresh independent review. No push, deployment, archival or goal pause.
+
+## 2026-11-04 — Connection-owned cancellation candidate independently APPROVED
+
+Review by: independent Codex `/root/connection_cancel_gateway_research_review`.
+Recorded by: Codex root, transcribing returned final verdict. Complete nine-path
+range20cbb5b8c7639bc3af960fe479d04c07feaec4e8..fd4c5b923bf7107bf6d59a053d039a9ce1c0db55
+is **APPROVED**, no blocking findings. Independent actual2276 exits0 reproducing
+all3 real populations, unchanged control/postmaster and exact rows7/42.
+Independent42422 exits0, all14 actual-function controls;bc06cb passes complete
+scope/whitespace, retained Go/runner/executed-binary bindings and scratch removal.
+Production and CI source remain untouched. Review did not rely on root's run
+as its own execution.
+
+Reviewer's exact owned project6ac92350866d4b2e container/network/volume inventories
+ff9051/fc60d4/093fc7 empty; all handles terminal, no tracked edits/commits.
+This editorial closeout adds portable root reproduction commands and reconciles
+review status only; no reviewed source, observation or criterion changes.
+No unrelated suite or identical actual population rerun is necessary.
+
+RP-740/738/734 remain OPEN. Approval covers the experimental candidate and stated
+technical direction, not durable supervision, complete actual helper connection
+ownership, non-bypassable isolation, full CR4/native-host or adoption. Next specify
+the complete journal-bound supervisor/request-ownership protocol and critical-loss
+refusal, then bind the actual helper/all reviewed mutation classes. Keep the full
+nine-tier1.0 active; no publication, deployment, archival or release promotion.

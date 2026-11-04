@@ -41,6 +41,17 @@ refusal STILL to specify/prove. Do not infer actual helper/production/native-hos
 coverage from the one-connection gateway. Complete research/tool/draft batch
 needs independent review; original runtime/CI/operator policy remain unchanged.
 
+Complete nine-path20cbb5b8..fd4c5b92 is independently APPROVED after fresh2276
+all3 real populations, controls42422 and source/runner/binary bindingsbc06cb.
+Exact verdict/cleanup lives in the log. RP-740/738/734 remain OPEN for the full
+mechanism, not instrument errors. Current next batch is the complete journal-bound
+supervisor/request-ownership protocol: native invocation/boot identity, admission
+before side effects, terminal receipts, retained outstanding work and refusal on
+critical authority loss. Bind actual multi-connection backup and all mutation-map
+resources; a successful toy proxy does not authorize bypassing any of those.
+Candidate document includes portable root reproduction commands. No unchanged
+experiment repetition or new CI lane is required for this editorial closeout.
+
 **Pre-backup branch experiment,2026-11-04:** preserve the exact live Postgres
 container/postmaster and a continuously connected control session while examining
 two populations: a libpq client held by `post_auth_delay=8` before ReadyForQuery,

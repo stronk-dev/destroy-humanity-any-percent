@@ -205,6 +205,37 @@ protocol with lost-authority refusal, followed by full real-helper binding. Do
 not repeat the completed pg_dump controls instead. RP-740 tracks the candidate;
 RP-738/734 remain open. Full native-host/R-006/adoption/release gates remain.
 
+The complete nine-path `20cbb5b8..fd4c5b92` batch is independently APPROVED after
+fresh actual2276, fourteen controls42422 and source/runner/binary bindingsbc06cb.
+This approves the experimental candidate and stated technical direction, not
+production ownership, implementation/adoption or recovery acceptance.
+
+Reproduce the three real populations from the repository root:
+
+```sh
+python3 planning/deployment-foundation/probes/connection-cancel-gateway.py.txt
+```
+
+Reproduce actual-function controls without changing production inputs on disk:
+
+```sh
+python3 - <<'PY'
+import json, pathlib
+r = pathlib.Path.cwd()
+p = r / '.cache/connection-gateway-research'
+p.mkdir(parents=True, exist_ok=True)
+replacements = {
+    str(r / 'server/cmd/deployment-backup/main.go'):
+        str(r / 'planning/deployment-foundation/probes/connection-cancel-gateway.go.txt'),
+    str(r / 'server/cmd/deployment-backup/main_test.go'):
+        str(r / 'planning/deployment-foundation/probes/connection-cancel-gateway-controls.go.txt'),
+}
+(p / 'controls-overlay.json').write_text(json.dumps({'Replace': replacements}))
+PY
+make test-go GO_PACKAGES=./cmd/deployment-backup GO_TEST_FLAGS="-overlay=$PWD/.cache/connection-gateway-research/controls-overlay.json -run TestManualGatewayControls -v -count=1"
+make vet GO_PACKAGES=./cmd/deployment-backup GOFLAGS="-overlay=$PWD/.cache/connection-gateway-research/controls-overlay.json"
+```
+
 Next construct the complete durable production protocol against this table and
 resolve its pre-backup branch/packaging/compatibility, then execute its actual
 helper and supported-host interruption population. Do not repeat these complete
