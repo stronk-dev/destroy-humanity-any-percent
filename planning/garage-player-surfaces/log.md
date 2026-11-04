@@ -8943,3 +8943,39 @@ Approvals close the instrument/timer/capture/fixture correction, not RP-368,
 supported input policy, full CI/feature/archival/release, the27 accounting failures
 or historical guard. Current queue moves to remaining source-owned corrective dispositions;
 do not rerun these completed profiles/reviews for reassurance.
+
+## 2026-11-04 — Fiscal native-consent readiness correction approved
+
+Review by: fresh independent Codex `/root/fiscal_driver_readiness_corrective_review`.
+Recorded by: Codex root. APPROVED, no code finding, complete six-path
+`8f5520db33af974047b4276ef02a319741b16daf..e15e0ff5ff00c784ba7b8bdb796d4510e45c52be`
+(base exclusive, tip inclusive), including both original logs. Trial click waits
+without activation, focus is checked, then one native Enter. Exact refusals,
+request/state/fresh-consent assertions and existing deadlines stay unchanged.
+
+Fresh at6076a1c4: Fiscal40315 runs49 Chromium and49 WebKit cases PASS, including
+disabled-focus failure route and eligible single-submit control. Firefox runs
+ZERO tests: session connection timeout; sandbox-extension/framebuffer failures
+reported. Overall target exits2, NOT green. Teardown stalls; reviewer verifies
+its PID ancestry and terminates only own Firefox80828, then Make finishes.
+All five owned PIDs and listener51204 absent afterward. No unchanged rerun.
+Initial restricted listener denial ran none. Types34082 terminal0, zero errors/
+warnings; driver syntax and complete-range whitespace pass. No tracked mutation.
+
+Independent full real-service composed86769 atdf531b9b is REUSED from GarageNov3
+verdict, not this reviewer's fresh execution: current app/server/main driver/Make/
+both declared Compose files have empty diff. Original24143/20481 and restored
+32419/data-loss23899 remain historical. Actual source hashes independently match
+their record: Soul helper at both endpoints
+`e8b420c542a691d7299c7825f20b505b0e712e856bbee3bf828945bad1128b12`,
+reviewed-tip main driver
+`3a3a49c4e0a8de45c197831fb28c66ce8a81c3034c9f1d18384679024e900829`.
+Mounted assertions survive their file relocation. No fresh old mutation claimed.
+
+This closes the reproduced readiness correction's review, not untraced15953's
+unique cause/general reliability, Firefox/AT/full CI or original feature acceptance.
+Reviewer leaves no owned process/service/Docker resource or tracked edits/commits.
+Root also routes completed RP-374–376 to API's Nov4 verdict and RP-396 to CI's;
+next unreviewed corrective scope is RP-397's pending-Exit test oracle. No software
+suite for these editorial status updates, no push/adoption/archival/release;
+the full nine-tier goal remains active.

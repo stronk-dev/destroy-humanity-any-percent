@@ -18,11 +18,14 @@ or expand an uninformative diagnosis into another research campaign.
    independently approved at0a185c06. Both negative verdicts remain; no repeat
    of its single valid-but-lossy/limited native observation. RP-368's existing
    owner question is still unanswered: no new floor/batching/limiter/retry policy.
-2. Inspect remaining generated-operation port/HTTP-error correction dispositions
-   in API's owning log, then continue any genuinely unreviewed accepted scope.
-   Its five amendments still require adoption/new-descriptor/full workflow gates;
-   do not repeat completed reviews, infer assent or mount a partial endpoint.
-3. Keep RP-348/RP-351 causes open. R-013's report is reviewed, but the temporary
+2. Generated component error boundaries RP-374–376, Fiscal driver readiness
+   RP-378 and Node fixture discovery RP-396 now have complete independent
+   corrective approvals in their owning logs. No repeat of those reviews;
+   Fiscal's native Firefox startup gap and original reliability limits remain.
+   API's five amendments still require adoption/new-descriptor/full workflow gates.
+3. Continue the genuinely unreviewed Reputation pending-Exit test correction
+   RP-397 under its owning plan/log; preserve its separate R9 author holds.
+4. Keep RP-348/RP-351 causes open. R-013's report is reviewed, but the temporary
    profile is now absent and cannot be independently revalidated. No stall repair
    or cache/compiler/hosted-causality claim follows.
 
@@ -50,6 +53,7 @@ environment differences, exclusions and original rejected verdicts live in
 | Historical composed-execution record (RP-361) | Approved bbee9805..1d623dde; source correspondence checked, transient historical execution not independently replayed |
 | Shared reads, covered late receipts and stale dispatch (RP-369–371) | Three complete corrective ranges approved; current Linux hosts/Node/types/build and retained old failures, not fresh live-race/throughput evidence |
 | Manual observer/timer/capture/fixture (RP-372/RP-712/RP-713) | Complete original-plus-two-corrections approved; old failures/fixture CI red retained, Node272/browser72 pass, one native observation valid but lossy/limited; RP-368 policy separate |
+| Fiscal driver readiness (RP-378) | Complete corrective range approved; fresh Chromium/WebKit98 pass, native Firefox0/overall target red; source-bound independent real composed proof reused, original reliability/AT separate |
 | Offer/purchase/transition pending focus (RP-319/RP-379/RP-380) | Three exact corrective ranges approved; actual duplicate-command/dual-revision/fallback controls discriminate, Manual policy RP-368 separate |
 | Bootstrap focus/live reduced motion (RP-393/RP-084) | Complete original corrections plus citation repair approved; current Node/native-input/media/Worker and Linux performance evidence, not AT/reference-hardware acceptance |
 | Native JSON failure/production-client/Pitch observers (RP-381/RP-389) | Complete three separate ranges approved; native helper negatives and full current real-service target pass; original failure attribution/reliability remains open |
