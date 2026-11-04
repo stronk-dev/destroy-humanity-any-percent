@@ -94,7 +94,7 @@ Controller/Compose protocol. Before a production proposal is acceptance-ready:
 ### Non-destructive pre-backup SQL observation
 
 The [manual pre-backup probe](probes/prebackup-live-database-probe.py.txt) and
-[source-bound observation](prebackup-live-database-observation.v1.json) address
+[source-bound observation](prebackup-live-database-observation.v2.json) address
 one part of the incompatible destructive branch above. On the pinned image's
 actual PostgreSQL16.15, a libpq client held by `post_auth_delay=8` has a live
 backend process but ZERO rows for that PID in pg_stat_activity. Exact client
@@ -123,6 +123,15 @@ helper/encryption/publication, image preparation and output generations remain
 part of the complete production protocol. This probe neither implements abort
 nor proves the full quiescence criterion. RP-738 tracks the new startup-census
 finding and these remaining requirements.
+
+The [original v1](prebackup-live-database-observation.v1.json) binds source83abd009;
+its independent real run reproduces these outcomes, but original review is
+CHANGES REQUIRED: interactive stdin writing was outside the local10s handshake
+deadline (RP-739). Current source uses nonblocking pipe writes/select and one
+deadline through writing, reading and final matching-output acceptance. Original
+actual-source late acceptance is retained, new exact/late I/O controls refuse,
+and fresh actual79437 reproduces both populations under corrected source7b93d963.
+Neither observation is a whole recovery protocol or a runtime adoption.
 
 Next construct the complete durable production protocol against this table and
 resolve its pre-backup branch/packaging/compatibility, then execute its actual

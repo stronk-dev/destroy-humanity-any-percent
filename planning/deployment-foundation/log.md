@@ -9265,3 +9265,41 @@ Complete after49b6113e research/tool/draft range needs fresh independent review;
 full CR4/Deployment/1.0 acceptance stays open. A text-only native Linux/amd64
 disposable-host availability question was delivered earlier this turn; unanswered,
 no host or external deployment authority inferred. Local work continues.
+
+## 2026-11-04 — Pre-backup review finds an unbounded interactive write; correct it
+
+Review by: independent Codex `/root/prebackup_live_database_research_review`.
+Recorded by: Codex root, transcribing the returned verdict. Complete seven-path
+49b6113ead8e37c8c0e2d464ebf3877661592897..83abd00992cab08f9d608e0bfd609a70230f6e9e
+is **CHANGES REQUIRED**. Actual-AST8069e8 advances write/flush to11s then returns
+a matching line; old send() accepts because writing precedes the local timeout
+and final check uses global60. RP-739 records this instrument defect. No recorded
+real population is observed exceeding that handshake bound; the original source
+and v1 remain historical, never silently rewritten.
+
+Independent38051 exits0 reproducing both actual populations and exact rows7/42.
+df2551 actual wait/Docker wrapper/error/source-binding controls pass; db0ec0
+actual process-parser/acceptance-tail controls reject live backend, wrong data,
+changed control and late global completion. Initial control40b306 lacked a test
+namespace variable; corrected execution passes. Reviewer exact-project
+dcfee114337423d3 container/network/volume inventories33955b/2c8dc2/8dc220 empty;
+all handles terminal, temp directory removed, no tracked changes or commits.
+
+Forward correction uses a genuinely nonblocking stdin pipe, select/write and
+queue-read bounded by ONE local deadline established before any write; all
+matching completions are checked against it, capped by the global deadline.
+No background blocked writer or buffered flush survives the timeout. Actual
+25892b compiles the ORIGINAL nested send from committed83abd009 and reproduces
+11s acceptance. Current actual send_query accepts timely and partial writes,
+refuses exact/late select/write/read, propagates permission/broken-pipe errors,
+and rejects an exhausted read. No guard/population/criterion is raised.
+
+Fresh actual79437 exits0: startup census0/process survives client removal then
+exits without INSERT; pg_dump survives client removal, bounded known-backend
+termination removes it; same DB/postmaster/control process+connection and rows7/42.
+V2 binds exact current source7b93d963a2d2604547bd19294bd08f5aa3cde132bf5e2eebc9ae34e0aa99a924.
+Both real populations and cleanup complete; syntax/diff/source bindings checked
+before commit. This is still a narrow disposable-fixture candidate, not durable
+production PID ownership, actual backup helper or native-host/full CR4 proof.
+Complete original plus containing corrective range needs independent re-review.
+Review by: Codex root, corrective author first filter. Recorded by: Codex root.

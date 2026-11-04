@@ -35,6 +35,16 @@ generation-safe production ownership. Actual-source guard/error controls pass.
 Both populations and cleanup finish; no whole recovery or acceptance promotion.
 This complete research/tool/draft batch needs independent review.
 
+Original complete49b6113e..83abd009 review is CHANGES REQUIRED for RP-739:
+interactive stdin write/flush precedes its local deadline and final reply only
+checks global60. Independent real38051 reproduces outcomes, but actual8069e8
+accepts an11s handshake. Forward correction uses nonblocking pipe writes and
+one deadline across select/write/queue read/final acceptance. Actual25892b
+reproduces old acceptance, passes timely/partial writes, rejects exact/late I/O
+and propagates ordinary failures. Fresh79437 exits0, both populations unchanged;
+v2 binds source7b93d963. Original negative/source/v1 remain. Complete containing
+correction requires independent re-review, not a full mechanism/adoption claim.
+
 **Interrupted restore boundary, 2026-11-04 (RP-726):** real pg_restore COPY
 commits after exact owned client-container removal when its held database lock
 is released. The separately identified backend-termination arm prevents that

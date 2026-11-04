@@ -245,7 +245,7 @@ backend-termination arm prevents that row, but earlier restored DDL remains:
 session termination is neither rollback nor a complete operation fence. No
 unscoped backend termination, application-name-only authority, new database
 permission or recovery implementation is authorized by this observation.
-The separate [pre-backup observation](../planning/deployment-foundation/prebackup-live-database-observation.v1.json)
+The separate [pre-backup observation](../planning/deployment-foundation/prebackup-live-database-observation.v2.json)
 on pinned PostgreSQL16.15 also finds a live startup backend absent from
 pg_stat_activity, surviving exact client removal temporarily. An empty session
 census cannot establish physical quiescence. In the same disposable fixture,

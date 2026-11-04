@@ -1,0 +1,47 @@
+{
+  "cleanup_complete": true,
+  "cleanup_outside_work_guard": true,
+  "compose": "2.39.4-desktop.1",
+  "database_id": "15f5364a21a7e135eb1c79f05da2e0a7836b5602e8f34a6335f82ec584f51a14",
+  "dump": {
+    "backend": {
+      "backend_start": "2026-11-04 05:17:51.478718+00",
+      "client_addr": "172.18.0.3/32",
+      "client_port": 46556,
+      "pid": 801,
+      "query": "LOCK TABLE public.prebackup_live_probe IN ACCESS SHARE MODE",
+      "state": "active",
+      "wait_event": "relation",
+      "wait_event_type": "Lock"
+    },
+    "bounded_termination": true,
+    "process_after_client_removal": {"pid": 801, "start_ticks": 176391177},
+    "process_after_termination": "absent"
+  },
+  "engine": "28.4.0 linux/arm64",
+  "image_config": "sha256:75f5a96988cdf694a215073c3e9c001b706b371e2f94df3967f2efdec2787f6b",
+  "live_control": {
+    "pid": 103,
+    "rows": [7, 42],
+    "same_connection": true,
+    "same_postmaster": true,
+    "same_process": true
+  },
+  "measured_work_guard_seconds": 60,
+  "objective_completed": true,
+  "per_cleanup_command_seconds": 15,
+  "per_command_seconds": 10,
+  "postgres_version": "16.15",
+  "project": "cc-prebackup-live-4a3f8139aefa6cd2",
+  "schema": 1,
+  "source_sha256": "7b93d963a2d2604547bd19294bd08f5aa3cde132bf5e2eebc9ae34e0aa99a924",
+  "startup": {
+    "activity_rows": 0,
+    "client_address": "172.18.0.3",
+    "client_port": 46548,
+    "eventually_absent": true,
+    "pid": 117,
+    "process_after_client_removal": {"pid": 117, "start_ticks": 176390333},
+    "process_before": {"pid": 117, "start_ticks": 176390333}
+  }
+}
