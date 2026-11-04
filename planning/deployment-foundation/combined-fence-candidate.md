@@ -513,6 +513,15 @@ no-publication/error controls and all existing controls. Veteb13f0 passes.
 Complete original-plus-correction re-review remains; no bounds were raised.
 Cancellation cannot erase already-published commands or unknown outcomes.
 
+The complete corrected union through2e20afde is independently **APPROVED —
+research/tool scope**. Fresh2246cb/bc6565 reproduces all native populations;
+428566/888f63 passes original11s queue/cancel/no-publication controls and
+ca8c63/e57d11 an independently held timely queue.758e37 source bindings,
+2d5ad5 vet and6f90a8 full10-path scope/negative-preservation checks pass.
+Original CHANGES REQUIRED remains. All own reviewer resources are removed.
+RP-755 closes the instrument defect; RP-754 full native profile/admission,
+pre-binding reuse/lifetime/supported-host/adoption/recovery gates stay open.
+
 The native observer runs UID70, CapEff/Prm/Bnd0, NoNewPrivs1, read-only root and
 the exact selected PID/network namespace. It is a TRUSTED fixture observer,
 with same-UID process access; namespace sharing is not a grant to an untrusted

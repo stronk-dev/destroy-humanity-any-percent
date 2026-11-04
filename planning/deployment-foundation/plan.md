@@ -70,6 +70,16 @@ the11 native terminal and reused framing/deadline controls; veteb13f0 passes.
 Complete corrected union needs independent re-review. No deadline raised;
 already-published work cannot be unsent by cancellation or erased from scope.
 
+Complete original-plus-native-producer-plus-correction union through2e20afde is
+independently APPROVED. Fresh2246cb/bc6565 all native populations,428566/888f63
+original11s/cancel controls,ca8c63/e57d11 timely queue,758e37 bindings and2d5ad5
+vet pass;6f90a8 confirms full10-path scope/negative preservation. Own reviewer
+fixtures removed. RP-755 closes instrument only; RP-754 stays OPEN. This remains
+Python native-observer research, not a release-packaged Go producer. Next bind
+the original held socket/admission and native producer to the complete trusted
+supervisor profile/whole mutation inventory, with supported-host proof before
+adoption. No repetition of these unchanged positives or full recovery claim.
+
 **RP-753 existing TLS-input correction,2026-11-04:** URL certificate paths reach
 Go but were dropped from libpq service config. Valid old-code25bca5 proves Go
 verified TLS/client identity while actual psql fails at default root.crt instead

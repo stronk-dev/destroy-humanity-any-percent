@@ -10135,3 +10135,34 @@ host/OP9 adoption and whole CR4/R-006 remain OPEN. Root is first-filter only.
 Full nine-tier1.0 stays active; no push/deploy/archive or goal pause.
 
 Review by: Codex root, corrective research/tool author first filter. Recorded by: Codex root.
+
+
+## 2026-11-04 — Corrected native ownership study independently APPROVED
+
+Review by: independent Codex `/root/pidfd_backend_research_review`.
+Recorded by: Codex root, transcribing final returned verdict. Full union:
+- `e3beb00dc55db24ab56432b54bc56b0c7ce60954..9bf8fdbadd71ae87a4f4c05cd16458180db35b86`.
+- `9bf8fdbadd71ae87a4f4c05cd16458180db35b86..8272f5863fa5f65bf7ae4b2d18060b5ba1572f0f`.
+- `8272f5863fa5f65bf7ae4b2d18060b5ba1572f0f..2e20afde947ba436314717c30ca232a24b2cbd0b`.
+
+Verdict **APPROVED — corrected research/tool scope**, no remaining blocking
+findings. Original CHANGES REQUIRED and fired EOF-only v1 remain preserved.
+Independent2246cb/bc6565 exits0: all3 real populations and admission controls,
+all7 retained references exit,2 SIGTERMs, actual TLS encrypted identity equality
+and continuous bystander preservation.428566/888f63 exits0: reviewer's ORIGINAL
+11s queue and cancelled/no-publication controls now pass. ca8c63/e57d11 exits0:
+independently held timely queue completes after unlock.758e37 verifies v1/v2/v3
+source bindings and private-key/password exclusion;2d5ad5 Linux/amd64 overlay vet
+passes.6f90a8 checks full10-path union, append-only negatives, unchanged native
+observer and clean checkout. Earlier private no-signal failure remains applicable
+to unchanged observer/native completion logic; no fresh pass inferred for an
+altered mechanism. Root's observations remain author first-filter.
+
+Exact own reviewer project cc-pidfd-backend-6370075e9b10c1e9 removed; container/
+network/volume c9036a/5af3d0/618a7c inventories empty. All handles terminal, no
+tracked edits/commits. RP-755 closes instrument defect only. RP-754 stays OPEN
+for full trusted admission/profile, adversarial pre-binding reuse, durable
+lifetime, native supported host, adoption and CR4/R-006. Current prototype uses
+Python observer, not a release-packaged Go producer or complete supervisor.
+Editorial closeout changes no reviewed source/observation/criterion; no identical
+rerun needed. Full nine-tier1.0 stays active; no push, deployment or archival.
