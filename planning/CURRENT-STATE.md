@@ -1,10 +1,11 @@
 # Current repository state
 
-**Membership drain correction,2026-11-05:** RP-767 is locally implemented with
+**Membership drain correction,2026-11-05:** RP-767 is independently approved with
 kernel `0.3.226` under normal accepted KV-1 corrective delivery. No new owner choice
 or scope exception was required; root's earlier neutrality hold was overbroad.
 Affected native/Linux-amd64 real-Postgres race, client replay/transport, types,
-build and vet pass. Final independent implementation review is pending; the
+build and vet pass. Complete25-path215a98b3..71d8e15c is independently APPROVED;
+the
 [Transport log](websocket-transport-and-fanout/log.md) preserves old failures,
 shared-database interference and successful serial evidence. Epoch8 is unchanged.
 The retained `9768d681` artifact predates both this correction and RP-768; no new

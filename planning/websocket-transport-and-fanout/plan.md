@@ -16,7 +16,7 @@ opt-in cleanup skip explicit. Complete seven-path7505c5bf..c32f6902 receives fre
 independent corrective APPROVAL after exact-old/current expiry, shutdown/drain and
 actual family-revocation execution. Original feature/release gates remain separate.
 
-2026-11-04 RP-767 is locally implemented with kernel0.3.226. Independent
+2026-11-05 RP-767 is independently APPROVED with kernel0.3.226. Independent
 technical review /root/membership_version_authority_review establishes that
 accepted KV-1's normal same-commit bump applies to this behavior-changing
 correction. The prior root-authored neutrality/exception hold was overbroad;
@@ -29,7 +29,8 @@ locks still held, under the original2s caller and configured15s bounds.
 All8 affected native/Linux-amd64 real-PG race packages, client replay/transport,
 strict types, native gameserver build and vet pass. Root/reviewer initially overlap
 shared-DB suites and retain their failures; unchanged-source serial reviewer and
-full root runs pass. Final full-range corrective review remains. Full feature,
+full root runs pass. Complete25-path215a98b3..71d8e15c receives independent
+corrective APPROVAL; exact verdict and provenance are in the owning log. Full feature,
 historical kernel-guard debt and hosted/clean-host/release gates stay separate.
 The ordinary regression is
 `make test-go-ci CI_TEST_PACKAGES=./gameserver CI_TEST_FLAGS='-race -run TestComposedDrainCancelsBlockedMembershipLookupIntegration -v'`.

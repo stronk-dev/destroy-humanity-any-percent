@@ -5917,3 +5917,8 @@ implementation review remains. The [owning log](websocket-transport-and-fanout/l
 holds old/current proof, failed shared-DB overlap and unchanged-source serial passes.
 No artifact is relabelled:9768d681 predates the two corrections. Full nine-tier1.0,
 historical guard/accounting/CI, content, clean-host and release gates remain.
+
+RP-767 follow-up: complete25-path215a98b3..71d8e15c receives independent corrective
+APPROVAL. The owning log records fresh34-case serial real-PG/race execution,
+explicitly reused full873-pass root evidence, failed overlap attempts and exact
+range/provenance. This closes the defect, not full feature/artifact/CI/release gates.

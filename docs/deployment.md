@@ -224,7 +224,8 @@ Independent corrective artifact-evidence review approves complete range
 `9768d681..40969759`, including a fresh six-executable rebuild and executed
 package/tampering and registry checks. The later RP-768 expiry correction and
 kernel `0.3.226` RP-767 membership cancellation correction are absent from this retained
-artifact. The latter's current-source checks pass; implementation review is pending.
+artifact. The latter's complete corrective range `215a98b3..71d8e15c` is
+independently approved after current-source checks; artifact rebuilding remains.
 Both trees are the same candidate; the earlier
 [`893bb1e7` record](../planning/deployment-foundation/release-builds/candidate-893bb1e7.json)
 remains historical evidence, not an approved predecessor. Current source correctness,

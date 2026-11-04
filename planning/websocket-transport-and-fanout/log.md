@@ -1310,3 +1310,35 @@ still needs its committed-range verdict. Retained9768d681 artifact predates thes
 changes. Full feature/hosted/rights/native/R-006/release and nine-tier1.0 stay open;
 no publication, archival, new owner adoption or goal pause.
 Review by: Codex root (implementation/output first filter). Recorded by: Codex root.
+
+## 2026-11-05 — RP-767 complete versioned correction independently approved
+
+APPROVED, no actionable findings, complete25-path range
+215a98b3330445a1d7cc840d4c46a5cfad7c92ac..
+71d8e15c22c61250538dfa0c9a1987ad2c9cf9b9.
+Review by: independent Codex /root/membership_version_authority_review.
+Recorded by: Codex root, transcribing its completed committed-range verdict.
+
+All13 implementation/test/version hashes match independently executed sources;
+RP-768 is intact. Fresh serial Linux-amd64/Postgres/race33958 supplies34PASS,
+zeroFAIL/zeroSKIP, including all4 held-lock membership cases and healthy Guild/
+Commons/recovery/expiry/authentication shutdown/revocation/Exit/Guild lifecycle.
+Independent8-package vet/format/diff and candidate/probe identity/refusal pass.
+Final25-path committed diff, records and clean tree independently inspected.
+Root's old4-case failure and full serial8-package873PASS/zeroFAIL/one existing
+cleanup skip are explicitly inspected/reused, with matching SHA256, not relabelled
+fresh reviewer full-suite execution. Its earlier failing minigame controls pass
+in the serial full run. Root native/client/type/vet/build evidence retains its
+own provenance. Both concurrent failures remain failed; no assertion/timeout or
+source changed to obtain the serial passes. Single-runner docs and stale-artifact
+limits are independently checked. All root/reviewer handles are terminal.
+
+Root closes RP-767's defect and review records only. The same-commit version226
+is normal accepted corrective delivery; no draft exception/adoption or owner
+ruling was needed. Retained9768d681 artifact predates RP-767/RP-768. Historical
+50a3a514,27 Clout failures, full feature/hosted/native/rights/R-006/release and
+all nine tiers remain separate/open; no push, archival, publication or goal pause.
+
+Owned tmpfs Postgres138751ee7c49 removed after final review; container inventory
+contains only the two pre-existing BuildKit services. Shared caches/builders remain.
+Editorial status closeout changes no runtime/test/version bytes.

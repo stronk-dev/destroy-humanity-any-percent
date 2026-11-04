@@ -79,7 +79,8 @@ image secret scan pass locally. Independent corrective artifact-evidence review
 APPROVES complete four-path `9768d681..40969759` after fresh six-executable rebuild,
 actual package/tampering consumers and registry reads. Later RP-768 expiry and
 kernel `0.3.226` RP-767 membership corrections require a future rebuilt artifact;
-RP-767's current-source checks pass and final implementation review is pending.
+RP-767's current-source checks pass and complete215a98b3..71d8e15c is
+independently approved; this does not update the retained artifact.
 No full feature, hosted CI, native/SP8/R-006 or predecessor proof follows.
 The local preview label is unchanged; full nine-tier
 1.0 remains the objective.
