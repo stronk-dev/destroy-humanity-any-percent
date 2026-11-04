@@ -11913,3 +11913,31 @@ owning plan/log and existing RP-757 row. No production rules/metric/cache/runtim
 CI, schema, kernel/content, parent adoption, native/SP8/R-006, feature/release,
 publication/archival or goal pause. All root handles terminal; pending owner
 questions remain pending, not grounds to ask them again.
+
+## 2026-11-04 — P01 review requires two factual/sequencing repairs
+
+CHANGES REQUIRED, complete eight-path
+407b641dffa169f07c931164c6211bb0db8de631..
+b5a7fb36f09f4fccb455df2d0bd3d241eb78b019. Review by: independent Codex
+/root/native_supervisor_profile_review. Recorded by: Codex root. Actual pinned
+35cases/37evaluations pass; independent age-arm deletion fails only the stale
+fresh-host case at5m30s, and type-check deletion fails exactly3 histogram cases.
+Evaluator config/platform, fixture hashes, unchanged controls, local links,
+append-only log, whitespace, scope and owned-container absence pass. No actual
+cache/ledger/restart/publisher/receiver/native/adoption proof is inferred.
+
+P01 wrongly described rollback's release-result mapping as existing CLI behavior.
+Root reads actual runRollback103–104: it returns directly without the install/
+release writer. Body now calls rollback's shared-family mapping newly proposed.
+Second, RP-757 kept its old pre-adoption projection/reboot-cache gate despite
+SP6's corrected sequencing. Existing ledger sentence now agrees: reviewed tool
+contract/isolated predicate proof before adoption; actual producer/cache/reboot/
+receiver proof after construction and before acceptance. Actual selected payload/
+rights closure stays the SP1/T6 shipping gate, not an invented pre-construction
+clearance requirement. No accepted parent/owner text is altered.
+
+No rule/fixture/threshold/expectation changed; their real executed evidence stays
+applicable. Only two body/ledger corrections plus this append-only record. Full
+original-plus-correction union needs independent re-review. All root/review handles
+terminal. No software suite/rerun merely for these text repairs, inferred adoption,
+publication, release or goal pause.

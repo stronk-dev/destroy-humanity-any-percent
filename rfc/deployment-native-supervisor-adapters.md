@@ -1144,8 +1144,10 @@ with any existing `cloud_clicker_release_last_result`,
 `cloud_clicker_release_last_success_timestamp_seconds` and
 `cloud_clicker_release_last_failure_timestamp_seconds` derived from governed
 history. The supervisor cannot copy a historical success into a status publication
-or update that business file. Install/release/rollback use that same release-result family, preserving
-the current CLI's family mapping. Business timestamps are original event dates,
+or update that business file. Install/release keep their current release-result
+family; this proposal additionally maps rollback decisions into that family.
+The current runRollback has no corresponding outer result writer, so that part
+is newly proposed behavior, not a description of today's CLI. Business timestamps are original event dates,
 not the observation clock. Valid CR3 failure/administrative/pending rows preserve
 their exact open-work semantics; only actual completed success with its required
 sealed graph can advance success. Projection grants no current/rollback authority.
