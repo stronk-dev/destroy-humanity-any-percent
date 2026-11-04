@@ -59,7 +59,22 @@ export class Runtime implements GameUIRuntime {
 
 interface AppExports { fixtureSnapshot(value: ParsedGameUISnapshot): void; fixtureSurface(value: GameUISurfaceID): void; fixtureMonotonicElapsed(value: number): void }
 
-export async function settle(): Promise<void> { for (let index = 0; index < 4; index += 1) { await new Promise((resolve) => setTimeout(resolve, 0)); await tick(); flushSync(); } }
+export async function settle(): Promise<void> {
+  for (let index = 0; index < 4; index += 1) {
+    // Keep real task turns for asynchronous runtime work without nested-timer delays.
+    await new Promise<void>((resolve) => {
+      const channel = new MessageChannel();
+      channel.port1.onmessage = () => {
+        channel.port1.close();
+        channel.port2.close();
+        resolve();
+      };
+      channel.port2.postMessage(null);
+    });
+    await tick();
+    flushSync();
+  }
+}
 
 export async function mounted(runtime = new Runtime()) {
   const target = document.createElement("div"); document.body.append(target);

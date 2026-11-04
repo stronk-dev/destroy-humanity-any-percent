@@ -4743,3 +4743,54 @@ Current candidate's separately approved build evidence does not imply hosted
 coverage. All reads/validator handles terminal; full nine-tier1.0 goal stays active.
 Review by: Codex root, factual external-evidence reconciliation. Recorded by:
 Codex root. No independent feature/release verdict or goal pause is claimed.
+
+
+## 2026-11-04 — Garage fixture task yields remove measured waiting overhead
+
+Accepted authority: CI RFC D1–D3 and RFC-0000 routine test-tool procedure. Only
+Garage settle changes: four MessageChannel tasks, each closing both ports, then
+Svelte tick/flush as before. Actual tasks remain; this is not a timer/paint drain.
+No product, assertions, native input, population, explicit350ms/60s waits, limits,
+workers, dependencies or workflows change. docs/ci explains the helper boundary.
+
+At clean base4d56a5dff47172d27146726fe7fa9a2c7a1d4a41, the eight Garage consumers
+produce baseline.json success=true,24 project-files,1,272 passes/zero skips or
+failures. Its original tool terminal output was lost; completed JSON and absence
+of a live browser container are observed, not a captured command exit. Candidate
+handle31612 terminates0 with the same file/title/status Counter (multiplicity3).
+JSON does not label projects; unchanged config and candidate stdout execute all
+three engines. One matched sample: report wall82,934→66,899ms; summed test bodies
+588,831.3→506,731.4ms. Idle bodies remain181,108.9→180,675.1ms across three engines.
+No repeatability or hosted speedup is claimed from this paired local sample.
+
+Both use declared Playwright1.62.0 service/frozen install and the existing local
+four-CPU control overlay (cpuset0-3; three files per engine). Actual image config
+5e63ffc997394026acb443c255703c7278f97d43cdc3d49cf51bc8fdce7d5383 is Linux/arm64,
+not the hosted amd64 runner. Focused command selects garage-surfaces-browser and
+its events/fiscal/meters/opportunity/care/feedback families plus garage-idle-
+opportunity-browser, writing separate baseline/candidate JSON under ignored
+.cache/browser-settle-4d56a5df/. Original helper retained as baseline-fixture.ts.
+SHA256 baseline JSON2b24c1efea02031d893dfa7ca54784ce2acb7613ffbcf5672e15f8a2929ea162;
+candidate JSONd259c66b56b7073ec2957de49e9d15bad2a5f4dc64da589cc8e5d85780a3bda7;
+candidate helperdff2e30855821eb1aeaf7bb64dc26108e2a483b5bf2d3b3429ef5f7e010e00a7.
+
+Finished-batch make typecheck88085→0, zero errors/warnings. Full actual command:
+`docker compose -f compose.browser-test.yml -f .cache/browser-fourcpu-control.yml run --rm browser test-browser BROWSER_REPORT_DIR=.cache/browser-settle-4d56a5df/full`.
+Initial sandbox socket denial executes no tests (full-denied.log); identical
+permitted command29144 terminates0. Provider focus18/native-input9 controls run.
+Broad:522 project-files,40,524 ordinary passes,21 expected failures,24 existing
+skips,243.97s. Isolated Typer:87 ordinary passes,6 expected failures,5.15s. Isolated
+Chromium performance:five passes/107 selector skips,7.09s. No unexpected failures.
+Functional JSONs retain expected failures as passing assertions, so the ordinary
+counts above use the actual default reporter, not its aggregate JSON pass field.
+Full functional-broad SHAa8f3a1150a31dc28ffdef5985de8af236ab9a5e7d2ee281ca3ff29dbd185c913;
+functional-native8d881c8b18dc57be32e53d22325fc9c198ce1f4df91dc60b4ad12649591e3c1b;
+full.logbd1d97773903e9c8a0c3a6528a1b5b5c90bc9109ea7a66882466dbdd27efb760.
+Source/config/dependencies stay fixed through each run; all handles terminal,
+only the two pre-existing BuildKit containers remain. Whitespace check passes.
+
+Review by: Codex root (implementer first filter). Recorded by: Codex root.
+Complete four-path range after4d56a5df through this batch requires independent
+corrective review. Next: obtain that review, then reconcile hosted evidence only
+when publication is authorized. This does not close prior flakes, the hosted
+five-minute floor, client/server failures, feature acceptance or full nine-tier1.0.

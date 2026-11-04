@@ -5,6 +5,13 @@
 - **Started:** 2026-07-28
 - **Status:** local repairs ongoing; full local/hosted acceptance open
 
+**Garage fixture task yields,2026-11-04:** four actual browser tasks replace the
+shared helper's four zero-delay timers. Same1,272 focused cases pass; one matched
+four-CPU local report measures82.934→66.899s. The complete Linux three-engine browser
+job and strict types pass; exact populations/artifacts/limits are in the log.
+Corrective review is pending for the containing four-path batch. Hosted latency,
+the original intermittent failures and whole-CI acceptance remain open.
+
 **Correction citation/metadata review,2026-11-04:** complete seven-path
 `611273b5..fce6c3d9` (RP-540) independently approved. Original eight-path
 `a7e33b73..611273b5` (RP-131), first follow-up `a6fa32ac..3ae7f43a`, parser

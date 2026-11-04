@@ -459,6 +459,13 @@ The prefix selects every interaction family, not just the old filename. The idle
 observation still runs native timers for at least60s, checks every250ms for zero
 intents and keeps its70s deadline. No maintenance-only move or shortened acceptance.
 
+The shared Garage fixture's `settle()` yields through four real `MessageChannel`
+tasks, closing both ports on each turn, then awaits Svelte `tick()` and flushes
+updates. This avoids repeated zero-delay timers while retaining task turns for
+asynchronous fixture/runtime work. It does not drain arbitrary timers or guarantee
+a painted frame: tests retain their explicit animation-frame,350ms freshness and
+real-minute observation waits.
+
 The browser configuration uses Vitest's sequencer hook to start the measured long
 Garage event family and real-minute idle wait first within each project. It retains
 Vitest's exact project positions, stable ordering for every other file, and inherited
