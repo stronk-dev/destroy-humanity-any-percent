@@ -12126,3 +12126,65 @@ RP-767 stays OPEN/unapplied; approval supplies no new adopted contract, native
 clean-host/runtime proof, legitimate predecessor, current hosted green, rights
 clearance, complete feature/archival or release acceptance. Full nine-tier1.0
 remains active; pending questions are not repeated or inferred accepted.
+
+## 2026-11-05 — Rebuild the current version226 artifact; reuse immutable upstream proof
+
+Previous goal turn makes progress: RP-767's complete correction independently
+approved71d8e15c and recorded4c5f662c. The accounting/search authority check is
+substantive: accepted R10 mandates binary search; both replacements still need
+pending adoption, unlike RP-767's routine correction. Editorial28aefd29 corrects
+only the already-completed wording-review status; no algorithm changes/adoption.
+
+Accepted DP1/AC1/AC8 local construction at clean source
+28aefd29b19221e2d909f44add2fa899713a33c5; epoch1793833991 /
+2026-11-04T23:13:11Z. Kernel0.3.226/epoch8; existing LOCAL0.1.0-preview.2 label,
+not a release call or narrowed1.0 floor. Prior9768d681 predates RP-768/RP-767.
+Frozen pnpm install terminates0 before builds (11.15.1, already up to date).
+Full root Make client/six static Linux-amd64 executable/content/metadata builds
+44430/82520 terminate0 into separate fresh roots; compiler cache stays the normal
+shared Make cache. Assemblies28810/23665 terminate0; all75 files/modes and74
+manifest-bound artifacts match. Only gameserver differs among six old/new
+executables; application notices retain SHA21900c836ec78e2cb516c3e2cc8d4d93fa450073290ecd87c89793bae0823c35.
+
+Both no-cache image builds24964/88646 use unchanged pinned BuildKit/frontend.
+Config SHA5acc501a4fdd0c7412849042004ff0f3da22cd6dad43488cc9fd981107ceca84;
+archive SHA3da8398dc9295a4ad51fd7c3000cf13aed801c737d30406414f86fb7459648d4;
+manifest SHA00398bbcf2d773ccb7ccf878e04dd3cada9a1cf3c489c5890d4354a1bba248c5.
+Fresh actual gameserver Syft scans6708/15966 both pass,41 packages with distinct
+raw timestamps23:17:44/23:21:18Z. Application metadata has54 packages/53 dependencies.
+
+Upstream evidence reuse is explicit, not14 fresh scans: all6 pinned registry/
+selected Linux-amd64 config identities are freshly reread and unchanged. Each
+root reuses its own six prior9768d681 raw scan inputs (220/179/50/51/433 plus663
+rehearsal-only Playwright packages). Prior normalized bytes match the retained
+record's digests; raw/canonical copies and original creation timestamps remain
+in retained-scan-inputs and retained-upstream-inventories.json. Existing CLI
+normalization73756/21034 binds the new release timestamp. Independently replaying
+the producer on the old checksum-bound canonical inventories47190/52311 yields
+byte-identical outputs (strict cmp), proving no package-graph change was hidden
+by raw reuse. All7 normalized inventories match between current/rebuild trees.
+No scanner/version/image reference, license policy or software gate changes.
+
+Actual DELIVERED Linux helper (not only host-native source consumer) executes
+inside a disposable Linux-amd64 test image config593dc3550e0514c6ec0f7861c9bf7bf415aeabc9f4852f83f7469bfe06db1335:
+network none, readonly root, no capabilities/new privileges, UID501:20, one owned
+fixture mount/TMPDIR, existing emulation AVX2 fallback and60s containment. A common
+private parent holds byte/mode-identical hardlinked candidate/rebuild copies,
+required by the existing hardlink probes. Intact package/build-record pass0;
+all9 semantic mutations return exact3/fixture_rejected, never generic failure.
+All4 original/fixture trees retain their75 hashes/modes afterward; work is empty.
+These are identical current candidates, NOT a legitimate previous release pair,
+native profile, clean host, running stack or R-006 acceptance. No daemon/secret/
+source-workspace mount or game service. All disposable probe containers exit.
+
+Manifest/source-bound secret scan1644 passes2564 tracked files plus actual image,
+zero findings/objective_completed=true/guard_exhausted=false. New record derives
+from actual outputs and validates with both native and delivered Linux consumers.
+Engine28.4.0 ARM64 Desktop/Compose2.39.4-desktop.1 observed. Local build/scan/probe/
+reuse/comparison logs and JSON remain under the two28aefd29 roots and dedicated
+release-linux-probes-28aefd29 fixture. Source stays fixed until these records;
+all root handles terminal. Four-path28aefd29..this commit needs fresh independent
+corrective artifact-evidence review. No fresh full server/browser/hosted run,
+rights, predecessor/native architecture/clean-host/feature/release acceptance,
+publication, deployment, archival, owner-answer inference or goal pause.
+Review by: Codex root (implementer/output first filter). Recorded by: Codex root.

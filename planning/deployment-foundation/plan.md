@@ -68,22 +68,19 @@ reconcile parent bodies under the actual delegation and implement adopted
 contract dependencies with their full producer/native/clean-host proof. No
 product implementation or goal pause is claimed at this checkpoint.
 
-**Current exact-artifact construction, 2026-11-04:** clean source `9768d681`
-has fresh independent trees `.cache/release-current-9768d681/bundle-a` and
-`.cache/release-rebuild-9768d681/bundle-b`, with all 75 files byte-identical.
-The [retained candidate record](release-builds/candidate-9768d681.json) adds the
-reviewed RP-765/RP-766 socket-authentication shutdown fixes missing from `893bb1e7`.
-Both full builds, 14 actual platform-selected image scans, six upstream/rehearsal
-config identities, intact/nine semantic-tampering checks and manifest-bound source/
-image secret scan pass locally. Independent corrective artifact-evidence review
-APPROVES complete four-path `9768d681..40969759` after fresh six-executable rebuild,
-actual package/tampering consumers and registry reads. Later RP-768 expiry and
-kernel `0.3.226` RP-767 membership corrections require a future rebuilt artifact;
-RP-767's current-source checks pass and complete215a98b3..71d8e15c is
-independently approved; this does not update the retained artifact.
-No full feature, hosted CI, native/SP8/R-006 or predecessor proof follows.
-The local preview label is unchanged; full nine-tier
-1.0 remains the objective.
+**Current exact-artifact construction, 2026-11-05:** exact clean source
+`28aefd29` has fresh independent trees `.cache/release-current-28aefd29/bundle-a`
+and `.cache/release-rebuild-28aefd29/bundle-b`, matching all75 files/modes and74
+bound artifacts. The [new retained record](release-builds/candidate-28aefd29.json)
+includes approved RP-768/RP-767 at kernel0.3.226, epoch8 unchanged. Both complete
+builds and two fresh gameserver scans pass. Six immutable upstream/rehearsal
+inventories per tree explicitly reuse prior scans, with exact old checksums,
+producer-output equality and fresh registry/config/platform checks.
+The actual shipped Linux helper passes intact/build-record consumers and all9
+exact-exit semantic tampering checks; source/image secret scan is clean. This
+new four-path evidence batch needs independent review. Neither tree is a
+predecessor or native/clean-host/R-006/rights/current-hosted/full-feature proof.
+The local preview label is unchanged; full nine-tier1.0 remains the objective.
 
 **Direct upstream-Compose proposal, 2026-11-04 (RP-759):** the current
 [tool companion](../../rfc/deployment-tool-artifact-inventory.md), native SP1/SP3/

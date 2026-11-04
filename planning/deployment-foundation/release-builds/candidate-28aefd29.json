@@ -1,0 +1,66 @@
+{
+  "schema_version": 2,
+  "role": "candidate",
+  "release_version": "0.1.0-preview.2",
+  "source_commit": "28aefd29b19221e2d909f44add2fa899713a33c5",
+  "source_date_epoch": 1793833991,
+  "created_at": "2026-11-04T23:13:11Z",
+  "docker_engine": "28.4.0",
+  "docker_compose": "2.39.4-desktop.1",
+  "buildkit_image": "moby/buildkit:v0.24.0@sha256:6eceb8971ce4fceb3daca562832642706238b7eea72941fcf9896c93c3c4a53e",
+  "syft_image": "anchore/syft:v1.51.0@sha256:678bfa565b60f747aac0f8e964fe5588a24445b8d0a480e91f6efd70020dfbb0",
+  "manifest_sha256": "sha256:00398bbcf2d773ccb7ccf878e04dd3cada9a1cf3c489c5890d4354a1bba248c5",
+  "gameserver_archive_sha256": "sha256:3da8398dc9295a4ad51fd7c3000cf13aed801c737d30406414f86fb7459648d4",
+  "images": [
+    {
+      "name": "alertmanager",
+      "reference": "prom/alertmanager:v0.32.1@sha256:51a825c2a40acc3e338fdd00d622e01ec090f72be2b3ea46be0839cd47a4d286",
+      "runtime_config_sha256": "sha256:6519630d2dcc96a94f82e6e6fea153cfd87de0f97a95230bf713946a0756d97f",
+      "sbom_sha256": "sha256:389a45179ca9763f2660034f25efe54d648500235601408c2c28e063fe8161e6"
+    },
+    {
+      "name": "caddy",
+      "reference": "caddy:2.11.4-alpine@sha256:98eb57d882ccd5213d1688764db10c1ca2c58a1ca3a6717a3411ad798f7a423a",
+      "runtime_config_sha256": "sha256:af555904a0961945f16bb323a501457b13a4f7e9bde969b145b97da80b38ecbe",
+      "sbom_sha256": "sha256:9178a0f22bf564e5a826e1e424000afcca31a97ca07323506a9c856ffadab72b"
+    },
+    {
+      "name": "gameserver",
+      "reference": "sha256:5acc501a4fdd0c7412849042004ff0f3da22cd6dad43488cc9fd981107ceca84",
+      "runtime_config_sha256": "sha256:5acc501a4fdd0c7412849042004ff0f3da22cd6dad43488cc9fd981107ceca84",
+      "sbom_sha256": "sha256:9bdc26fcdfb7f07697e9e0a5cfcd89b743efac22728be61f59942a3d7b88e2d1"
+    },
+    {
+      "name": "node-exporter",
+      "reference": "prom/node-exporter:v1.12.1@sha256:1b4e4438faca4dd7e001dd445d161a4a2091b0fededa84093b3a8dfeae1f1be0",
+      "runtime_config_sha256": "sha256:9bbbca8f5cb8e9bd1b835e8ec086b6df6d9a458d2d10ef1c97ea4a9a3ae7e54b",
+      "sbom_sha256": "sha256:53321c759229247f20aaaf18d71f0875bc239b395407f35f76623f30eddf8b83"
+    },
+    {
+      "name": "postgres",
+      "reference": "postgres:16-alpine@sha256:cf78e76683b9ca8c5733cbbdce6c9262b45b6767934dd0a95e671f9a0fc20685",
+      "runtime_config_sha256": "sha256:75f5a96988cdf694a215073c3e9c001b706b371e2f94df3967f2efdec2787f6b",
+      "sbom_sha256": "sha256:f3ec0d05632825c22a5f04826409785baab2e92fe2fc12ab525f0c90040dc601"
+    },
+    {
+      "name": "prometheus",
+      "reference": "prom/prometheus:v3.12.0@sha256:69f5241418838263316593f7274a304b095c40bcf22e57272865da91bd60a8ac",
+      "runtime_config_sha256": "sha256:d2f7aaa363e1c220487d776f21a5d7a3416834826038c1d2b38f1adb9079ed93",
+      "sbom_sha256": "sha256:b11de9f96e9c10c6f0298603118780efbde9727600a80831bed356a44861e4a4"
+    }
+  ],
+  "rehearsal_images": [
+    {
+      "name": "playwright",
+      "reference": "mcr.microsoft.com/playwright:v1.62.0-noble@sha256:02bbb2155cd7109e3e9c741941097ed1608cf8b6fa44ee2595896da2bdc1f471",
+      "runtime_config_sha256": "sha256:50cbb76d250a50002045a95f484c5f40573cde831adbe40c784052c037e36118",
+      "sbom_sha256": "sha256:f6bb5d6546e345c8c461a7fcfbb13ca7fa20e71fa214b6e102ec9c3c6dd88773"
+    }
+  ],
+  "independent_rebuild": true,
+  "rebuild_manifest_sha256": "sha256:00398bbcf2d773ccb7ccf878e04dd3cada9a1cf3c489c5890d4354a1bba248c5",
+  "rebuild_archive_sha256": "sha256:3da8398dc9295a4ad51fd7c3000cf13aed801c737d30406414f86fb7459648d4",
+  "normalized_sboms_equal": true,
+  "objective_completed": true,
+  "guard_exhausted": false
+}

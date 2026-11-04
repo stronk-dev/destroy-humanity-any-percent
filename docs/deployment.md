@@ -213,25 +213,25 @@ batches and the exact clean-host R-006 rehearsal remain required before the proj
 can claim supported self-hosting.
 
 The latest retained local candidate build record is
-[`candidate-9768d681.json`](../planning/deployment-foundation/release-builds/candidate-9768d681.json).
-Two independent trees rebuild exact source `9768d681`, adding the reviewed
-periodic-authentication and initial-connection shutdown corrections (RP-765/RP-766)
-to the previous candidate. All 75 files match, including six Linux/amd64 executables,
-client/content/application metadata, the image archive and seven independently
-scanned, normalized image inventories. The package validator, nine rebound
-tampering fixtures and manifest-bound source/image secret scan pass locally.
-Independent corrective artifact-evidence review approves complete range
-`9768d681..40969759`, including a fresh six-executable rebuild and executed
-package/tampering and registry checks. The later RP-768 expiry correction and
-kernel `0.3.226` RP-767 membership cancellation correction are absent from this retained
-artifact. The latter's complete corrective range `215a98b3..71d8e15c` is
-independently approved after current-source checks; artifact rebuilding remains.
-Both trees are the same candidate; the earlier
-[`893bb1e7` record](../planning/deployment-foundation/release-builds/candidate-893bb1e7.json)
-remains historical evidence, not an approved predecessor. Current source correctness,
-hosted CI, predecessor provenance and clean-host gates remain open. Local packaging
-checks do not establish runtime acceptance, implement the proposed native supervisor
-or change the release call.
+[`candidate-28aefd29.json`](../planning/deployment-foundation/release-builds/candidate-28aefd29.json).
+Two independent local builds of exact source `28aefd29`, kernel `0.3.226`, include
+the reviewed expiry and membership-query cancellation corrections (RP-768/RP-767).
+All 75 files and modes match, including six Linux/amd64 executables and the image
+archive. Both gameserver images receive fresh package scans. The six unchanged
+upstream/rehearsal inventories reuse the prior independently scanned inputs,
+with fresh registry/config/platform checks and checksum-bound normalization;
+those upstream scans are reused evidence, not new scans.
+
+The shipped Linux helper accepts the intact package and build record and rejects
+all nine semantic tampering fixtures with exact exit 3. Original bundles still
+match afterward. The manifest-bound source/image secret scan passes locally.
+Independent review of this new artifact-evidence batch is pending. Both trees
+are one candidate; the earlier
+[`9768d681` record](../planning/deployment-foundation/release-builds/candidate-9768d681.json)
+remains historical evidence, not an approved predecessor. Current accounting,
+history-guard/hosted CI, rights, predecessor provenance and clean-host gates remain
+open. Local construction and offline helper execution do not establish stack
+runtime acceptance, adopt the proposed native supervisor or change the release call.
 
 The bundled `deployment-rehearsal` command validates retained release-build records and final R-006
 evidence. Its `run-plan` lane executes a reviewed, manifest-bound command plan directly—never via a
