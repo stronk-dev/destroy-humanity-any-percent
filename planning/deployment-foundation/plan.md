@@ -19,6 +19,33 @@ fresh six controls and final actual SQL outcomes1/1/0. RP-727/728 close; RP-726'
 complete mechanism remains open. Next specify/prove the
 complete pending-Engine/client/database fence, not more client-death positive checks.
 
+**Next CR4 engineering experiment,2026-11-04:** test a concrete generation boundary,
+not another client-death observation. In a uniquely owned project on actual
+Engine28.4.0/Compose2.39.4-desktop.1, pin a pending SQL worker to the full network ID.
+After an intact write, disconnect only the owned DB and attempt old-network removal.
+If removal refuses, record that refusal and do not claim a fence or start replacement
+work. If it succeeds, recreate the SAME network name with a different ID, reconnect
+the same DB, then execute the delayed old worker, a newly created old-ID worker,
+and a name-only control. Exact SQL rows distinguish late old-ID access from merely
+unavailable DB. Preserve all terminal/error outcomes; hypothesis failure is valid
+research. Whole run60s, each command at most10s, cleanup15s; guard expiry is invalid,
+never grounds for raising bounds. Use the same pinned amd64 Postgres16 image as
+RP-726. This is a network-admission mechanism study, not already-admitted backend
+termination, arbitrary queued Engine-request quiescence, a full restore or native
+supported-host proof. No production mechanism/adoption is inferred.
+
+The declared experiment now completes twice: original84016 and final source-bound
+88928 both yield exact SQL rows11/14, no12/13. Retirement succeeds despite a
+created/not-started ID-bound worker; both that worker and a newly created old-ID
+worker fail to start with network-not-found. The name-only worker writes through
+the same-name replacement, so database unavailability is not the explanation.
+Retained JSON binds final source/image/Engine/Compose and exact error outcomes.
+This narrows the candidate to immutable network identity for NEW clients, not a
+complete fence. Next map all runtime mutation paths and settle pending-create/
+volume/host-file identities plus already-admitted SQL, rather than rerun these
+completed controls or promote the narrow network result. Independent review is
+pending for the research/tool/draft reconciliation, not deployment acceptance.
+
 **Fresh exact candidate, 2026-11-04:** replace neither historical artifacts nor
 the predecessor with a fabricated pair. Two independent committed-source
 `df84ce1a` rebuilds now match all74 bundle artifacts, six helpers, image archive,

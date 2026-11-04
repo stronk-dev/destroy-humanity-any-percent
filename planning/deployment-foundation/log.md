@@ -8792,3 +8792,68 @@ fencing remains OPEN. No encrypted game-restore/rollback, native supported-host
 proof, full original proposal approval/adoption or release acceptance follows.
 Root reconciles only owning plan/ledger and this verdict, no unrelated suite,
 runtime change, publication, archival or goal pause. Continue the full1.0 objective.
+
+## 2026-11-04 — Constructive network-generation boundary study (RP-732)
+
+After the Account/Guild corrections, inspect the still-accepted implementation
+plans before selecting the next task. Catalog serving, complete P1/Headcount and
+Combat catalog/engine paths retain their named technical/content/adoption holds;
+do not implement an easier partial endpoint or change authored effects. Continue
+CR4's genuine engineering unknown instead: can an immutable network identity
+prevent delayed NEW clients from reaching a replacement database network?
+
+Predeclare the full population/60s whole-run/10s per-command/15s cleanup guards
+in the owning plan BEFORE84016. Actual supported-for-this-diagnostic population:
+Darwin/arm64 CLI, Engine28.4.0 Linux/arm64 Desktop, Compose2.39.4-desktop.1,
+exact declared amd64 Postgres16 child075f7ba6/config75f5a969. This is not the
+native supported deployment host. Reuse the declared tmpfs backup-test Compose
+service in an unpredictable exclusively owned project; no production services,
+secrets, published ports, privileges, shared caches or images are modified.
+
+Four ordered worker populations use actual `psql` and one test table:
+
+| Population | Actual result |
+|---|---|
+| Intact full-ID client | starts/exits0, commits row11 |
+| Created/not-started full-old-ID client, started AFTER retirement/recreation | start1, old-network-not-found, no row12 |
+| Client created AFTER retirement using full old ID | create0, start1 old-network-not-found, no row13 |
+| Name-only client after SAME name recreation | starts/exits0, commits row14 |
+
+Retire only after verifying the owned DB and original project network. Disconnect
+the owned DB, remove the old network, confirm absence, create the SAME NAME with
+a different full ID, reconnect the SAME DB and then execute delayed clients.
+Retirement succeeds despite the not-yet-started worker. Exact final rows11/14
+and the name-only control prove that the two missing rows are not merely a dead
+database. Creation success alone provides no started/connectivity evidence.
+This controlled ordering is not a request delayed inside the Docker daemon or a
+helper/CLI death test. RP-726's admitted backend evidence remains separate.
+
+84016 exits0 with those outcomes. Final-source88928 also exits0; the source-bound
+`network-generation-observation.v1.json` records all full IDs, create/start/exit
+outcomes and errors, original and replacement network IDs and exact rows. It binds
+probe SHA256015e28bf396ec9f32a31fa41c1b8c3270f7042d2d6200d025330c34ec05a9b70,
+image/config/platform/Engine/Compose and objective=true/guard=false. Final source
+separates create/start diagnostics and reports observed row absence rather than
+calling a narrow experiment a complete supported mechanism. The original outcome
+remains valid; source metadata/cleanup simplification do not invent a second
+production experiment. Exact JSON/source/result checks pass. Both owned projects
+verify empty container/network/volume inventories before complete output; root
+also queries final-project container/network inventories afterward, empty.
+No process/test handle remains live. No new bound or ordinary CI lane is added.
+
+Draft CR4 now states the derived conditional: any candidate relying on network
+retirement must bind the full immutable ID before submission, rather than resolve
+its human-readable name later. Docker's primary disconnect/removal references
+support setup, not this runtime inference or a general fence. Current
+`DockerRuntime` still uses Compose one-offs/up/down/project selection and fixed
+volume names. This experiment does NOT prove that those paths bind the ID, fence
+already-admitted SQL, protect host outputs/volumes, or account for all outstanding
+Engine/Compose work. Full mutation-path mapping and a combined mechanism remain
+required; do not substitute another few positive/negative metadata samples.
+
+Review by: Codex implementer first filter, not independent approval.
+Recorded by: Codex root. Complete six-path range afterfb2ae8f4 through this
+containing commit requires fresh independent research/tool/technical review.
+No runtime behavior, schema, kernel0.3.225, epoch8, balance, deployment/recovery
+policy or authored copy changes. No adoption, full CR4/Deployment/1.0 acceptance,
+clean-host/R-006 proof, push, archival or host deployment. The goal remains active.

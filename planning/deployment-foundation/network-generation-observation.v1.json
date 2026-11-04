@@ -1,0 +1,48 @@
+{
+  "project": "cc-network-generation-85f05ae917101faf",
+  "objective_completed": true,
+  "guard_exhausted": false,
+  "probe_source_sha256": "sha256:015e28bf396ec9f32a31fa41c1b8c3270f7042d2d6200d025330c34ec05a9b70",
+  "fixture_image": "postgres:16-alpine@sha256:075f7ba66bc9b3ce7d6b8b635208ff61cd7cf1a67d71ec530eec5d7ae0cbe571",
+  "fixture_image_config": "sha256:75f5a96988cdf694a215073c3e9c001b706b371e2f94df3967f2efdec2787f6b",
+  "fixture_platform": "linux/amd64",
+  "observations": {
+    "engine": "28.4.0 linux/arm64",
+    "compose": "2.39.4-desktop.1",
+    "old_network_id": "aa0eb4d4e2751e9c856a3c243815c9a73dcff0b6e381ed949520dc9dabb4bf02",
+    "retirement_code": 0,
+    "retirement_error": "",
+    "intact": {
+      "start_code": 0,
+      "exit_code": "0",
+      "start_error": "",
+      "running": false
+    },
+    "new_network_id": "45e708ff5822caa26150fabe55e3bfcce4af2c277e359da63354c3976a3932c9",
+    "pending_old_id": {
+      "start_code": 1,
+      "exit_code": null,
+      "start_error": "Error response from daemon: failed to set up container networking: could not find a network matching network mode aa0eb4d4e2751e9c856a3c243815c9a73dcff0b6e381ed949520dc9dabb4bf02: network aa0eb4d4e2751e9c856a3c243815c9a73dcff0b6e381ed949520dc9dabb4bf02 not found\nError: failed to start containers: b4a6b563a629c2bdb061275f698a9efe620da51bc0fec3ec4531fda32b05ad02",
+      "running": false
+    },
+    "late_old_id": {
+      "create_code": 0,
+      "create_error": "",
+      "start_code": 1,
+      "exit_code": null,
+      "start_error": "Error response from daemon: failed to set up container networking: network aa0eb4d4e2751e9c856a3c243815c9a73dcff0b6e381ed949520dc9dabb4bf02 not found\nError: failed to start containers: 7cfcbe4e31d2af854e412f21160cb02929d943550d46bd947a396d2b0b08799e",
+      "running": false
+    },
+    "name_only": {
+      "start_code": 0,
+      "exit_code": "0",
+      "start_error": "",
+      "running": false
+    },
+    "rows": [
+      11,
+      14
+    ],
+    "observed_old_id_rows_absent": true
+  }
+}

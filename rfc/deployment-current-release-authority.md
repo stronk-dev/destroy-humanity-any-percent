@@ -245,6 +245,15 @@ backend-termination arm prevents that row, but earlier restored DDL remains:
 session termination is neither rollback nor a complete operation fence. No
 unscoped backend termination, application-name-only authority, new database
 permission or recovery implementation is authorized by this observation.
+The network-generation experiment below supplies a candidate boundary for NEW
+database clients: a worker bound to a retired full network ID fails to start even
+when that network's human-readable name is recreated; a name-only worker reaches
+the replacement network and writes. Any candidate using network retirement must
+therefore bind the actual immutable ID before submission rather than resolve its
+name again afterward. This does not establish that the current Compose commands
+provide that binding. It also does not fence an existing database backend, host
+file/volume mutations, or every outstanding Engine request. The full mechanism
+remains open; do not substitute network removal for the required proof.
 No new backup decryption placement, protection-metadata resolution or deletion policy is adopted.
 
 ### CR5 — Consumers and compatibility
@@ -319,6 +328,10 @@ questions remain; the author must reconcile their results into CR2/CR4 before ac
   from creating replacement work. Exact recovery ownership/permissions and the
   complete mechanism remain to be specified and proved; the experiment's synthetic
   application tag/PID selector is not that production protocol.
+  The network-generation candidate also requires a complete mutation-path mapping:
+  pending creates/starts, project-wide Compose operations, volume/name reuse and
+  host-mounted outputs cannot silently inherit the SQL worker's narrower result.
+  Persisting a generation label or full network ID alone is not this mapping.
 
 Docker documentation/source inspection is partial support for those instruments, not a runtime
 witness. Parent holds remain separate; no claim that every R-006 population has a producer.
@@ -396,6 +409,28 @@ pending-request/recovery proof. PostgreSQL16's documented optional
 and [backend termination semantics](https://www.postgresql.org/docs/16/functions-admin.html#FUNCTIONS-ADMIN-SIGNAL)
 are consistent with the observation, not substitutes for it. CR4/adoption remain open.
 
+The [network-generation experiment](../planning/deployment-foundation/probes/network-generation-fence-probe.py.txt)
+and [source-bound observation](../planning/deployment-foundation/network-generation-observation.v1.json)
+execute a constructive candidate on that same Desktop pair and exact amd64
+Postgres image. An intact ID-bound SQL worker writes row11. A second worker is
+created but not started with the full original network ID. After disconnecting
+only the owned database, network removal succeeds; the same network NAME is then
+recreated with a different ID and the same database reconnected. Starting the old
+worker fails with the old-network-not-found error. Creating another worker with
+the retired ID succeeds, but its start fails too. A name-only control starts and
+writes row14; final exact rows are11/14, with no12/13. Thus creation success is
+not startup or connectivity, and name reuse is not immutable identity.
+
+Commands and SQL outcomes are sequentially ordered, not inferred from a sleep.
+The workers directly invoke `psql`; this is no delayed request already inside the
+daemon, killed helper/Compose process, pg_restore or full lifecycle experiment.
+Earlier RP-726 establishes the separate already-admitted backend problem. All
+owned resources are removed before complete output. Docker's documented
+[disconnect](https://docs.docker.com/reference/cli/docker/network/disconnect/)
+and [removal](https://docs.docker.com/reference/cli/docker/network/rm/) operations
+support the fixture setup, not a general pending-request fence. CR4's complete
+mechanism, native-host proof and adoption remain open.
+
 ## Changelog
 
 - 2026-10-13: source-grounded RP-558/DESIGN-GAP10 proposal. No product implementation, owner
@@ -409,3 +444,6 @@ are consistent with the observation, not substitutes for it. CR4/adoption remain
 - 2026-11-04: RP-726 actual pg_restore COPY commits after its client container is
   removed. Require database-side quiescence too; identified backend termination is
   a bounded positive control, not a complete recovery mechanism or adoption.
+- 2026-11-04: controlled old-ID pending/late worker starts refuse after network
+  retirement, while the reused-name control writes. Retain exact source/rows;
+  distinguish this candidate admission boundary from a complete operation fence.

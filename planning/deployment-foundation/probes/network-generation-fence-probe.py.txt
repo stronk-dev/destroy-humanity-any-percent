@@ -1,0 +1,163 @@
+"""Manual CR4 network-generation experiment. Disposable local fixture only.
+
+Run with Python 3 from the repository root. No product or normal CI changes.
+Retirement refusal is a valid result, not permission to advance the transition.
+An expired guard is INVALID. This does not fence already-admitted SQL or all
+Docker/Compose/host-file operations, and is not supported-host release evidence.
+"""
+import hashlib
+import json
+import pathlib
+import secrets
+import shutil
+import subprocess
+import tempfile
+import time
+
+
+class ResearchGuard(RuntimeError):
+    pass
+
+
+def main():
+    root = pathlib.Path.cwd()
+    assert (root / "compose.deployment-backup-test.yml").is_file()
+    image = "postgres:16-alpine@sha256:075f7ba66bc9b3ce7d6b8b635208ff61cd7cf1a67d71ec530eec5d7ae0cbe571"
+    config = "sha256:75f5a96988cdf694a215073c3e9c001b706b371e2f94df3967f2efdec2787f6b"
+    project = "cc-network-generation-" + secrets.token_hex(8)
+    work = pathlib.Path(tempfile.mkdtemp(prefix="cc-network-generation-"))
+    override = work / "compose.yml"
+    override.write_text("services:\n  postgres:\n    image: " + image + "\n")
+    compose = ["compose", "--project-name", project, "-f",
+               str(root / "compose.deployment-backup-test.yml"), "-f", str(override)]
+    deadline = time.monotonic() + 60
+
+    def run(*args, expected=True, cleanup=False):
+        timeout = 15 if cleanup else min(10, deadline - time.monotonic())
+        if timeout <= 0:
+            raise ResearchGuard("whole-experiment guard exhausted: INVALID")
+        result = subprocess.run(["docker", *args], text=True, capture_output=True, timeout=timeout)
+        if not cleanup and time.monotonic() >= deadline:
+            raise ResearchGuard("matching command completed after guard: INVALID")
+        if expected and result.returncode != 0:
+            raise RuntimeError("fixture Docker command failed: " + result.stdout + result.stderr)
+        return result
+
+    def text(*args, **kwargs):
+        return run(*args, **kwargs).stdout.strip()
+
+    def owned(container, service):
+        assert len(container) == 64 and all(c in "0123456789abcdef" for c in container)
+        fields = text("inspect", "--format", '{{.Id}} {{index .Config.Labels "com.docker.compose.project"}} {{index .Config.Labels "com.docker.compose.service"}}', container)
+        assert fields == container + " " + project + " " + service, "unowned container"
+        assert text("inspect", "--format", "{{.Image}}", container) == config, "wrong fixture image config"
+
+    def create_worker(network, name, row):
+        return run("create", "--name", project + "-" + name, "--platform", "linux/amd64",
+                   "--network", network, "--read-only", "--label", "com.docker.compose.project=" + project,
+                   "--label", "com.docker.compose.service=worker", "--entrypoint", "psql",
+                   "--env", "PGPASSWORD=cloud_clicker_test", image, "-h", "postgres",
+                   "-U", "cloud_clicker", "-d", "cloud_clicker_source", "-Atq",
+                   "-v", "ON_ERROR_STOP=1", "-c", "INSERT INTO public.network_fence_probe VALUES(" + str(row) + ")",
+                   expected=False)
+
+    def start_worker(container):
+        owned(container, "worker")
+        start = run("start", container, expected=False)
+        exit_code = text("wait", container) if start.returncode == 0 else None
+        running = text("inspect", "--format", "{{.State.Running}}", container) == "true"
+        assert not running, "worker remained active: INVALID"
+        return dict(start_code=start.returncode, exit_code=exit_code,
+                    start_error=start.stderr.strip(), running=running)
+
+    observations = {}
+    print(json.dumps(dict(phase="started", project=project)), flush=True)
+    try:
+        observations["engine"] = text("version", "--format", "{{.Server.Version}} {{.Server.Os}}/{{.Server.Arch}}")
+        observations["compose"] = text("compose", "version", "--short")
+        assert observations["engine"] == "28.4.0 linux/arm64", "undeclared Engine population"
+        assert observations["compose"] == "2.39.4-desktop.1", "undeclared Compose population"
+        run(*compose, "up", "--detach", "--wait", "postgres")
+        database = text(*compose, "ps", "--quiet", "postgres")
+        owned(database, "postgres")
+        network_name = project + "_default"
+        old_network = text("network", "inspect", network_name, "--format", "{{.Id}}")
+        assert len(old_network) == 64, "missing original network identity"
+        assert text("network", "inspect", old_network, "--format", '{{index .Labels "com.docker.compose.project"}}') == project
+
+        def sql(query):
+            return text("exec", database, "psql", "-U", "cloud_clicker", "-d", "cloud_clicker_source",
+                        "-Atq", "-v", "ON_ERROR_STOP=1", "-c", query)
+
+        sql("CREATE TABLE public.network_fence_probe(id integer PRIMARY KEY)")
+        intact = create_worker(old_network, "intact", 11)
+        assert intact.returncode == 0, "intact worker creation failed: INVALID"
+        intact_result = start_worker(intact.stdout.strip())
+        assert intact_result["start_code"] == 0 and intact_result["exit_code"] == "0", "intact worker failed: INVALID"
+        assert sql("SELECT id FROM public.network_fence_probe ORDER BY id") == "11", "intact SQL missing: INVALID"
+        run("rm", "--volumes", intact.stdout.strip())
+
+        pending = create_worker(old_network, "pending-old-id", 12)
+        assert pending.returncode == 0, "pending worker creation failed: INVALID"
+        pending_id = pending.stdout.strip()
+        owned(pending_id, "worker")
+        assert text("inspect", "--format", "{{.HostConfig.NetworkMode}} {{.State.Status}}", pending_id) == old_network + " created", "pending identity/state mismatch: INVALID"
+        run("network", "disconnect", old_network, database)
+        retirement = run("network", "rm", old_network, expected=False)
+        observations.update(old_network_id=old_network, retirement_code=retirement.returncode,
+                            retirement_error=retirement.stderr.strip(), intact=intact_result)
+        if retirement.returncode == 0:
+            assert text("network", "ls", "--quiet", "--no-trunc", "--filter", "id=" + old_network) == "", "old network survived: INVALID"
+            new_network = text("network", "create", "--label", "com.docker.compose.project=" + project,
+                               "--label", "com.docker.compose.network=default", network_name)
+            assert len(new_network) == 64 and new_network != old_network, "replacement reused identity: INVALID"
+            run("network", "connect", "--alias", "postgres", new_network, database)
+            observations["new_network_id"] = new_network
+            observations["pending_old_id"] = start_worker(pending_id)
+            late = create_worker(old_network, "late-old-id", 13)
+            observations["late_old_id"] = dict(create_code=late.returncode, create_error=late.stderr.strip())
+            if late.returncode == 0:
+                late_id = late.stdout.strip()
+                owned(late_id, "worker")
+                assert text("inspect", "--format", "{{.HostConfig.NetworkMode}}", late_id) == old_network
+                observations["late_old_id"].update(start_worker(late_id))
+            name_only = create_worker(network_name, "name-only", 14)
+            assert name_only.returncode == 0, "name-only positive control creation failed: INVALID"
+            observations["name_only"] = start_worker(name_only.stdout.strip())
+            assert observations["name_only"]["start_code"] == 0 and observations["name_only"]["exit_code"] == "0", "replacement SQL control unavailable: INVALID"
+            rows = [int(row) for row in sql("SELECT id FROM public.network_fence_probe ORDER BY id").splitlines()]
+            observations["rows"] = rows
+            observations["observed_old_id_rows_absent"] = 12 not in rows and 13 not in rows
+        else:
+            # Refusal is a completed research result; never start replacement
+            # work while the proposed fence could not be established.
+            observations["replacement_attempted"] = False
+            observations["observed_old_id_rows_absent"] = None
+    finally:
+        containers = text("ps", "--all", "--quiet", "--no-trunc", "--filter", "label=com.docker.compose.project=" + project, cleanup=True).split()
+        for container in containers:
+            assert text("inspect", "--format", '{{index .Config.Labels "com.docker.compose.project"}}', container, cleanup=True) == project, "refuse unowned cleanup"
+            run("rm", "--force", "--volumes", container, cleanup=True)
+        networks = text("network", "ls", "--quiet", "--no-trunc", "--filter", "label=com.docker.compose.project=" + project, cleanup=True).split()
+        for network in networks:
+            assert text("network", "inspect", network, "--format", '{{index .Labels "com.docker.compose.project"}}', cleanup=True) == project, "refuse unowned network"
+            run("network", "rm", network, cleanup=True)
+        assert not text("ps", "--all", "--quiet", "--filter", "label=com.docker.compose.project=" + project, cleanup=True)
+        assert not text("network", "ls", "--quiet", "--filter", "label=com.docker.compose.project=" + project, cleanup=True)
+        assert not text("volume", "ls", "--quiet", "--filter", "label=com.docker.compose.project=" + project, cleanup=True)
+        # Retain the override on cleanup failure for exact-resource remediation.
+        shutil.rmtree(work)
+    print(json.dumps(dict(project=project, objective_completed=True, guard_exhausted=False,
+                          probe_source_sha256="sha256:" + hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest(),
+                          fixture_image=image, fixture_image_config=config, fixture_platform="linux/amd64",
+                          observations=observations), indent=2))
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except Exception as error:
+        print(json.dumps(dict(objective_completed=False,
+                              guard_exhausted=isinstance(error, (ResearchGuard, subprocess.TimeoutExpired)),
+                              error_class="invalid_experiment")), flush=True)
+        raise
