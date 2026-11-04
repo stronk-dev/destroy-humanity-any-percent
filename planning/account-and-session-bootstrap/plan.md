@@ -11,8 +11,11 @@ does not prevent another tab's newer commit being overwritten. The revised draft
 proposes pre-authentication pending migration, explicit entry choice and shared
 short write ownership/generations, with real acceptance populations. The renewal
 draft references that same writer without adopting refresh/marker policy. No
-runtime, policy or copy adoption; final independent specification review remains.
-The existing D-005 posture stays ruled, and the owning log records exact scopes.
+runtime, policy or copy adoption. Complete original-plus-six-path corrective union
+is now independently TECHNICALLY APPROVED through eec5641f. A single concrete
+flow/copy adoption question is delivered2026-11-04; no answer is inferred. Do not
+ask D-005's posture again or implement the draft while that adoption is pending.
+The owning log records exact scopes and the retained original negative verdict.
 
 **Security corrective review checkpoint, 2026-11-01:** fresh independent Codex
 approves RP-417's complete `634b8360..069532f5` credential-cache correction and

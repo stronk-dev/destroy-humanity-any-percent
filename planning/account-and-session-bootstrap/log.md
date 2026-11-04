@@ -1248,3 +1248,44 @@ plan/log commit. Review by: Codex root, drafter first filter only. Recorded by:
 Codex root. Original CHANGES REQUIRED remains; independent union review precedes
 owner policy/copy adoption, then implementation. No TTL/server change, new privacy
 policy, archival, publication or release claim.
+
+## 2026-11-04 — Complete corrected recovery proposal technically approved
+
+Review by: independent Codex `/root/kernel_review_citation_corrective_review`.
+Recorded by: Codex root. TECHNICALLY APPROVED, ready for owner adoption, complete
+original-plus-corrective contexts, base exclusive/tip inclusive:
+
+- Five paths: `1f95a62a688f19675c08702e769075247b815a2a..143174da28783be71f525df499c8b2e8986d3f99`.
+- Six paths: `d981a05cf81544cd5fdc60b8a66cd8a3f2c38e58..eec5641f9d2061d7757c4b816e696b22d9c44ee9`.
+
+Both RP-722/723 findings are technically resolved. Pre-authentication migration
+can expose/use expired-v1 saved details; shared cooperating writers use short
+exclusive ownership, compare generation inside it and synchronously commit.
+Unavailable ownership fails visibly; legacy cleanup preserves the only code.
+Acceptance includes actual expired legacy, competing tab/bypass, cancellation,
+holder closure, storage denial and initial-bootstrap populations. Renewal's changed
+body correctly distinguishes the document writer from still-unadopted refresh
+serialization/ambiguous marker policy. W3C scope and existing R-011 support
+feasibility only; actual supported-profile acceptance remains required.
+
+No new software suite for Markdown. Earlier factual boundary6876 is explicitly
+REUSED, terminal0: three selected passes/202 intentional deselections:
+
+```sh
+client/node_modules/.bin/vitest run --root client test/game-ui-runtime.test.ts test/generated-api.test.ts -t 'persists the retry key before bootstrap|dispatches existing.*without an access token or automatic renewal' --reporter=verbose
+```
+
+Passing cases: persists retry key before bootstrap and credentials before returning
+the snapshot; existing create_session without access/automatic renewal; existing
+refresh_session without access/automatic renewal. These are current premises,
+not implementation of this proposed feature. Both range-whitespace checks pass.
+Original CHANGES REQUIRED remains; reviewer has no edits/commits/live resources.
+
+Root delivers ONE async adoption question2026-11-04, linking the exact proposal:
+adopt reviewed flow and proposed copy; adopt flow with copy reserved; retain draft.
+Tool returns accepted delivery, no answer. AGENTS explicitly reserves specification
+and copy adoption to Marco; no implementation begins from technical review alone.
+Do not repeat this question or infer its preselection. Root reconciles current
+index/plan/defects/routing; no software suite for those editorial records.
+No policy/copy/renewal/privacy adoption, player acceptance, archival, publication,
+full CI or release claim. Full nine-tier goal remains active.

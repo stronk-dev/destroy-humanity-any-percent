@@ -58,6 +58,17 @@ Concrete prices/rates/resources/copy, HG-10 policy, identity/AC-3 adoption and r
 acceptance remain separate. Technical approval of their successor drafts is not their adoption
 or integration proof. No full-nine-tier requirement or release gate is waived.
 
+## Recovery implementation/copy adoption — D-005 / RP-123
+
+D-005's one-time display/copy/download/recover-existing-account posture remains
+ruled. The [complete corrected recovery proposal](../../rfc/account-recovery-player-flow.md)
+is independently technically approved2026-11-04 (Account log), preserving original
+CHANGES REQUIRED and fixing expired-v1 and concurrent-writer gaps. One concrete
+flow/proposed-copy adoption question is delivered2026-11-04 with choices to adopt
+both, adopt flow while reserving copy, or retain draft. It has no recorded answer;
+delivery/preselection is not approval. No fresh posture question, recovery code,
+renewal policy, privacy choice or implementation acceptance is inferred.
+
 ## Data-rights evidence freshness — D-008/D-009/D-015
 
 The [2026-10-14 event refresh](data-rights-events.md#current-sourcenative-refresh--2026-10-14-at-089849ad)
