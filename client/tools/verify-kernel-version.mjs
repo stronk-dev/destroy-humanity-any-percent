@@ -105,7 +105,10 @@ const correctionsAt = (ref, label) => {
 const { Parser } = createRequire(import.meta.url)("commonmark");
 const reviewParser = new Parser();
 const visibleReviewText = (content) => {
-  const lines = content.split(/\r?\n/);
+  // CommonMark source positions count LF, CRLF and lone CR as line endings.
+  // Select source lines from the same normalized text that the parser sees.
+  content = content.replace(/\r\n?/g, "\n");
+  const lines = content.split("\n");
   const visible = lines.map(() => "");
   const walker = reviewParser.parse(content).walker();
   let event;

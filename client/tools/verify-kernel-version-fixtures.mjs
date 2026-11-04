@@ -220,6 +220,9 @@ try {
     ["ordered-text-lazy-quoted-example", `# Fixture ledger\n\n> Example paragraph\n> 2. # Still paragraph text, not an interrupting list heading\n**Review by:** Fixture Reviewer\n**Decision:** APPROVED\nExact range ${reviewRange}\n`],
     ["invalid-fence-lazy-quoted-example", ["# Fixture ledger", "", "> ```info`not-a-fence", "**Review by:** Fixture Reviewer", "**Decision:** APPROVED", `Exact range ${reviewRange}`, ""].join("\n")],
     ["list-relative-lazy-quoted-example", `# Fixture ledger\n\n## Independent review ${reviewRange}\n\n> - item\n> =\n**Review by:** Fixture Reviewer\n**Decision:** APPROVED\n`],
+    ["mixed-line-ending-lazy-quote", `# Fixture ledger\n\n## Independent review ${reviewRange}\n\n**Review by:** Fixture Reviewer\rcontinuation\rstill visible paragraph\n> Example only\n**Decision:** APPROVED\n`],
+    ["crlf-lazy-quote", `# Fixture ledger\n\n## Independent review ${reviewRange}\n\n> Example only\n**Review by:** Fixture Reviewer\n**Decision:** APPROVED\n`.replaceAll("\n", "\r\n")],
+    ["cr-lazy-quote", `# Fixture ledger\n\n## Independent review ${reviewRange}\n\n> Example only\n**Review by:** Fixture Reviewer\n**Decision:** APPROVED\n`.replaceAll("\n", "\r")],
     ["commented-example", `# Fixture ledger\n\n<!--\n## Independent review ${reviewRange}\n- **Review by:** Fixture Reviewer\n- **Decision:** APPROVED\n-->\n`],
     ["empty-fields", `# Fixture ledger\n\n## Independent review ${reviewRange}\n\n- **Review by:**\n- **Decision:**\n`],
     ["pending-decision", `# Fixture ledger\n\n## Independent review ${reviewRange}\n\n- **Review by:** Fixture Reviewer\n- **Decision:** pending; approval must be obtained later.\n`],
@@ -252,6 +255,8 @@ try {
 
   // Preserve the completed record forms used by real legacy review/remap logs.
   const completedReviews = [
+    `# Ledger\n\n## Independent review ${reviewRange}\n\n**Review by:** Fixture Reviewer\n**Decision:** APPROVED\n`.replaceAll("\n", "\r\n"),
+    `# Ledger\n\n## Independent review ${reviewRange}\n\n**Review by:** Fixture Reviewer\n**Decision:** APPROVED\n`.replaceAll("\n", "\r"),
     `# Ledger\n\n## Independent review ${reviewRange}\n\n> - item\n>   =\n**Review by:** Fixture Reviewer\n**Decision:** APPROVED\n`,
     `# Ledger\n\n## Independent review ${reviewRange}\n\n> - item\n>     # Heading\n**Review by:** Fixture Reviewer\n**Decision:** APPROVED\n`,
     `# Ledger\n\n## Independent review ${reviewRange}\n\n> - item\n>     ---\n**Review by:** Fixture Reviewer\n**Decision:** APPROVED\n`,

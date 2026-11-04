@@ -4595,3 +4595,44 @@ Complete eight-path follow-up starts after3ae7f43a through this containing
 package/lock/tools/tests/docs/ledger/plan/log commit. Review by: Codex root,
 implementer first filter. Recorded by: Codex root. Both prior rejected verdicts
 and full1.0/CI/author/release gates remain; no push or self-approval.
+
+## 2026-11-04 — Parser review finds mixed-line-ending coordinate mismatch
+
+Review by: independent Codex `/root/kernel_review_citation_corrective_review`.
+Recorded by: Codex root. CHANGES REQUIRED for complete original eight-path
+`a7e33b73a39a435157c7049a8d13abdd68a63c4d..611273b5f6c8ce15126f163ff473d48bb2239ed2`,
+first six-path `a6fa32ac45b551bd497fff4cb409df2e259030f0..3ae7f43a551882b193c8902cba4061c899467474`,
+and new eight-path `3ae7f43a551882b193c8902cba4061c899467474..3811445a3a7762ca38cc2da9cfc34b0be88fb8d0`.
+RP-540's separate approval remains. Prior quote/list cases now discriminate, but
+actualCLI57161 admits a quoted Decision when two preceding lone CR continuations
+offset source selection. CommonMark recognizes those endings; the source split
+does not. Reference rendering confirms the Decision remains inside the quote.
+
+Fresh57414 full native fixtures and82042 topology pass but miss this defect.
+Actual declared Linux56498 passes frozen pnpm install and complete fixtures on
+Node24.18.0, matching workflow major24; dependencies isolated in anonymous mounts.
+Syntax/range checks pass; root97302 remains expected Make2 at50a3a514. Lock adds
+only four development packages, no previous resolution changes. All handles
+terminal; reviewer removes only confirmed-empty owned network726e4364. No tracked
+edits or persistent services. Private CR probe remains
+`/private/tmp/cloud-clicker-citation-review-J880Op`; module load failures never
+count as binding refusals. Parent's journal correction is outside this review.
+
+## 2026-11-04 — Normalize parser and source coordinates together (first filter)
+
+Normalize CRLF and lone CR to LF before both block parsing and line selection.
+Add the exact mixed-ending refusal, full CRLF/CR quote refusals and genuine
+CRLF/CR completed-review controls. Root old-code52893 exits1, admitting the mixed
+quote; corrected6456 completes all fixtures including60 literal-path controls.
+Topology25348 passes27 negatives and actual Make/shared-script controls; syntax
+and diff pass. Actual root37086 passes checkout/binding controls, then exits
+expected Make2 at original50a3a514. No parser/dependency/metadata grammar, kernel
+version, exception row, workflow or runtime change in this follow-up.
+
+Complete six-path follow-up begins afterc09bb854 through this containing tools/
+tests/docs/ledger/plan/log commit; the separate journal code is not in this scope.
+Review by: Codex root, implementer first filter only. Recorded by: Codex root.
+Independent full-union review remains; preserve all three CHANGES REQUIRED
+verdicts. Prior Linux frozen install binds unchanged package/lock bytes; corrected
+Linux fixture execution still needs its own pass. No history-draft adoption,
+source exception, full-CI/feature acceptance, archival or publication.

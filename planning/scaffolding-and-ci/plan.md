@@ -12,8 +12,12 @@ require changes: lazy/list-relative quote handling still misclassifies metadata.
 RP-716/717's new follow-up uses pinned CommonMark block parsing, preserves the
 existing field grammar and adds the reference-rendered counterexamples. Full
 fixtures/frozen install/topology/build pass; original50a3a514 still fails.
-Independent final union review remains; no history-exception adoption,
-version/row rewrite or whole-CI acceptance. Owning log holds exact evidence.
+Independent review of3811445a finds a remaining lone-CR/source-position mismatch
+(RP-719), while its Linux frozen install/fixtures pass on Node24.18.0. The next
+correction normalizes line endings before both parsing and line selection; mixed
+quote refusal and honest CRLF/lone-CR controls pass locally. Final union review
+remains; no history-exception adoption, version/row rewrite or whole-CI acceptance.
+Owning log holds exact evidence.
 
 **Fixture-discovery corrective review,2026-11-04:** complete seven-path
 `f423e704..663976f1` (RP-396) is independently approved. Exact-old private files

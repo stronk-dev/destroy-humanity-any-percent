@@ -131,6 +131,8 @@ fields, conflicting decisions and explicitly labelled first filters refuse.
 Block boundaries come from the pinned CommonMark0.31.2 development dependency,
 installed by `make setup` and CI's frozen install. Only paragraph/heading source
 spans outside blockquotes, code and raw HTML feed the existing metadata grammar.
+LF, CRLF and lone CR are normalized before both parsing and source-line selection,
+so parser coordinates cannot expose quoted metadata through mixed line endings.
 Lazy continuation and list-relative indentation therefore use the parser's block
 tree, including genuine visibility after headings, Setext and thematic breaks.
 Inline comments remain excluded; no HTML is rendered or executed. Isolated Git
