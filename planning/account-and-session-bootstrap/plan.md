@@ -12,7 +12,9 @@ family/Founder rows, preserving existing Guild foreign-key lock access and other
 accounts' progress. Import acknowledges its own committed Founder. Four overlaps
 and lock-compatibility controls pass in the declared Linux-amd64/Postgres lane;
 complete Account/Gameserver/Guild, focused SQL race, native Account and selected
-vet pass. Complete corrective range awaits independent review in the owning log.
+vet pass. Complete six-path2d7ebbfd..13a56c11 is independently APPROVED after
+fresh scoped/full Account SQL, exact-old overlay failures, native/vet checks.
+RP-729 closes only this concurrency defect; the owning log records provenance.
 This enforces existing D1/D2/D4/D5, changing no rights/retention/renewal policy.
 
 **Recovery proposal review, 2026-11-04:** independent technical review requires

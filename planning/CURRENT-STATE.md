@@ -22,6 +22,16 @@ The Deployment log owns commands, setup mistakes and source/platform limits.
 These are current local artifacts and file compatibility, not a legitimate
 candidate/previous pair, hosted green, host retention or clean-host acceptance.
 
+**Account archival correction,2026-11-04:** complete`2d7ebbfd..13a56c11` is
+independently approved. Real concurrent New Founder/import previously left two
+active streams after deletion; per-account lifecycle serialization fixes that
+observed defect while retaining archives and existing credential semantics.
+Fresh old/current SQL, lock compatibility and full Account checks support it;
+root's broader server/Guild and race passes are separately attributed in the
+[Account log](account-and-session-bootstrap/log.md). Full Account/rights/player
+workflow acceptance remains open. The retained`df84ce1a` package predates this
+runtime correction; rebuild before citing it as evidence for current behavior.
+
 **Latest hosted verification,2026-11-02:** published main is `d6b1c668`;
 [CI41476621196](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/41476621196)
 passes browser (all phases), composed-player, harness and schema. Server still

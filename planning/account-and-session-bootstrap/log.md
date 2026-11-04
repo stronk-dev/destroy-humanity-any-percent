@@ -1349,3 +1349,37 @@ otherwise empty default network are retained temporarily for sequential review;
 shared Go-cache volume must remain. All root test handles are terminal. Wider
 Account/recovery/renewal/data-rights/retention/browser, CI and release gates remain
 open; no original feature acceptance, archival, publication or goal pause.
+
+## 2026-11-04 — Account lifecycle archival correction independently approved
+
+Review by: independent Codex `/root/account_lifecycle_serialization_corrective_review`.
+Recorded by: Codex root. APPROVED, no findings, complete six-path range (base
+exclusive/tip inclusive):
+`2d7ebbfd7af514b9d2b5cfeb7729e38728c3deec..13a56c11a7a17b083a8d3dfaf8db1350ceb65cdd`.
+All production/test/docs/backlog/plan/log inspected. Per-account advisory ownership
+precedes existing family/Founder locks without introducing parent-row locking;
+UUID aliases share ownership, import acknowledges its own committed identity,
+credential verification/revocation/cleanup retain their contracts.
+
+Fresh independent35395 terminal0: four actual SQL overlaps1.78s, key-share/
+other-account control0.38s, package2.858s. Exact historical production overlay4728
+exits expected Make2 with both New Founder/import leaving2active of4streams;
+login/refresh pass. Main is never replaced; reviewer overlay files removed.
+Complete declared Linux-amd64/Postgres Account52654 terminal0 passes12.717s.
+Native cold Account30686 passes0.596s, SQL skips expected. Selected three-owner
+vet, formatting and complete-range whitespace pass. Root's broader Gameserver/
+Guild and race runs are inspected, NOT independently rerun or relabelled.
+All review handles terminal; source clean, no reviewer tracked edits/commits.
+
+Root then verifies exact root-created Postgres00b1817debc8975215be492079555b0bad2bab378cdc3a028dc3acd7c91165a6
+project/service and sole attachment on new networkb68943202651e1fc62e44827d8b37ac283e9d18ce49fdf0b25028190d393181e.
+Remove ONLY that disposable container; reinspection proves the network has0
+attachments before exact-ID removal. Final container/network inventories empty;
+no named Go-cache volume or shared builder is removed. No test jobs remain.
+
+RP-729 closes. This is an existing archival/atomicity correction, not full
+Account acceptance, player export/delete/recovery UX, rights/retention/renewal
+policy, hosted/full CI, clean-host proof or release. Root records bounded current
+source/artifact separation; the df84ce1a candidate predates this runtime correction
+and needs a later rebuild before it can represent it. No repeated unaffected
+artifact/browser suites, original feature promotion, archival, push or goal pause.
