@@ -8765,3 +8765,30 @@ Codex root. Complete original five paths plus this four-path forward range
 (basefad98678 exclusive through this commit) needs independent union re-review.
 Original negative verdict remains. RP-726's complete mechanism/CR4/adoption and
 full product/source/host/release gates stay open; no runtime change or goal pause.
+
+## 2026-11-04 — Corrected restore research union independently approved
+
+Review by: independent Codex `/root/restore_backend_fence_research_review`.
+Recorded by: Codex root. APPROVED, no remaining findings, complete union:
+
+- Original five paths:
+  `5b9dbb2c8409111984bc68f334b61dff0c0b9062..fad986789aa475ebda35e10e791854e620d785d2`.
+- Forward four paths:
+  `fad986789aa475ebda35e10e791854e620d785d2..12d935e56ccae386416307a6f06ab4ac790f9e8a`.
+
+Original CHANGES REQUIRED is retained. Fresh independentef6c64 terminal0 executes
+all six retained controls: two timely, three boundary/late refusals and ordinary
+failure through the actual collection catch. Deadline checks precede acceptance;
+ordinary errors no longer claim guard exhaustion. Fresh actual62105 terminal0
+executes FINAL-source real SQL fixture: all zero-row/COPY/advisory baselines,
+normal row1, removed-client row1 with surviving backend, identified termination
+true/row0, earlier DDL retained. Complete-range whitespace passes. Exact owned
+project container/network/volume inventories empty; all handles terminal, clean
+checkout, no reviewer edits or commits.
+
+RP-727/728 tool defects close. RP-726's database-side lifetime requirement and
+bounded draft reconciliation are supported, but complete Engine/client/database
+fencing remains OPEN. No encrypted game-restore/rollback, native supported-host
+proof, full original proposal approval/adoption or release acceptance follows.
+Root reconciles only owning plan/ledger and this verdict, no unrelated suite,
+runtime change, publication, archival or goal pause. Continue the full1.0 objective.
