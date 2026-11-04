@@ -7,6 +7,40 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Connection-owned cancellation experiment,2026-11-04:** test a transparent
+single-connection gateway between actual pg_dump/libpq and the pinned PostgreSQL16
+fixture. Register its in-memory connection BEFORE dialing; retain the protocol's
+BackendKeyData in memory only, never output its secret. Three complete populations:
+wrong cancellation key while dump is lock-blocked; correct key while equally
+blocked; startup delayed8s before BackendKeyData. Kill/wait the actual pg_dump
+process, keep draining the server connection, and distinguish cancellation delivery
+EOF from actual original-session EOF. Wrong-key delivery must leave the original
+query blocked behind its still-held lock; correct-key arm must end that session
+BEFORE lock release. Startup must remain registered until terminal server EOF,
+even with no key/session row. Same continuously connected control/postmaster and
+exact data must survive. One60s guard per population (180s maximum measured work),
+<=10s command/handshake within it; cleanup outside work <=15s per command.
+Guard/error/unfinished actor invalidates, never raises the bound. Native Go build
+via the existing root Make target with an ignored compiler overlay; run only in
+a uniquely owned declared tmpfs Compose fixture and cached pinned amd64 PG image.
+No production source, Docker socket inside fixture, host port, pull or CI change.
+This can authorize a concrete SQL-side candidate, not actual multi-connection Go
+backup-helper coverage, durable supervision/registration, an entire operation
+fence, native-host acceptance or adoption. Wrong-key requests concern generated
+disposable-fixture keys only; no real secret access or key publication.
+
+Actual35493 exits0 with all three populations: wrong-key delivery does NOT clear
+the locked query, correct-key original EOF precedes lock release, and key-less
+startup remains registered through EOF. Same control PID/postmaster and rows7/42
+in each. Manual root-Make overlay controls46325 pass14 subcases after an initial
+sandbox listener denial (no logic failure or assertion change). RP-740 tracks
+the narrow connection-owned candidate; current candidate document now selects a
+fail-closed supervised-operation direction across the whole mutation map, with
+durable native ownership, non-bypassable Engine/SQL admission and critical-loss
+refusal STILL to specify/prove. Do not infer actual helper/production/native-host
+coverage from the one-connection gateway. Complete research/tool/draft batch
+needs independent review; original runtime/CI/operator policy remain unchanged.
+
 **Pre-backup branch experiment,2026-11-04:** preserve the exact live Postgres
 container/postmaster and a continuously connected control session while examining
 two populations: a libpq client held by `post_auth_delay=8` before ReadyForQuery,

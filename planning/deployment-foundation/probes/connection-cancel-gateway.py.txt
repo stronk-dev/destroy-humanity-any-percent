@@ -1,0 +1,95 @@
+"""Build/run the manual Go gateway experiment. Repo root only, disposable DB.
+
+Uses the normal repository compilation cache and existing Make build target.
+The ignored overlay replaces a compiler input, never the tracked production file.
+Compilation <=180s and actor observation <=240s are outside each Go population's
+60s work guard; cleanup <=15s PER command. No RTO or native-host claim follows.
+"""
+import hashlib
+import json
+import pathlib
+import re
+import secrets
+import shutil
+import subprocess
+import tempfile
+
+IMAGE = "postgres:16-alpine@sha256:075f7ba66bc9b3ce7d6b8b635208ff61cd7cf1a67d71ec530eec5d7ae0cbe571"
+CONFIG = "sha256:75f5a96988cdf694a215073c3e9c001b706b371e2f94df3967f2efdec2787f6b"
+
+
+def main():
+    root = pathlib.Path.cwd()
+    assert (root / "compose.deployment-backup-test.yml").is_file()
+    source = root / "planning/deployment-foundation/probes/connection-cancel-gateway.go.txt"
+    binary = root / ".cache/bin/connection-gateway-research"
+    compilation = root / ".cache/connection-gateway-research"
+    compilation.mkdir(exist_ok=True)
+    overlay = compilation / "overlay.json"
+    overlay.write_text(json.dumps(dict(Replace={str(root / "server/cmd/deployment-backup/main.go"): str(source)})))
+    source_sha = hashlib.sha256(source.read_bytes()).hexdigest()
+    build = subprocess.run(["make", "build-deployment-backup-linux-amd64",
+                            "RELEASE_BACKUP_OUTPUT=.cache/bin/connection-gateway-research",
+                            "GOFLAGS=-overlay=" + str(overlay)], capture_output=True, text=True, timeout=180)
+    if build.returncode:
+        raise RuntimeError("manual overlay build failed: " + build.stdout + build.stderr)
+    assert hashlib.sha256(source.read_bytes()).hexdigest() == source_sha, "source changed during build"
+    project = "cc-cancel-gateway-" + secrets.token_hex(8)
+    work = pathlib.Path(tempfile.mkdtemp(prefix=project + "-"))
+    override = work / "compose.yml"
+    override.write_text("services:\n  postgres:\n    image: " + IMAGE + "\n"
+                        "  gateway-probe:\n    image: " + IMAGE + "\n"
+                        "    platform: linux/amd64\n    read_only: true\n    tmpfs: [/tmp]\n"
+                        "    environment:\n      TEST_DATABASE_URL: postgres://cloud_clicker:cloud_clicker_test@postgres:5432/cloud_clicker_source?sslmode=disable\n"
+                        "    volumes:\n      - type: bind\n        source: " + json.dumps(str(binary)) + "\n"
+                        "        target: /probe\n        read_only: true\n    entrypoint: [/probe]\n")
+    compose = ["compose", "--project-name", project, "-f",
+               str(root / "compose.deployment-backup-test.yml"), "-f", str(override)]
+
+    def run(*args, timeout=10):
+        reply = subprocess.run(["docker", *args], capture_output=True, text=True, timeout=timeout)
+        if reply.returncode:
+            raise RuntimeError("owned fixture command failed: " + reply.stdout + reply.stderr)
+        return reply.stdout.strip()
+
+    completed = False
+    print(json.dumps(dict(phase="started", project=project, private_work=str(work))), flush=True)
+    try:
+        engine = run("version", "--format", "{{.Server.Version}} {{.Server.Os}}/{{.Server.Arch}}")
+        compose_version = run("compose", "version", "--short")
+        assert engine == "28.4.0 linux/arm64" and compose_version == "2.39.4-desktop.1"
+        run(*compose, "up", "--detach", "--wait", "postgres")
+        database = run(*compose, "ps", "--quiet", "postgres")
+        assert re.fullmatch("[a-f0-9]{64}", database), "unknown database identity"
+        fields = run("inspect", "--format", '{{.Id}} {{.Image}} {{index .Config.Labels "com.docker.compose.project"}} {{index .Config.Labels "com.docker.compose.service"}}', database)
+        assert fields == " ".join((database, CONFIG, project, "postgres")), "unowned database"
+        version = run("exec", database, "psql", "-U", "cloud_clicker", "-d", "cloud_clicker_source", "-Atq", "-v", "ON_ERROR_STOP=1", "-c", "SHOW server_version")
+        actor = run(*compose, "run", "--rm", "--no-deps", "gateway-probe", timeout=240)
+        observation = json.loads(actor)
+        assert observation["objective_completed"] is True
+        assert [arm["arm"] for arm in observation["arms"]] == ["wrong_key", "correct_key", "startup"]
+        observation.update(source_sha256=source_sha,
+                           runner_sha256=hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest(),
+                           binary_sha256=hashlib.sha256(binary.read_bytes()).hexdigest(),
+                           project=project, database_id=database, image_config=CONFIG,
+                           postgres_version=version, engine=engine, compose=compose_version,
+                           population_work_guard_seconds=60, total_population_work_guard_seconds=180,
+                           ordinary_handshake_seconds=10, build_guard_seconds=180,
+                           actor_observation_guard_seconds=240, cleanup_per_command_seconds=15,
+                           cleanup_outside_work_guard=True)
+        completed = True
+    finally:
+        run(*compose, "down", "--volumes", "--remove-orphans", timeout=15)
+        for resource in ("container", "network", "volume"):
+            assert run(resource, "ls", "--quiet", "--filter", "label=com.docker.compose.project=" + project,
+                       timeout=15) == "", "owned fixture cleanup incomplete"
+        if completed:
+            shutil.rmtree(work)
+        else:
+            print(json.dumps(dict(objective_completed=False, private_work=str(work))), flush=True)
+    observation["cleanup_complete"] = True
+    print(json.dumps(observation, sort_keys=True), flush=True)
+
+
+if __name__ == "__main__":
+    main()

@@ -255,6 +255,14 @@ the real operation's durable session ownership, startup completion, pending
 requests and generation-safe targeting remain unresolved. Matching backend_start
 in a query does not make PID-only termination atomic against PID reuse. No
 production cancellation policy or database privilege follows from the probe.
+The subsequent [connection-owned gateway candidate](../planning/deployment-foundation/combined-fence-candidate.md#connection-owned-cancellation-candidate)
+tracks an actual libpq connection before dialing, uses its BackendKeyData only
+in memory and distinguishes cancellation delivery from original-session EOF.
+Wrong-key/correct-key/startup controls support that narrow candidate without a
+PID-only signal. They do not bind every actual helper connection or establish
+durable supervisor ownership. CR4 remains unresolved until the full operation
+protocol/packaging, lost-authority refusal and supported-host proof are complete;
+no gateway or supervisor is adopted/implemented by this evidence paragraph.
 The network-generation experiment below supplies a candidate boundary for NEW
 database clients: a worker bound to a retired full network ID fails to start even
 when that network's human-readable name is recreated; a name-only worker reaches

@@ -1,0 +1,25 @@
+{
+  "actor_observation_guard_seconds": 240,
+  "arms": [
+    {"arm":"wrong_key","cancellation_delivered":true,"key_available_at_interruption":true,"registered_before_dial":true,"rows":"7,42","same_control_pid":true,"same_postmaster":true,"server_eof_before_lock_release":false,"still_blocked_after_delivery":true,"terminal_original_connection":true},
+    {"arm":"correct_key","cancellation_delivered":true,"key_available_at_interruption":true,"registered_before_dial":true,"rows":"7,42","same_control_pid":true,"same_postmaster":true,"server_eof_before_lock_release":true,"still_blocked_after_delivery":false,"terminal_original_connection":true},
+    {"arm":"startup","cancellation_delivered":false,"key_available_at_interruption":false,"registered_before_dial":true,"rows":"7,42","same_control_pid":true,"same_postmaster":true,"server_eof_before_lock_release":false,"still_blocked_after_delivery":false,"terminal_original_connection":true}
+  ],
+  "binary_sha256": "a6f646b4221402b2d4bc273eff540f31c78bf17ed626df032bb0e9bad2dee4de",
+  "build_guard_seconds": 180,
+  "cleanup_complete": true,
+  "cleanup_outside_work_guard": true,
+  "cleanup_per_command_seconds": 15,
+  "compose": "2.39.4-desktop.1",
+  "database_id": "f51da2c1a758279eb2ae2917bc464f40552c32e0442b850ee6399d39649d7463",
+  "engine": "28.4.0 linux/arm64",
+  "image_config": "sha256:75f5a96988cdf694a215073c3e9c001b706b371e2f94df3967f2efdec2787f6b",
+  "objective_completed": true,
+  "ordinary_handshake_seconds": 10,
+  "population_work_guard_seconds": 60,
+  "postgres_version": "16.15",
+  "project": "cc-cancel-gateway-8c49b8b1fc8a514e",
+  "runner_sha256": "ac923c40d1d8aac1b61c7d36d93faa2d3a96f4ed2511cd7be15bd6abbfd01821",
+  "source_sha256": "bce2a8e7c9f1677049689b9a1a9ec7f3232fa695c8fc7223155149857a03d6d2",
+  "total_population_work_guard_seconds": 180
+}

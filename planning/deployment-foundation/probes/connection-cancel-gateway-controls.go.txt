@@ -1,0 +1,172 @@
+// Manual overlay controls against the actual experimental functions, not CI.
+package main
+
+import (
+	"bytes"
+	"context"
+	"encoding/binary"
+	"errors"
+	"io"
+	"net"
+	"testing"
+	"time"
+)
+
+type partialWriter struct {
+	output bytes.Buffer
+	size   int
+	err    error
+}
+
+func (w *partialWriter) Write(p []byte) (int, error) {
+	if w.err != nil {
+		return 0, w.err
+	}
+	n := min(len(p), w.size)
+	return w.output.Write(p[:n])
+}
+
+func pair(t *testing.T) (*net.TCPConn, *net.TCPConn) {
+	t.Helper()
+	listener, err := net.ListenTCP("tcp4", &net.TCPAddr{IP: net.IPv4(127, 0, 0, 1)})
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { listener.Close() })
+	client, err := net.DialTCP("tcp4", nil, listener.Addr().(*net.TCPAddr))
+	if err != nil {
+		t.Fatal(err)
+	}
+	server, err := listener.AcceptTCP()
+	if err != nil {
+		client.Close()
+		t.Fatal(err)
+	}
+	for _, conn := range []*net.TCPConn{client, server} {
+		if err := conn.SetDeadline(time.Now().Add(time.Second)); err != nil {
+			t.Fatal(err)
+		}
+		t.Cleanup(func() { conn.Close() })
+	}
+	return client, server
+}
+
+func frame(kind byte, body []byte) []byte {
+	data := make([]byte, 5+len(body))
+	data[0] = kind
+	binary.BigEndian.PutUint32(data[1:5], uint32(4+len(body)))
+	copy(data[5:], body)
+	return data
+}
+
+func TestManualGatewayControls(t *testing.T) {
+	t.Run("partial-and-failed-writes", func(t *testing.T) {
+		writer := &partialWriter{size: 2}
+		if err := writeAll(writer, []byte("abcdef")); err != nil || writer.output.String() != "abcdef" {
+			t.Fatalf("partial write: %v", err)
+		}
+		if !errors.Is(writeAll(&partialWriter{}, []byte("x")), io.ErrNoProgress) {
+			t.Fatal("zero progress accepted")
+		}
+		failure := errors.New("controlled permission failure")
+		if !errors.Is(writeAll(&partialWriter{err: failure}, []byte("x")), failure) {
+			t.Fatal("ordinary error lost")
+		}
+	})
+	t.Run("handshake-deadlines", func(t *testing.T) {
+		channel := make(chan string, 1)
+		channel <- "matching"
+		if receive(context.Background(), channel) != "matching" {
+			t.Fatal("timely refused")
+		}
+		ctx, cancel := context.WithCancel(context.Background())
+		cancel()
+		channel <- "matching"
+		defer func() {
+			if recover() == nil {
+				t.Error("late matching response accepted")
+			}
+		}()
+		receive(ctx, channel)
+	})
+	key := frame('K', []byte{0, 0, 0, 17, 0, 0, 0, 23})
+	cases := []struct {
+		name               string
+		wire               []byte
+		valid, interrupted bool
+	}{
+		{"empty-eof", nil, true, false},
+		{"valid-frame", frame('Z', []byte{'I'}), true, false},
+		{"truncated-header", []byte{'Z', 0, 0}, false, false},
+		{"short-length", []byte{'Z', 0, 0, 0, 3}, false, false},
+		{"oversized-length", []byte{'Z', 127, 0, 0, 0}, false, false},
+		{"truncated-body", []byte{'Z', 0, 0, 0, 6, 'I'}, false, false},
+		{"bad-key-size", frame('K', []byte{1}), false, false},
+		{"duplicate-key", append(append([]byte{}, key...), key...), false, false},
+		{"known-disconnected-frontend", frame('Z', []byte{'I'}), true, true},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			back, server := pair(t)
+			front, reader := pair(t)
+			g := &gateway{back: back, front: front, authenticated: make(chan struct{}), keyed: make(chan struct{}), interrupted: tc.interrupted}
+			readerDone := make(chan struct{})
+			go func() { io.Copy(io.Discard, reader); close(readerDone) }()
+			serverDone := make(chan error, 1)
+			go func() { err := writeAll(server, tc.wire); server.CloseWrite(); serverDone <- err }()
+			err := g.readServer()
+			if (err == nil) != tc.valid {
+				t.Fatalf("valid=%v error=%v", tc.valid, err)
+			}
+			if writeErr := <-serverDone; writeErr != nil {
+				t.Fatal(writeErr)
+			}
+			front.Close()
+			<-readerDone
+		})
+	}
+	for _, reply := range []string{"eof", "unexpected", "timeout"} {
+		t.Run("cancel-"+reply, func(t *testing.T) {
+			listener, err := net.ListenTCP("tcp4", &net.TCPAddr{IP: net.IPv4(127, 0, 0, 1)})
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer listener.Close()
+			serverDone := make(chan error, 1)
+			ctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
+			defer cancel()
+			go func() {
+				connection, err := listener.AcceptTCP()
+				if err != nil {
+					serverDone <- err
+					return
+				}
+				defer connection.Close()
+				connection.SetDeadline(time.Now().Add(time.Second))
+				var packet [16]byte
+				if _, err := io.ReadFull(connection, packet[:]); err != nil {
+					serverDone <- err
+					return
+				}
+				if binary.BigEndian.Uint32(packet[:4]) != 16 || binary.BigEndian.Uint32(packet[4:8]) != 80877102 || binary.BigEndian.Uint32(packet[8:12]) != 17 || binary.BigEndian.Uint32(packet[12:]) != 23 {
+					serverDone <- errors.New("wrong cancel packet")
+					return
+				}
+				switch reply {
+				case "unexpected":
+					_, err = connection.Write([]byte{'x'})
+				case "timeout":
+					<-ctx.Done()
+				}
+				serverDone <- err
+			}()
+			err = sendCancel(ctx, listener.Addr().String(), 17, 23)
+			if (err == nil) != (reply == "eof") {
+				t.Fatalf("reply=%s err=%v", reply, err)
+			}
+			if serverErr := <-serverDone; serverErr != nil {
+				t.Fatal(serverErr)
+			}
+		})
+	}
+}

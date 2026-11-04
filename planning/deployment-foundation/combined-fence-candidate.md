@@ -137,6 +137,74 @@ after fresh real57617 and actual-source/refusal/full-pipe controls21d8f5. Origin
 CHANGES REQUIRED stays recorded. RP-739's instrument defect is closed; RP-738's
 production ownership/startup requirement remains open.
 
+### Connection-owned cancellation candidate
+
+The [manual gateway](probes/connection-cancel-gateway.go.txt),
+[build/fixture runner](probes/connection-cancel-gateway.py.txt) and
+[source-bound observation](connection-cancel-gateway-observation.v1.json) now
+provide a candidate that avoids the preceding PID-only signal. A transparent
+single-connection gateway registers its connection in memory BEFORE dialing
+Postgres. It observes BackendKeyData without printing/persisting its secret,
+keeps draining the original server stream after actual pg_dump is killed, and
+uses that connection's PID/key pair in the PostgreSQL CancelRequest protocol.
+The [PostgreSQL16 protocol](https://www.postgresql.org/docs/16/protocol-flow.html#PROTOCOL-FLOW-CANCELING-REQUESTS)
+explicitly distinguishes request delivery from cancellation; the test does too.
+
+Actual35493 completes every predeclared population against pinned PG16.15:
+
+| Population | Actual result |
+|---|---|
+| Wrong cancellation key, relation lock held | Delivery connection closes normally, yet original dump remains blocked. Original server EOF occurs only after the driver releases the lock. |
+| Correct key, same lock held | Original server EOF occurs BEFORE lock release; no PID-only termination is issued. |
+| Startup delay8s, no key/activity row yet | Killed client does not clear gateway registration. The original connection remains tracked through actual server EOF, without pretending a key exists or sending a cancellation. |
+
+Every population retains the same continuously connected control PID and
+postmaster and exact original/control rows7/42. Actual native control overlay
+also rejects truncated/invalid/oversized frames, duplicate/bad BackendKeyData,
+unexpected cancel responses, exhausted delivery and late handshakes; partial
+writes and ordinary EOF pass. Neither socket-delivery EOF nor census0 is admitted
+as original-session completion. The actual subject is pg_dump, NOT the complete
+Go helper's pgx exporter plus dump, encrypted publication or production lifecycle.
+
+### Concrete production direction to specify and prove
+
+Select a **fail-closed supervised operation**, not a detached CLI assumed dead
+from a lock. This remains a recommended technical direction requiring full
+specification, independent review and adoption; no runtime permission follows:
+
+- One operation supervisor must outlive the invoking CLI and own the real helper,
+  all descendants, outer metrics and operation jobs. Record its exact native
+  identity durably before effects. A per-operation native unit/scope needs real
+  supported-host packaging and failure tests; this does not silently introduce a
+  permanent deployment service under the draft's current no-service promise.
+- Every mutating Engine request needs a durable intent before forwarding and an
+  endpoint-specific terminal receipt/resource binding. After cancellation close
+  worker admission, keep the supervisor/broker alive to collect already-forwarded
+  requests, then stop/reap exact owned job namespaces. CLI exit or an arbitrary
+  HTTP error must not erase outstanding work. Unknown/lost authority refuses a
+  successor before new effects; it never means absence. Native worker isolation
+  must prevent bypassing that broker, not merely set DOCKER_HOST.
+- Route ALL operation-owned SQL connections through registered gateways, including
+  pgx inspection/exporter and libpq. Close client admission before cancellation;
+  wait actual original streams and worker actors terminal. Keys stay in memory;
+  loss of the gateway/supervisor cannot be repaired by guessing a PID or accepting
+  a reused application name. The single-connection prototype proves neither
+  multi-connection completeness nor durable admission. Native network isolation
+  must prove workers cannot reach Postgres directly.
+- Before-checkpoint abort may stop only those operation jobs/connections/output
+  writers while retaining the prior live deployment. Post-checkpoint recovery
+  still validates protected backup/exact pair before permitted teardown/reset.
+  Account-creating HTTP, all four networks/five volume families, image preparation,
+  retention deletion, actual outputs and resource ownership remain in the reviewed
+  mutation map. Never apply this read-only SQL proof to those other effects.
+
+Unknown supervisor/gateway/request outcomes remain unfinished and refuse automatic
+recovery; the separate disaster-recovery route is not invented by this direction.
+The next construction is the real supervisor/broker ownership and admission
+protocol with lost-authority refusal, followed by full real-helper binding. Do
+not repeat the completed pg_dump controls instead. RP-740 tracks the candidate;
+RP-738/734 remain open. Full native-host/R-006/adoption/release gates remain.
+
 Next construct the complete durable production protocol against this table and
 resolve its pre-backup branch/packaging/compatibility, then execute its actual
 helper and supported-host interruption population. Do not repeat these complete

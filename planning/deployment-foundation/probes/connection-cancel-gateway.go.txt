@@ -1,0 +1,442 @@
+// Manual CR4 experiment, compiled through an ignored overlay. Not a production
+// proxy, recovery helper or normal CI test. Keys remain only in process memory.
+package main
+
+import (
+	"bytes"
+	"context"
+	"database/sql"
+	"encoding/binary"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"io"
+	"net"
+	"net/url"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"strings"
+	"sync"
+	"syscall"
+	"time"
+
+	_ "github.com/jackc/pgx/v5/stdlib"
+)
+
+func check(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
+
+func require(ok bool, message string) {
+	if !ok {
+		panic(message)
+	}
+}
+
+func local(ctx context.Context) (context.Context, context.CancelFunc) {
+	return context.WithTimeout(ctx, 10*time.Second)
+}
+
+func receive[T any](ctx context.Context, channel <-chan T) T {
+	bounded, cancel := local(ctx)
+	defer cancel()
+	select {
+	case result := <-channel:
+		require(bounded.Err() == nil, "late matching handshake: INVALID")
+		return result
+	case <-bounded.Done():
+		panic("handshake guard exhausted: INVALID")
+	}
+}
+
+func value(ctx context.Context, conn *sql.Conn, query string, args ...any) string {
+	bounded, cancel := local(ctx)
+	defer cancel()
+	var result string
+	check(conn.QueryRowContext(bounded, query, args...).Scan(&result))
+	check(bounded.Err())
+	return result
+}
+
+func command(ctx context.Context, conn *sql.Conn, query string) {
+	bounded, cancel := local(ctx)
+	defer cancel()
+	_, err := conn.ExecContext(bounded, query)
+	check(err)
+	check(bounded.Err())
+}
+
+// Registration is in-memory and precedes the upstream dial. Losing this process
+// loses that authority; this experiment does NOT claim durable registration.
+type gateway struct {
+	listener                        *net.TCPListener
+	address                         string
+	mu                              sync.Mutex
+	front, back                     *net.TCPConn
+	pid, key                        uint32
+	registered                      bool
+	connected, authenticated, keyed chan struct{}
+	clientDone, serverDone          chan error
+	frontError                      error
+	interrupted                     bool
+}
+
+func startGateway(ctx context.Context, address string) *gateway {
+	listener, err := net.ListenTCP("tcp4", &net.TCPAddr{IP: net.IPv4(127, 0, 0, 1)})
+	check(err)
+	g := &gateway{listener: listener, address: address, connected: make(chan struct{}),
+		authenticated: make(chan struct{}), keyed: make(chan struct{}),
+		clientDone: make(chan error, 1), serverDone: make(chan error, 1)}
+	end, ok := ctx.Deadline()
+	require(ok, "missing population deadline")
+	check(listener.SetDeadline(end))
+	go func() {
+		front, err := listener.AcceptTCP()
+		if err != nil {
+			g.clientDone <- err
+			g.serverDone <- err
+			return
+		}
+		checkClose := func(err error) {
+			if err != nil {
+				g.clientDone <- err
+				g.serverDone <- err
+			}
+		}
+		if err := listener.Close(); err != nil {
+			checkClose(err)
+			return
+		}
+		g.mu.Lock()
+		g.front = front
+		g.registered = true
+		g.mu.Unlock()
+		connection, err := (&net.Dialer{}).DialContext(ctx, "tcp", address)
+		if err != nil {
+			g.clientDone <- err
+			g.serverDone <- err
+			return
+		}
+		back, ok := connection.(*net.TCPConn)
+		if !ok {
+			g.clientDone <- errors.New("non-TCP upstream")
+			g.serverDone <- errors.New("non-TCP upstream")
+			return
+		}
+		g.mu.Lock()
+		g.back = back
+		g.mu.Unlock()
+		if err := front.SetDeadline(end); err != nil {
+			checkClose(err)
+			return
+		}
+		if err := back.SetDeadline(end); err != nil {
+			checkClose(err)
+			return
+		}
+		close(g.connected)
+		go func() {
+			_, err := io.Copy(back, front)
+			var networkError *net.OpError
+			if errors.As(err, &networkError) && networkError.Op == "read" && errors.Is(err, syscall.ECONNRESET) {
+				g.mu.Lock()
+				interrupted := g.interrupted
+				g.mu.Unlock()
+				if interrupted {
+					err = nil
+				}
+			}
+			if err == nil {
+				err = back.CloseWrite()
+			}
+			g.clientDone <- err
+		}()
+		g.serverDone <- g.readServer()
+	}()
+	return g
+}
+
+func writeAll(writer io.Writer, data []byte) error {
+	for len(data) > 0 {
+		n, err := writer.Write(data)
+		if err != nil {
+			return err
+		}
+		if n <= 0 {
+			return io.ErrNoProgress
+		}
+		data = data[n:]
+	}
+	return nil
+}
+
+func (g *gateway) readServer() error {
+	for {
+		var head [5]byte
+		_, err := io.ReadFull(g.back, head[:1])
+		if errors.Is(err, io.EOF) {
+			return nil
+		}
+		if err != nil {
+			return err
+		}
+		if _, err = io.ReadFull(g.back, head[1:]); err != nil {
+			return err
+		}
+		size := binary.BigEndian.Uint32(head[1:])
+		if size < 4 || size > 16<<20 {
+			return errors.New("invalid/oversized server frame: INVALID")
+		}
+		body := make([]byte, int(size)-4)
+		if _, err = io.ReadFull(g.back, body); err != nil {
+			return err
+		}
+		if head[0] == 'K' {
+			if len(body) != 8 {
+				return errors.New("invalid PG16 BackendKeyData: INVALID")
+			}
+			g.mu.Lock()
+			duplicate := g.pid != 0
+			g.pid = binary.BigEndian.Uint32(body[:4])
+			g.key = binary.BigEndian.Uint32(body[4:])
+			g.mu.Unlock()
+			if duplicate {
+				return errors.New("duplicate BackendKeyData: INVALID")
+			}
+			close(g.keyed)
+		}
+		if head[0] == 'R' && len(body) == 4 && binary.BigEndian.Uint32(body) == 0 {
+			close(g.authenticated)
+		}
+		// After the known client closes, keep draining the SERVER. An expected
+		// broken downstream write cannot masquerade as terminal upstream EOF.
+		g.mu.Lock()
+		interrupted := g.interrupted
+		g.mu.Unlock()
+		if g.frontError == nil && !interrupted {
+			err = writeAll(g.front, append(head[:], body...))
+			if err != nil {
+				g.mu.Lock()
+				interrupted = g.interrupted
+				g.mu.Unlock()
+				if !interrupted || (!errors.Is(err, syscall.EPIPE) && !errors.Is(err, syscall.ECONNRESET)) {
+					return err
+				}
+				g.frontError = err
+			}
+		}
+	}
+}
+
+func (g *gateway) snapshot() (uint32, uint32, bool) {
+	g.mu.Lock()
+	defer g.mu.Unlock()
+	return g.pid, g.key, g.registered
+}
+
+func (g *gateway) close() {
+	g.listener.Close()
+	g.mu.Lock()
+	defer g.mu.Unlock()
+	if g.front != nil {
+		g.front.Close()
+	}
+	if g.back != nil {
+		g.back.Close()
+	}
+}
+
+// A successful return means delivery/EOF ONLY. It is deliberately insufficient
+// to declare the original query or connection terminal (wrong-key control).
+func sendCancel(ctx context.Context, address string, pid, key uint32) error {
+	bounded, cancel := local(ctx)
+	defer cancel()
+	conn, err := (&net.Dialer{}).DialContext(bounded, "tcp", address)
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+	end, _ := bounded.Deadline()
+	if err = conn.SetDeadline(end); err != nil {
+		return err
+	}
+	var packet [16]byte
+	binary.BigEndian.PutUint32(packet[:4], 16)
+	binary.BigEndian.PutUint32(packet[4:8], 80877102)
+	binary.BigEndian.PutUint32(packet[8:12], pid)
+	binary.BigEndian.PutUint32(packet[12:], key)
+	if err = writeAll(conn, packet[:]); err != nil {
+		return err
+	}
+	var reply [1]byte
+	n, err := conn.Read(reply[:])
+	if n != 0 || !errors.Is(err, io.EOF) {
+		return errors.New("unexpected cancel delivery response: INVALID")
+	}
+	return bounded.Err()
+}
+
+type observation struct {
+	Arm                        string `json:"arm"`
+	RegisteredBeforeDial       bool   `json:"registered_before_dial"`
+	KeyAvailableAtInterruption bool   `json:"key_available_at_interruption"`
+	CancellationDelivered      bool   `json:"cancellation_delivered"`
+	StillBlockedAfterDelivery  bool   `json:"still_blocked_after_delivery"`
+	ServerEOFBeforLockRelease  bool   `json:"server_eof_before_lock_release"`
+	TerminalOriginalConnection bool   `json:"terminal_original_connection"`
+	SameControlPID             bool   `json:"same_control_pid"`
+	SamePostmaster             bool   `json:"same_postmaster"`
+	Rows                       string `json:"rows"`
+}
+
+func runArm(database *sql.DB, rawURL, arm string) observation {
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	defer cancel()
+	control, err := database.Conn(ctx)
+	check(err)
+	defer control.Close()
+	observer, err := database.Conn(ctx)
+	check(err)
+	defer observer.Close()
+	initialPostmaster := value(ctx, control, "SELECT pg_postmaster_start_time()::text")
+	controlPID := value(ctx, control, "SELECT pg_backend_pid()::text")
+	command(ctx, control, "DROP TABLE IF EXISTS public.cancel_gateway_probe; CREATE TABLE public.cancel_gateway_probe(id integer PRIMARY KEY); INSERT INTO public.cancel_gateway_probe VALUES(7)")
+	parsed, err := url.Parse(rawURL)
+	check(err)
+	address := parsed.Host
+	if !strings.Contains(address, ":") {
+		address = net.JoinHostPort(address, "5432")
+	}
+	g := startGateway(ctx, address)
+	defer g.close()
+	query := parsed.Query()
+	query.Set("sslmode", "disable")
+	query.Set("application_name", "gateway_"+arm)
+	if arm == "startup" {
+		query.Set("options", "-c post_auth_delay=8")
+	}
+	parsed.Host = g.listener.Addr().String()
+	parsed.RawQuery = query.Encode()
+	work, err := os.MkdirTemp("", "cc-cancel-gateway-")
+	check(err)
+	defer os.RemoveAll(work)
+	var stderr bytes.Buffer
+	dump := exec.CommandContext(ctx, "pg_dump", "--dbname="+parsed.String(), "--format=custom", "--no-owner", "--no-privileges", "--file="+filepath.Join(work, "partial.dump"))
+	dump.Stderr = &stderr
+	if arm != "startup" {
+		command(ctx, control, "BEGIN; LOCK TABLE public.cancel_gateway_probe IN ACCESS EXCLUSIVE MODE")
+	}
+	defer command(context.Background(), control, "ROLLBACK")
+	check(dump.Start())
+	dumpDone := make(chan error, 1)
+	go func() { dumpDone <- dump.Wait() }()
+	waited := false
+	defer func() {
+		if !waited {
+			dump.Process.Kill()
+			receive(context.Background(), dumpDone)
+		}
+	}()
+	receive(ctx, g.connected)
+	receive(ctx, g.authenticated)
+	report := observation{Arm: arm}
+	pid, key, registered := g.snapshot()
+	report.RegisteredBeforeDial = registered
+	if arm == "startup" {
+		require(pid == 0, "startup delay boundary missed: INVALID")
+		require(value(ctx, observer, "SELECT count(*)::text FROM pg_stat_activity WHERE application_name=$1", "gateway_"+arm) == "0", "startup activity was already visible: INVALID")
+	} else {
+		receive(ctx, g.keyed)
+		pid, key, _ = g.snapshot()
+		waitCtx, stop := local(ctx)
+		for {
+			state := value(waitCtx, observer, "SELECT COALESCE((SELECT state||':'||wait_event_type||':'||wait_event FROM pg_stat_activity WHERE pid=$1 AND application_name=$2),'absent')", pid, "gateway_"+arm)
+			if state == "active:Lock:relation" {
+				break
+			}
+			check(waitCtx.Err())
+			time.Sleep(10 * time.Millisecond)
+		}
+		stop()
+	}
+	report.KeyAvailableAtInterruption = pid != 0
+	g.mu.Lock()
+	g.interrupted = true
+	g.mu.Unlock()
+	check(dump.Process.Kill())
+	require(receive(ctx, dumpDone) != nil, "killed dump succeeded: INVALID")
+	waited = true
+	check(receive(ctx, g.clientDone))
+	select {
+	case err := <-g.serverDone:
+		check(err)
+		panic("server unexpectedly ended before cancellation/release: INVALID")
+	default:
+	}
+	if arm != "startup" {
+		if arm == "wrong_key" {
+			key ^= 1
+		}
+		check(sendCancel(ctx, address, pid, key))
+		report.CancellationDelivered = true
+		if arm == "wrong_key" {
+			require(value(ctx, observer, "SELECT count(*)::text FROM pg_stat_activity WHERE pid=$1 AND state='active' AND wait_event_type='Lock' AND wait_event='relation'", pid) == "1", "wrong-key negative control stopped the query: INVALID")
+			select {
+			case err := <-g.serverDone:
+				check(err)
+				panic("delivery incorrectly implies terminal session: INVALID")
+			default:
+			}
+			report.StillBlockedAfterDelivery = true
+			command(ctx, control, "COMMIT")
+			check(receive(ctx, g.serverDone))
+		} else {
+			check(receive(ctx, g.serverDone))
+			report.ServerEOFBeforLockRelease = true
+			command(ctx, control, "COMMIT")
+		}
+	} else {
+		// No cancellation key exists yet. Keep this connection registered until
+		// actual upstream EOF; neither census0 nor client exit clears it.
+		check(receive(ctx, g.serverDone))
+	}
+	report.TerminalOriginalConnection = true
+	if pid == 0 {
+		pid, _, _ = g.snapshot()
+	}
+	if pid != 0 {
+		require(value(ctx, observer, "SELECT count(*)::text FROM pg_stat_activity WHERE pid=$1", pid) == "0", "original backend still visible: INVALID")
+	}
+	require(value(ctx, control, "SELECT pg_backend_pid()::text") == controlPID, "control connection changed: INVALID")
+	report.SameControlPID = true
+	require(value(ctx, control, "SELECT pg_postmaster_start_time()::text") == initialPostmaster, "database restarted: INVALID")
+	report.SamePostmaster = true
+	command(ctx, control, "INSERT INTO public.cancel_gateway_probe VALUES(42)")
+	report.Rows = value(ctx, control, "SELECT string_agg(id::text,',' ORDER BY id) FROM public.cancel_gateway_probe")
+	require(report.Rows == "7,42", "unexpected database result: INVALID")
+	check(ctx.Err())
+	return report
+}
+
+func main() {
+	// Panic/error output never includes the key. No complete artifact is emitted
+	// unless every predeclared population returns after its terminal checks.
+	rawURL := os.Getenv("TEST_DATABASE_URL")
+	require(rawURL != "", "missing declared fixture URL")
+	database, err := sql.Open("pgx", rawURL)
+	check(err)
+	database.SetMaxOpenConns(4)
+	defer database.Close()
+	var results []observation
+	for _, arm := range []string{"wrong_key", "correct_key", "startup"} {
+		results = append(results, runArm(database, rawURL, arm))
+	}
+	check(json.NewEncoder(os.Stdout).Encode(struct {
+		Completed bool          `json:"objective_completed"`
+		Arms      []observation `json:"arms"`
+	}{true, results}))
+	fmt.Fprintln(os.Stderr, "all three connection-gateway populations completed; not production authority")
+}

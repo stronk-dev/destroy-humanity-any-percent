@@ -9333,3 +9333,60 @@ Next build/specify that complete ownership/containment protocol, including all
 real pre-backup effects and pending clients; do not adopt the fixture's PID query
 or repeat narrow completed positives. No full abort/CR4/native-host/adoption,
 release acceptance, push, archival, deployment or goal pause follows.
+
+## 2026-11-04 — Connection-owned gateway supplies a pre-backup cancellation candidate
+
+After20cbb5b8, advance RP-738's missing ownership direction rather than repeating
+PID termination. Predeclare wrong-key/correct-key/startup populations in the
+owning plan. New manual Go source, control overlay and Python runner use an
+ignored compiler overlay with EXISTING root build/test targets and repository
+Go cache; tracked production main/main_test and CI stay byte-unchanged. The
+compiled binary runs in a uniquely owned declared tmpfs fixture with the exact
+cached amd64 Postgres image/config, no pull/ports/real data/Docker socket in jobs.
+Local Docker Desktop Engine28.4.0 Linux/arm64 and Compose2.39.4-desktop.1 run
+amd64 Postgres16.15. No native supported-host claim.
+
+The transparent gateway registers one in-memory connection before upstream dial,
+observes the PG16 BackendKeyData secret ONLY in memory, and retains/drains the
+original server stream after actual pg_dump is killed/waited. It sends a
+connection PID/key CancelRequest rather than pg_terminate_backend or OS PID kill.
+No generated key enters output or tracked artifacts. PostgreSQL16 protocol's
+documented delivery-versus-query-outcome distinction is tested, not inferred.
+
+Actual35493 exits0, ALL3 populations: wrong-key delivery closes normally while
+the same original query remains lock-blocked, then server EOF follows explicit
+lock release; correct-key server EOF precedes lock release; startup delayed8s
+has no key/activity row yet remains registered after client death until actual
+server EOF. Each retains same connected control PID/postmaster and exact rows7/42.
+No complete result is emitted on an incomplete population. Per-population60s,
+total180s work guards and<=10s handshakes remain; build<=180s and outer actor
+observation<=240s are NOT work/RTO budgets; cleanup<=15s PER command outside work.
+
+Actual46325 exits0: fourteen manual actual-function controls cover partial/failed/
+zero-progress writes, timely/expired matching handshake, ordinary EOF, malformed/
+truncated/oversized frame, bad/duplicate BackendKeyData, known closed frontend,
+typed cancel delivery EOF versus unexpected response and timeout. Initial18389
+could not bind loopback under sandbox; its socket populations never execute.
+Same target with permitted listeners passes without source/assertion changes.
+Control overlays replace compiler inputs only; no production source mutation.
+Gofmt/retained bindings/whitespace and root overlay vet pass; existing build73943 exits0. Recorded JSON
+binds Go bce2a8e7c9f1677049689b9a1a9ec7f3232fa695c8fc7223155149857a03d6d2,
+runner ac923c40d1d8aac1b61c7d36d93faa2d3a96f4ed2511cd7be15bd6abbfd01821 and
+executed binary a6f646b4221402b2d4bc273eff540f31c78bf17ed626df032bb0e9bad2dee4de.
+Root verifies exact fixture container/network/volume inventories4a6fe0/24ce8b/
+ac04ba empty, fixture work removed, actor/control handles terminal.
+
+RP-740 is an OPEN candidate, not production authority. Candidate document now
+chooses a fail-closed supervised-operation direction over the whole reviewed
+mutation map: durable native supervisor identity, non-bypassable Engine admission/
+terminal receipts and ALL actual helper SQL streams, no guessed PID on authority
+loss, full existing checkpoint/backup/pair/deletion holds. These are requirements
+to SPECIFY/PROVE, not existing packaged mechanisms. Ephemeral native scope/service
+packaging needs explicit contract reconciliation/adoption; do not silently add a
+permanent deployment service. This one-connection experiment excludes actual pgx
+snapshot exporter/helper/encryption/publication, all Engine actions and native
+host. Full CR4/R-006/1.0 stay open. Next construct durable supervisor/broker
+protocol and critical-loss refusal, then bind the complete real helper, not more
+identical pg_dump positives. Review by: Codex root, author/first filter.
+Recorded by: Codex root. Complete after20cbb5b8 research/tool/draft range needs
+fresh independent review. No push, deployment, archival or goal pause.
