@@ -12,6 +12,12 @@ intended runner. Current owning Node command35/35 and topology controls pass;
 the log distinguishes fresh execution from reused independent composed evidence.
 No assertions/exclusions/workflow/deadline change or whole-CI acceptance follows.
 
+**Linux command-parity review,2026-11-04:** complete nine-path
+`81107554..a57b7fd8` (RP-613) is independently approved. Fresh verifier and actual
+Make orchestration controls discriminate; source-matched independent Linux
+browser/performance evidence is reused with attribution. Shared setup and RP-706
+retain separate approvals; original timeout/reliability and hosted timing stay open.
+
 ## Current checkpoint — 2026-11-02
 
 The accepted contract remains RFC D2/D3: all six blocking jobs, the complete
@@ -568,19 +574,17 @@ pass. The subsequent default Linux execution above completes; this is observatio
 or proof of intermittent reliability. Preserve the preceding timeout,
 all deadlines, workers and original player assertions; the owning log holds limits and review.
 
-Current local/Actions parity correction (RP-613): the Linux Playwright container now installs
-GNU Make and delegates to the same root `make test-browser` as Actions, instead of bypassing
-the broad/native/performance split with copied Vitest commands. The old verifier admits the
-copied command; the new check rejects the original Compose command and four copied/incomplete/
-narrowed controls. The actual default Linux/ARM64 run then fires the existing ten-minute guard
-during broad collection (exit137), so later native/performance phases are unexecuted. Compared
-with the retained146-file native reference, only Firefox's Reputation host file lacks a terminal
-result; this is file-level localization, not a complete current case inventory or cause proof.
-That exact unchanged file passes in an isolated Linux Firefox run (89 ordinary + one expected
-failure,26.55s). Preserve the full failure; next investigate full-population native-input/cleanup
-completion for that file without changing assertions, deadlines, workers or populations. The
-owning log records commands, observations and the range after `81107554`, pending Claude review.
-Hosted latency, RP-526 reliability and the other CI failures remain open.
+RP-613's original local/Actions command-parity correction is independently approved
+2026-11-04, complete `81107554..a57b7fd8`. The disposable Linux setup supplies Make
+and uses the same root broad/native/performance authority as Actions; later shared-script
+extraction and RP-706 selector repairs retain their separate approvals. Fresh old/new
+verifier controls and actual historical Make execution with a Vitest double prove routing
+and failure propagation, not browser behavior. Actual source-matched Linux results are
+reused from their named independent reviewers. Preserve both original52310's ten-minute
+guard failure and8e4d0877's later complete three-phase pass; neither historical result
+establishes current default reliability or hosted timing. The owning log holds exact
+provenance and limits. RP-526 and full-CI/release gates remain open; do not restart this
+resolved parity diagnosis or repeat the full browser population for its editorial closeout.
 
 RP-596 standard-phase measurement declared at clean `0411ef34` and now completed: all300 keys,
 12 workers, native macOS/ARM64/M3 Max,783.821s wall time. Full population/outcome/invariant checks

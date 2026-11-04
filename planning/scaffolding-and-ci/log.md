@@ -4467,3 +4467,32 @@ Reviewer starts no services, leaves no active handles or tracked edits/commits;
 private fixture retained at `/private/tmp/cloud-clicker-rp396-review.uogbttob`.
 Root reconciles current statuses only; no software suite for these editorial
 records. Full nine-tier goal remains active; no push or adoption.
+
+## 2026-11-04 — Linux browser command parity independently approved
+
+Review by: fresh independent Codex `/root/linux_browser_parity_corrective_review`.
+Recorded by: Codex root. APPROVED, no findings, complete nine-path range
+`8110755490b3596b73d4330eaa4f5815d29027c4..a57b7fd862949c4b4b61a005fd9c74a32d3235ef`
+(base exclusive, tip inclusive), including all original records. Missing Make is
+installed in the disposable image; root browser phases share Actions' authority.
+Image/frozen install/population/assertions/workers/deadlines/containment unchanged.
+
+Fresh topology49224 terminal0:27 primary negatives, copied/incomplete/narrowed
+container controls, actual shared-script success/failure and Make/report selectors.
+Private exact-Git controls30770 terminal0: old verifier admits old copied command;
+corrected verifier rejects it and four changed commands, honest configuration
+passes. Actual historical Make source, with ONLY Vitest replaced by a disposable
+executable double, runs broad→native→performance and stops/propagates each leaf's
+injected failure (four controls). This proves orchestration, NOT browser behavior.
+Bash/Node syntax and complete-range whitespace pass; private fixtures removed.
+
+Actual Linux evidence is REUSED with independent provenance: API component reviewer
+78930 at6076a1c4 executes837 across all three engines; affected executable diff is
+empty. Linux performance-selector reviewer at7b74bc74 executes performance5 and
+numeric300/three engines; relevant runtime/selected tests/Make/Compose/shared setup/
+topology/config/package/lock/patches match. No fresh full-browser run here. Original
+52310 timeout and8e4d0877 completion retain implementer provenance. Later shared-
+setup/RP-706 repairs remain separate reviewed scopes. Both handles terminal;
+reviewer creates no services/Docker resources/tracked edits/commits. Root's concurrent
+e853255b is Markdown-only. RP-613 review closes, not RP-526 reliability, default/
+hosted latency, full CI, feature/archival/release acceptance or the nine-tier goal.
