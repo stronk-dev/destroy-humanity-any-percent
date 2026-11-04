@@ -23,7 +23,7 @@ an existing observation path refuses without overwriting its bytes.
 
 | Actual fixture | Verified local observation | Unresolved shipping evidence |
 |---|---|---|
-| Docker CLI28.4.0 |43,556,144bytes; SHA256`27f239f97492c434e091a70b41b8796c698f0aa2b6052c6f9c28da4ee7ae888b`; Go1.24.7, linux/amd64, no ELF interpreter; `CGO_ENABLED=1`, tags`osusergo,pkcs11`; ZERO embedded dependency-module rows | Zero rows do not mean zero dependencies. Actual Go/vendor and native linked-component/notice closure are missing. Cached archive has a local hash but no independently checked publisher checksum. |
+| Docker CLI28.4.0 |43,556,144bytes; SHA256`27f239f97492c434e091a70b41b8796c698f0aa2b6052c6f9c28da4ee7ae888b`; Go1.24.7, linux/amd64, no ELF interpreter; `CGO_ENABLED=1`, tags`osusergo,pkcs11`; ZERO embedded dependency-module rows; matching source query now maps623 packages/89 vendor modules | Zero rows do not mean zero dependencies. Published-binary/source correspondence and exact native linked-component/notice closure remain missing. Cached archive has a local hash but no independently checked publisher checksum. |
 | Compose2.39.4 |76,361,386bytes; SHA256`7af95166a730b87e172d4fc9aefea8725d3c6c7327d59149267b452114ddb7d4`; Go1.24.7, linux/amd64, CGO0, upstream build tag`e2e`; all180 embedded dependency name/version rows occur in the183-package upstream SBOM |182 declared licenses are NOASSERTION; all183 concluded licenses are NOASSERTION. A module inventory supplies neither its license texts nor notices. Runtime/config compatibility of any selected shipping build remains mandatory. |
 
 The publisher [Compose release](https://github.com/docker/compose/releases/tag/v2.39.4)
@@ -108,7 +108,7 @@ inputs; they are not normal CI tests or a package eligibility verifier.
 
 ### Nested-scope observation and application counterexample
 
-The [binary/source observation](compose-nested-scopes-observation.v1.json) parses
+The historical [v1 binary/source observation](compose-nested-scopes-observation.v1.json) parses
 the actual pinned Compose ELF/Go metadata from one byte slice, checks all180
 module identities and the complete source-inventory binding, then inspects all37
 nested text candidates. All90,355 decoded functions have actual code-section
@@ -194,6 +194,73 @@ published binary's compiler/link map. Actual binary/source correspondence,
 inline/header terms, exact native linked components, final scoped delivery and
 tool adoption remain OPEN under RP-759. No CLI execution, native host, SP8,
 AC8 or R-006 result follows from `go list`.
+
+### Compose compiler-selected files and corrected binary matching
+
+The [source-scope observation](compose-import-scopes-observation.v1.json) binds
+the matching public main source at commit
+`a32dc3da722e6b2e4fbfc72e40b1a697c4686460`, tree
+`e702be38be3400928f7ad9e94470ad0cd6cff512`, and the same publisher-checked
+Go1.24.7 SDK. It freshly runs the upstream Linux/amd64/CGO0/e2e source query
+offline, with modules read-only and the normal Go module cache. All1,290 package
+rows close over the command's complete dependency set:24 main,221 standard and
+1,045 dependency packages. Their180 module/version/h1 identities exactly match
+the hash-bound published Compose fixture. No source replacement is admitted.
+
+The [manual collector](probes/compose-import-scopes.py.txt) checks6,962 inspected
+source/text files. Main files match exact tracked Git blobs; standard files match
+the publisher-checked SDK archive; dependency files match the complete h1-verified
+module archives. Archive hashing and reads share the same immutable byte snapshot.
+Every prior237 module candidate, including scopes with no selected package,
+also matches its physical module-cache file. Main LICENSE/NOTICE plus six selected
+standard-library scoped files bring the named-file population to245. Filename
+presence and source selection still do not decide legal applicability or rights.
+Final inspected-file hashes are rechecked before output; errors/600s guard
+exhaustion refuse, with no successful partial report.
+
+Of37 nested module candidates,17 have a selected package in their source
+directory/subtree and20 do not. All remain in the report; five-package samples
+carry full counts and explicit truncation. The17 include copied GDDO BSD,
+libyaml and other distinct scoped texts. Buildx's MPL-marked hclparser scope has
+no selected package here. This is a matching-source result, not an absence proof
+about a published binary that has not been reproduced.
+
+The comparison exposed RP-762: the old function-name matcher misses compiler
+escaping. Go1.24.7's
+[objabi.PathToPrefix](https://github.com/golang/go/blob/go1.24.7/src/cmd/internal/objabi/path.go)
+escapes periods in the final package-path component. The actual Compose binary
+contains `sigs.k8s.io/yaml/goyaml%2ev2` functions; raw `goyaml.v2` did not match.
+V1's zero label remains UNKNOWN and its positive evidence is retained; no
+previous omission was permission to discard those terms.
+
+The [v2 manual binary probe](probes/compose-nested-scopes.v2_test.go.txt) applies
+that encoding separately to exact packages and descendant prefixes. A regression
+fails on the old matcher for the actual escaped YAML name, percent and UTF-8;
+the correction passes those plus subtree, sibling-refusal and ordinary-method
+controls. Full overlaid metadata tests and vet pass. The
+[fresh v2 ELF observation](compose-nested-scopes-observation.v2.json) still checks
+all90,355 functions/all37 candidates:15 positive scopes,22 UNKNOWN. Each of the
+three goyaml.v2 license/NOTICE scopes now matches the same184 actual functions;
+these are three text scopes, not three separate function populations. The two
+other newly source-selected candidates share K8s's spec package and still have
+zero binary-function matches. No absence or inline/data contribution is inferred.
+
+Reproduce the offline source observation with
+`python3 planning/deployment-foundation/probes/compose-import-scopes.py.txt
+--output /tmp/compose-import-scopes.json`. The
+[private controls](probes/compose-import-scopes-controls.py.txt) run the actual
+query before removing a dependency, forging a module h1, changing selected-source
+read bytes or changing an unselected scope's text read bytes. Each refuses;
+existing output also refuses unchanged. These are private returned-byte faults,
+not mutations to shared SDK/checkout/module/archive files. The owning log gives
+the Go test overlay and exact old-failure/new-pass runs. This batch awaits
+independent bounded research/tool review; RP-762 remains review-pending.
+
+This advances complete source/text evidence, not artifact authentication,
+published-build/native correspondence, inline-term clearance, delivery-policy
+adoption or tool redistribution. The four actual root MPL refusals, CLI's native
+and OASIS issues, final notices/covered-source delivery and SP1/native/R-006 gates
+remain OPEN. No application or normal CI behavior changes.
 
 The existing `gen-release-metadata` discovers dependencies of six Cloud Clicker
 Go commands and the built browser client. It does not inspect external CLI/

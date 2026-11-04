@@ -10950,3 +10950,58 @@ archives or resolved37 nested scopes. Next retain that actual scope correlation,
 including main/stdlib terms, with meaningful incomplete/changed-source controls
 and independent review. No shipping build selection, host/native/SP8/R-006,
 release/archival/push approval or goal pause follows. All root handles terminal.
+
+## 2026-11-04 — Bind Compose source scopes and repair escaped binary-name matching
+
+Continue RP-759 with actual pinned source/SDK rather than inferring rights from
+module names or empty symbol matches. Retained offline collector now freshly
+queries1,290 packages:24 main,221 stdlib,1,045 dependency packages, exactly180
+binary-matching module/version/h1 identities and no CGO. Main source is exact
+Git a32dc3da/tree e702be38; SDK is the same publisher-checked Go1.24.7.
+All6,962 inspected source/text files bind to those Git blobs, SDK archive or
+complete h1-verified module archives, then their physical bytes are rechecked.
+Archive hashing and subsequent reads share immutable snapshots. No replacement,
+partial graph, missing owner, source mismatch or guard exhaustion becomes success.
+
+Source observation32bc603fbff0635cc2efb76753cabcdaa8912921ca01f098468a6b9815ea018b,
+204,162bytes; collector b36293daeb85b67ff900984c4af4d1bfd161c2f0e1591c6b766830ed83654fd0,
+17,569bytes. Final positive c7f4ef/95211→a8b883 exits0. Full237 module candidate
+texts plus main2/stdlib6 =245; all37 nested candidates remain,17 source-selected/
+20 with no package selected. Buildx hclparser remains no selected package here,
+not proof of absence from the published binary or authority to discard terms.
+Private controls562b15/72436→41dbeb execute the actual query before four faults:
+remove dependency, forge module h1, alter selected-source read bytes, alter text
+in an unselected scope. All refuse exactly; existing output refuses unchanged.
+No shared inputs, global Go settings, compiler cache, normal tests or CI edited.
+
+RP-762 records a real v1 instrument miss: Go escapes periods in terminal path
+components, so the raw goyaml.v2 prefix missed actual goyaml%2ev2 functions.
+Old matcher plus new regression339c1a/74525→c41ba4 fails exactly on actual YAML,
+percent and UTF-8 cases (Go1/Make2). Keep v1 source/result intact. V2 implements
+pinned Go1.24.7 objabi path encoding separately for exact/subtree prefixes;
+six regression/control cases include ordinary methods and sibling refusal.
+Full cold overlaid metadata package fb0bcc/31122→e4827d passes; overlay vet
+db7f0f passes. Same actual ELF still has90,355 validated functions/all37 scopes:
+15positive/22UNKNOWN. Each of three YAML text scopes has184 function matches,
+not three separate function populations. Two other newly source-positive K8s
+spec texts still have no binary-function match. No inline/data absence inference.
+
+Actual v2 binary report676c0dd7b01d0ec652f022c23ff78244751ba30f422099c6aff8f2aa3d5f4949,
+22,234bytes; Go probe2c1d81065c1d683a61cf015c9b0049aa7a1f504afec8ef9954296fca731a54b3,
+8,622bytes. A first ad-hoc summary printer assumed nil samples were lists and
+raised TypeError; actual Go run/report passed, and corrected parsing preceded
+retention. All handles terminal. Manual Go overlay maps virtual
+server/cmd/gen-release-metadata/manual_compose_scopes_test.go to the retained
+v2 .txt file; local overlay recipe/result pointer is
+.cache/worker-cli-tools/compose-scopes-v2-work.txt. Root make test-go uses
+GO_PACKAGES= and GO_TEST_FLAGS with explicit ./cmd/gen-release-metadata BEFORE
+-args -nested-scope-root <root> -nested-scope-output <fresh-path>; vet uses the
+same -overlay on its package selector. No production source mutations.
+
+Complete nine-path a6592af3..this checkpoint awaits independent research/tool
+review. RP-762 remains review-pending; RP-759 rights/inline/covered-source and
+final delivery, CLI native/OASIS, binary correspondence, shipping/artifact/profile
+adoption and real SP8/native-host/R-006 remain OPEN. Source selection/function
+presence does not adopt terms or ship tools. No normal-CI, product status,
+release/archival/push approval or goal pause. Review by: Codex root, implementer
+first filter. Recorded by: Codex root.

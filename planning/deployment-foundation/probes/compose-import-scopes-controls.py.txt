@@ -1,0 +1,70 @@
+"""Manual private invalid-input controls; run at repo root with Python 3.
+
+Four controls execute the real pinned offline source query. Only private query
+results or returned read bytes change; shared source/tool/archive files do not.
+"""
+import importlib.machinery
+import importlib.util
+import json
+from pathlib import Path
+import subprocess
+import sys
+
+sys.dont_write_bytecode = True
+path = Path(__file__).with_name("compose-import-scopes.py.txt")
+loader = importlib.machinery.SourceFileLoader("compose_scopes", str(path))
+spec = importlib.util.spec_from_loader(loader.name, loader)
+module = importlib.util.module_from_spec(spec)
+loader.exec_module(module)
+original_run, original_regular = module.cli.run, module.regular
+cache = Path(".cache/worker-cli-tools")
+outcomes = {}
+expected = {"missing_dependency": "dependency graph is not closed over Compose Deps",
+            "wrong_module_h1": "module/version/h1 differs from actual binary",
+            "changed_selected_source": "selected module source differs from h1 archive",
+            "changed_unselected_scope_text": "selected module source differs from h1 archive"}
+for fault, diagnostic in expected.items():
+    state = {"queried": False, "fault_fired": False, "target": None}
+    def intercepted_run(args, env=None):
+        data = original_run(args, env)
+        if "list" not in args:
+            return data
+        state["queried"] = True
+        rows = module.graph_rows(data)
+        if fault == "missing_dependency":
+            rows.remove(next(r for r in rows if r.get("Module") and not r["Module"].get("Main")))
+            state["fault_fired"] = True
+        elif fault == "wrong_module_h1":
+            row = next(r for r in rows if r.get("Module") and not r["Module"].get("Main"))
+            row["Module"]["Sum"] = "h1:private-invalid-control"
+            state["fault_fired"] = True
+        else:
+            row = next(r for r in rows if r.get("Module", {}).get("Path") ==
+                       ("github.com/hashicorp/go-version" if fault == "changed_selected_source" else "github.com/docker/buildx"))
+            state["target"] = (Path(row["Module"]["Dir"]) / "version.go" if fault == "changed_selected_source" else
+                               Path(row["Module"]["Dir"]) / "bake/hclparser/LICENSE")
+        return b"\n".join(json.dumps(r).encode() for r in rows)
+    def intercepted_read(path, root):
+        data = original_regular(path, root)
+        if state["target"] == path:
+            state["fault_fired"] = True
+            return data + b"\nprivate-invalid-control\n"
+        return data
+    module.cli.run, module.regular = intercepted_run, intercepted_read
+    try:
+        module.inspect(cache)
+    except ValueError as error:
+        assert state["queried"] and state["fault_fired"], (fault, state, str(error))
+        assert str(error) == diagnostic, (fault, str(error))
+        outcomes[fault] = str(error)
+    else:
+        raise AssertionError("invalid input accepted: " + fault)
+    finally:
+        module.cli.run, module.regular = original_run, original_regular
+observation = Path("planning/deployment-foundation/compose-import-scopes-observation.v1.json")
+before = observation.read_bytes()
+result = subprocess.run([sys.executable, str(path), "--output", str(observation)], capture_output=True, timeout=120)
+assert result.returncode != 0 and b"refuse to overwrite existing observation" in result.stderr
+assert observation.read_bytes() == before
+outcomes["existing_output"] = "refused; exact bytes unchanged"
+print(json.dumps(outcomes, sort_keys=True, indent=2))

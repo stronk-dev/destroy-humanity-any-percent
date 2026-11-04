@@ -1,0 +1,289 @@
+"""Manual offline Compose source-input/scope correlation; run at repo root.
+
+Uses the already downloaded pinned SDK, checkout and module archives. Source
+selection is not a reproduced binary or legal applicability/clearance decision.
+No CLI/Compose execution, compiler invocation, module installation or network.
+"""
+
+import argparse
+import collections
+import hashlib
+import importlib.machinery
+import importlib.util
+import io
+import json
+import os
+from pathlib import Path, PurePosixPath
+import sys
+import tarfile
+import time
+from types import SimpleNamespace
+import zipfile
+
+sys.dont_write_bytecode = True
+
+
+def load(name, filename, expected):
+    path = Path(__file__).with_name(filename)
+    data = path.read_bytes()
+    if hashlib.sha256(data).hexdigest() != expected:
+        raise ValueError("reviewed helper changed: " + filename)
+    loader = importlib.machinery.SourceFileLoader(name, str(path))
+    spec = importlib.util.spec_from_loader(loader.name, loader)
+    module = importlib.util.module_from_spec(spec)
+    loader.exec_module(module)
+    return module
+
+
+cli = load("cli_scopes", "cli-source-inventory.py.txt",
+           "269905fa322c89d57ba593a28cc7c4eac8be0467e4349fdbe86889c533fd45df")
+sources = load("compose_sources", "compose-source-notices.py.txt",
+               "1213aa77f80f9da4714bad653008cfaca0ade2b66b0e045821cd437248a1155b")
+require, sha, digest, canonical, regular = cli.require, cli.sha, cli.digest, cli.canonical, cli.regular
+REVISION = "a32dc3da722e6b2e4fbfc72e40b1a697c4686460"
+TREE = "e702be38be3400928f7ad9e94470ad0cd6cff512"
+SOURCE_OBSERVATION_SHA = "c922cfefcf3b77abe7c0739b869e978f70baf52243f9fffafad3c9ba48502e61"
+INVENTORY_SHA = "b50423863a7348fba321c4d509f11dd68a6e1df93a48acac943464a9ce3236d1"
+COMMAND = "github.com/docker/compose/v2/cmd"
+TARGET = {"GOOS": "linux", "GOARCH": "amd64", "GOAMD64": "v1", "CGO_ENABLED": "0",
+          "GO111MODULE": "on", "GOEXPERIMENT": ""}
+
+
+class ArchiveSnapshot(io.BytesIO):
+    def stat(self):
+        return SimpleNamespace(st_size=len(self.getbuffer()))
+
+
+def graph_rows(data):
+    decoder, offset, rows = json.JSONDecoder(), 0, []
+    text = data.decode()
+    while offset < len(text):
+        while offset < len(text) and text[offset].isspace():
+            offset += 1
+        if offset == len(text):
+            break
+        row, offset = decoder.raw_decode(text, offset)
+        require(isinstance(row, dict) and row.get("ImportPath") and row.get("Dir"), "invalid package row")
+        require(not any(row.get(k) for k in ("Error", "DepsErrors", "Incomplete")), "incomplete package graph")
+        require(not row.get("CgoFiles"), "unexpected CGO source in CGO0 query")
+        rows.append(row)
+    names = [r["ImportPath"] for r in rows]
+    require(bool(names) and len(names) == len(set(names)), "empty/duplicate package graph")
+    require(names.count(COMMAND) == 1, "missing actual Compose command")
+    main = next(r for r in rows if r["ImportPath"] == COMMAND)
+    require(set(names) == set(main.get("Deps", [])) | {COMMAND}, "dependency graph is not closed over Compose Deps")
+    return rows
+
+
+def inspect(cache):
+    cache, root = cache.resolve(), Path.cwd().resolve()
+    deadline = time.monotonic() + 600  # unchanged offline source-collection guard
+    source, sdk = cache / "compose-source", cache / "toolchains/go1.24.7-darwin-arm64/go"
+    sdk_archive = cache / "go1.24.7.darwin-arm64.tar.gz"
+    sdk_bytes = sdk_archive.read_bytes()
+    require(len(sdk_bytes) == 76295172 and sha(sdk_bytes) == cli.SDK_SHA, "SDK publisher checksum/size mismatch")
+    inventory_bytes = (root / "planning/deployment-foundation/native-tool-inventory-observation.v1.json").read_bytes()
+    observation_bytes = (root / "planning/deployment-foundation/compose-source-notices-observation.v2.json").read_bytes()
+    require(sha(inventory_bytes) == INVENTORY_SHA and sha(observation_bytes) == SOURCE_OBSERVATION_SHA,
+            "prior source/inventory observation changed")
+    inventory, observation = json.loads(inventory_bytes), json.loads(observation_bytes)
+    require(observation["objective_completed"] and observation["inventory_sha256"] == INVENTORY_SHA,
+            "incomplete source observation")
+    expected = {r["path"]: (r["version"], r["sum"]) for r in inventory["compose"]["binary"]["modules"]}
+    prior = {r["path"]: r for r in observation["modules"]}
+    require(len(expected) == len(prior) == 180 and set(expected) == set(prior), "complete pinned modules required")
+    binary = (cache / "plugins/docker-compose").read_bytes()
+    require(digest(binary) == {k: inventory["compose"]["binary"][k] for k in ("bytes", "sha256")},
+            "actual Compose binary changed")
+    git = ["git", "-C", str(source)]
+    require(cli.run(git + ["rev-parse", "HEAD"]).decode().strip() == REVISION, "wrong main source revision")
+    require(cli.run(git + ["rev-parse", "HEAD^{tree}"]).decode().strip() == TREE, "wrong main source tree")
+    require(not cli.run(git + ["status", "--porcelain=v1", "--untracked-files=all"]), "dirty main source")
+    tracked = {}
+    for entry in cli.run(git + ["ls-tree", "-rz", "HEAD"]).split(b"\0"):
+        if entry:
+            metadata, name = entry.split(b"\t", 1)
+            tracked[name.decode()] = tuple(metadata.decode().split())
+    sdk_files, sdk_names = {}, set()
+    with tarfile.open(fileobj=io.BytesIO(sdk_bytes), mode="r:gz") as tar:
+        for member in tar:
+            sources.check(deadline)
+            relative = Path(member.name)
+            require(member.name not in sdk_names and relative.parts[0] == "go" and
+                    not relative.is_absolute() and ".." not in relative.parts, "invalid/duplicate SDK path")
+            sdk_names.add(member.name)
+            path = sdk / Path(*relative.parts[1:])
+            if member.isdir():
+                require(path.resolve() == path and path.is_dir(), "SDK directory differs from archive")
+            else:
+                require(member.isfile(), "nonregular SDK archive entry")
+                identity = digest(tar.extractfile(member).read())
+                require(digest(regular(path, sdk)) == identity, "extracted SDK differs from archive")
+                sdk_files[path.relative_to(sdk).as_posix()] = identity
+    require({p.relative_to(sdk).as_posix() for p in sdk.rglob("*")} ==
+            {Path(n).relative_to("go").as_posix() for n in sdk_names if n != "go"}, "extra/missing SDK entries")
+    executable = sdk / "bin/go"
+    require(cli.run([str(executable), "version"]).decode().strip() == "go version go1.24.7 darwin/arm64",
+            "unexpected SDK version")
+    env = dict(os.environ)
+    for key in (*TARGET, "GOPATH", "GOTOOLCHAIN", "GOFLAGS", "GOWORK", "GOENV", "GOROOT"):
+        env.pop(key, None)
+    env.update(TARGET, GOTOOLCHAIN="local", GOFLAGS="-mod=readonly", GOWORK="off", GOENV="off",
+               GOCACHE=str(root / ".cache/go-build"), GOPROXY="off", GOSUMDB="sum.golang.org",
+               GOPRIVATE="", GONOPROXY="none", GONOSUMDB="none", GOINSECURE="", GOAUTH="off", GOVCS="*:off")
+    gomodcache = Path(cli.run([str(executable), "env", "GOMODCACHE"], env).decode().strip()).resolve()
+    query = ["list", "-deps", "-json", "-tags=e2e", "./cmd"]
+    rows = graph_rows(cli.run([str(executable), "-C", str(source), *query], env))
+    grouped, package_manifest = collections.defaultdict(list), {}
+    roots, kinds, versions = {"go": sdk, "github.com/docker/compose/v2": source}, {}, {}
+    for row in sorted(rows, key=lambda r: r["ImportPath"]):
+        sources.check(deadline)
+        directory, module = Path(row["Dir"]), row.get("Module")
+        if row.get("Standard"):
+            require(directory.is_relative_to(sdk / "src"), "stdlib outside selected SDK")
+            owner, version, kind = "go", "go1.24.7", "standard"
+        else:
+            require(module is not None and not module.get("Replace"), "missing/replaced source module")
+            owner = module["Path"]
+            if module.get("Main"):
+                require(owner == "github.com/docker/compose/v2" and Path(module["Dir"]) == source,
+                        "wrong main module")
+                version, kind = "v2.39.4", "main"
+            else:
+                require(owner in expected and (module.get("Version"), module.get("Sum")) == expected[owner],
+                        "module/version/h1 differs from actual binary")
+                version, kind = module["Version"], "dependency"
+                module_root = gomodcache / (sources.escaped(owner) + "@" + sources.escaped(version))
+                require(Path(module["Dir"]) == module_root, "unexpected module source directory")
+                roots[owner] = module_root
+            require(directory.is_relative_to(roots[owner]) and
+                    row["ImportPath"] == owner + ("/" + directory.relative_to(roots[owner]).as_posix()
+                        if directory != roots[owner] else ""), "import/source-directory disagreement")
+        require(owner not in versions or (versions[owner], kinds[owner]) == (version, kind), "conflicting owner")
+        versions[owner], kinds[owner] = version, kind
+        grouped[owner].append(row)
+        package_manifest[row["ImportPath"]] = {"owner": owner, "version": version,
+            "directory": directory.relative_to(roots[owner]).as_posix()}
+    require({o for o in grouped if kinds[o] == "dependency"} == set(expected), "source graph misses binary modules")
+    files, owners, nested, counts = {}, {}, [], collections.Counter()
+
+    def compare_file(path, owner, archived_bytes=None):
+        data = regular(path, roots[owner])
+        relative = path.relative_to(roots[owner]).as_posix()
+        if owner == "go":
+            require(sdk_files.get(relative) == digest(data), "selected SDK input differs from pinned archive")
+        elif kinds[owner] == "main":
+            row = tracked.get(relative)
+            require(row is not None and row[0] in ("100644", "100755") and row[1] == "blob", "untracked main input")
+            require(hashlib.sha1(b"blob " + str(len(data)).encode() + b"\0" + data).hexdigest() == row[2],
+                    "selected main input differs from pinned Git tree")
+        else:
+            require(archived_bytes is not None and data == archived_bytes, "selected module source differs from h1 archive")
+        files[owner + ":" + relative] = digest(data)
+        return data
+
+    for owner, packages in sorted(grouped.items()):
+        sources.check(deadline)
+        kind, owner_root, candidates = kinds[owner], roots[owner], []
+        archive = None
+        if kind == "dependency":
+            version, expected_h1 = expected[owner]
+            old = prior[owner]
+            require((old["version"], old["expected_h1"], old["observed_h1"]) ==
+                    (version, expected_h1, expected_h1), "prior source identity mismatch")
+            path = cache / "module-sources" / (sha((owner + "@" + version).encode()) + ".zip")
+            if not path.exists():
+                path = gomodcache / "cache/download" / sources.escaped(owner) / "@v" / (sources.escaped(version) + ".zip")
+            raw = path.read_bytes()
+            require(digest(raw) == {"bytes": old["archive_bytes"], "sha256": old["archive_sha256"]}, "module archive changed")
+            observed_h1, observed_notices = sources.inspect_zip(ArchiveSnapshot(raw),
+                {"path": owner, "version": version}, expected_h1, deadline)
+            require(observed_h1 == expected_h1 and
+                    [{k: v for k, v in n.items() if k != "content"} for n in observed_notices] == old["notices"],
+                    "module source/notice population changed")
+            archive = zipfile.ZipFile(io.BytesIO(raw))
+            prefix = owner + "@" + version + "/"
+            for notice in old["notices"]:
+                candidates.append({"path": notice["module_path"], "sha256": notice["sha256"], "bytes": notice["bytes"]})
+        try:
+            for package in packages:
+                counts[kind] += 1
+                directory = Path(package["Dir"])
+                for field in cli.FILE_FIELDS:
+                    for name in package.get(field, []):
+                        path = directory / name
+                        compare_file(path, owner, archive.read(prefix + path.relative_to(owner_root).as_posix()) if archive else None)
+                if kind != "dependency":
+                    current = directory
+                    while True:
+                        for path in sorted(current.iterdir()):
+                            if cli.named(path.name, ("license", "copying", "notice")):
+                                data = compare_file(path, owner)
+                                require(bool(data.strip()), "empty main/SDK notice")
+                                candidates.append({"path": path.relative_to(owner_root).as_posix(), **digest(data)})
+                        if current == owner_root:
+                            break
+                        current = current.parent
+                        require(current.is_relative_to(owner_root), "scope outside source owner")
+            unique = {r["path"]: r for r in candidates}
+            require(len(unique) == len(candidates) or kind != "dependency", "duplicate archived notice")
+            correlated = []
+            for relative, notice in sorted(unique.items()):
+                directory = PurePosixPath(relative).parent
+                matching = sorted(p["ImportPath"] for p in packages if
+                    Path(p["Dir"]).relative_to(owner_root).as_posix() == str(directory) or
+                    directory == PurePosixPath(".") or
+                    Path(p["Dir"]).relative_to(owner_root).as_posix().startswith(str(directory) + "/"))
+                if archive:
+                    data = compare_file(owner_root / relative, owner, archive.read(prefix + relative))
+                    require(digest(data) == {"bytes": notice["bytes"], "sha256": notice["sha256"]}, "scoped text changed")
+                record = {**notice, "selected_package_count": len(matching), "package_sample": matching[:5],
+                          "sample_truncated": len(matching) > 5,
+                          "source_status": "selected_package_in_scope" if matching else "no_package_selected_in_scope",
+                          "binary_absence_proven": False, "license_applicability_decided": False}
+                correlated.append(record)
+                if kind == "dependency" and "/" in relative:
+                    nested.append({"owner": owner, "version": versions[owner], **record})
+            owners[owner] = {"version": versions[owner], "kind": kind, "package_count": len(packages),
+                             "package_names_sha256": sha(canonical(sorted(p["ImportPath"] for p in packages))),
+                             "scoped_candidates": correlated}
+        finally:
+            if archive:
+                archive.close()
+    # Recheck inspected bytes; cached extraction/source drift cannot pass silently.
+    for key, identity in files.items():
+        sources.check(deadline)
+        owner, relative = key.split(":", 1)
+        require(digest(regular(roots[owner] / relative, roots[owner])) == identity, "inspected source changed")
+    require(len(nested) == 37, "complete nested candidate population required")
+    require(not cli.run(git + ["status", "--porcelain=v1", "--untracked-files=all"]), "main source changed")
+    sources.check(deadline)
+    return {"schema_version": 1, "inspection_complete": True, "failures": [], "exclusions": [],
+            "guard_exhausted": False, "guard_seconds": 600, "distribution_approved": False,
+            "published_binary_reproduced": False, "license_classification_complete": False,
+            "inputs": {"source_observation_sha256": SOURCE_OBSERVATION_SHA, "inventory_sha256": INVENTORY_SHA,
+                       "actual_binary": digest(binary), "source_revision": REVISION, "source_tree": TREE,
+                       "sdk_archive": digest(sdk_bytes)},
+            "query": {"arguments": query, "target": TARGET, "offline": True, "exit_code": 0},
+            "counts": dict(sorted(counts.items())), "selected_files": len(files), "selected_files_sha256": sha(canonical(files)),
+            "package_ownership_sha256": sha(canonical(package_manifest)), "owners": owners,
+            "nested_candidates": nested,
+            "limitations": ["Source query is not a reproduced published binary or complete binary provenance map",
+                "No selected package in a source scope does not prove published-binary absence or permission to exclude terms",
+                "Named-file collection does not settle inline/header terms or legal applicability/redistribution rights",
+                "No shipping-tool selection, policy adoption, native conformance or SP8/AC8/R-006 acceptance"]}
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--cache", type=Path, default=Path(".cache/worker-cli-tools"))
+    parser.add_argument("--output", type=Path, required=True)
+    args = parser.parse_args()
+    require(not args.output.exists(), "refuse to overwrite existing observation")
+    result = inspect(args.cache)
+    result["probe"] = digest(Path(__file__).read_bytes())
+    with args.output.open("x") as output:
+        json.dump(result, output, sort_keys=True, indent=2)
+        output.write("\n")
+    print(json.dumps({"counts": result["counts"], "selected_files": result["selected_files"],
+                      "nested": len(result["nested_candidates"]), "output": str(args.output)}))

@@ -15,7 +15,10 @@ paths, with known-grant union and complete refusal controls. Reviewer output has
 matches recorded attribution. RP-761 is CLOSED for this application defect;
 external-tool/MPL/source-rights, native/adoption and full release gates remain.
 The prior seven-path nested-observation batch1cc6762a..7623cf93 is independently
-approved;12positive/25UNKNOWN tool scopes remain bounded evidence. RP-760 stays
+approved; its v1 evidence is12positive/25UNKNOWN. RP-762 now corrects the missed
+escaped YAML names with a retained v2 probe:15positive/22UNKNOWN, review pending.
+The matching Compose source query selects17 nested scopes and no package under20;
+neither zero result is binary absence or license clearance. RP-760 stays
 closed within its original root-NOTICE scope.
 
 **Application attribution correction,2026-11-04 (RP-760):** independently
@@ -55,9 +58,15 @@ seven-path66625d72..ac45914c independently APPROVED as bounded research/tool;
 fresh observation is byte-identical and all seven controls pass. This is source selection, not the
 published binary's compiler/link map. Three declared CGO packages and distinct
 inline OASIS header terms leave native/rights closure open; see the audit.
-Next resolve covered-source/notices delivery, Compose nested/main/stdlib scope,
-CLI inline/header terms, binary/source correspondence and exact native linked
-components before shipping/adoption readiness.
+The Compose matching-source collector now binds1,290 packages/180 module h1
+identities and6,962 inspected source/text files to Git/SDK/module archives;
+245 named candidates include main/stdlib and every prior237 module text.
+Four real-query source/graph faults plus no-overwrite refuse. Full overlaid
+metadata tests/vet and actual corrected90,355-function probe pass. Complete
+source/symbol batch awaits independent review; see latest log/probes.
+Next resolve covered-source/notices delivery and inline/header terms, plus
+published-binary/source correspondence and CLI's exact native linked components
+before shipping/adoption readiness. Source selection is not a rights decision.
 
 Next complete the exact CLI/Compose provenance/rights/artifact inventory and
 DP7 projection/reboot-cache adoption evidence required by SP1/SP6; obtain explicit
