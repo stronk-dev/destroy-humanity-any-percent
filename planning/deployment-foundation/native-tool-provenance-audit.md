@@ -444,7 +444,7 @@ subject refuses; the actual different binary refuses original-identity binding;
 the exact same member accepts that narrow byte-identity check. A private real-ELF
 data-only change preserves executable bytes but still refuses identity. This
 discriminates the tempting wrong inference from code equality. No shared input
-bytes change. This complete OCI research batch awaits independent review.
+bytes change. Complete six-path dc0c652c..53280165 is independently APPROVED as bounded research/tool. Fresh full metadata overlay/vet, exact report bytes and all subject/identity/data-only controls reproduce. No original provenance or native/rights acceptance follows; see the owning log.
 
 DP1/AC8 require truthful artifact hashes, SBOM, license delivery and source/image
 provenance validation. This audit does not add a universal requirement to

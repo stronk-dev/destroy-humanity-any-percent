@@ -11305,3 +11305,50 @@ package/header/CRT scope by naming a base. No production, normal tests/CI, RFC,
 dependency or kernel change. No packaging/native/SP8/R-006, release/archival/
 push approval or goal pause. Review by: Codex root, implementer first filter.
 Recorded by: Codex root.
+
+## 2026-11-04 — OCI scope comparison independently approved; terms preparation
+
+APPROVED, bounded research/tool only, exact complete six-path
+dc0c652cb3eb4f7b4d8fec5c17e890c49bc59e90..
+53280165100e7305e7ceab0bb8dceb349c3eb6a9.
+Review by: independent Codex /root/native_supervisor_profile_review.
+Recorded by: Codex root, transcribing completed verdict. No material findings.
+
+Full metadata overlay/vet pass; report17,870bytes/SHA78f764f3 matches exactly,
+prior native snapshot unchanged. Foreign subject, actual different artifact,
+exact self-binding and private data-only/unchanged-code controls all execute.
+All41 sections/330 native ranges reproduce; independent ELF flag/address checks
+agree. Four sections differ; equal code remains insufficient for original
+provenance. Digest/size/image-subject/config/diff-id/sole-member checks inspected.
+Signature/reproduced-upstream gates are not invented. Exact-range whitespace,
+production/normal-test/CI/RFC exclusion and clean-tree checks pass; no tracked
+reviewer changes. RP-759 inventory/terms/delivery/provenance/adoption remains OPEN.
+
+Separate ignored-only terms preparation, not included in this verdict: primary
+GNU Runtime Library Exception3.1 and OASIS IPR policy pages fetch through direct
+curl after browser fetch errors. Cached GNU HTML15,177bytes/
+SHAd97c26b0fc53c12eac9e58822885b3e33506c5abcb6f5e5fc1235b557c10457c;
+OASIS HTML202,793bytes/SHAa7bc6bab44b783decc18786d196c4997d9c81b4ff62a131759e585e1518a5fbc.
+Plain-text derivatives are convenience views, not substituted source documents.
+The current OASIS policy does not by itself settle the version/deliverable grant
+applicable to the2016 PKCS11 headers. No legal applicability or grant inferred.
+
+Primary GCC mirror releases/gcc-14.2.0/libgcc/crtstuff.c candidate downloaded,
+26,399bytes/SHA5859380c2242ce108b323fe216847df6f2be052fa98ca56eb6284daacda3befd.
+Its own notice specifies GPLv3-or-later plus Runtime Library Exception3.1;
+the exception text conditions its additional permission on eligible compilation
+and applies only to files bearing the notice. This is a SOURCE CANDIDATE for an
+unmapped basename, not demonstrated original CRT source or an automatic license
+conclusion about our artifact. Do not label it MIT/Apache or widen the app's
+permissive detector. Source URLs: https://www.gnu.org/licenses/gcc-exception-3.1.html,
+https://www.oasis-open.org/policies-guidelines/ipr/,
+https://github.com/gcc-mirror/gcc/blob/releases/gcc-14.2.0/libgcc/crtstuff.c.
+No binary/source/policy edits or actual CRT identification result from fetching.
+
+Next make the per-tool inventory and source/notice delivery proposal concrete,
+using known module/MPL/native/header evidence and explicit unresolved terms or
+artifact choices. The accepted DP1 floor requires honest provenance and delivery,
+not endless path-only matching or new cryptographic gates. Resolve applicable
+adoption before packaging/native producers; preserve host/SP8/R-006/full1.0
+requirements. All handles terminal; no push, deployment, archival, release
+approval, tool substitution, product promotion or goal pause.
