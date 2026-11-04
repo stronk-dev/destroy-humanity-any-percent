@@ -10700,3 +10700,30 @@ NOTICE-only control984d6a/89119→7dc759 additionally passes: even valid MIT gra
 text in NOTICE cannot supply a missing LICENSE. All focused notice cases execute
 cold; final plan wording cleaned up. Production bytes remain those exercised by
 full package/vet and committed-source generation; no redundant full rebuild.
+
+## 2026-11-04 — Root NOTICE correction independently approved
+
+APPROVED, scoped corrective code under existing DP1/AC8. Exact complete eight-path
+9cde3a64ea2b356473de0ac467a97d02e6d56f2b..
+0c746ca13d5e4cf56bf438edd39a1442f76908d5.
+Review by: fresh independent Codex /root/notice_delivery_corrective_review.
+Recorded by: Codex root, transcribing the completed verdict. No actionable finding.
+
+Reviewer executes cold full affected packages/vet, current actual Prometheus
+regression, private old-source compiler overlay and fresh root metadata generator.
+Old source FAILS at exactly required NOTICE omission; corrected source passes.
+An initial Make-consumed anchored selector executed no tests and is discarded.
+Actual53-dependency output retains full target NOTICE with unchanged Apache2.0
+SPDX and byte-identical third-party attribution SHA256
+7d4186dee61c36cf63d6de4e11afe205063f3af94aa97cae0271a67f98133769.
+Root NOTICE/optional-invalid cases, JS/CSS physical-copy agreement, missing-license
+refusal, selected stdlib directory and unchanged no-NOTICE formatting inspected.
+Gofmt/range whitespace clean; no tracked reviewer edits. Private review evidence
+is retained under /private/tmp/cloud-clicker-notice-review-ung5q6d1/.
+
+RP-760 closes this actual root-NOTICE defect. Full nested attribution, MPL/tool
+redistribution/source-rights closure, architecture adoption, native-host/R-006
+and whole1.0 remain OPEN. No release acceptance, publication/deployment/archival
+or goal pause follows. Next resume those concrete source/delivery scopes under
+RP-759 and the reviewed native-profile prerequisites; do not reopen the corrected
+root NOTICE omission or infer clearance from its closure.

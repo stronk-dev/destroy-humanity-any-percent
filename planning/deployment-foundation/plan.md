@@ -7,13 +7,13 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
-**Application attribution correction,2026-11-04 (RP-760):** actual linked
-Prometheus NOTICE omission reproduces under the existing generator. Separate
-notice delivery and physical-copy agreement now pass the real regression, full
-affected metadata packages and vet. Canonical docs updated.
-Independent corrective review is next. Actual committed4f17a1f8 metadata generation
-completes53 dependencies and delivers full Prometheus NOTICE with unchanged SPDX
-classification. This changes no license allowlist or tool-distribution policy.
+**Application attribution correction,2026-11-04 (RP-760):** independently
+APPROVED complete8-path9cde3a64..0c746ca1. Old actual Prometheus NOTICE omission
+reproduces; corrected full metadata packages/vet and committed-source generator
+pass. Independent generated attribution matches the recorded SHA256, preserving
+SPDX/allowlist and requiring complete browser-copy agreement. RP-760 is CLOSED
+for this root-NOTICE defect; canonical docs describe delivery. Nested/MPL/tool/
+source-rights, native architecture/adoption and full release gates remain separate.
 
 **Native profile construction,2026-11-04:**
 Complete corrected proposal is independently TECHNICALLY APPROVED, exact union
