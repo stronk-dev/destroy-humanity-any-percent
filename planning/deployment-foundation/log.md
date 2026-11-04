@@ -10676,3 +10676,22 @@ built browser inputs, then independently review the coherent correction range.
 RP-760 remains review-pending, not closed by this first filter. No publication,
 deployment, archival, owner adoption, release promotion or goal pause.
 Review by: Codex root, implementer first filter. Recorded by: Codex root.
+
+## 2026-11-04 — Committed-source application metadata generation confirms NOTICE delivery
+
+At clean committed4f17a1f84c8106ad6e6f223a652a2e7dd36802eb, root
+make generate-release-metadataa31442/20519→43d0f1 completes53 dependencies with
+existing built-client inputs. Explicit diagnostic version0.0.0-notice-check,
+commit4f17a1f8, created2026-11-04T13:31:19Z; this is metadata generation, not a
+release bundle/build/rehearsal. Owned output directory is recorded locally in
+.cache/worker-cli-tools/notice-metadata-output.txt for reviewer reproduction.
+
+Actual output2a7640 contains full selected Prometheus NOTICE in that exact
+module's section, with SPDX declared/concluded Apache2.0 unchanged. SPDX2.3 has
+53 dependency packages plus application. Output identities:
+sbom.spdx.json41,615bytes SHA256b8a4b05a251f172d5fe45906cfdabbdbfa941680aebe1bc75554ef52ef6a0a3f;
+third-party-licenses.txt155,397bytes SHA2567d4186dee61c36cf63d6de4e11afe205063f3af94aa97cae0271a67f98133769.
+No external tool/MPL clearance or exact release/candidate proof inferred.
+Next independent corrective review of full9cde3a64..this checkpoint, including
+old-behavior discrimination and all code/tests/docs/records. RP-760 remains OPEN
+until that verdict; other rights/source/native/adoption/R-006 obligations remain.

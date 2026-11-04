@@ -11,8 +11,9 @@
 Prometheus NOTICE omission reproduces under the existing generator. Separate
 notice delivery and physical-copy agreement now pass the real regression, full
 affected metadata packages and vet. Canonical docs updated. Next run actual
-metadata generation from committed code and obtain independent corrective review;
-this changes no license allowlist or proposed tool-distribution policy.
+Independent corrective review is next. Actual committed4f17a1f8 metadata generation
+completes53 dependencies and delivers full Prometheus NOTICE with unchanged SPDX
+classification. This changes no license allowlist or tool-distribution policy.
 
 **Native profile construction,2026-11-04:**
 Complete corrected proposal is independently TECHNICALLY APPROVED, exact union
