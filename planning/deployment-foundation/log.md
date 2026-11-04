@@ -10446,3 +10446,34 @@ corrections requiring complete original-plus-correction re-review. All native
 producer/compatibility/adoption/SP8/R-006 gates stay OPEN. No software/CI/balance/
 copy bytes or goal pause; no push/deployment/archival. Diff checked; no unrelated
 software suite for normative Markdown. Research negative and both verdicts remain.
+
+## 2026-11-04 — Worker transport re-review and final forward correction
+
+CHANGES REQUIRED, reviewed native union c58f8e48..224fc0e2 plus
+4118c4d8dfd48be110f99c21f79e068b9004ef07..
+34a60697b9a257396cc53ad232d9d308e9d09412; Headcount editorial excluded.
+Review by: independent Codex /root/native_supervisor_profile_review.
+Recorded by: Codex root. Prior volume bootstrap/closed child edges/E07 timing/
+fencing cache findings are substantively corrected. W00 still incorrectly makes
+the shared-Postgres Go leaf PID1, omits leaf traversal permissions, and closes the
+only possible child result-FD channel on exec. V00 also ambiguously calls the
+initial transition itself null. No technical approval; original verdicts remain.
+
+Forward correction names operator-owned0711 job leaf/0666 socket beneath0700
+host parent, read-only worker mount and real cross-UID positive/negative controls.
+Hello is mode-discriminated: private init PID1 versus fixed non-PID1 Go observer
+in the admitted PG namespace, carrying native self/namespace and original PG-init
+pidfds; native host/CID/peer mapping is mandatory. No host ptrace bypass.
+Only backup/mount-inspection children receive a distinct local SEQPACKET result
+pair, with exact work/kind/one-FD messages and native child-writer validation.
+The original PID1 shim forwards AFTER actual child/IO exit; no supervisor control
+FD survives command exec. Shared Go leaf stays fixed in-process/no-fork. The
+initial observation keeps transition=initial and precisely names its two null
+keys. These are author first-filter corrections, not runtime evidence.
+
+Reviewer checked both exact-range whitespace and unchanged production/probe/
+observation bytes; preceding independently executed diagnostic/vet remain applicable.
+No redundant software rerun or new runtime/CI claim. Next complete corrected-union
+independent re-review; then actual producer/native conformance and explicit
+adoption, never table-only acceptance. RP-754/756/757/758 and R-006 remain OPEN;
+no host/secret/publication/deployment/archival action or goal pause.

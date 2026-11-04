@@ -8,6 +8,12 @@
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
 **Native profile construction,2026-11-04:**
+Most recent re-review through34a60697 confirms the prior volume/graph/E07/cache
+corrections but requires W00 shared-Go-leaf mode, cross-UID leaf traversal and
+post-exec result-FD transport, plus precise V00 initial nullable keys. Forward
+correction now specifies those; complete-union re-review is next. No native
+producer/profile/host/adoption or release proof is inferred.
+
 Latest complete-union review through224fc0e2 is CHANGES REQUIRED: temporary
 worker control/FD transport, first-volume physical-binding bootstrap, finite
 child-graph/E07 start timing, and fencing cache admission. Forward W00/V00 and

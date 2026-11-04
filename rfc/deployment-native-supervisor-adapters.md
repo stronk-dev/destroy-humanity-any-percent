@@ -256,13 +256,17 @@ No sudo/chown/permission bypass, new key or silent sslmode downgrade is assumed.
 ## W00 — Temporary-job control and descriptor transport
 
 This is DISTINCT from A6's service leaf. For each admitted temporary namespace,
-the supervisor creates `job-ipc/<generation>` under its0700 root, binds a0666
-SEQPACKET listener before E07, and mounts ONLY that exact leaf read-only into
+the supervisor creates operator-owned mode0711 `job-ipc/<generation>` under
+its0700 root, binds its operator-owned0666 SEQPACKET socket before E07, and mounts
+ONLY that exact leaf read-only into
 that job at /run/job-control. No service-cache/state/daemon/ledger/lock directory
 or handle is exposed. Connecting to the Unix socket does not require a writable
 mount; unlink/create through this mount must fail. Close/unlink the host-owned
-leaf only after original peers and the complete job scope are terminal. Unknown
-mount or inode substitution refuses before dispatch.
+leaf only after original peers and the complete job scope are terminal. UID70/
+65532 get traversal of this exact leaf, not listing/write access or traversal of
+the unmounted0700 host parent. Native conformance must connect under each actual
+job UID and refuse create/unlink/parent traversal; socket0666 alone is not proof.
+Unknown mount or inode substitution refuses before dispatch.
 
 Canonical messages have exact keys `schema_version:1`, `operation_id`, `phase`,
 `job_work_id`, `command_work_id`, `sequence`, `challenge`, `command`, `payload`.
@@ -273,10 +277,18 @@ from CALL ENTRY, before waiting for admission and again before acceptance. No
 late/queued/cancelled response or successful send is completion evidence.
 
 The supervisor starts each connection with command challenge, empty payload and
-no FDs. The fixed PID1 Go shim connects before any command or secret read. Its hello
-payload is exactly `{role, generation, namespace_pid, descriptors}`: namespace_pid
-is1; descriptor roles are `[self_pidfd, pid_namespace]`, with those two original
-SCM_RIGHTS FDs in that order. The supervisor obtains actual kernel writer UID/PID
+no FDs. The fixed Go entry connects before any command or secret read. Its hello
+payload is exactly `{role, generation, scope_mode, namespace_pid, descriptors}`.
+For private_pid_namespace it is the PID1 shim: namespace_pid is1 and descriptor
+roles are `[self_pidfd, pid_namespace]`, those two original SCM_RIGHTS FDs in order.
+For trusted_go_leaf it is ONLY observe_native in the exact Postgres namespace:
+namespace_pid is its actual positive NON-1 PID; descriptors are
+`[self_pidfd, pid_namespace, postgres_init_pidfd]`. The third is the original
+pidfd opened for namespace PID1; in the supervisor's host view it must name the
+exact Engine State.Pid/original native Start of the admitted Postgres CID.
+Validate Engine PidMode=container:<that exact PG CID>, the actual own namespace
+FD and pinned no-fork entry; never require this observer to BE Postgres PID1.
+Other roles/modes refuse. The supervisor obtains actual kernel writer UID/PID
 through SO_PASSCRED, validates expected UID/no user remapping and exact CID's
 Engine State.Pid in the SAME host observer namespace. Validate the pidfd's live
 native target through its fdinfo in that view and the namespace FD's native PID
@@ -284,7 +296,8 @@ namespace type/device/inode; held pidfd, current Engine init and actual writer
 must be the SAME original process. Bind SP4 Process in the observer's namespace;
 never compare the shim's integer1 to a host PID. Require a second fresh challenge
 reply from that same held live process/connection before binding Start: command
-confirm, payload exactly `{role, generation}`, no FDs, matching kernel writer. These
+confirm, payload exactly `{role, generation, scope_mode}`, no FDs, matching
+kernel writer. The namespace_pid self-report never overrides native mapping. These
 transferred self handles avoid assuming host ptrace access to another UID's
 /proc/<pid>/ns or reopening a numeric PID. Unreadable/ambiguous mapping refuses.
 
@@ -300,8 +313,10 @@ roles. Authenticate its actual kernel writer and original child pidfd against
 the pinned shim's live direct-child registry and exact namespace, then bind the
 command's native_job BEFORE it executes any A2 command. No arbitrary sibling,
 reported numeric PID, user argv or caller-declared role can select this gate.
-The pure-Go shared-Postgres observe_native leaf has no child gate/fork: its own
-bound original process receives the fixed observation release directly.
+The trusted_go_leaf mode has no PID1 shim/child gate/fork: its own bound original
+process receives the fixed in-process observation release directly. It may keep
+its authenticated control connection until its own fixed entry/local IO returns;
+it does not exec a command or gain another role's output/mutation capability.
 
 `release` payload is `{action, inputs}`; inputs is an ordered array of exact
 `{role, fd_index, access}` objects. access is read_only/duplex. The closed role
@@ -319,6 +334,25 @@ reject duplicates/extra/missing/non-native descriptors. No secret/hash enters
 persisted evidence. The fixed gate installs only those declared descriptors,
 closes ALL control/other descriptors on exec and executes the fixed command;
 the PID1 shim retains only its own control/observation capabilities.
+
+For private-mode backup_create and mount_inspector ONLY, PID1 creates a local
+AF_UNIX SOCK_SEQPACKET result socketpair before the blocked child gate. It keeps
+one endpoint; the child inherits ONLY the other as fixed CLOUD_CLICKER_JOB_RESULT_FD
+in addition to its declared data inputs. This is not the Root control socket or
+another release input role. Enable SO_PASSCRED; validate the actual child writer
+against the original direct-child pidfd registered above. No other action gets
+a result FD. Messages have exact keys `{schema_version:1, command_work_id, kind,
+report}` with ONE SCM_RIGHTS FD. kind is staged_ciphertext with report=null for
+backup_create, or mount_observed with the exact native_mount_report below for
+mount_inspector. Reject extra messages/FDs, wrong native descriptor type/identity,
+sender, work or kind. Parent reply is exactly `{schema_version:1, command_work_id,
+result:accepted}` with no FDs; it only acknowledges local custody, not success.
+The child closes its result endpoint and all writers/IO and returns independently
+of any Root receipt. PID1 waits for actual child exit/local IO settlement BEFORE
+forwarding the sole result over its own authenticated W00 channel. It closes the
+local pair and copied FD after transfer. Loss, truncation or unknown child/writer
+state leaves work outstanding; stdout and a supplied hash cannot carry a native
+FD or close the effect. Command exec still inherits NO supervisor-control FD.
 
 The mount_inspector alone may send `mount_observed` with exact payload
 `{created_volume_sha256, storage_binding_sha256, report}` and ONE actual
@@ -378,7 +412,8 @@ Current observation is a closed object with exact keys `schema_version:1`,
 `observer_work_id`, `device`, `inode`, `owner_uid`, `mode` Counter,
 `transition` initial/private_scratch_init/image_population/postgres_init,
 `transition_work_id` nullable UUIDv4, `image_config_sha256` nullable Hash,
-`observed_at`. Initial has null transition/image; other transitions require their
+`observed_at`. For transition=initial, transition_work_id and image_config_sha256 are null;
+transition itself remains the literal initial. Other transitions require their
 actual OP3 work, same physical root and the exact governed case below. This is
 an observation history, never a rewrite of original Storage/Mount subjects.
 
