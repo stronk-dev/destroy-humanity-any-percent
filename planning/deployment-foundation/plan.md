@@ -10,7 +10,7 @@
 **Application attribution correction,2026-11-04 (RP-760):** actual linked
 Prometheus NOTICE omission reproduces under the existing generator. Separate
 notice delivery and physical-copy agreement now pass the real regression, full
-affected metadata packages and vet. Canonical docs updated. Next run actual
+affected metadata packages and vet. Canonical docs updated.
 Independent corrective review is next. Actual committed4f17a1f8 metadata generation
 completes53 dependencies and delivers full Prometheus NOTICE with unchanged SPDX
 classification. This changes no license allowlist or tool-distribution policy.

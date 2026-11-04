@@ -10695,3 +10695,8 @@ No external tool/MPL clearance or exact release/candidate proof inferred.
 Next independent corrective review of full9cde3a64..this checkpoint, including
 old-behavior discrimination and all code/tests/docs/records. RP-760 remains OPEN
 until that verdict; other rights/source/native/adoption/R-006 obligations remain.
+
+NOTICE-only control984d6a/89119→7dc759 additionally passes: even valid MIT grant
+text in NOTICE cannot supply a missing LICENSE. All focused notice cases execute
+cold; final plan wording cleaned up. Production bytes remain those exercised by
+full package/vet and committed-source generation; no redundant full rebuild.

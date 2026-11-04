@@ -60,6 +60,14 @@ func TestNoticeAtRefusesInvalidPresentNotices(t *testing.T) {
 	}
 }
 
+func TestNoticeCannotSupplyMissingLicense(t *testing.T) {
+	root := t.TempDir()
+	writeFixture(t, filepath.Join(root, "NOTICE"), mitText)
+	if _, _, err := licenseAt(root); !errors.Is(err, releasepackage.ErrInvalidContent) {
+		t.Fatalf("NOTICE substituted for missing LICENSE: %v", err)
+	}
+}
+
 func TestGoInventoryPreservesLinkedModuleNotice(t *testing.T) {
 	directory, err := os.Getwd()
 	if err != nil {
