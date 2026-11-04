@@ -9471,3 +9471,30 @@ reviewed source; no software suite/mirror validator for a prose-only amendment.
 Review by: Codex root, corrective author first filter. Recorded by: Codex root.
 Complete afterc5419034 four-path correction needs independent technical review;
 full CR4/Deployment/1.0 remain open. No push/deployment/archival/goal pause.
+
+## 2026-11-04 — Recovery ordering correction independently APPROVED
+
+Review by: independent Codex `/root/recovery_admission_contract_review`.
+Recorded by: Codex root, transcribing its returned verdict. Complete four-path
+c5419034f7bb94189670caa5f8a99029412defdc..0a89f026e6aee83f4c3607884a2aec3eb863d2ee
+is **APPROVED — technical ordering correction**, no remaining blocking finding
+in this amendment. Original CHANGES REQUIRED remains. RP-741–744 close ONLY
+their normative ordering defects, not any production implementation or larger
+mechanism tracked by RP-734/738/740.
+
+Reviewer independently inspects the entire diff and derives ordinary-success,
+partial/mixed-source, preserved-prior abort, pre/post-fence failed-retry,
+interrupted-parent, lost-authority, prefix-hash and v1/bootstrap traces directly
+from the revised clauses. Old success cannot waive a predecessor fence; cleanup
+does not authorize reset; failed descendants do not close the parent; first
+install's absent handoff remains a blocker rather than grandfathering. Scope/
+whitespace999b10 exits0. No mirror validator or unrelated runtime suite for this
+prose-only amendment. No tracked edits/commits/fixtures; all handles terminal.
+
+This editorial closeout reconciles status/index/candidate links without changing
+the approved normative body. Next specify exact supervision/work-log/fence/
+completion artifacts, native permission/profile and first-install producer,
+then implement actual helper/runtime paths after the applicable acceptance/
+adoption gates. Non-bypassable admission, useful successful recovery/native
+execution and whole1.0 remain open. No owner authority, OS prerequisite, service,
+runtime behavior, publication, deployment, archival or goal pause is inferred.

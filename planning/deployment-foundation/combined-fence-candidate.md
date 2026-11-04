@@ -205,6 +205,15 @@ protocol with lost-authority refusal, followed by full real-helper binding. Do
 not repeat the completed pg_dump controls instead. RP-740 tracks the candidate;
 RP-738/734 remain open. Full native-host/R-006/adoption/release gates remain.
 
+The subsequent [CR1–CR6 ordering correction](../../rfc/deployment-current-release-authority.md#cr6--whole-operation-closure-and-supervisor-authority)
+is independently technically approved c5419034..0a89f026: healthy-current
+admission differs from recovery ownership; predecessor closure differs from
+current-helper completion; admitted cleanup precedes recovery_fenced, while
+reset/restore follows it; successful descendants derive parent recovery without
+fabricating Finished. RP-741–744 close only those draft contradictions. Exact
+supervision/work-log/proof schemas, first-install handoff, runtime/native paths
+and adoption remain open. This is not a packaged supervisor or completed CR4.
+
 The complete nine-path `20cbb5b8..fd4c5b92` batch is independently APPROVED after
 fresh actual2276, fourteen controls42422 and source/runner/binary bindingsbc06cb.
 This approves the experimental candidate and stated technical direction, not

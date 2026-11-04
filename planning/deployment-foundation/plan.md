@@ -21,6 +21,16 @@ gates. No boolean/no-op substitute, legacy grandfathering, new OS service,
 runtime change, owner adoption or completion claim. Next complete those artifact/
 supervisor contracts and actual helper binding, not repeat the approved gateway.
 
+Complete four-pathc5419034..0a89f026 is independently APPROVED as a TECHNICAL
+ORDERING CORRECTION. Original CHANGES REQUIRED remains. Reviewer directly checks
+ordinary success, mixed-source cleanup, preserved-prior abort, retry ancestry,
+derived recovery, lost authority, noncircular prefixes and blocked v1/bootstrap;
+scope/whitespace999b10 passes. RP-741–744 close only their normative defects.
+Next specify exact hash-bound supervision/work-log/fence/completion artifacts and
+their producer/consumer/first-install handoff, with a concrete permission/profile
+proposal before any implementation. Runtime, non-bypassable isolation, native
+successful/refusal paths and owner adoption remain. No prose check is runtime proof.
+
 **Connection-owned cancellation experiment,2026-11-04:** test a transparent
 single-connection gateway between actual pg_dump/libpq and the pinned PostgreSQL16
 fixture. Register its in-memory connection BEFORE dialing; retain the protocol's
