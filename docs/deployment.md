@@ -639,6 +639,17 @@ only an empty target database, checks the custom archive before mutation, uses `
 and requires the restored Goose migration to equal the release manifest. It never cleans or
 overwrites a live database.
 
+The database URL's explicit `sslrootcert`, `sslcert` and `sslkey` paths accompany
+`sslmode` in the private libpq service file. Go inspection and the actual
+`pg_dump`/`pg_restore` processes therefore use the same configured CA and client
+certificate inputs. Certificate/key files must be available inside the helper's
+container. Paths containing NUL/newline characters or leading/trailing whitespace
+are refused before credential files are written. Passwords remain in the private
+passfile; certificate/key contents are never copied into subprocess arguments.
+The real Postgres test population checks matching Go/libpq TLS client identity,
+encrypted backup/restore identity equality and an explicit wrong-CA refusal.
+These parameters follow [PostgreSQL16's libpq TLS configuration](https://www.postgresql.org/docs/16/libpq-ssl.html).
+
 `deployment-backup recovery-identity --database-url-file=/run/secrets/database-url` streams a
 canonical identity of the private database without exporting row content. It emits row counts and
 SHA-256 identities for the complete public-table population and separately for player ownership,

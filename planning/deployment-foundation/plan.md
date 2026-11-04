@@ -7,6 +7,21 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**RP-753 existing TLS-input correction,2026-11-04:** URL certificate paths reach
+Go but were dropped from libpq service config. Valid old-code25bca5 proves Go
+verified TLS/client identity while actual psql fails at default root.crt instead
+of the supplied CA. Preserve sslrootcert/sslcert/sslkey with line-injection/
+unrepresentable whitespace refusal before credential writes, under existing DP6
+database-URL authority; no new TLS deployment policy. Real corrected740b52/f0375a
+passes matching Go/libpq TLS client identity (including paths with spaces), full
+encrypted backup/restore identity and explicit wrong-CA verification failure.
+Complete declared Postgres integrationff08c7/045adc, cold native packagecc2aa5/
+2a2e55 and vet211db7 pass. Native SQL skips are not that integration evidence.
+Initial key-permission and DN-format setup misses are preserved in log, not
+the bug reproduction. New implementation/tests/docs range needs independent
+corrective review. This does not close the experimental gateway TLS/native-host
+profile, protected-metadata/CR4 or clean-host/R-006 acceptance.
+
 **Actual backup-helper connection study,2026-11-04:** the next unknown is the
 whole existing CreatePostgresBackup/RestorePostgresBackup connection population,
 not another standalone pg_dump. Compile a manual test-only overlay in the owning

@@ -9913,3 +9913,50 @@ producer/profile binding OPEN: full CLI/outer publication, non-bypassable
 production isolation, restart authority, TLS, supported host, OP9 adoption and
 CR4/R-006 remain. Editorial closeout changes no tool/criterion and needs no
 identical repetition. Full nine-tier1.0 stays active; no push/deploy/archive.
+
+
+## 2026-11-04 — RP-753 correct existing Go/libpq TLS-input mismatch
+
+Outcome: preserve the database URL's explicit CA/client certificate/key paths in
+libpq service configuration so inspection and actual backup/restore use the same
+TLS inputs. Existing Deployment DP6 DATABASE_URL_FILE contract, not a new TLS
+policy or use of unadopted OP9. Production change is bounded to service-file
+construction; passwords remain in0600 passfile, paths in0600 service file.
+NUL/CR/LF and leading/trailing whitespace paths refuse before credential writes.
+Internal spaces work in the actual native consumer. No key content in args/env.
+
+Valid old-source regression25bca5 exits1: Go verified TLS and the generated
+client CN, then actual psql fails because /root/.postgresql/root.crt is missing,
+ignoring the actual supplied CA path. The original production source is baseline
+2a02536f. Corrected740b52/f0375a exits0: Go and actual libpq report matching TLS
+and client certificate identity, actual encrypted dump/restore has equal full
+canonical database identity, and wrong CA produces explicit certificate verify
+failed. A generic transport error cannot count as that refusal. The same test
+runs in the existing full declared Postgres lane; no new CI/target/framework.
+
+Setup misses are NOT the regression: initialcda4a0 exits1 because COPY-created
+server key follows the0644 umask, so PostgreSQL refuses SSL reload (45b96f logs).
+Fixture now uses its fixed owned /tmp path with umask077 from the first byte.
+Subsequentf2faa1 exits1 on the fixture's CN display assumption: native PG emits
+/CN=cloud_clicker rather than CN=cloud_clicker. Both exact single-CN encodings
+are admitted; actual libpq must match the observed Go identity byte-for-byte.
+Only25bca5, after those setup controls pass, reproduces the production defect.
+Initial unused test imports were caught/corrected in development buildf38fcf.
+Generated test CA/server/client keys are confined to declared disposable Docker
+service/test tempdirs, never existing secrets. Test's superuser COPY TO PROGRAM
+runs only fixed umask/cat on its generated /tmp path; settings reset on every
+exit. This does not require a new production database privilege or host command.
+
+Finished batch: cold native packagecc2aa5/2a2e55 exits0, vet211db7 exits0; the
+native run can skip DB tests and is not cited for SQL. Complete declared real
+Postgres integrationff08c7/045adc exits0, all10 top-level tests/no skips, including TLS,
+concurrent migration snapshot, rights HTTP/restore, clean-target and identity
+populations. Full output retained ignored .cache/backup-tls-full-integration.log.
+Owned projectcc-backup-tls-regression-a04 is removed with volumes after terminal
+checks; final container/network/volume933964/e5848a/556e65 inventories empty.
+No product/CI/whole-platform
+status promoted. New code/tests/docs/records range from2a02536f needs fresh
+independent corrective review before treating RP-753 closed. Gateway TLS/full
+supervisor/native-host/adoption/retention/R-006 and nine-tier1.0 remain open.
+
+Review by: Codex root, corrective author first filter. Recorded by: Codex root.

@@ -368,6 +368,18 @@ func databaseServiceEnvironment(secretPath, workspace string) ([]string, error) 
 	servicePath := filepath.Join(workspace, "pg_service.conf")
 	service := fmt.Sprintf("[cloud_clicker]\nhost=%s\nport=%s\ndbname=%s\nuser=%s\nsslmode=%s\n",
 		host, port, database, user, sslMode)
+	// The Go inspection connection reads the original URL. Give libpq the
+	// same CA/client-certificate paths instead of silently using its home-dir
+	// defaults. Values must remain single, unambiguous service-file lines.
+	for _, name := range []string{"sslrootcert", "sslcert", "sslkey"} {
+		if values, present := query[name]; present {
+			value := values[0]
+			if strings.TrimSpace(value) != value || strings.ContainsAny(value, "\x00\r\n") {
+				return nil, ErrInvalid
+			}
+			service += name + "=" + value + "\n"
+		}
+	}
 	if err := os.WriteFile(servicePath, []byte(service), 0o600); err != nil {
 		return nil, err
 	}

@@ -134,6 +134,27 @@ func TestDatabaseServiceFilesRejectUnsafeOrAmbiguousEndpointOverrides(t *testing
 	}
 }
 
+func TestDatabaseServiceFilesRejectInjectedTLSPaths(t *testing.T) {
+	for _, name := range []string{"sslrootcert", "sslcert", "sslkey"} {
+		for _, value := range []string{"/tmp/cert\nhost=unowned", "/tmp/cert\rhost=unowned", "/tmp/cert\x00", " /tmp/cert", "/tmp/cert "} {
+			t.Run(name+"/"+fmt.Sprintf("%q", value), func(t *testing.T) {
+				workspace := t.TempDir()
+				secret := filepath.Join(t.TempDir(), "database-url")
+				connection := "postgres://cloud_clicker:password@postgres:5432/cloud_clicker?sslmode=verify-full&" + name + "=" + url.QueryEscape(value)
+				if err := os.WriteFile(secret, []byte(connection), 0600); err != nil {
+					t.Fatal(err)
+				}
+				if environment, err := databaseServiceEnvironment(secret, workspace); !errors.Is(err, ErrInvalid) || environment != nil {
+					t.Fatal("unrepresentable TLS path accepted", err)
+				}
+				if entries, err := os.ReadDir(workspace); err != nil || len(entries) != 0 {
+					t.Fatal("invalid TLS path wrote credential files", err)
+				}
+			})
+		}
+	}
+}
+
 func TestDatabaseServiceFilesRejectMalformedQueryBeforeWriting(t *testing.T) {
 	for _, query := range []string{
 		"host=other%zz", "port=65%zz", "user=other%zz",
