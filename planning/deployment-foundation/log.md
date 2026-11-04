@@ -10406,3 +10406,43 @@ encrypted-only protected staging. Failed publication cannot fabricate backup
 success or discard an unrecorded backup. Source cache restart keeps incomplete
 round markers paused; source/target recovery ownership remains explicit. These
 are proposed producer contracts, not executed native conformance.
+
+## 2026-11-04 — Adapter re-review: four executable-path omissions, forward correction
+
+CHANGES REQUIRED, complete nine-path union
+c58f8e4854e13edff24cbb79bd95e46bbc085284..
+224fc0e2e17f8d8993f0971ade6fb5fc9903f66d.
+Review by: independent Codex /root/native_supervisor_profile_review.
+Recorded by: Codex root, transcribing its verdict. Unrelated Headcount editorial
+4118c4d8 is excluded. Original admission/image bootstrap, immutable creation and
+producer/runtime distinction are substantively corrected, but workers lack a
+concrete FD/control route, new-volume inspection has a binding cycle, SP5's closed
+child graph rejects new invocation paths/E07 prematurely demands Start, and
+fencing cannot admit I03's required cache publisher. No technical approval.
+
+Reviewer independently executes the exact overlay diagnostic: matching_positive
+PASS, unrelated_negative FAIL with nil helper error/nonce32, actual unrelated1/
+matching0; Go1/Make2,0.21s. Overlay operations vet passes, both retained hashes
+match, complete range whitespace passes. This independently confirms RP-758's
+bounded helper defect, not actual Alertmanager/external delivery. No tracked
+reviewer changes or native-host/producer/feature/release proof.
+
+Forward author correction adds W00's per-job read-only mounted private socket,
+exact handshake/FD order, host-view kernel credential/pidfd/namespace mapping,
+blocked child gate before secret/command release, exact output/report/status
+messages and physical scope closure. It is separate from service state and
+assumes neither inherited Docker-create FDs nor host ptrace/DAC bypass. V00 adds
+immutable CreatedVolume, a read-only/no-copy first-inspector exception and native
+root-FD report before complete Storage binding. Private scratch initialization
+is UID0/cap-drop chmod of its new empty root only, then receiving-UID0700 work;
+service image population/initialization has explicit observed ownership history.
+No arbitrary chown/privilege or application use of provisional storage.
+
+SP5 now includes the exact bounded writer/start/cache/private-scratch and pending
+first-inspection child edges; no reciprocal receipts. E07 binds created children,
+reserves future Start/native children, then binds those on actual native return.
+Both fencing cache parent/leaf rows exist before I03. These are author first-filter
+corrections requiring complete original-plus-correction re-review. All native
+producer/compatibility/adoption/SP8/R-006 gates stay OPEN. No software/CI/balance/
+copy bytes or goal pause; no push/deployment/archival. Diff checked; no unrelated
+software suite for normative Markdown. Research negative and both verdicts remain.

@@ -8,6 +8,13 @@
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
 **Native profile construction,2026-11-04:**
+Latest complete-union review through224fc0e2 is CHANGES REQUIRED: temporary
+worker control/FD transport, first-volume physical-binding bootstrap, finite
+child-graph/E07 start timing, and fencing cache admission. Forward W00/V00 and
+SP5/A1 corrections now specify those paths; exact whole-range re-review is next.
+The reviewer independently reproduces RP-758's matching-positive/unrelated-negative
+outcomes and passes overlay vet. No technical approval or runtime correction.
+
 Independent technical review is **CHANGES REQUIRED** for61f2461f: pre-admission
 cycles, immutable create/start identity, incomplete exact stage/adapter table,
 and overbroad single-manifest wording. Forward SP1/SP2/SP4 corrections now split

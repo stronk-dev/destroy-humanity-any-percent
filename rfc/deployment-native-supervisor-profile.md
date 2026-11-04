@@ -249,7 +249,8 @@ admission, never labels alone.
   has a separate identity/observation; do not mutate an earlier subject or reopen
   terminal work. Startup child effects need prior admission under the already
   bound created-container scope; unknown start outcomes remain outstanding.
-- `Mount`: `scope` a Storage binding or a read-only input binding, `target`
+- `Mount`: `scope` a Storage binding, the inspector-only CreatedVolume reference
+  defined in adapter V00, or a read-only input binding, `target`
   Relative relative to the container root, `access` read_only/read_write. Input
   binding has exact keys `class` release_artifact/secret_input/host_observation,
   `role` declared logical input ID, `device`, `inode`, `owner_uid` Counter,
@@ -264,9 +265,12 @@ admission, never labels alone.
   volume. Native name required only for a Docker volume. Device/inode observed through
   the approved trusted mount inspector. No absolute path is persisted.
   owner_uid is the observed state at binding, not permission for an unrecorded
-  ownership change. Governed Postgres initialization may change0 to its approved
-  runtime UID; a separate current storage observation must validate that transition
-  without rewriting the original binding. Other changes refuse.
+  ownership change. V00 defines first inspection, private-scratch initialization
+  and exact approved-image population, including Postgres initialization and the
+  monitoring images' ownership. Its separate current storage observation must
+  validate each permitted transition without rewriting the original binding.
+  Other changes refuse. A provisional CreatedVolume is never a complete Storage
+  binding or permission for a service/backup/restore to consume the volume.
 - `Network`: `network_id` CID, `generation` UUIDv4, `role` one of `edge`,
   `application`, `database`, `operations`, `job_gateway`, `internal` boolean.
 - `Socket`: `connection_id` UUIDv4, `database_container_sha256` Hash,
@@ -404,10 +408,26 @@ for kind and `native_result_type` its SP4 result, not caller-defined strings.
 
 Children are permitted only by the finite effect graph: engine_request may
 reserve job_namespace/runtime_scope/native_job; job_namespace may own native_job,
-sql_stream/http_stream/publication/deletion children; publication/deletion may
-own their publisher job_namespace; sql_stream may own its forwarding native_job;
-runtime_scope may own bounded startup/freeze/export observations. No child
-action may exceed its parent's stage/resource authority. Each actual connection
+sql_stream/http_stream/host_publication/host_deletion children; sql_stream may
+own its forwarding native_job; runtime_scope may own the declared startup/freeze/
+export observations. host_publication/host_deletion may own EITHER their declared
+publisher job_namespace OR the exact F01/F02/F03/I05 trusted native writer leaf,
+never an arbitrary native callback. A start_services native_job may own ONLY its
+A3 service-DAG engine_request and runtime_scope/startup-observation children.
+The F04 scratch_remove native invocation may own ONLY exact E20/E21 requests
+for its bound terminal private generation; it waits for their actual disposition.
+The I03/I04 control invocation may own ONLY its I05 cache-publication parent
+and exact declared import/observation children. The cache parent owns its own
+publish_cache native leaf; a control request's receipt follows leaf then cache
+then control completion. F01/F02/F03/I05 writer leaves have no external effect
+children and join their local IO before returning. No reciprocal parent edge,
+receipt cycle or arbitrary native_job child admission is allowed. V00's pending
+volume-create may own ONLY the E07/E08/E11/E10/E04 requests for its exact
+first-inspection job (the one narrow engine_request→engine_request edge), whose
+E07 owns that inspector namespace. No recursion/new-volume child is allowed:
+the inspector needs no scratch volume. That inspector mounts the CreatedVolume
+observation, never its parent's still-unavailable terminal receipt. No child action may exceed its parent's stage/
+resource authority. Each actual connection
 is a distinct admission; this is a repeatable edge, not a fixed stream-count
 assumption. A plan/outcome enum constrains the verifier; it is not evidence that
 an effect occurred or ended. All plans default to no dispatch unless present in

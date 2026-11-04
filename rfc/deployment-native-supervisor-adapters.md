@@ -138,10 +138,10 @@ phase, resource/command authority; matching a plan ID alone never grants access.
 | start,verify,finalize,install,service_handoff | S | retain_service | runtime_scope | R03, complete retained transfer, conditions in I05 |
 | service_handoff,fencing | S | freeze_scheduler | native_job | I03, exact source controller and durable freeze |
 | service_handoff,fencing | S | export_scheduler | native_job | I04, complete frozen handle population |
-| service_handoff,finalize,install | V | publish_cache | host_publication | I05, exact conditional retained-service cache |
-| service_handoff,finalize,install | V | publish_cache | native_job | I05, trusted source/target cache-writer leaf invocation |
+| service_handoff,fencing,finalize,install | V | publish_cache | host_publication | I05, exact freeze/conditional retained-service cache |
+| service_handoff,fencing,finalize,install | V | publish_cache | native_job | I05, trusted source/target cache-writer leaf invocation |
 
-`readiness`, `container_list`, `container_archive`, `stream_adopt` and `native_adopt` are added to
+`readiness`, `container_list`, `container_archive`, `stream_adopt`, `native_adopt` and `initialize_storage` are added to
 SP5's action enum; this finite population supersedes its earlier family-only enumeration.
 Each plan's subject/result type is the corresponding SP4 kind binding/result.
 Allowed outcomes are completed/refused, plus retained ONLY for R01 (continued existing ownership) and R03 runtime_scope.
@@ -213,7 +213,8 @@ its publisher namespace, whose native child is a leaf. No receipt hash cycle.
 | verify | alert_test | TARGET operations helper, alert-test, configured endpoints only | H06, no arbitrary receiver/body |
 | install | alert_test | TARGET operations helper, same fixed test | H06 |
 | restore | restore_database | TARGET backup helper, restore exact governed backup/manifest and authorized identity | Q01 clean-target/restore/inspection, F02, F04 |
-| preflight,checkpoint,start,verify,fencing,restore,finalize,install | observe_native | producer observer, fixed scope/mount/stream observation named by parent | observations only; no unadmitted signal/mutation |
+| preflight,checkpoint,start,verify,fencing,restore,finalize,install | observe_native | producer native_observer, or mount_inspector ONLY for V00; fixed scope/mount/stream observation named by parent | observations only; no unadmitted signal/mutation |
+| preflight,checkpoint,start,verify,fencing,restore,finalize,install | initialize_storage | producer mount_inspector, fixed initialize_private_storage entry; UID0, private namespace, cap_drop ALL | V00 private scratch/staging root initialization only, no secrets/service data/SQL |
 
 Each command is an argv array built by the trusted supervisor from these named
 semantics and existing helper flag decoders. No shell/-c, user command, extra
@@ -244,11 +245,166 @@ Each consumer receives an independent offset/read capability. Do not record
 contents/hashes or use a directory FD to claim create permission. libpq credential
 and TLS file inputs, where its pathname API requires them, are materialized0600
 by the receiving UID in its private0700 scratch and removed after actual writers
-end, preserving the exact TLS bytes/hostname policy. Age identity may be consumed
+end, preserving the exact TLS bytes/hostname policy. The same rule applies to
+path-only CLI configuration readers, including Compose/amtool; inherited file
+FDs are not a claim that /proc/self/fd reopening bypasses DAC. Age identity may be consumed
 from its original read FD without another persistent key copy. Staged ciphertext
 is likewise granted as a read FD to the operator-owned F01 writer; writable
 backup/metric targets must already be accessible to the existing operator.
 No sudo/chown/permission bypass, new key or silent sslmode downgrade is assumed.
+
+## W00 — Temporary-job control and descriptor transport
+
+This is DISTINCT from A6's service leaf. For each admitted temporary namespace,
+the supervisor creates `job-ipc/<generation>` under its0700 root, binds a0666
+SEQPACKET listener before E07, and mounts ONLY that exact leaf read-only into
+that job at /run/job-control. No service-cache/state/daemon/ledger/lock directory
+or handle is exposed. Connecting to the Unix socket does not require a writable
+mount; unlink/create through this mount must fail. Close/unlink the host-owned
+leaf only after original peers and the complete job scope are terminal. Unknown
+mount or inode substitution refuses before dispatch.
+
+Canonical messages have exact keys `schema_version:1`, `operation_id`, `phase`,
+`job_work_id`, `command_work_id`, `sequence`, `challenge`, `command`, `payload`.
+The reply replaces command with result and echoes the exact tuple/sequence/
+challenge. Challenge is a fresh memory-only256-bit value for this one connection;
+apply A6's native framing/type/truncation/deadline rules, including the deadline
+from CALL ENTRY, before waiting for admission and again before acceptance. No
+late/queued/cancelled response or successful send is completion evidence.
+
+The supervisor starts each connection with command challenge, empty payload and
+no FDs. The fixed PID1 Go shim connects before any command or secret read. Its hello
+payload is exactly `{role, generation, namespace_pid, descriptors}`: namespace_pid
+is1; descriptor roles are `[self_pidfd, pid_namespace]`, with those two original
+SCM_RIGHTS FDs in that order. The supervisor obtains actual kernel writer UID/PID
+through SO_PASSCRED, validates expected UID/no user remapping and exact CID's
+Engine State.Pid in the SAME host observer namespace. Validate the pidfd's live
+native target through its fdinfo in that view and the namespace FD's native PID
+namespace type/device/inode; held pidfd, current Engine init and actual writer
+must be the SAME original process. Bind SP4 Process in the observer's namespace;
+never compare the shim's integer1 to a host PID. Require a second fresh challenge
+reply from that same held live process/connection before binding Start: command
+confirm, payload exactly `{role, generation}`, no FDs, matching kernel writer. These
+transferred self handles avoid assuming host ptrace access to another UID's
+/proc/<pid>/ns or reopening a numeric PID. Unreadable/ambiguous mapping refuses.
+
+Reply `bound` has payload `{container_sha256, start_sha256, native_scope_sha256}`,
+no FDs. The shim may now fork ONLY the fixed blocked command gate under the
+already admitted namespace/command item. Before release, PID1 sends child_created
+with payload `{command_work_id, descriptors}` and descriptors exactly
+`[command_pidfd, pid_namespace]`, those original SCM_RIGHTS FDs in that order.
+Reply registered echoes the command_work_id and no FDs. Root validates original
+live PID1 writer and its pinned direct-child producer contract, then retains the
+child pidfd/namespace. That child sends `command_ready` on its own connection with payload `{action, descriptors}` and the same two self-handle
+roles. Authenticate its actual kernel writer and original child pidfd against
+the pinned shim's live direct-child registry and exact namespace, then bind the
+command's native_job BEFORE it executes any A2 command. No arbitrary sibling,
+reported numeric PID, user argv or caller-declared role can select this gate.
+The pure-Go shared-Postgres observe_native leaf has no child gate/fork: its own
+bound original process receives the fixed observation release directly.
+
+`release` payload is `{action, inputs}`; inputs is an ordered array of exact
+`{role, fd_index, access}` objects. access is read_only/duplex. The closed role
+population is release_manifest, epoch, compose_input, alert_config, database_url,
+libpq_password, tls_rootcert, tls_clientcert, tls_clientkey, age_identity,
+backup_ciphertext, sql_relay, and worker_broker. Supply ONLY roles actually read
+by that fixed A2 command's existing flags/configuration: compose gets its model
+and ping/version-only broker; validators their own config; database helpers
+manifest/epoch/DSN and configured TLS/password/relay; restore additionally its
+backup/identity; alert helper only its fixed scoped HTTP channel (role
+worker_broker). No generic host file/socket or extra role is admitted. File
+inputs have independent offsets and read-only regular FDs; only the exact Q01/
+worker broker role may be duplex. FD indices are contiguous in inputs order;
+reject duplicates/extra/missing/non-native descriptors. No secret/hash enters
+persisted evidence. The fixed gate installs only those declared descriptors,
+closes ALL control/other descriptors on exec and executes the fixed command;
+the PID1 shim retains only its own control/observation capabilities.
+
+The mount_inspector alone may send `mount_observed` with exact payload
+`{created_volume_sha256, storage_binding_sha256, report}` and ONE actual
+mounted-root O_PATH FD. The Storage hash is null ONLY for first inspection.
+The inline canonical report has exact keys `schema_version:1`,
+`artifact_type:"native_mount_report"`, `created_volume_sha256`, `observer_work_id`,
+`device`, `inode`, `owner_uid`, `mode`, `observed_at`. Counters use OP1 strings.
+Validate report against actual FD fstat, native sender/CID/mount identity and
+selected work before constructing Storage/current-observation objects. This
+report has no unavailable future Storage hash, terminal receipt or secret value.
+No other action/role may use this message or return a directory/root handle.
+Root closes that O_PATH FD after native validation and before scope completion;
+it is observation-only, not a retained mount/write capability. No scratch volume
+or output file is needed for this first inspection.
+
+A shim `output` message has payload `{role, fd_index}` with role
+staged_ciphertext, fd_index0 and ONE read-only regular FD rooted in the admitted
+encrypted-only staging generation. It is valid only for backup_create after the
+actual writer has ended; validate native mount/object identity and F01 package
+before publication. This is not a backup-success reply. `command_status` has
+payload `{command_work_id, wait_status}` with actual integer wait status; it is
+corroboration only. `end` has empty payload and no FDs; it permits fixed shim
+shutdown only after command/local IO joins. Neither reply nor IPC EOF closes a
+job: independently require original namespace INIT pidfd EXIT, exact CID removal,
+restart prevention, and every external child terminal. For a trusted Go leaf use
+its separate SP4 scope rule. Lost/late/ambiguous channels leave work outstanding.
+
+## V00 — First physical volume observation and initialization
+
+E19 first reserves a fresh generation/name and rejects any existing name before
+dispatch. Its complete actual create response plus E20 observation produces the
+immutable OP1 object with exact keys `schema_version:1`, `artifact_type:
+"created_volume"`, `operation_id`, `phase`, `create_work_id`,
+`engine_binding_sha256`, `generation`, `family`, `native_name`, `driver` local,
+`engine_created_at`, `observed_at`. This is a creation observation, NOT Storage,
+not a terminal receipt, and never permission for normal service/data use.
+Original native daemon/handler and no-name-reuse authority remain mandatory.
+
+The pending E19 item may admit its first fixed observe_native job through A2.
+ONLY its mount_inspector role may reference `{created_volume_sha256}` as a Mount
+scope, at /scope, read-only with VolumeOptions.NoCopy=true. No application,
+backup/restore or generic worker may mount this provisional scope. The inspector
+has no SQL/HTTP/secret or other storage inputs and performs only open/fstat of
+the mounted root. W00 authenticates its exact CID/start/native process; it returns
+the actual O_PATH root FD plus its read-only observation over that channel.
+Native FD type/device/inode/UID and the exact approved mount/creation mapping
+must agree; no claim the operator can traverse Docker's private mountpoint.
+After the inspector/local IO exits and its scope is disposed, write the complete
+immutable SP4 Storage binding from that actual observation, then the initial
+native_storage_observation referencing the new binding. E19 can then close
+its child and creation work. Normal use requires this binding; abandoned/unknown
+inspection stays outstanding and cannot be adopted by name.
+
+Current observation is a closed object with exact keys `schema_version:1`,
+`artifact_type:"native_storage_observation"`, `storage_binding_sha256`,
+`created_volume_sha256` nullable Hash (non-null for local volumes only),
+`observer_work_id`, `device`, `inode`, `owner_uid`, `mode` Counter,
+`transition` initial/private_scratch_init/image_population/postgres_init,
+`transition_work_id` nullable UUIDv4, `image_config_sha256` nullable Hash,
+`observed_at`. Initial has null transition/image; other transitions require their
+actual OP3 work, same physical root and the exact governed case below. This is
+an observation history, never a rewrite of original Storage/Mount subjects.
+
+For new job_scratch/protected_staging ONLY, after complete physical binding the
+A2 initialize_storage job mounts that exact root read-write/NoCopy. UID0, private
+namespace, cap_drop ALL/NNP and fixed pure-Go initialize_private_storage may
+verify native root identity/owner0/empty, chmod ONLY that root to01777 and return.
+No chown/capability/host mountpoint access or arbitrary file mutation is assumed.
+The receiving job UID then creates its own fixed0700 workspace and0600 files;
+no other job shares the generation. Observe the actual new mode/identity before
+use. Root owner stays0, no secret copied to the shared outer root, and cleanup/
+protection covers the complete generation. Existing/nonempty/foreign roots cannot
+use this initializer or be recursively chmodded/chowned.
+
+For the five persistent families, first inspection never copy-ups or mutates.
+After physical binding ONLY the exact approved service E07 may populate an empty
+volume from its manifest-bound image at the template's matching mount target,
+preserving Compose's approved image-directory contents/ownership. Record its
+image_population observation under that E07 work before service start; unknown
+ownership/content transitions refuse. Postgres's existing governed startup may
+then initialize/change ownership to its pinned runtime UID, observed separately
+under that exact startup work. Monitoring image-owned directories likewise use
+their actual pinned image ownership, never an arbitrary UID chosen by a worker.
+No applied-data reinitialization, unobserved image swap or service read/write is
+allowed before the corresponding binding/transition. All these native/empty-root/
+copy-up/UID populations require actual conformance; this table is not that proof.
 
 ## A3 — Stage resource rules
 
@@ -312,7 +468,7 @@ is a wire reference, not permission to expose its other endpoints.
 | E04 | GET /containers/<CID>/json; no query/body |200, exact native ID/config/start/mount/network state;404 is absence observation only |
 | E05 | GET /containers/json?all=1; no body/worker filters |200, COMPLETE locally filtered project plus recorded job inventory; labels are candidates, not ownership |
 | E06 | GET /containers/<CID>/archive?path=<declared public artifact/tree>; no body/compression |200, complete exact expected file set (and directories), no links/traversal/extra entries, file/tree digest matches validated source/target bundle |
-| E07 | POST /containers/create?name=<reserved generation name>&platform=linux/amd64; C-body below |201 exact returned CID, then inspect and bind ALL reserved job/runtime/start children before use |
+| E07 | POST /containers/create?name=<reserved generation name>&platform=linux/amd64; C-body below |201 exact returned CID; inspect/bind created-container children before use. Future start/native children are reserved and outstanding until actual E08/handshake return; never fabricate a Start at create |
 | E08 | POST /containers/<CID>/start; no body/query |204, exact Start observed/bound; startup children already admitted; response alone does not close runtime |
 | E09 | POST /containers/<CID>/stop?t=<existing drain/cleanup bound>; no body |204, actual whole native scope terminal, no pending restart;304 alone is not that proof |
 | E10 | DELETE /containers/<CID>?force=false&v=false; no body |204 plus exact absence/native terminal/restart prevention; no extra volume deletion |
@@ -324,8 +480,8 @@ is a wire reference, not permission to expose its other endpoints.
 | E16 | POST /networks/<CID>/connect; exact Container CID and approved aliases, no IPAM/MAC override |200 plus actual exact connection; no user-selected network/name |
 | E17 | POST /networks/<CID>/disconnect; exact Container CID, Force=false |200 plus exact endpoint detached, ingress/children already fenced |
 | E18 | DELETE /networks/<CID>; no body/query |204 plus exact native absence, no continuing endpoint/request |
-| E19 | POST /volumes/create; exact unique Name, Driver=local, empty DriverOpts, exact generation Labels |201 inspected/mount-observed Storage binding; create may return existing name, so prior collision/ownership rejects |
-| E20 | GET /volumes/<recorded native_name>; no query/body |200 exact local generation plus trusted mount identity,404 observation only |
+| E19 | POST /volumes/create; exact unique Name, Driver=local, empty DriverOpts, exact generation Labels |201 immutable CreatedVolume observation under V00; request remains outstanding through its declared first-inspection child and complete Storage binding. Existing-name collisions reject, never adopt |
+| E20 | GET /volumes/<recorded native_name>; no query/body |200 exact local generation metadata; physical identity requires V00 mount observation, never an E20-invented stat;404 observation only |
 | E21 | DELETE /volumes/<recorded native_name>?force=false; no body |204 plus exact generation absence and all mount/job users terminal |
 
 C-body is built ONLY by the supervisor from ONE admitted A2 command or approved

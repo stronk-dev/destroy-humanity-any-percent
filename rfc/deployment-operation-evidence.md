@@ -382,8 +382,9 @@ in-place successor mutation under CR6. No retry, new window or key reconstructio
 The [native supervisor profile](deployment-native-supervisor-profile.md) now
 proposes the concrete one-shot packaging, all eight typed subjects/results,
 stage mediation, native lock/daemon binding and scheduled-service handoff.
-Independent review requires changes at61f2461f: forward bootstrap/immutable-binding
-corrections and its newly proposed exact stage/plan/adapter companion need re-review.
+Independent review requires changes through224fc0e2: the concrete adapter
+companion now has forward worker/volume/child-graph/cache corrections requiring
+whole-union re-review; the original bootstrap/immutable-binding issues are corrected.
 It is a draft pending completed specification, adoption and actual producer conformance;
 its existence does not satisfy the gates below. Its explicit namespace/native-host,
 tool-artifact and release-metric projection changes require parent reconciliation.
