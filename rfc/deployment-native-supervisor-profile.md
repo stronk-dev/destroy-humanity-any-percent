@@ -1,6 +1,6 @@
 # RFC: Native Deployment Supervisor Profile
 
-- **Status:** draft — core/adapters independently technically approved througha836e92b; corrected tool-delivery companion/linkage through1648e792; adoption/native producers/conformance pending; no implementation authority
+- **Status:** draft — prior core/adapter/tool reviews retained; direct upstream-Compose amendment pending technical review and adoption; native producers/conformance pending; no implementation authority
 - **Author:** Codex
 - **Created:** 2026-11-04
 - **Parent / amends:** [Operation Evidence](deployment-operation-evidence.md), OP9; [Current Release Authority](deployment-current-release-authority.md), CR4/CR6; [Deployment Foundation](deployment-foundation.md), DP1/DP5/DP6
@@ -26,10 +26,12 @@ The [adapter companion](deployment-native-supervisor-adapters.md) now supplies
 the proposed finite plan expansion, request/body/terminal policies and private
 IPC. The corrected core/adapter union is independently technically approved
 througha836e92b; the owning log retains exact ranges and original negative verdicts.
-The corrected [tool-delivery companion](deployment-tool-artifact-inventory.md)
-and linkage have separate independent technical approval through1648e792, not
-inherited approval from that earlier verdict. Complete technical review of the
-amended contract precedes owner adoption under SP8; native producer
+The earlier two-tool [delivery companion](deployment-tool-artifact-inventory.md)
+and linkage had separate independent technical approval through1648e792. The
+current direct upstream-Compose amendment is new, not covered by those verdicts.
+Its bounded configuration research is independently approved through7a5368b5;
+the additional input-construction study has separate recorded evidence. Complete
+technical review of the amended contract precedes owner adoption under SP8; native producer
 construction and actual conformance follow adoption, not as a circular prerequisite
 to permission to implement. OP9 remains open until its actual acceptance proof.
 
@@ -55,10 +57,11 @@ Engine/Compose versions and successful feature checks. Do not infer support from
 a version number or the Desktop model alone.
 
 The selected source/target bundle supplies the actual supervisor, backup and
-operations helpers, profile and plan table, plus pinned Docker CLI and Compose
-plugin artifacts for the isolated preflight configuration compiler. The proposed
+operations helpers, profile and plan table, plus one pinned upstream Compose
+executable for direct isolated configuration compilation. No separate CLI or
+plugin discovery supplies this worker. The proposed
 [inventory/delivery contract](deployment-tool-artifact-inventory.md) supplies their
-separate DP1 artifacts, license/source payloads, provenance and SPDX inventory.
+separate DP1 artifact, license/source payloads, provenance and SPDX inventory.
 Its technical review and owner policy/artifact adoption precede implementation;
 actual pins/rights must be resolved before shipping eligibility. Fixture downloads
 are not approved shipping provenance. Reuse the selected bundle's
@@ -189,8 +192,10 @@ read-only root, no restart policy, no-new-privileges, all capabilities dropped,
 no host socket, ports, host PID/cgroup namespace or writable host outputs. It
 receives read-only selected inputs/authorized secret
 files, private scratch and only its declared gateway network. The preflight
-Compose compiler alone has a READ-ONLY broker for ping/version; all mutating
-Engine calls belong to the native supervisor under the companion table. No
+Compose compiler has NetworkMode=none and NO Engine channel or secret-value
+descriptors; C01 fixes its public source files, nonsecret interpolation inputs
+and private output handling. All Engine calls, including ping/version, belong
+to the native supervisor under the companion table. No
 opaque Compose up/down/run command supplies hidden mutation authority. No Docker context,
 plugin, credential helper, environment override or mount may supply another
 daemon or executable. Reject privileged/devices/extra mounts/network connections,
@@ -457,11 +462,11 @@ the reviewed release-bound generated table AND their actual route/body adapter.
 Every native Engine request is built as a fixed supported API route/action with exact
 query/body validation, not a generic method/path allowlist or worker mutation proxy. Enforce manifest
 image config, exact service template, generation/network/mount binding and the
-current synced ledger stage in memory before forwarding. Translate only approved
+current synced ledger stage in memory before dispatch. Translate only approved
 worker input-root paths into pinned host bundle/secret/scratch roots; no worker
 path becomes a host mount by string substitution. Bind original response to its
 request, persist each returned native identity before further use, and drain the
-whole response even if the requesting worker disappears. Reserve child effects
+whole response even if the associated job/caller disappears. Reserve child effects
 before dispatch, including create/start/exec/network/volume/image handlers.
 Unknown/unreturned creates remain outstanding. API errors can be terminal only
 when the exact handler's native contract proves no later effect.
@@ -640,7 +645,7 @@ contract; keep existing v1 history append-only.
 
 Acceptance is an ACTUAL packaged workflow: clean supervised install and all v1
 attempts → exact-current ordinary release → post-checkpoint failure/rollback,
-plus preserving pre-checkpoint abort. Use the real helpers, pinned CLI/Compose,
+plus preserving pre-checkpoint abort. Use the real helpers, pinned standalone Compose,
 Engine, verified-TLS Postgres, application bootstrap/WebSocket, encrypted backup,
 publishers, scheduler and all persistent resources. Prove original bystander
 data/services preserved where required. Compare restored canonical identity/data,
@@ -655,7 +660,11 @@ bootstrap/socket and outstanding server SQL; scheduled round/retention freeze,
 controller death and restart at every handoff edge; delayed metric/ciphertext/
 delete opened after proposed fence; all four networks and five volume families;
 partial/mixed recovery; protected-backup tampering; lost/torn evidence/cache;
-and swapped/missing/extra native graph objects/receipt kinds. New critical
+and swapped/missing/extra native graph objects/receipt kinds. Include C01's
+same-source/environment/path comparison, missing binary with seeded fallbacks,
+attempted worker Engine/secret grants, and unlogged complete private output
+including attach races, truncation and child failure. The public configuration
+research cannot satisfy that privacy/lifetime population. New critical
 oracles need a real negative or targeted severing. Unknown/guard exhaustion must
 invalidate the population and must not qualify as terminal refusal.
 

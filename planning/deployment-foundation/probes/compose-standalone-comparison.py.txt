@@ -24,7 +24,7 @@ WORK_SECONDS, COMMAND_SECONDS, CLEANUP_SECONDS, BUILD_SECONDS = 60, 10, 15, 180
 
 WORKER = r'''
 import hashlib,json,os,pathlib,subprocess,sys,time
-mode,expected_compose,expected_cli=sys.argv[1:]
+mode,expected_compose,expected_cli,input_mode=sys.argv[1:]
 deadline=time.monotonic()+60
 def require(ok,message):
     if not ok: raise RuntimeError(message)
@@ -35,7 +35,7 @@ for line in pathlib.Path('/proc/self/status').read_text().splitlines():
 require(os.getuid()==65532 and int(status['CapEff'],16)==int(status['CapBnd'],16)==0 and status['NoNewPrivs']=='1','worker privilege mismatch')
 require(not pathlib.Path('/var/run/docker.sock').exists() and not pathlib.Path('/missing-engine.sock').exists(),'unexpected Engine socket')
 compose=pathlib.Path('/tools/plugins/docker-compose' if mode=='wrapped' else '/tools/docker-compose')
-base=dict(mode=mode,uid=os.getuid(),kernel=status,engine_channel=False)
+base=dict(mode=mode,configuration_input_mode=input_mode,uid=os.getuid(),kernel=status,engine_channel=False)
 if mode=='missing':
     require(not compose.exists() and not pathlib.Path('/tools/docker').exists(),'missing control setup')
     try: subprocess.run([str(compose),'version','--short'],check=False,timeout=10,capture_output=True)
@@ -54,12 +54,14 @@ if mode=='wrapped':
     require(hashlib.sha256(pathlib.Path('/tools/docker').read_bytes()).hexdigest()==expected_cli,'wrong CLI bytes')
     prefix=['/tools/docker','compose']
 else: prefix=[str(compose)]
-environment=dict(PATH='/no-external-tools',DOCKER_CONFIG='/fixture/docker-config',DOCKER_HOST='unix:///missing-engine.sock',DOCKER_CLI_HINTS='false')
-def invoke(args,expected):
+environment=dict(PATH='/no-external-tools',DOCKER_CONFIG='/fixture/docker-config' if mode=='wrapped' else '/fixture/direct-docker-config',DOCKER_HOST='unix:///missing-engine.sock',DOCKER_CLI_HINTS='false')
+def invoke(args,expected,extra_environment=None):
     until=min(deadline,time.monotonic()+10)
     remaining=until-time.monotonic()
     require(remaining>0,'worker guard: INVALID')
-    result=subprocess.run(prefix+args,cwd='/fixture',env=environment,capture_output=True,text=True,timeout=remaining)
+    current_environment=dict(environment)
+    if extra_environment is not None:current_environment.update(extra_environment)
+    result=subprocess.run(prefix+args,cwd='/fixture',env=current_environment,capture_output=True,text=True,timeout=remaining)
     require(time.monotonic()<until,'command guard: INVALID')
     require((result.returncode==0)==expected,'unexpected command outcome: '+repr(args)+' exit='+str(result.returncode)+' stderr='+result.stderr)
     return result
@@ -67,15 +69,34 @@ version=invoke(['version','--short'],True).stdout.strip()
 require(version.removeprefix('v')=='2.39.4','actual version mismatch')
 models={};rows=[]
 for case in json.loads(pathlib.Path('/fixture/cases.json').read_text()):
-    args=['--project-name','cc-standalone-model','--env-file','/fixture/'+case['env']]
+    extra_environment=None;env_file=case['env'];absent_paths=set()
+    if input_mode!='dotenv':
+        extra_environment={}
+        for line in pathlib.Path('/fixture/'+case['env']).read_text().splitlines():
+            if not line or line.startswith('#'):continue
+            key,separator,value=line.partition('=')
+            require(separator and key.isidentifier() and not any(c in value for c in '\r\n\"\''),'unsupported public fixture literal')
+            extra_environment[key]=value
+        env_file='empty.env'
+        if input_mode=='process_environment_absent_secrets':
+            for key in extra_environment:
+                if key.endswith('_SECRET_FILE') or key=='CLOUD_CLICKER_ALERTMANAGER_CONFIG':
+                    path='/no-secret-payloads/'+key.lower()
+                    require(not pathlib.Path(path).exists(),'absent secret fixture exists')
+                    extra_environment[key]=path;absent_paths.add(path)
+    args=['--project-name','cc-standalone-model','--env-file','/fixture/'+env_file]
     for path in case['files']:args+=['--file','/fixture/'+path]
-    result=invoke(args+['config','--format','json'],case['success'])
+    result=invoke(args+['config','--format','json'],case['success'],extra_environment)
     row=dict(case=case['id'],exit=result.returncode,stdout_bytes=len(result.stdout.encode()),stdout_sha256=hashlib.sha256(result.stdout.encode()).hexdigest(),stderr_sha256=hashlib.sha256(result.stderr.encode()).hexdigest())
     if case['success']:
         model=json.loads(result.stdout)
         require(isinstance(model,dict) and model.get('name')=='cc-standalone-model','invalid model shape')
         models[case['id']]=result.stdout
         row['services']=sorted(model['services'])
+        if input_mode=='process_environment_absent_secrets':
+            references=model.get('secrets',{})
+            require(all(s.get('file') in absent_paths for s in references.values()),'unexpected secret source reference')
+            row['referenced_secret_files_absent']=len(references)
     rows.append(row)
 require(time.monotonic()<deadline,'worker guard: INVALID')
 print(json.dumps(dict(base,objective_completed=True,version=version,rows=rows,models=models)),flush=True)
@@ -137,6 +158,7 @@ def models_must_differ(left, right):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", required=True)
+    parser.add_argument("--configuration-input-mode", choices=("dotenv", "process_environment", "process_environment_absent_secrets"), default="dotenv")
     args = parser.parse_args()
     root = pathlib.Path.cwd()
     output = pathlib.Path(args.output).resolve()
@@ -183,6 +205,8 @@ def main():
         (work / "wrong-type.yml").write_text("services: []\n")
         (work / "docker-config").mkdir()
         (work / "docker-config/config.json").write_text(json.dumps(dict(auths={}, cliPluginsExtraDirs=["/tools/plugins"])))
+        (work / "direct-docker-config").mkdir()
+        (work / "direct-docker-config/config.json").write_text(json.dumps(dict(auths={})))
         (work / "secrets").mkdir()
         for name in ("database-url", "postgres-password", "jwt-current", "bootstrap-current", "cursor-current", "alertmanager.yml", "jwt-previous", "bootstrap-previous"):
             (work / "secrets" / name).write_text("public synthetic test input, never an operator secret\n")
@@ -220,7 +244,7 @@ def main():
             for mount in mounts:
                 argv += ["--mount", mount]
             attempted_create = True
-            container = run(*argv, "--entrypoint", "python3", PYTHON, "-c", WORKER, mode, compose_hash, cli_hash)
+            container = run(*argv, "--entrypoint", "python3", PYTHON, "-c", WORKER, mode, compose_hash, cli_hash, args.configuration_input_mode)
             containers.append((container, mode))
             owned(container, mode)
             raw = json.loads(run("inspect", container))[0]
@@ -238,6 +262,7 @@ def main():
                 raise RuntimeError("worker incomplete: " + mode + " exit=" + exit_code + " " + " ".join(error_lines))
             observed = json.loads(run("logs", container))
             require(observed["objective_completed"] is True, "worker objective incomplete")
+            require(observed['configuration_input_mode'] == args.configuration_input_mode, 'input-mode observation mismatch')
             if mode in ("wrapped", "direct"):
                 observed['models'] = {name: parse_model(text) for name, text in observed['models'].items()}
             results[mode] = observed
@@ -267,7 +292,7 @@ def main():
         for mode in ("wrapped", "direct"):
             results[mode].pop("models")
         require(time.monotonic() < deadline, "work guard: INVALID")
-        observation = dict(schema_version=3, objective_completed=True, research_only=True, project=project, engine=engine, fixture_image=image, binary_inputs=metadata["binaries"], fixture_hashes=fixture_hashes, cases=cases, results=results, profiles=profiles, model_comparisons=sum(c['success'] for c in cases), byte_equal_pairs=byte_equal_pairs, policy_field_change_refused=True, boolean_numeric_change_refused=True, object_key_order_accepted=True, number_precision_change_refused=True, number_string_change_refused=True, number_token_spelling_change_refused=True, duplicate_json_keys_refused=True, nonfinite_json_refused=True, source_sha256=hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest(), boundary_source_sha256=hashlib.sha256(BOUNDARY.read_bytes()).hexdigest(), guards=dict(work=WORK_SECONDS, command=COMMAND_SECONDS, cleanup=CLEANUP_SECONDS, build=BUILD_SECONDS), limitations=["Desktop ARM64 fixture with AMD64 tool execution; not supported native Linux/amd64", "Configuration compilation only; no service applied or native supervisor proved", "Synthetic public configuration and placeholder image references; no release artifact eligibility", "Public models traverse Docker stdout/logs; only final observation excludes models", "No private-model transport or memory-only handling guarantee", "No operator Docker config/credentials/network/Engine socket available inside workers", "No rights/artifact/profile adoption or acceptance inferred"])
+        observation = dict(schema_version=4, configuration_input_mode=args.configuration_input_mode, objective_completed=True, research_only=True, project=project, engine=engine, fixture_image=image, binary_inputs=metadata["binaries"], fixture_hashes=fixture_hashes, cases=cases, results=results, profiles=profiles, model_comparisons=sum(c['success'] for c in cases), byte_equal_pairs=byte_equal_pairs, policy_field_change_refused=True, boolean_numeric_change_refused=True, object_key_order_accepted=True, number_precision_change_refused=True, number_string_change_refused=True, number_token_spelling_change_refused=True, duplicate_json_keys_refused=True, nonfinite_json_refused=True, source_sha256=hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest(), boundary_source_sha256=hashlib.sha256(BOUNDARY.read_bytes()).hexdigest(), guards=dict(work=WORK_SECONDS, command=COMMAND_SECONDS, cleanup=CLEANUP_SECONDS, build=BUILD_SECONDS), limitations=["Desktop ARM64 fixture with AMD64 tool execution; not supported native Linux/amd64", "Configuration compilation only; no service applied or native supervisor proved", "Synthetic public configuration and placeholder image references; no release artifact eligibility", "Public models traverse Docker stdout/logs; only final observation excludes models", "No private-model transport or memory-only handling guarantee", "No operator Docker config/credentials/network/Engine socket available inside workers", "No rights/artifact/profile adoption or acceptance inferred"])
         completed = True
     finally:
         for container, mode in reversed(containers):

@@ -67,8 +67,10 @@ The [tool inventory/delivery draft](../../rfc/deployment-tool-artifact-inventory
 now specifies separate bundle paths, component/covered-source coverage, notices,
 acquisition/build subjects and actual worker consumption. It is a proposal,
 not new evidence about these research fixtures or permission to ship them.
-Technical review and owner policy/artifact adoption remain separate from actual
-selected-tool rights closure and native/R-006 acceptance. It does not create a
+The current revision proposes one upstream Compose artifact and C01's least
+grants/private-output contract; combined technical/research review is pending.
+Owner policy/artifact adoption remains separate from actual selected-tool rights
+closure and native/R-006 acceptance. It does not create a
 universal signature or reproduced-vendor-build gate.
 
 ### Standalone configuration comparison
@@ -123,6 +125,27 @@ own embedded Docker CLI Go-module components still need their inventory/terms;
 they do not disappear. No version/artifact selection, rights clearance, policy
 adoption, profile implementation or native Linux/amd64/SP8/R-006 proof follows.
 This Desktop/ARM64 fixture executes AMD64 tools; existing acceptance stays intact.
+
+### Explicit environment and absent secret references
+
+The extended probe's closed input selector runs the same complete population
+with process_environment and process_environment_absent_secrets. The
+[explicit-environment observation](compose-process-environment-observation.v1.json)
+passes3 model pairs and matches all6 positive direct/wrapped v3 hashes/lengths.
+The [absent-secret observation](compose-absent-secret-inputs-observation.v1.json)
+also passes3 complete pairs; each mode actually checks0/6/8 referenced secret
+paths absent in minimal/base/rotation. Both retain all8 invalid-input refusals,
+2 binary controls and typed/token controls with complete owned cleanup. Direct
+mode uses auths-only Docker config; no lookup, credential context or Engine
+channel is supplied. Unknown selector refuses before work. Inputs remain public
+synthetic data, not a production operator-configuration validation/release proof.
+
+This supports proposing C01's explicit nonsecret interpolation environment and
+zero secret/Engine descriptors. Other helpers still need their real credentials.
+Original source/template and environment/path equivalence, actual private E12/
+LogConfig handling, native construction and complete admitted-input SP8/R-006
+remain unproved. Both new arms/current normative amendment await independent
+review; no metadata/policy/artifact adoption or shipping pin follows.
 
 ### Exact Compose source and root-text follow-up
 

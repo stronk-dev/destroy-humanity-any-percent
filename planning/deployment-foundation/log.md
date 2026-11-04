@@ -11612,3 +11612,63 @@ Linux/amd64/SP8/R-006 remain. No other commands, private-model handling, exhaust
 image census, rights clearance or release acceptance is claimed. No shipping pin,
 product/kernel/CI change, publication, deployment, archival or goal pause. All
 root/review handles terminal; the full nine-tier objective remains active.
+
+## 2026-11-04 — Check the direct compiler's input construction before specifying it
+
+The next normative amendment needs an executable input contract, not merely
+renaming docker compose. Existing W00 compose_input/broker wording and Engine
+E12/E13 output paths must reconcile together; the broker role is also H06 HTTP
+and cannot be removed globally. No production/profile change is made yet.
+
+Owning plan predeclares two input arms on the existing real population: explicit
+process environment plus empty dotenv must preserve v3 outputs; referenced-secret
+paths absent must still compile equal models with6/8 confirmed file references.
+The new selector is closed and echoed by actual workers. Direct Docker config
+contains only empty auths; no discovery or Engine access. Input handling uses
+each case's actual env fixture for every outcome, not the expected success flag.
+The selected input arm and exact producer source enter the observation. Prior
+typed/token controls, guards, cleanup and no-private-data claims stay intact.
+This can justify a proposed grant reduction, not adoption/native acceptance.
+
+Both actual arms complete:29b5a5/33190→e2cbc0 process_environment and
+2ec074/93818→97a190 process_environment_absent_secrets. Each runs all3 complete
+direct/wrapped pairs,8 bad-input refusals,2 binary and all typed/token controls,
+with owned cleanup. 047f2b compares all6 positive process-env hashes/lengths to
+v3: identical. Absent-secret arm checks0/6/8 actual references in minimal/base/
+rotation for BOTH modes; no referenced file exists. Unknown selector5b36c0 exits2
+before work. Current embedded/parent syntax checks pass; guards unchanged.
+
+Probe21,760bytes/SHA319f70dd6f6e0c9cc88a8994059047144c3e24d54fe43e6390a1ba1ab3969a35.
+Process observation13,583bytes/SHAc57c42c3079e46c749d95bda0225e7dfb05ca56e6ef43b975cbb22c90ce736ad;
+absent-secret observation13,940bytes/SHA865c4393288b0f0c8e3292e2b030614d1df2e301ec5df8cfeb642be2af0d1ee1.
+Both are retained with this plan. Public synthetic values do not establish
+production operator validation, private output handling or native-host support.
+
+Normative translation revises the unadopted tool/native/adapter drafts together:
+one upstream Compose file, exact release/API asset binding, preserved scoped
+source/notices/MPL obligations, no discovery or worker Engine/secret FD. H06's
+HTTP broker remains. C01 fixes original source files, effective interpolation,
+clean environment and LogConfig none plus original E12 attached BEFORE command
+release; no E13/private-log shortcut or receipt cycle. Ordinary nonsecret daemon
+Config.Env persistence is disclosed, not called memory-only. Full actual private/
+native/SP8/R-006 acceptance remains required. The unused unadopted self-build/
+archive/OCI acquisition alternatives are withdrawn from this compiler profile;
+image provenance and every accepted release criterion remain in force.
+
+No runtime/API/schema implementation, dependency, CI, kernel or authored content
+change. Prior reviewed ranges remain scoped to their historical bytes. Current
+combined research/tool and technical-spec range after765aae44 needs independent
+review before any adoption request. No shipping version, rights clearance,
+publication, deployment, archival or goal pause. Review by: Codex root,
+implementer first filter. Recorded by: Codex root.
+
+First-filter construction checks for this revision:73fafb resolves12 local RFC
+links including C01's anchor, matches all21 declared interpolation names against
+the actual base/rotation templates, verifies both source/worker-selector bindings
+and absent-reference counts, and confirms invalid selector created no output.
+Log prefix remains byte-identical to HEAD; whitespace passes. Pinned Moby28.4.0
+daemon/attach.go and container/config.go were read from the official repository:
+stdio readers precede stream handoff, logs are requested only for logs=1, and
+AttachStdout/AttachStderr are explicit fields. C01 names their non-TTY framing
+and original stream readiness/terminal distinction; no private/native run was
+performed. No unrelated software suite is claimed for Markdown changes.

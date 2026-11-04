@@ -1,7 +1,8 @@
 # Native supervisor: request and producer adapters
 
 Normative companion proposal to [SP1–SP8](deployment-native-supervisor-profile.md).
-**Draft; no adoption or implementation authority.** This enumerates the proposed
+**Draft; direct upstream-Compose amendment pending technical review/adoption;
+no implementation authority.** This enumerates the proposed
 plan population and adapters. Native conformance remains unproved. A successful
 table/schema check cannot establish a real handler, filesystem or service result.
 
@@ -97,7 +98,6 @@ phase, resource/command authority; matching a plan ID alone never grants access.
 | prepare,install | S | image_pull | engine_request | E02, exact selected manifest digest |
 | prepare,preflight,checkpoint,drain,start,verify,fencing,restore,finalize,install,service_handoff | S | image_inspect | engine_request | E03, source/target authorized config |
 | prepare,preflight,checkpoint,drain,start,verify,fencing,restore,finalize,install,service_handoff | S | daemon_observe | engine_request | E00, original bound daemon only |
-| preflight | W | daemon_observe | engine_request | E00 /_ping and /version only, config compiler negotiation |
 | prepare,preflight,checkpoint,drain,start,verify,fencing,restore,finalize,install,service_handoff | S | container_inspect | engine_request | E04, explicit admitted CID or current source/target inventory |
 | prepare,preflight,checkpoint,drain,start,verify,fencing,restore,finalize,install,service_handoff | S | container_list | engine_request | E05, complete node project/job inventory, never caller-selected filters |
 | prepare,preflight,checkpoint,drain,start,verify,fencing,restore,finalize,install,service_handoff | S | container_archive | engine_request | E06, declared public release files only |
@@ -174,23 +174,128 @@ closes when dispatch returns, and their receipt waits for every declared child
 (including startup SQL/retained-scope disposition) to close. No new worker or
 child can be admitted after that native item is terminal.
 
-**One mutation dispatcher:** workers have NO mutating Docker API capability.
+**One Engine dispatcher:** workers have NO Docker API capability.
 The selected Go supervisor executes every E01–E21 request through its owned
 transport and fixed native body compiler. Compose remains the release model/
 configuration authority, not an opaque lifecycle command hiding native requests.
-The sole Docker CLI/Compose worker is the preflight config compiler; its private
-broker allows only E00 /_ping and /version. All other worker Engine requests
-refuse before dispatch. Backup/restore/observer/publisher workers receive no
-Docker channel. This explicitly replaces current mutation CLI calls, preserves
+The preflight config compiler directly invokes the selected Compose executable
+under C01, with no Engine broker/network. E00 is supervisor-only. Any worker
+Engine request or attempted Engine descriptor grant refuses before dispatch.
+The H06 alert HTTP channel remains scoped HTTP, never an Engine channel.
+This explicitly replaces current lifecycle CLI calls, preserves
 the full Compose service/network/storage behavior and requires parent adoption.
 
 Before Started, strict in-process loading of the FIXED release Compose model
 with the pinned Compose model-loader version is inert input validation; no
-plugin/process/Engine write is allowed. After admission the actual pinned CLI
+plugin/process/Engine write is allowed. After admission the actual pinned Compose
 config worker must match the native complete typed model in memory. Reject any
 unsupported field/template extension or mismatch. Do not hash/persist the
 resolved secret-bearing model. This is a concrete compiler compatibility gate,
 not a new handwritten parallel configuration authority.
+
+### C01 — Direct configuration worker
+
+The selected ONE producer supplies `tools/docker-compose`, mounted read-only
+at `/tools/docker-compose`; tools from another bundle or host never substitute.
+The job has NetworkMode=none, empty networking endpoints and no gateway/Engine
+socket or secret-value descriptor. Native supervisor E00 still establishes the actual
+daemon identity/version. Compiler success does not replace that observation.
+
+WorkingDir is `/inputs/release`. Model-source mounts are ONLY the exact bundle's
+public `compose.yml` and, when the existing governed rotation selection requires it,
+`compose.rotation.yml` at those same names, read-only and manifest-bound. Model
+source may be the declared SOURCE or TARGET; compiler identity stays the selected
+producer. Do not normalize/shorten/merge away source fields before handing the
+original files to Compose. Source/target compatibility must pass for both actual
+model populations. This does not resolve remaining rotation/schema/API holds or
+change DP4's key families/minimum overlaps.
+The common W00 control leaf/private scratch and selected tool mounts remain;
+this does not expose an operator-state directory or other source files.
+
+The fixed command is an argv array:
+
+```
+/tools/docker-compose --project-name cloud-clicker --env-file /run/private/compose/empty.env --file /inputs/release/compose.yml [--file /inputs/release/compose.rotation.yml] config --format=json
+```
+
+Brackets denote the one governed optional overlay, never literal/user argv.
+After native child binding/release, the fixed gate prepares the public empty
+dotenv file at the exact argv path and Docker config
+`/run/private/compose/docker/config.json` with `{"auths":{}}`, each0600 in its
+UID-owned0700 scratch, then executes this command. No operator dotenv/Docker
+context/credential file or
+discovery directory is read by this worker. The child receives the effective
+validated interpolation values in Config.Env, using C01's clean role environment.
+These are nonsecret settings/key IDs/file-path references, not secret contents.
+Both the native loader and actual compiler use the SAME values, original file
+bytes, virtual root and rotation selection. Held-root translation is checked
+before comparing source/target paths; an arbitrary worker path is no authority.
+
+The allowed interpolation names are the fixed template's PUBLIC_ORIGIN,
+SERVER_ID, JWT_CURRENT_ID, BOOTSTRAP_CURRENT_ID, AGE_RECIPIENT, BACKUP_TARGET,
+OPERATIONS_METRICS, HTTP_PORT and HTTPS_PORT, each prefixed CLOUD_CLICKER_;
+POSTGRES_DB/POSTGRES_USER; and the six existing CLOUD_CLICKER_ file references
+DATABASE_URL_SECRET_FILE, POSTGRES_PASSWORD_SECRET_FILE, JWT_CURRENT_SECRET_FILE,
+BOOTSTRAP_CURRENT_SECRET_FILE, CURSOR_CURRENT_SECRET_FILE, ALERTMANAGER_CONFIG.
+The governed rotation variant additionally uses CLOUD_CLICKER_JWT_PREVIOUS_ID,
+CLOUD_CLICKER_BOOTSTRAP_PREVIOUS_ID, CLOUD_CLICKER_JWT_PREVIOUS_SECRET_FILE and
+CLOUD_CLICKER_BOOTSTRAP_PREVIOUS_SECRET_FILE. Preserve existing defaults and
+validation; corresponding accepted rotation fields must be reconciled into the
+operator schema before admission. Unknown interpolation names, missing required
+values or unsupported variants refuse; this list cannot waive a parent's
+required rotation behavior.
+
+Add only fixed execution controls: PATH=/run/private/compose/no-tools (no lookup),
+DOCKER_CONFIG=/run/private/compose/docker (the auths-only config directory),
+DOCKER_HOST=unix:///run/private/compose/no-engine.sock (must be absent),
+DOCKER_CLI_HINTS=false. Build a clean role environment without inherited image/
+host values; COMPOSE_*, other DOCKER_*, proxy/plugin/credential helpers and caller
+extras cannot change it. No interpolation value is a shell fragment. There is
+no compose_input or Engine broker FD: public files arrive through fixed mounts,
+values through the validated environment. Other helpers retain their actual
+secret/SQL/HTTP grants. Docker's ordinary container configuration can retain
+these nonsecret environment values on the trusted node; no memory-only claim
+is made about that store. Actual credential values never enter Config.Env.
+
+Private compiler output MUST use LogConfig.Type=none with empty Config.
+Config.AttachStdout/AttachStderr are true; stdin and Tty remain false. Admit
+E12 and establish its original live stdout/stderr attachment after shim start/
+binding but BEFORE releasing the compiler command. E12 logs=0 prevents replay;
+missing attachment refuses command release. Attachment readiness requires
+validated101/200 headers and a live original stream reader. This readiness does
+not complete E12; its work stays outstanding. Decode the pinned non-TTY Docker
+stdout/stderr multiplex framing; malformed/truncated frames fail observation.
+The [pinned daemon attach path](https://github.com/moby/moby/blob/v28.4.0/daemon/attach.go)
+registers output readers before its stream handoff and requests stored logs only
+when logs=1; that source fact does not replace actual native conformance.
+Collect complete stdout privately with a bounded reader derived from admitted
+model/input size and pinned output format; never truncate into a passing model.
+Drain stderr privately without unbounded buffering or retained content. Require
+actual zero child exit, both stream EOFs
+and original native scope end, then compare the complete typed model with the
+native loader. The shim/supervisor must not persist model/stderr output; no raw
+model, stderr, environment or inspect payload/hash enters diagnostics, metrics,
+receipts or artifacts. Only the ordinary nonsecret container configuration store
+disclosed above is permitted. E13 is forbidden for this
+job. The public research fixture's Docker logs are not this implementation.
+
+Native process termination is observed independently of the later E12/namespace
+receipts; E12 joins that observation with original EOF, and namespace completion
+consumes all required dispositions. No receipt waits on itself. Loss/truncation,
+late/cancelled attach, nonzero exit or incomplete output never counts as valid
+configuration. A guard produces INVALID measurement under SP8, not successful
+refusal evidence. Remaining shim/descendant/lifetime/fence rules are unchanged.
+
+Acceptance must exercise the actual packaged job with a seeded private marker
+in valid operator settings and check no marker/model/hash enters Docker logs,
+retained daemon job logs, operator evidence/diagnostics or output artifacts.
+This logging claim does not deny the ordinary nonsecret Config.Env store above.
+Corrupt LogConfig, delay/sever attach before release, truncate model output,
+swap source/target/env/path data and force child failure: all must fail the
+required observation. Seed missing-binary host/PATH fallbacks and attempt worker
+Engine/secret grants; no fallback or extra privilege may execute. Current public
+input studies establish only their recorded compatibility facts. Native
+Linux/amd64, full admitted-input conformance and SP8/R-006 stay mandatory.
 
 ## A2 — Exact command/lifecycle plans
 
@@ -203,7 +308,7 @@ its publisher namespace, whose native child is a leaf. No receipt hash cycle.
 
 | Stage | Action | Image/helper identity; exact command semantics | Permitted effect children |
 |---|---|---|---|
-| preflight | compose_config | producer CLI/Compose, selected rendered input, config --format=json | no runtime mutation; compare complete private model to native compiler |
+| preflight | compose_config | producer standalone Compose, C01 exact original model/validated environment and fixed config --format=json | no Engine/secret descriptors; complete unlogged E12 model compared to native compiler |
 | preflight | validate_config | applicable source/target gameserver, validate-config | no DB/HTTP/publication |
 | preflight | validate_alert_config | applicable Alertmanager, amtool check-config of authorized secret FD/path | no HTTP/publication |
 | preflight | inspect_database | applicable backup helper, inspect | Q01 read-only inspection only |
@@ -228,7 +333,7 @@ created and externally referenced by full ID/unique generation name. Helper jobs
 use private gateways/scratch and no writable host output. Live service inputs
 retain their approved service template, secret mounts and declared capabilities.
 Replace current helper --rm with supervisor-owned exact-CID cleanup: AutoRemove
-is false, restart is no. CLI cannot auto-remove before native observation.
+is false, restart is no. Commands cannot auto-remove before native observation.
 
 Each temporary job starts the pinned Go entry shim as its namespace PID1. The
 shim reports native identity/handles and waits; bind the created container and
@@ -246,8 +351,9 @@ contents/hashes or use a directory FD to claim create permission. libpq credenti
 and TLS file inputs, where its pathname API requires them, are materialized0600
 by the receiving UID in its private0700 scratch and removed after actual writers
 end, preserving the exact TLS bytes/hostname policy. The same rule applies to
-path-only CLI configuration readers, including Compose/amtool; inherited file
-FDs are not a claim that /proc/self/fd reopening bypasses DAC. Age identity may be consumed
+path-only configuration readers such as amtool; C01 Compose receives no secret
+FD. Inherited file FDs are not a claim that /proc/self/fd reopening bypasses DAC.
+Age identity may be consumed
 from its original read FD without another persistent key copy. Staged ciphertext
 is likewise granted as a read FD to the operator-owned F01 writer; writable
 backup/metric targets must already be accessible to the existing operator.
@@ -320,14 +426,15 @@ it does not exec a command or gain another role's output/mutation capability.
 
 `release` payload is `{action, inputs}`; inputs is an ordered array of exact
 `{role, fd_index, access}` objects. access is read_only/duplex. The closed role
-population is release_manifest, epoch, compose_input, alert_config, database_url,
+population is release_manifest, epoch, alert_config, database_url,
 libpq_password, tls_rootcert, tls_clientcert, tls_clientkey, age_identity,
 backup_ciphertext, sql_relay, and worker_broker. Supply ONLY roles actually read
-by that fixed A2 command's existing flags/configuration: compose gets its model
-and ping/version-only broker; validators their own config; database helpers
+by that fixed A2 command's existing flags/configuration: compose gets no input
+FDs under C01; validators their own config; database helpers
 manifest/epoch/DSN and configured TLS/password/relay; restore additionally its
 backup/identity; alert helper only its fixed scoped HTTP channel (role
-worker_broker). No generic host file/socket or extra role is admitted. File
+worker_broker, HTTP-only H06). No Engine broker role exists. No generic host
+file/socket or extra role is admitted. File
 inputs have independent offsets and read-only regular FDs; only the exact Q01/
 worker broker role may be duplex. FD indices are contiguous in inputs order;
 reject duplicates/extra/missing/non-native descriptors. No secret/hash enters
@@ -509,7 +616,7 @@ is a wire reference, not permission to expose its other endpoints.
 | E10 | DELETE /containers/<CID>?force=false&v=false; no body |204 plus exact absence/native terminal/restart prevention; no extra volume deletion |
 | E11 | POST /containers/<CID>/wait?condition=not-running; no body |200 complete typed status/error; corroborate original native scope, nonzero exit is failed but may be terminal |
 | E12 | POST /containers/<CID>/attach?stream=1&stdout=1&stderr=1&stdin=0&logs=0; no input bytes |101 raw-stream mode or200 per pinned negotiated transport, original server EOF plus owned job terminal; no application stdin |
-| E13 | GET /containers/<CID>/logs?stdout=1&stderr=1&follow=0&timestamps=0&tail=all; no body |200 entire multiplexed output, decode public required result only, never persist sensitive output |
+| E13 | GET /containers/<CID>/logs?stdout=1&stderr=1&follow=0&timestamps=0&tail=all; no body; forbidden for compose_config CID |200 entire multiplexed output, decode public required result only, never persist sensitive output |
 | E14 | POST /networks/create; exact Name, Driver=bridge, Internal per role, EnableIPv6=false, IPAM default, Labels profile generation; no options/plugins |201 full network ID, inspect/bind before connect/use |
 | E15 | GET /networks/<CID>; no body/query |200 exact bridge/internal/endpoint generation,404 observation only |
 | E16 | POST /networks/<CID>/connect; exact Container CID and approved aliases, no IPAM/MAC override |200 plus actual exact connection; no user-selected network/name |
@@ -539,7 +646,10 @@ an unspecified future converter). Config.Image is manifest config ID; User,
 Entrypoint, Cmd, WorkingDir, Healthcheck, StopSignal/StopTimeout and ExposedPorts
 come from the selected image defaults overridden ONLY by the exact approved
 role/command template. Environment merges those same defaults/template into one
-unique-key map, encoded in key order; values remain memory-only. Jobs replace
+unique-key map, encoded in key order, except C01 starts from its clean explicit
+map. Nonsecret values may enter ordinary trusted daemon configuration; actual
+credentials remain authorized FD inputs. No environment/inspect payload or
+private-config hash is copied into operator evidence. Jobs replace
 Entrypoint with the fixed shim and carry the fixed command from A2. AttachStdin,
 OpenStdin, StdinOnce and Tty are false; stdout/stderr attach is allowed only for
 the bound temporary job. Labels are the exact computed project/service/oneoff/
@@ -554,11 +664,14 @@ namespaces. Its no-fork/exec closed membership is a producer contract requiring
 source/native review, not a label a caller may set.
 
 HostConfig.Mounts is the exact target-ordered held input/storage projection,
-ReadonlyRootfs/Tmpfs/RestartPolicy/LogConfig come from the approved role, and
-PortBindings are permitted ONLY for Caddy's two already configured ports.
-NetworkMode and NetworkingConfig contain only the declared full network IDs/
-aliases, including all four retained network roles where required. Workers have
-empty host PID/user/network overrides, private IPC/cgroup namespace, Privileged
+ReadonlyRootfs/Tmpfs/RestartPolicy/LogConfig come from the approved role. C01
+compose_config requires LogConfig Type=none/empty Config, NetworkMode=none and
+empty NetworkingConfig; validate these before E07. Existing service logging/
+retention and other fixed job roles remain. PortBindings are permitted ONLY for
+Caddy's two already configured ports.
+For other roles, NetworkMode and NetworkingConfig contain only declared full network IDs/
+aliases, including all four retained network roles where required. Workers never
+select host PID/network namespaces or user remapping; they have private IPC/cgroup namespaces, Privileged
 false, no Devices/DeviceRequests/VolumesFrom/extra groups, CapDrop ALL, no added
 capability and no-new-privileges. Trusted Postgres-namespace observer/retained-backup roles
 alone may select that exact Postgres PID namespace. No arbitrary namespace path.

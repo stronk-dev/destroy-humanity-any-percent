@@ -7,20 +7,23 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
-**Tool delivery proposal, 2026-11-04 (RP-759):** the independently technically reviewed
-[companion draft](../../rfc/deployment-tool-artifact-inventory.md) makes the
-separate CLI/Compose inventory and delivery contract concrete. It reuses the
-existing flat manifest and gives each tool its own SPDX, raw grants/notices,
-covered-source file catalogue and truthful acquisition/build evidence. The
-tool-only MPL policy is proposed, not adopted; app policy is unchanged. Native
-SP1/SP8 links now distinguish technical review → owner adoption → construction
-→ actual native/R-006 proof. No current artifact/version or unresolved right is
-approved. Complete seven-path070829cf..1648e792 is independently TECHNICALLY
-APPROVED after correcting member/origin, runner/recipe and source-tuple findings;
-the owning log preserves both negative verdicts. Existing policy/host/architecture
-adoption remains pending. Before choosing the artifact floor, run the bounded
-standalone configuration comparison below. No production/schema implementation
-or software test claim follows from this Markdown-only proposal.
+**Direct upstream-Compose proposal, 2026-11-04 (RP-759):** the current
+[tool companion](../../rfc/deployment-tool-artifact-inventory.md), native SP1/SP3/
+SP8 and adapter C01 now propose one upstream compiler executable, no worker
+Engine/secret descriptor, explicit validated interpolation inputs and unlogged
+private output through original E12. The existing application policy, exact
+manifest/source/notices/covered-source closure and every parent acceptance floor
+remain. The unused unadopted local build system is withdrawn; another publisher/
+build mode needs its own concrete accepted contract if selected.
+
+Earlier core/adapter/tool reviews cover their cited historical bytes, not this
+amendment. The reviewed v3 configuration study is below; two new input arms also
+complete the actual public population. Next independent combined research/tool
+and technical-spec review, then an explicit owner adoption request for the
+reviewed scope. Static inventory construction can be adopted separately from
+native runtime dispatch; private handling/native/SP8/R-006 must still be built
+and proved before feature acceptance. No shipping version or rights clearance,
+production/schema implementation or whole-CI claim is made.
 
 **Predeclared bounded study — direct Compose configuration:** pinned Compose source
 `cmd/main.go` and `cmd/compatibility/convert.go` have an explicit standalone path.
@@ -61,6 +64,29 @@ adoption, preserving all current native/manifest and source/rights criteria.
 This result does not modify the currently reviewed two-tool contract or select
 the old research version as a shipping pin. No native-host release proof claimed.
 
+**Compiler input construction study, predeclared 2026-11-04:** before specifying
+the direct worker's grants, test whether an explicit environment plus an empty
+dotenv file preserves all3 current configuration outputs, then whether those
+outputs can compile with every referenced secret-file path absent. Use the same
+actual tools/templates and full valid/invalid/control population, guards and
+owned cleanup. New process_environment arm must match retained v3 valid stdout
+hashes; process_environment_absent_secrets must match within direct/wrapped
+pairs and actually expose6/8 absent secret references in base/rotation models.
+Direct mode also gets a private empty auths-only Docker config, no discovery.
+Values are synthetic public data. A pass supports proposing no secret-value FD
+or Engine channel for this compiler; it does not prove native environment/path
+binding, private output handling, lifecycle closure, artifact eligibility or
+any other worker's grants. Unknown/guards/skips invalidate, not count as refusal.
+
+Executed29b5a5/33190→e2cbc0 and2ec074/93818→97a190: each arm passes3 full
+direct/wrapped model pairs,8 invalid-input refusals,2 binary controls and all
+typed/token controls with owned cleanup. Process-environment outputs match all6
+retained v3 positive mode/case hashes/lengths (047f2b). Absent-secret references
+are actually0/6/8 in minimal/base/rotation for BOTH modes; the direct Docker
+configuration has empty auths only. The new selector rejects unknown mode before
+work (5b36c0). This source/data and C01's normative translation await combined
+independent review, not self-approval or private/native acceptance.
+
 **Nested attribution correction,2026-11-04 (RP-761):** independently APPROVED
 complete six-path957dfa6b..a8168b63. Actual old imported-GDDO BSD omission
 reproduces; corrected full affected tests/vet and fresh53-dependency generator
@@ -85,9 +111,10 @@ for this root-NOTICE defect; canonical docs describe delivery. Nested/MPL/tool/
 source-rights, native architecture/adoption and full release gates remain separate.
 
 **Native profile construction,2026-11-04:**
-Complete corrected proposal is independently TECHNICALLY APPROVED, exact union
+The preceding core/adapter proposal was independently TECHNICALLY APPROVED, exact union
 c58f8e48..224fc0e2 plus4118c4d8..a836e92b; Headcount editorial excluded.
 The owning log preserves all negative verdicts and actual diagnostic execution.
+The current direct-Compose amendment above still needs its own review/adoption.
 SP1–SP8 plus the [adapter companion](../../rfc/deployment-native-supervisor-adapters.md)
 now define native bootstrap, exact stage/Engine/SQL/HTTP/file/native plans,
 immutable creation/start, source/target identities, worker FD/control/results,
