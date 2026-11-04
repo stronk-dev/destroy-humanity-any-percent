@@ -9717,3 +9717,37 @@ Original source/v1/v2 and independent negative remain. Root fixtures/resources
 are rechecked empty before corrective commit. Complete original plus both
 corrections needs independent re-review, not OP9/adoption/recovery acceptance.
 Review by: Codex root, corrective author first filter. Recorded by: Codex root.
+
+## 2026-11-04 — Corrected worker-isolation union independently APPROVED
+
+Review by: independent Codex `/root/worker_isolation_research_review`.
+Recorded by: Codex root, transcribing final returned verdict. Complete union:
+
+- `9a17aa2a2f0269598815d43af0ddc5e66a875ade..aa765a4026fce0b5311fbcbe4401ec092eab1c68`.
+- `aa765a4026fce0b5311fbcbe4401ec092eab1c68..4f0c5464aaa94ee219780ce604d8800603e6afe6`.
+- `4f0c5464aaa94ee219780ce604d8800603e6afe6..299ad11456bd0b6b5fc0d11b77388b420b7d5129`.
+
+Verdict **APPROVED — corrected research/tool scope**, no blocking findings.
+Original CHANGES REQUIRED and both partial failures remain. Independent actual
+12798 exits0, ALL before/after/isolated/wrong-UID/broker populations complete:
+PG16.15N/control markers, exact101/2/30/30 refusals, actual Engine200/OK,
+route/UID403, kernel/native profiles and intact channel marker.
+
+Independentdd3dfd exits0: old reversed mount refusal reproduces, all4 native/
+intended order permutations pass; duplicate/missing/extra/altered mounts and
+user/network/read-only/caps/security/privilege/PID/IPC corruptions refuse;
+all3 artifact/source bindings pass. Prior independentf1efb8 guard/error/errno
+and394f4d broker controls remain applicable: actual functions/embedded actors
+verified AST/byte-identical. Independent082e80 exits0 checks all ranges/union,
+nine-path scope, append-only negative preservation, refs, scratch and checkout.
+Production and CI untouched. Root's executions are not relabelled reviewer work.
+
+Own reviewer project09b322e8648d6ae3 container/network/volume inventories
+c72573/9c448c/4bdff7 empty; all handles terminal, no tracked edits/commits.
+This editorial closeout changes no reviewed tool/observation/criterion and needs
+no identical rerun. RP-749/751 close instrument defects only. RP-750/OP9 stays
+OPEN: actual Go/CLI, full job identity/write authorization, supervisor/daemon
+lifetime, native Linux/amd64, adoption and useful recovery remain unproved.
+Next actual Docker/Compose command workers plus Go broker/admission/receipt
+binding, not another Python-ping repetition. Full nine-tier1.0 stays active;
+no publication, deployment, archival, new permission or goal pause.

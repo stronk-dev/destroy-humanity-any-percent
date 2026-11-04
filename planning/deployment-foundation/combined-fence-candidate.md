@@ -266,7 +266,11 @@ claimed. Source now compares destination-ordered projections, preserving exact
 cardinality/values and rejecting duplicate/altered/extra mounts. Actual old/new
 controlab38d7 discriminates both orderings and invalid sets; fresh actual14788
 completes every population at source2cfcb55c, retained v3. Original negative/
-v1/v2 remain. Complete corrected-union review is pending, not OP9 acceptance.
+v1/v2 remain. Complete original-plus-both-corrections union through299ad114 is
+independently APPROVED after fresh12798 all populations,dd3dfd permutation/
+corruption/binding controls and unchanged independent guard/broker controls.
+Both failed partial reviewer runs remain disclosed. RP-749/751 close instrument
+defects, not OP9/profile/adoption or actual CLI/supervisor/recovery acceptance.
 
 Actual57766 compares UID65532/cap-drop writable network controls BEFORE and AFTER
 an isolated network-none/read-only worker. Both controls reach real pinned

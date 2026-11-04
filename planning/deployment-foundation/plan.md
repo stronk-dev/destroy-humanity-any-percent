@@ -56,6 +56,17 @@ current both-order pass and invalid-mount refusals. Fresh14788 exits0, complete
 native population unchanged, v3 binds2cfcb55c. Guard functions are AST-identical
 to independently checked4f0c5464. Complete containing union needs re-review.
 
+Complete original plus both correction ranges through299ad114 is independently
+APPROVED research/tool scope. Fresh12798 completes EVERY population;dd3dfd checks
+old/current permutations, corruption and all source bindings. Prior independent
+guard/error/errno/broker controls apply to verified unchanged functions/actors;
+082e80 verifies full union/scope/negative preservation/cleanup. RP-749/751 close
+instrument defects only; RP-750 and OP9 remain OPEN. Next execute actual
+Docker/Compose command binaries and the Go broker in this per-job boundary,
+bind full job/channel identity and stage-aware admitted write routes/receipts,
+then complete supervisor/daemon/bootstrap/native-host ownership. No repeat of
+the completed Python isolation population absent a source change/new concern.
+
 **Operation evidence proposal,2026-11-04:** new draft
 `rfc/deployment-operation-evidence.md` specifies canonical private hash-bound
 Supervisor, phase work-log, receipt-envelope, predecessor/completion and
