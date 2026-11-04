@@ -1,0 +1,203 @@
+{
+  "actor_observation_guard_seconds": 240,
+  "actor_output": "=== RUN   TestManualOperationGatewayIntegration\n    operation_gateway_research_test.go:756: actual encrypted helper roundtrip and interrupted pgx/exporter + pg_dump population complete\n--- PASS: TestManualOperationGatewayIntegration (2.68s)\n=== RUN   TestManualOperationGatewayControls\n=== RUN   TestManualOperationGatewayControls/deadline_postcollection\n=== RUN   TestManualOperationGatewayControls/both_EOF_but_admission_open\n=== RUN   TestManualOperationGatewayControls/frontend_only\n=== RUN   TestManualOperationGatewayControls/server_only\n=== RUN   TestManualOperationGatewayControls/neither\n=== RUN   TestManualOperationGatewayControls/complete\n=== RUN   TestManualOperationGatewayControls/native_failure\n=== RUN   TestManualOperationGatewayControls/deadline_failure\n=== RUN   TestManualOperationGatewayControls/real_EOF\n=== RUN   TestManualOperationGatewayControls/truncated_header\n=== RUN   TestManualOperationGatewayControls/bad_length\n=== RUN   TestManualOperationGatewayControls/oversized_frame\n=== RUN   TestManualOperationGatewayControls/truncated_body\n=== RUN   TestManualOperationGatewayControls/bad_key_size\n=== RUN   TestManualOperationGatewayControls/duplicate_key\n--- PASS: TestManualOperationGatewayControls (0.00s)\n    --- PASS: TestManualOperationGatewayControls/deadline_postcollection (0.00s)\n    --- PASS: TestManualOperationGatewayControls/both_EOF_but_admission_open (0.00s)\n    --- PASS: TestManualOperationGatewayControls/frontend_only (0.00s)\n    --- PASS: TestManualOperationGatewayControls/server_only (0.00s)\n    --- PASS: TestManualOperationGatewayControls/neither (0.00s)\n    --- PASS: TestManualOperationGatewayControls/complete (0.00s)\n    --- PASS: TestManualOperationGatewayControls/native_failure (0.00s)\n    --- PASS: TestManualOperationGatewayControls/deadline_failure (0.00s)\n    --- PASS: TestManualOperationGatewayControls/real_EOF (0.00s)\n    --- PASS: TestManualOperationGatewayControls/truncated_header (0.00s)\n    --- PASS: TestManualOperationGatewayControls/bad_length (0.00s)\n    --- PASS: TestManualOperationGatewayControls/oversized_frame (0.00s)\n    --- PASS: TestManualOperationGatewayControls/truncated_body (0.00s)\n    --- PASS: TestManualOperationGatewayControls/bad_key_size (0.00s)\n    --- PASS: TestManualOperationGatewayControls/duplicate_key (0.00s)\nPASS",
+  "binary_sha256": "84d2c54fa9e4da88cc9c5c81b166378e49db135527109a339992ad793da721f8",
+  "build_guard_seconds": 180,
+  "cleanup_complete": true,
+  "cleanup_outside_work_guard": true,
+  "cleanup_per_command_seconds": 15,
+  "collection_guard_seconds": 10,
+  "database_id": "060a0d485277de203b6135beb3a9ba462d8e3eb8371086fdc68e65770849dae7",
+  "engine": "28.4.0 linux/arm64",
+  "fixture_metadata": "synthetic, not a release artifact",
+  "handshake_seconds": 10,
+  "interrupted": {
+    "all_eof_before_lock_release": true,
+    "all_original_eof": true,
+    "closed_admission_errno": 111,
+    "connections": 2,
+    "journal": [
+      {
+        "connection": 1,
+        "event": "admitted",
+        "sequence": 1
+      },
+      {
+        "connection": 1,
+        "event": "connected",
+        "sequence": 2
+      },
+      {
+        "connection": 1,
+        "event": "key_available",
+        "sequence": 3
+      },
+      {
+        "connection": 2,
+        "event": "admitted",
+        "sequence": 4
+      },
+      {
+        "connection": 2,
+        "event": "connected",
+        "sequence": 5
+      },
+      {
+        "connection": 2,
+        "event": "key_available",
+        "sequence": 6
+      },
+      {
+        "connection": 2,
+        "event": "frontend_eof",
+        "sequence": 7
+      },
+      {
+        "connection": 1,
+        "event": "frontend_eof",
+        "sequence": 8
+      },
+      {
+        "connection": 1,
+        "event": "server_eof",
+        "sequence": 9
+      },
+      {
+        "connection": 2,
+        "event": "server_eof",
+        "sequence": 10
+      }
+    ],
+    "native_dials": 2,
+    "rows": "7,42",
+    "same_control_and_postmaster": true,
+    "wrong_key_still_blocked": true
+  },
+  "journal_failure_before_dial": true,
+  "objective_completed": true,
+  "population_work_guard_seconds": 60,
+  "positive": {
+    "backup": {
+      "all_original_eof": true,
+      "connections": 2,
+      "journal": [
+        {
+          "connection": 1,
+          "event": "admitted",
+          "sequence": 1
+        },
+        {
+          "connection": 1,
+          "event": "connected",
+          "sequence": 2
+        },
+        {
+          "connection": 1,
+          "event": "key_available",
+          "sequence": 3
+        },
+        {
+          "connection": 2,
+          "event": "admitted",
+          "sequence": 4
+        },
+        {
+          "connection": 2,
+          "event": "connected",
+          "sequence": 5
+        },
+        {
+          "connection": 2,
+          "event": "key_available",
+          "sequence": 6
+        },
+        {
+          "connection": 2,
+          "event": "frontend_eof",
+          "sequence": 7
+        },
+        {
+          "connection": 2,
+          "event": "server_eof",
+          "sequence": 8
+        },
+        {
+          "connection": 1,
+          "event": "frontend_eof",
+          "sequence": 9
+        },
+        {
+          "connection": 1,
+          "event": "server_eof",
+          "sequence": 10
+        }
+      ],
+      "native_dials": 2
+    },
+    "canonical_identity_equal": true,
+    "restore": {
+      "all_original_eof": true,
+      "connections": 2,
+      "journal": [
+        {
+          "connection": 1,
+          "event": "admitted",
+          "sequence": 1
+        },
+        {
+          "connection": 1,
+          "event": "connected",
+          "sequence": 2
+        },
+        {
+          "connection": 1,
+          "event": "key_available",
+          "sequence": 3
+        },
+        {
+          "connection": 2,
+          "event": "admitted",
+          "sequence": 4
+        },
+        {
+          "connection": 2,
+          "event": "connected",
+          "sequence": 5
+        },
+        {
+          "connection": 2,
+          "event": "key_available",
+          "sequence": 6
+        },
+        {
+          "connection": 2,
+          "event": "frontend_eof",
+          "sequence": 7
+        },
+        {
+          "connection": 2,
+          "event": "server_eof",
+          "sequence": 8
+        },
+        {
+          "connection": 1,
+          "event": "frontend_eof",
+          "sequence": 9
+        },
+        {
+          "connection": 1,
+          "event": "server_eof",
+          "sequence": 10
+        }
+      ],
+      "native_dials": 2
+    },
+    "restored_rows": "7"
+  },
+  "postgres_version": "16.15",
+  "project": "cc-backup-gateway-d5c3c5ec2cfb48bc",
+  "runner_sha256": "42fc4f8251ebfedab6d6c2124d95b280713dc872d85c3859c355a5d0fdff1a70",
+  "source_commit": "86b82187919846408152a21f22e7d919fe48bf20",
+  "source_sha256": "ca26d97038e2e120714102aee23cf3711bdc539f3543505fd0bac5b0410095dc",
+  "tls": "disabled disposable fixture only"
+}

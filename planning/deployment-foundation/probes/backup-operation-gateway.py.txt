@@ -1,0 +1,113 @@
+"""Manual actual-helper gateway study, root only; not normal CI or production.
+
+Compilation180s; actor observation240s outside each of2 measured populations60s.
+Ordinary commands/final collection10s; cleanup15s PER command outside work.
+Only the declared disposable Postgres service is used; no host ports or pulls.
+"""
+import hashlib
+import json
+import pathlib
+import re
+import secrets
+import shutil
+import subprocess
+import tempfile
+import time
+
+IMAGE = 'postgres:16-alpine@sha256:075f7ba66bc9b3ce7d6b8b635208ff61cd7cf1a67d71ec530eec5d7ae0cbe571'
+CONFIG = 'sha256:75f5a96988cdf694a215073c3e9c001b706b371e2f94df3967f2efdec2787f6b'
+
+
+def main():
+    root = pathlib.Path.cwd()
+    assert (root/'compose.deployment-backup-test.yml').is_file()
+    source = root/'planning/deployment-foundation/probes/backup-operation-gateway_test.go.txt'
+    binary = root/'.cache/bin/backup-operation-gateway-research.test'
+    cache = root/'.cache/backup-operation-gateway-research'
+    cache.mkdir(exist_ok=True)
+    overlay = cache/'overlay.json'
+    overlay.write_text(json.dumps(dict(Replace={str(root/'server/deploymentbackup/operation_gateway_research_test.go'):str(source)})))
+    source_hash = hashlib.sha256(source.read_bytes()).hexdigest()
+    source_commit = subprocess.run(['git','rev-parse','HEAD'],capture_output=True,text=True,check=True,timeout=10).stdout.strip()
+    build_end = time.monotonic()+180
+    build = subprocess.run(['make','test-go','GO_PACKAGES=./deploymentbackup',
+                            'GO_TEST_FLAGS=-c -o ../.cache/bin/backup-operation-gateway-research.test -overlay='+str(overlay),
+                            'GOOS=linux','GOARCH=amd64','CGO_ENABLED=0'],capture_output=True,text=True,timeout=180)
+    if build.returncode or time.monotonic()>=build_end:
+        raise RuntimeError('manual build failed/late: '+build.stdout+build.stderr)
+    assert hashlib.sha256(source.read_bytes()).hexdigest()==source_hash
+    project = 'cc-backup-gateway-'+secrets.token_hex(8)
+    work = pathlib.Path(tempfile.mkdtemp(prefix=project+'-'))
+    observation = work/'observation'
+    observation.mkdir()
+    override = work/'compose.yml'
+    override.write_text('services:\n  postgres:\n    image: '+IMAGE+'\n'
+                        '  backup-test:\n    image: '+IMAGE+'\n    read_only: true\n    tmpfs: [/tmp]\n'
+                        '    environment:\n      CLOUD_CLICKER_MANUAL_GATEWAY_REPORT: /observation/result.json\n'
+                        '    volumes:\n      - type: bind\n        source: '+json.dumps(str(binary))+'\n'
+                        '        target: /probe\n        read_only: true\n'
+                        '      - type: bind\n        source: '+json.dumps(str(observation))+'\n'
+                        '        target: /observation\n    entrypoint: [/probe]\n'
+                        '    command: [-test.run, "^TestManualOperationGateway(Integration|Controls)$", -test.count=1, -test.v, -test.timeout=240s]\n')
+    compose = ['compose','--project-name',project,'-f',str(root/'compose.deployment-backup-test.yml'),'-f',str(override)]
+
+    def run(*args,timeout=10):
+        end = time.monotonic()+timeout
+        result = subprocess.run(['docker',*args],capture_output=True,text=True,timeout=timeout)
+        output = result.stdout.strip()
+        if result.returncode or time.monotonic()>=end:
+            raise RuntimeError('owned fixture command failed/late: '+output+result.stderr)
+        return output
+
+    completed = False
+    print(json.dumps(dict(phase='started',project=project,private_work=str(work))),flush=True)
+    try:
+        engine = run('version','--format','{{.Server.Version}} {{.Server.Os}}/{{.Server.Arch}}')
+        assert engine=='28.4.0 linux/arm64'
+        run(*compose,'up','--detach','--wait','--pull','never','postgres')
+        database = run(*compose,'ps','--quiet','postgres')
+        assert re.fullmatch('[a-f0-9]{64}',database)
+        assert run('inspect','--format','{{.Id}} {{.Image}} {{index .Config.Labels "com.docker.compose.project"}} {{index .Config.Labels "com.docker.compose.service"}}',database)==' '.join((database,CONFIG,project,'postgres'))
+        version = run('exec',database,'psql','-U','cloud_clicker','-d','cloud_clicker_source','-Atq','-c','SHOW server_version')
+        actor = run(*compose,'run','--rm','--no-deps','--pull','never','backup-test',timeout=240)
+        end = time.monotonic()+10
+        assert '--- PASS: TestManualOperationGatewayIntegration' in actor and '--- PASS: TestManualOperationGatewayControls' in actor
+        assert '--- SKIP:' not in actor
+        result = json.loads((observation/'result.json').read_text())
+        assert result['objective_completed'] is True and result['journal_failure_before_dial'] is True
+        positive, interrupted = result['positive'], result['interrupted']
+        assert positive['canonical_identity_equal'] is True and positive['restored_rows']=='7'
+        for population in (positive['backup'],positive['restore'],interrupted):
+            assert population['connections']>=2 and population['native_dials']==population['connections']
+            assert population['all_original_eof'] is True
+            rows = population['journal']
+            assert [r['sequence'] for r in rows]==list(range(1,len(rows)+1))
+            assert {r['connection'] for r in rows}==set(range(1,population['connections']+1))
+            for connection in range(1,population['connections']+1):
+                events = [r['event'] for r in rows if r['connection']==connection]
+                assert events[:3]==['admitted','connected','key_available']
+                assert len(events)==5 and set(events[3:])=={'frontend_eof','server_eof'}
+        assert all(interrupted[key] is True for key in ('wrong_key_still_blocked','all_eof_before_lock_release','same_control_and_postmaster'))
+        assert interrupted['rows']=='7,42' and interrupted['closed_admission_errno']==111
+        assert hashlib.sha256(source.read_bytes()).hexdigest()==source_hash,'source changed during work'
+        assert subprocess.run(['git','rev-parse','HEAD'],capture_output=True,text=True,check=True,timeout=10).stdout.strip()==source_commit
+        result.update(project=project,database_id=database,postgres_version=version,engine=engine,source_commit=source_commit,
+                      source_sha256=source_hash,runner_sha256=hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest(),
+                      binary_sha256=hashlib.sha256(binary.read_bytes()).hexdigest(),
+                      build_guard_seconds=180,actor_observation_guard_seconds=240,
+                      collection_guard_seconds=10,cleanup_per_command_seconds=15,cleanup_outside_work_guard=True,
+                      actor_output=actor)
+        encoded = json.dumps(result,sort_keys=True)
+        assert time.monotonic()<end,'final collection late: INVALID'
+        completed = True
+    finally:
+        run(*compose,'down','--volumes','--remove-orphans',timeout=15)
+        for kind in ('container','network','volume'):
+            assert run(kind,'ls','--quiet','--filter','label=com.docker.compose.project='+project,timeout=15)=='','owned cleanup incomplete'
+        if completed:shutil.rmtree(work)
+        else:print(json.dumps(dict(objective_completed=False,private_work=str(work))),flush=True)
+    result['cleanup_complete'] = True
+    print(json.dumps(result,sort_keys=True),flush=True)
+
+
+if __name__=='__main__':main()

@@ -9826,3 +9826,61 @@ identity/write authorization, supervisor/daemon lifetime, actual helpers,
 supported native host, adoption/recovery/R-006 and the full nine-tier1.0 remain
 open. Editorial closeout changes no tool/observation/criterion; no repeated
 identical run required. Goal stays active; no push, deployment or archival.
+
+
+## 2026-11-04 — Bind actual encrypted backup/restore functions to tracked streams
+
+Scope: manual research/tool overlay, no production/CI/normal-test/contract change.
+Existing package fixtures/metadata and unchanged CreatePostgresBackup,
+RestorePostgresBackup, InspectRecoveryIdentity/CompareRecoveryIdentity are reused.
+New multiple-connection gateway fsyncs experimental admission BEFORE native dial,
+retains originals through server EOF and rereads exact acknowledged journal rows.
+Secret BackendKeyData stays memory-only. RP-752 tracks remaining full binding.
+
+Initial development actual25d5b1/697f01 exits0 with both real populations (2.48s).
+After adding fourteen meaningful terminal/framing controls and exact source-commit
+binding, development fb5d9e/d39e8a exits0 (2.51s integration). Pre-commit review
+then explicitly bounds native dial10s and checks the clock after local dial, SQL,
+cancel and child output collection, with4 actual future/past/cancelled/missing
+deadline controls. Final b6e37d/1637f4 exits0 (2.68s integration), no skips.
+Positive unmodified package functions create/restore an actual encrypted backup;
+complete canonical identity and explicit restored row7 equal. Each uses2 streams,
+pgx plus actual libpq child, each durably admitted in this experimental file and
+observed through real upstream EOF. Existing synthetic release metadata remains
+clearly labeled, not an executable release bundle.
+
+Interrupted actual helper shows idle snapshot exporter plus pg_dump blocked on
+the controlled table lock. Close admission, kill owned fixture process group,
+observe both frontend ends; wrong-key delivery leaves the original query blocked
+and full terminal classifier false. Correct key yields ALL original server EOF
+BEFORE lock release. Same continuously connected control PID/postmaster retained;
+prior row7 unchanged, then control writes42. No backup/output completion report.
+Closed listener is exact ECONNREFUSED111. Real closed-journal write fails before
+native dial or row acknowledgement. Fourteen actual classifier/framing controls
+refuse incomplete/open/error/deadline and malformed/truncated/oversized/duplicate
+frames; real EOF/complete population pass. Final5bd1d6 Linux/amd64 overlay vet exits0.
+Root62d424 binds retained v1 to final sourceca26d970 and runner42fc4f82; observation
+contains neither fixture password nor generated age private key. Source base is
+86b82187919846408152a21f22e7d919fe48bf20, kernel0.3.225/epoch8 unchanged.
+
+All root projects520ee9baf95fa415/02e69d2d4d73d952/52300926d0df29c8/
+d5c3c5ec2cfb48bc are removed by the runner;
+owned container/network/volume inventories empty before completed output.
+Build180s/actor240s are observation guards; setup30s, each of2 populations60s,
+ordinary handshakes10s, root collection10s after hashes/encoding; Docker cleanup
+15s PER command outside work. No production latency/RTO inference. Build inputs
+only change through ignored compiler overlay; every command uses root Make.
+
+Limits: SSL disabled fixture only; loopback gateway is not non-bypassable worker
+isolation. Process-group signal is test-local, not production lifetime ownership.
+Row fsync is not adopted OP1/OP3, parent-directory/power-loss reconstruction or
+recoverable supervisor authority. Successful encrypted publication is observed,
+but interruption precedes dump completion and does not fence later encryption/
+publication. Full backup CLI/outer metrics, release/Engine/HTTP/host writers,
+all resources, TLS, daemon identity/bootstrap, supported native host, adoption
+and clean-host/R-006 remain. Complete new range from86b82187 needs independent
+review; root checks are first-filter only. Next complete those real producer
+bindings, not another unchanged two-session positive. Full nine-tier1.0 stays
+active; no push, host deployment, archival, release claim or goal pause.
+
+Review by: Codex root, research/tool author first filter. Recorded by: Codex root.

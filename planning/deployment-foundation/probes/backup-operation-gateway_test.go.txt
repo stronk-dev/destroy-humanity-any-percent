@@ -1,0 +1,858 @@
+// Manual compiler-overlay study, not a production proxy or normal CI test.
+// Existing package fixtures are synthetic release metadata, not release artifacts.
+package deploymentbackup
+
+import (
+	"context"
+	"database/sql"
+	"encoding/binary"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"io"
+	"net"
+	"net/url"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"strings"
+	"sync"
+	"sync/atomic"
+	"syscall"
+	"testing"
+	"time"
+
+	"cloud-clicker/server/save"
+	"filippo.io/age"
+)
+
+type researchSession struct {
+	id            int
+	front, back   *net.TCPConn
+	pid, key      uint32 // Memory only. Never written into the journal or report.
+	frontTerminal bool
+	serverEOF     bool
+	err           error
+}
+
+type researchGateway struct {
+	mu       sync.Mutex
+	listener *net.TCPListener
+	upstream string
+	journal  *os.File
+	closed   bool
+	sessions []*researchSession
+	rows     []map[string]any
+	err      error
+	dials    int
+	wg       sync.WaitGroup
+	deadline time.Time
+}
+
+// Check the clock after collection too; timer-goroutine scheduling is not proof
+// that matching output arrived inside its declared local bound.
+func researchDeadline(ctx context.Context) error {
+	if err := ctx.Err(); err != nil {
+		return err
+	}
+	end, ok := ctx.Deadline()
+	if !ok {
+		return errors.New("missing observation deadline: INVALID")
+	}
+	if !time.Now().Before(end) {
+		return context.DeadlineExceeded
+	}
+	return nil
+}
+
+// Caller holds mu. The append is synced before any action it authorizes.
+// This experimental journal is NOT an OP1/OP3 production-format implementation.
+func (g *researchGateway) appendLocked(id int, kind string) error {
+	row := map[string]any{"sequence": len(g.rows) + 1, "connection": id, "event": kind}
+	data, err := json.Marshal(row)
+	if err == nil {
+		data = append(data, '\n')
+		err = researchWrite(g.journal, data)
+	}
+	if err == nil {
+		err = g.journal.Sync()
+	}
+	if err == nil && !time.Now().Before(g.deadline) {
+		err = errors.New("journal collection deadline: INVALID")
+	}
+	if err != nil {
+		g.err = err
+		return err
+	}
+	g.rows = append(g.rows, row)
+	return nil
+}
+
+func researchWrite(w io.Writer, data []byte) error {
+	for len(data) != 0 {
+		n, err := w.Write(data)
+		if err != nil {
+			return err
+		}
+		if n <= 0 {
+			return io.ErrNoProgress
+		}
+		data = data[n:]
+	}
+	return nil
+}
+
+func researchNewGateway(t *testing.T, ctx context.Context, address, journalPath string) *researchGateway {
+	t.Helper()
+	file, err := os.OpenFile(journalPath, os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0600)
+	if err != nil {
+		t.Fatal(err)
+	}
+	listener, err := net.ListenTCP("tcp4", &net.TCPAddr{IP: net.IPv4(127, 0, 0, 1)})
+	if err != nil {
+		file.Close()
+		t.Fatal(err)
+	}
+	end, ok := ctx.Deadline()
+	if !ok {
+		t.Fatal("missing measured deadline")
+	}
+	g := &researchGateway{listener: listener, upstream: address, journal: file, deadline: end}
+	if err := listener.SetDeadline(end); err != nil {
+		t.Fatal(err)
+	}
+	g.wg.Add(1)
+	go func() {
+		defer g.wg.Done()
+		for {
+			front, err := listener.AcceptTCP()
+			if err != nil {
+				g.mu.Lock()
+				if !g.closed {
+					g.err = err
+				}
+				g.mu.Unlock()
+				return
+			}
+			g.mu.Lock()
+			if g.closed || g.err != nil {
+				g.mu.Unlock()
+				front.Close()
+				continue
+			}
+			s := &researchSession{id: len(g.sessions) + 1, front: front}
+			g.sessions = append(g.sessions, s)
+			if err := g.appendLocked(s.id, "admitted"); err != nil {
+				s.err = err
+				g.mu.Unlock()
+				front.Close()
+				continue
+			}
+			g.mu.Unlock()
+			g.wg.Add(1)
+			go g.serve(ctx, s)
+		}
+	}()
+	t.Cleanup(func() {
+		g.closeAdmission()
+		g.mu.Lock()
+		for _, s := range g.sessions {
+			s.front.Close()
+			if s.back != nil {
+				s.back.Close()
+			}
+		}
+		g.mu.Unlock()
+		g.wg.Wait()
+		file.Close()
+	})
+	return g
+}
+
+func (g *researchGateway) serve(ctx context.Context, s *researchSession) {
+	defer g.wg.Done()
+	defer s.front.Close()
+	g.mu.Lock()
+	// A failed registration must never reach this actual dial boundary.
+	if g.err != nil {
+		g.mu.Unlock()
+		return
+	}
+	g.dials++
+	g.mu.Unlock()
+	dialContext, stopDial := context.WithTimeout(ctx, 10*time.Second)
+	conn, err := (&net.Dialer{}).DialContext(dialContext, "tcp4", g.upstream)
+	if late := researchDeadline(dialContext); err == nil && late != nil {
+		err = late
+		conn.Close()
+	}
+	stopDial()
+	if err != nil {
+		g.fail(s, err)
+		return
+	}
+	back := conn.(*net.TCPConn)
+	defer back.Close()
+	g.mu.Lock()
+	s.back = back
+	err = g.appendLocked(s.id, "connected")
+	g.mu.Unlock()
+	if err != nil {
+		g.fail(s, err)
+		return
+	}
+	if err = s.front.SetDeadline(g.deadline); err != nil {
+		g.fail(s, err)
+		return
+	}
+	if err = back.SetDeadline(g.deadline); err != nil {
+		g.fail(s, err)
+		return
+	}
+	frontDone := make(chan error, 1)
+	go func() {
+		_, err := io.Copy(back, s.front)
+		if err == nil {
+			err = back.CloseWrite()
+		}
+		g.mu.Lock()
+		if err == nil {
+			err = g.appendLocked(s.id, "frontend_eof")
+			s.frontTerminal = err == nil
+		}
+		g.mu.Unlock()
+		frontDone <- err
+	}()
+	err = g.readServer(s)
+	if err != nil {
+		s.front.Close()
+		back.Close()
+	}
+	if frontErr := <-frontDone; err == nil {
+		err = frontErr
+	}
+	if err != nil {
+		g.fail(s, err)
+	}
+}
+
+func (g *researchGateway) fail(s *researchSession, err error) {
+	g.mu.Lock()
+	defer g.mu.Unlock()
+	s.err, g.err = err, err
+}
+
+func (g *researchGateway) readServer(s *researchSession) error {
+	downstreamLost := false
+	for {
+		var head [5]byte
+		_, err := io.ReadFull(s.back, head[:1])
+		if errors.Is(err, io.EOF) {
+			g.mu.Lock()
+			defer g.mu.Unlock()
+			if err := g.appendLocked(s.id, "server_eof"); err != nil {
+				return err
+			}
+			s.serverEOF = true
+			return nil
+		}
+		if err != nil {
+			return err
+		}
+		if _, err := io.ReadFull(s.back, head[1:]); err != nil {
+			return err
+		}
+		size := binary.BigEndian.Uint32(head[1:])
+		if size < 4 || size > 16<<20 {
+			return errors.New("invalid server frame: INVALID")
+		}
+		body := make([]byte, int(size)-4)
+		if _, err := io.ReadFull(s.back, body); err != nil {
+			return err
+		}
+		if head[0] == 'K' {
+			if len(body) != 8 {
+				return errors.New("invalid BackendKeyData: INVALID")
+			}
+			g.mu.Lock()
+			if s.pid != 0 {
+				g.mu.Unlock()
+				return errors.New("duplicate BackendKeyData: INVALID")
+			}
+			s.pid, s.key = binary.BigEndian.Uint32(body), binary.BigEndian.Uint32(body[4:])
+			err = g.appendLocked(s.id, "key_available")
+			g.mu.Unlock()
+			if err != nil {
+				return err
+			}
+		}
+		if !downstreamLost {
+			err := researchWrite(s.front, append(head[:], body...))
+			if errors.Is(err, syscall.EPIPE) || errors.Is(err, syscall.ECONNRESET) {
+				downstreamLost = true // Still drain upstream; this is NOT server EOF.
+			} else if err != nil {
+				return err
+			}
+		}
+	}
+}
+
+func (g *researchGateway) closeAdmission() {
+	g.mu.Lock()
+	g.closed = true
+	g.mu.Unlock()
+	g.listener.Close()
+}
+
+func researchPoll(t *testing.T, ctx context.Context, ready func() (bool, error)) {
+	t.Helper()
+	end := time.Now().Add(10 * time.Second)
+	if bound, ok := ctx.Deadline(); ok && bound.Before(end) {
+		end = bound
+	}
+	for {
+		ok, err := ready()
+		if err != nil {
+			t.Fatal("observation failed: INVALID", err)
+		}
+		if !time.Now().Before(end) {
+			t.Fatal("observation deadline: INVALID")
+		}
+		if ok {
+			return
+		}
+		time.Sleep(10 * time.Millisecond)
+	}
+}
+
+func (g *researchGateway) terminal() (bool, error) {
+	g.mu.Lock()
+	defer g.mu.Unlock()
+	if g.err != nil {
+		return false, g.err
+	}
+	if !g.closed || len(g.sessions) < 2 {
+		return false, nil
+	}
+	for _, s := range g.sessions {
+		if s.err != nil {
+			return false, s.err
+		}
+		if !s.frontTerminal || !s.serverEOF {
+			return false, nil
+		}
+	}
+	return true, nil
+}
+
+func (g *researchGateway) report(t *testing.T) map[string]any {
+	t.Helper()
+	ok, err := g.terminal()
+	if err != nil || !ok {
+		t.Fatal("incomplete gateway: INVALID", err)
+	}
+	g.wg.Wait()
+	g.mu.Lock()
+	defer g.mu.Unlock()
+	disk, err := os.ReadFile(g.journal.Name())
+	if err != nil {
+		t.Fatal("journal reread failed")
+	}
+	var expected []byte
+	for _, row := range g.rows {
+		encoded, err := json.Marshal(row)
+		if err != nil {
+			t.Fatal(err)
+		}
+		expected = append(expected, encoded...)
+		expected = append(expected, '\n')
+	}
+	if string(disk) != string(expected) {
+		t.Fatal("journal differs from acknowledged rows")
+	}
+	return map[string]any{"connections": len(g.sessions), "native_dials": g.dials, "journal": g.rows, "all_original_eof": true}
+}
+
+type researchChildConfig struct {
+	Mode, Directory, URLFile, Manifest, Epoch, Recipient, Identity, Backup, ManifestHash, Report string
+}
+
+func TestManualOperationGatewayChild(t *testing.T) {
+	path := os.Getenv("CLOUD_CLICKER_MANUAL_GATEWAY_CHILD")
+	if path == "" {
+		t.Skip("manual child only")
+	}
+	data, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var config researchChildConfig
+	if err := json.Unmarshal(data, &config); err != nil {
+		t.Fatal(err)
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	defer cancel()
+	var report any
+	switch config.Mode {
+	case "backup":
+		header, path, err := CreatePostgresBackup(ctx, PostgresBackupInput{
+			Directory: config.Directory, BackupID: "20261104T120000Z-000000000001", ServerID: "manual-gateway",
+			StartedAt: time.Now().Add(-time.Minute), Now: time.Now, Recipient: config.Recipient,
+			DatabaseURLFile: config.URLFile, ReleaseManifest: config.Manifest, EpochDeclaration: config.Epoch})
+		if err != nil {
+			t.Fatal("actual backup failed")
+		}
+		report = map[string]any{"path": path, "header": header}
+	case "restore":
+		header, err := RestorePostgresBackup(ctx, PostgresRestoreInput{BackupPath: config.Backup,
+			ExpectedManifestSHA256: config.ManifestHash, IdentityFile: config.Identity, TargetDatabaseURLFile: config.URLFile})
+		if err != nil {
+			t.Fatal("actual restore failed")
+		}
+		report = map[string]any{"header": header}
+	default:
+		t.Fatal("unknown manual child")
+	}
+	data, err = json.Marshal(report)
+	if err != nil || ctx.Err() != nil {
+		t.Fatal("child report failed: INVALID")
+	}
+	if err := os.WriteFile(config.Report, data, 0600); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func researchChild(t *testing.T, config researchChildConfig) (*exec.Cmd, <-chan error) {
+	t.Helper()
+	path := filepath.Join(t.TempDir(), "child.json")
+	data, err := json.Marshal(config)
+	if err != nil || os.WriteFile(path, data, 0600) != nil {
+		t.Fatal("child config failed")
+	}
+	command := exec.Command(os.Args[0], "-test.run=^TestManualOperationGatewayChild$", "-test.count=1")
+	command.Env = append(os.Environ(), "CLOUD_CLICKER_MANUAL_GATEWAY_CHILD="+path)
+	command.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
+	if err := command.Start(); err != nil {
+		t.Fatal(err)
+	}
+	done := make(chan error, 1)
+	var reaped atomic.Bool
+	go func() { err := command.Wait(); reaped.Store(true); done <- err }()
+	t.Cleanup(func() {
+		// Only fixture-local, still-live child cleanup. Never signal a completed
+		// positive's old group ID. This is not a production scope observer.
+		if !reaped.Load() {
+			syscall.Kill(-command.Process.Pid, syscall.SIGKILL)
+		}
+	})
+	return command, done
+}
+
+func researchWaitChild(t *testing.T, ctx context.Context, done <-chan error, success bool) {
+	t.Helper()
+	bounded, cancel := context.WithTimeout(ctx, 10*time.Second)
+	defer cancel()
+	select {
+	case err := <-done:
+		if (err == nil) != success || researchDeadline(bounded) != nil {
+			t.Fatal("unexpected/late child outcome: INVALID")
+		}
+	case <-bounded.Done():
+		t.Fatal("child observation deadline: INVALID")
+	}
+}
+
+func researchScalar(t *testing.T, ctx context.Context, conn *sql.Conn, query string, args ...any) string {
+	t.Helper()
+	bounded, cancel := context.WithTimeout(ctx, 10*time.Second)
+	defer cancel()
+	var value string
+	if err := conn.QueryRowContext(bounded, query, args...).Scan(&value); err != nil || researchDeadline(bounded) != nil {
+		t.Fatal("SQL observation failed: INVALID")
+	}
+	return value
+}
+
+func researchCancel(ctx context.Context, address string, pid, key uint32) error {
+	bounded, cancel := context.WithTimeout(ctx, 10*time.Second)
+	defer cancel()
+	conn, err := (&net.Dialer{}).DialContext(bounded, "tcp4", address)
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+	end, _ := bounded.Deadline()
+	if err := conn.SetDeadline(end); err != nil {
+		return err
+	}
+	var packet [16]byte
+	binary.BigEndian.PutUint32(packet[:4], 16)
+	binary.BigEndian.PutUint32(packet[4:8], 80877102)
+	binary.BigEndian.PutUint32(packet[8:12], pid)
+	binary.BigEndian.PutUint32(packet[12:], key)
+	if err := researchWrite(conn, packet[:]); err != nil {
+		return err
+	}
+	var data [1]byte
+	n, err := conn.Read(data[:])
+	if n != 0 || !errors.Is(err, io.EOF) {
+		return errors.New("invalid cancel reply: INVALID")
+	}
+	return researchDeadline(bounded)
+}
+
+func TestManualOperationGatewayIntegration(t *testing.T) {
+	sourceURL, targetURL, adminURL := os.Getenv("TEST_DATABASE_URL"), os.Getenv("TEST_RESTORE_DATABASE_URL"), os.Getenv("TEST_ADMIN_DATABASE_URL")
+	if sourceURL == "" || targetURL == "" || adminURL == "" {
+		t.Fatal("manual disposable DB population missing")
+	}
+	parsed, err := url.Parse(sourceURL)
+	if err != nil || parsed.Host != "postgres:5432" || parsed.Query().Get("sslmode") != "disable" {
+		t.Fatal("not the declared isolated fixture")
+	}
+	setup, cancelSetup := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancelSetup()
+	resetDatabase(t, adminURL, "cloud_clicker_source")
+	resetDatabase(t, adminURL, "cloud_clicker_restore")
+	database, err := save.OpenPostgres(setup, sourceURL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer database.Close()
+	if err := save.Migrate(setup, database); err != nil {
+		t.Fatal(err)
+	}
+	seedBackupEpoch(t, database)
+	seedBackupPopulation(t, database)
+	if _, err := database.ExecContext(setup, "CREATE TABLE public.operation_gateway_probe(id integer PRIMARY KEY);INSERT INTO public.operation_gateway_probe VALUES(7)"); err != nil {
+		t.Fatal(err)
+	}
+	control, err := database.Conn(setup)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer control.Close()
+	observer, err := database.Conn(setup)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer observer.Close()
+	postmaster := researchScalar(t, setup, control, "SELECT pg_postmaster_start_time()::text")
+	controlPID := researchScalar(t, setup, control, "SELECT pg_backend_pid()::text")
+	migration := researchScalar(t, setup, control, "SELECT max(version_id) FILTER (WHERE is_applied)::text FROM goose_db_version")
+	var migrationID int
+	if _, err := fmt.Sscan(migration, &migrationID); err != nil {
+		t.Fatal(err)
+	}
+	work := t.TempDir()
+	epoch := fixtureEpoch(t, 8)
+	manifest := fixtureReleaseManifestForMigration(t, epoch, migrationID)
+	identity, err := age.GenerateX25519Identity()
+	if err != nil {
+		t.Fatal(err)
+	}
+	config := researchChildConfig{Mode: "backup", Directory: t.TempDir(), Recipient: identity.Recipient().String(), Manifest: writeRegular(t, work, "manifest.json", manifest), Epoch: writeRegular(t, work, "epoch.json", epoch), Report: filepath.Join(work, "backup-report.json")}
+	sourceSecret := writeSecret(t, work, "source", sourceURL)
+	targetSecret := writeSecret(t, work, "target", targetURL)
+	before, err := InspectRecoveryIdentity(setup, RecoveryIdentityInput{DatabaseURLFile: sourceSecret})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if setup.Err() != nil {
+		t.Fatal("setup guard: INVALID")
+	}
+	positive, endPositive := context.WithTimeout(context.Background(), 60*time.Second)
+	defer endPositive()
+	sourceGateway := researchNewGateway(t, positive, parsed.Host, filepath.Join(work, "source-journal"))
+	withGateway := func(raw string, g *researchGateway) string {
+		u, err := url.Parse(raw)
+		if err != nil {
+			t.Fatal(err)
+		}
+		u.Host = g.listener.Addr().String()
+		return u.String()
+	}
+	config.URLFile = writeSecret(t, work, "source-gateway", withGateway(sourceURL, sourceGateway))
+	_, done := researchChild(t, config)
+	researchWaitChild(t, positive, done, true)
+	sourceGateway.closeAdmission()
+	researchPoll(t, positive, sourceGateway.terminal)
+	data, err := os.ReadFile(config.Report)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var backup struct{ Path string }
+	if json.Unmarshal(data, &backup) != nil || backup.Path == "" {
+		t.Fatal("missing actual backup")
+	}
+	targetParsed, _ := url.Parse(targetURL)
+	targetGateway := researchNewGateway(t, positive, targetParsed.Host, filepath.Join(work, "target-journal"))
+	restore := researchChildConfig{Mode: "restore", Backup: backup.Path, ManifestHash: digest(manifest), Identity: writeSecret(t, work, "age-identity", identity.String()), URLFile: writeSecret(t, work, "target-gateway", withGateway(targetURL, targetGateway)), Report: filepath.Join(work, "restore-report.json")}
+	_, done = researchChild(t, restore)
+	researchWaitChild(t, positive, done, true)
+	targetGateway.closeAdmission()
+	researchPoll(t, positive, targetGateway.terminal)
+	after, err := InspectRecoveryIdentity(positive, RecoveryIdentityInput{DatabaseURLFile: targetSecret})
+	if err != nil || CompareRecoveryIdentity(before, after) != nil {
+		t.Fatal("actual encrypted restore identity mismatch")
+	}
+	target, err := save.OpenPostgres(positive, targetURL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var restoredRows string
+	err = target.QueryRowContext(positive, "SELECT string_agg(id::text,',' ORDER BY id) FROM public.operation_gateway_probe").Scan(&restoredRows)
+	target.Close()
+	if err != nil || restoredRows != "7" {
+		t.Fatal("explicit restored rows mismatch")
+	}
+	positiveReport := map[string]any{"backup": sourceGateway.report(t), "restore": targetGateway.report(t), "canonical_identity_equal": true, "restored_rows": restoredRows}
+	if positive.Err() != nil {
+		t.Fatal("positive population deadline: INVALID")
+	}
+	endPositive()
+
+	interrupted, endInterrupted := context.WithTimeout(context.Background(), 60*time.Second)
+	defer endInterrupted()
+	if _, err := control.ExecContext(interrupted, "BEGIN;LOCK TABLE public.operation_gateway_probe IN ACCESS EXCLUSIVE MODE"); err != nil {
+		t.Fatal(err)
+	}
+	defer control.ExecContext(context.Background(), "ROLLBACK")
+	g := researchNewGateway(t, interrupted, parsed.Host, filepath.Join(work, "interrupted-journal"))
+	config.Directory = t.TempDir()
+	config.URLFile = writeSecret(t, work, "interrupted-gateway", withGateway(sourceURL, g))
+	config.Report = filepath.Join(work, "interrupted-report.json")
+	child, done := researchChild(t, config)
+	var dumpPID, dumpKey uint32
+	researchPoll(t, interrupted, func() (bool, error) {
+		g.mu.Lock()
+		defer g.mu.Unlock()
+		if g.err != nil {
+			return false, g.err
+		}
+		keyed := 0
+		exporter := false
+		for _, s := range g.sessions {
+			if s.pid == 0 {
+				continue
+			}
+			keyed++
+			state := researchScalar(t, interrupted, observer, "SELECT COALESCE((SELECT application_name||':'||state||':'||COALESCE(wait_event_type,'')||':'||COALESCE(wait_event,'') FROM pg_stat_activity WHERE pid=$1),'absent')", s.pid)
+			if state == "pg_dump:active:Lock:relation" {
+				dumpPID, dumpKey = s.pid, s.key
+			}
+			if strings.Contains(state, ":idle in transaction:") {
+				exporter = true
+			}
+		}
+		return keyed >= 2 && dumpPID != 0 && exporter, nil
+	})
+	// Close job admission before stopping all actual helper descendants.
+	g.closeAdmission()
+	if err := syscall.Kill(-child.Process.Pid, syscall.SIGKILL); err != nil {
+		t.Fatal(err)
+	}
+	researchWaitChild(t, interrupted, done, false)
+	researchPoll(t, interrupted, func() (bool, error) {
+		g.mu.Lock()
+		defer g.mu.Unlock()
+		if g.err != nil {
+			return false, g.err
+		}
+		for _, s := range g.sessions {
+			if !s.frontTerminal {
+				return false, nil
+			}
+		}
+		return true, nil
+	})
+	if err := researchCancel(interrupted, parsed.Host, dumpPID, dumpKey^1); err != nil {
+		t.Fatal(err)
+	}
+	if researchScalar(t, interrupted, observer, "SELECT count(*)::text FROM pg_stat_activity WHERE pid=$1 AND state='active' AND wait_event_type='Lock' AND wait_event='relation'", dumpPID) != "1" {
+		t.Fatal("wrong-key control did not remain blocked")
+	}
+	if complete, err := g.terminal(); err != nil || complete {
+		t.Fatal("cancel delivery incorrectly classified whole operation terminal")
+	}
+	if err := researchCancel(interrupted, parsed.Host, dumpPID, dumpKey); err != nil {
+		t.Fatal(err)
+	}
+	researchPoll(t, interrupted, g.terminal)
+	// Terminal observation precedes releasing the relation lock.
+	if _, err := control.ExecContext(interrupted, "COMMIT"); err != nil {
+		t.Fatal(err)
+	}
+	if researchScalar(t, interrupted, control, "SELECT pg_backend_pid()::text") != controlPID || researchScalar(t, interrupted, control, "SELECT pg_postmaster_start_time()::text") != postmaster {
+		t.Fatal("prior live DB/control replaced")
+	}
+	if researchScalar(t, interrupted, control, "SELECT string_agg(id::text,',' ORDER BY id) FROM public.operation_gateway_probe") != "7" {
+		t.Fatal("prior rows changed")
+	}
+	if _, err := control.ExecContext(interrupted, "INSERT INTO public.operation_gateway_probe VALUES(42)"); err != nil {
+		t.Fatal(err)
+	}
+	rows := researchScalar(t, interrupted, control, "SELECT string_agg(id::text,',' ORDER BY id) FROM public.operation_gateway_probe")
+	if rows != "7,42" {
+		t.Fatal("continuous control unusable")
+	}
+	if _, err := os.Stat(config.Report); !errors.Is(err, os.ErrNotExist) {
+		t.Fatal("killed helper reported completion")
+	}
+	entries, err := os.ReadDir(config.Directory)
+	if err != nil || len(entries) != 0 {
+		t.Fatal("interrupted backup published files")
+	}
+	// A closed gateway cannot open another backend; exact ECONNREFUSED only.
+	_, err = net.DialTimeout("tcp4", g.listener.Addr().String(), time.Second)
+	if !errors.Is(err, syscall.ECONNREFUSED) {
+		t.Fatal("closed admission not exact refusal")
+	}
+	interruptedReport := g.report(t)
+	interruptedReport["wrong_key_still_blocked"] = true
+	interruptedReport["all_eof_before_lock_release"] = true
+	interruptedReport["same_control_and_postmaster"] = true
+	interruptedReport["rows"] = rows
+	interruptedReport["closed_admission_errno"] = int(syscall.ECONNREFUSED)
+	failed := researchNewGateway(t, interrupted, parsed.Host, filepath.Join(work, "failed-journal"))
+	if err := failed.journal.Close(); err != nil {
+		t.Fatal(err)
+	}
+	front, err := net.DialTimeout("tcp4", failed.listener.Addr().String(), time.Second)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer front.Close()
+	researchPoll(t, interrupted, func() (bool, error) {
+		failed.mu.Lock()
+		defer failed.mu.Unlock()
+		if failed.err == nil {
+			return false, nil
+		}
+		if !errors.Is(failed.err, os.ErrClosed) || failed.dials != 0 || len(failed.sessions) != 1 || len(failed.rows) != 0 {
+			return false, errors.New("journal failure forwarded or falsely acknowledged")
+		}
+		return true, nil
+	})
+	failed.closeAdmission()
+	if interrupted.Err() != nil {
+		t.Fatal("interrupted population deadline: INVALID")
+	}
+	result := map[string]any{"objective_completed": true, "positive": positiveReport, "interrupted": interruptedReport, "journal_failure_before_dial": true, "fixture_metadata": "synthetic, not a release artifact", "tls": "disabled disposable fixture only", "population_work_guard_seconds": 60, "handshake_seconds": 10}
+	output := os.Getenv("CLOUD_CLICKER_MANUAL_GATEWAY_REPORT")
+	if output == "" {
+		t.Fatal("report path missing")
+	}
+	data, err = json.Marshal(result)
+	if err != nil || interrupted.Err() != nil {
+		t.Fatal("final collection deadline: INVALID")
+	}
+	if err := os.WriteFile(output, data, 0600); err != nil {
+		t.Fatal(err)
+	}
+	if interrupted.Err() != nil {
+		t.Fatal("report write deadline: INVALID")
+	}
+	t.Log("actual encrypted helper roundtrip and interrupted pgx/exporter + pg_dump population complete")
+}
+
+func TestManualOperationGatewayControls(t *testing.T) {
+	t.Run("deadline postcollection", func(t *testing.T) {
+		future, stopFuture := context.WithDeadline(context.Background(), time.Now().Add(time.Second))
+		defer stopFuture()
+		past, stopPast := context.WithDeadline(context.Background(), time.Now().Add(-time.Second))
+		defer stopPast()
+		cancelled, stopCancelled := context.WithTimeout(context.Background(), time.Second)
+		stopCancelled()
+		if researchDeadline(future) != nil || !errors.Is(researchDeadline(past), context.DeadlineExceeded) || !errors.Is(researchDeadline(cancelled), context.Canceled) || researchDeadline(context.Background()) == nil {
+			t.Fatal("missing/late/cancelled deadline accepted or timely refused")
+		}
+	})
+	for _, c := range []struct {
+		name                     string
+		closed, frontend, server bool
+		failure                  error
+		complete                 bool
+	}{
+		{"both EOF but admission open", false, true, true, nil, false},
+		{"frontend only", true, true, false, nil, false},
+		{"server only", true, false, true, nil, false},
+		{"neither", true, false, false, nil, false},
+		{"complete", true, true, true, nil, true},
+		{"native failure", true, true, true, syscall.ECONNRESET, false},
+		{"deadline failure", true, true, true, context.DeadlineExceeded, false},
+	} {
+		t.Run(c.name, func(t *testing.T) {
+			g := &researchGateway{closed: c.closed, err: c.failure, sessions: []*researchSession{
+				{frontTerminal: c.frontend, serverEOF: c.server},
+				{frontTerminal: true, serverEOF: true},
+			}}
+			complete, err := g.terminal()
+			if complete != c.complete || !errors.Is(err, c.failure) {
+				t.Fatal("terminal classifier accepted incomplete/error population")
+			}
+		})
+	}
+	key := make([]byte, 13)
+	key[0] = 'K'
+	binary.BigEndian.PutUint32(key[1:5], 12)
+	for _, c := range []struct {
+		name     string
+		data     []byte
+		priorKey bool
+		validEOF bool
+	}{
+		{"real EOF", nil, false, true},
+		{"truncated header", []byte{'D', 0}, false, false},
+		{"bad length", []byte{'D', 0, 0, 0, 3}, false, false},
+		{"oversized frame", []byte{'D', 2, 0, 0, 0}, false, false},
+		{"truncated body", []byte{'K', 0, 0, 0, 12, 0}, false, false},
+		{"bad key size", []byte{'K', 0, 0, 0, 4}, false, false},
+		{"duplicate key", key, true, false},
+	} {
+		t.Run(c.name, func(t *testing.T) {
+			listener, err := net.ListenTCP("tcp4", &net.TCPAddr{IP: net.IPv4(127, 0, 0, 1)})
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer listener.Close()
+			peer, err := net.DialTCP("tcp4", nil, listener.Addr().(*net.TCPAddr))
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer peer.Close()
+			back, err := listener.AcceptTCP()
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer back.Close()
+			end := time.Now().Add(time.Second)
+			if peer.SetDeadline(end) != nil || back.SetDeadline(end) != nil {
+				t.Fatal("control deadline unavailable")
+			}
+			journal, err := os.OpenFile(filepath.Join(t.TempDir(), "journal"), os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0600)
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer journal.Close()
+			g := &researchGateway{journal: journal, deadline: end}
+			s := &researchSession{id: 1, back: back}
+			if c.priorKey {
+				s.pid = 1
+			}
+			if err := researchWrite(peer, c.data); err != nil {
+				t.Fatal(err)
+			}
+			if err := peer.CloseWrite(); err != nil {
+				t.Fatal(err)
+			}
+			err = g.readServer(s)
+			if (err == nil) != c.validEOF || s.serverEOF != c.validEOF || !time.Now().Before(end) {
+				t.Fatal("malformed stream became native EOF or guard elapsed")
+			}
+			if !c.validEOF && len(g.rows) != 0 {
+				t.Fatal("malformed stream minted a receipt")
+			}
+		})
+	}
+}

@@ -7,6 +7,42 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Actual backup-helper connection study,2026-11-04:** the next unknown is the
+whole existing CreatePostgresBackup/RestorePostgresBackup connection population,
+not another standalone pg_dump. Compile a manual test-only overlay in the owning
+package so existing fixture metadata/identity helpers and unchanged production
+functions are reused. A multiple-connection gateway must fsync experimental
+admission BEFORE each native dial, retain every actual pgx/libpq stream through
+server EOF and keep BackendKeyData only in memory. Positive control must make an
+actual encrypted backup, restore it and compare canonical identity plus explicit
+fixture rows through the gateway. Interrupted population must observe the actual
+Go helper's exporter and blocked pg_dump, kill its owned process group, show
+wrong-key delivery leaves the original dump blocked, then correct-key delivery
+produces ALL original server EOFs BEFORE releasing the lock. Preserve the same
+live DB/control connection/rows. Test closed admission and actual journal-write
+failure as refusals, not missing-session inference. Setup30s, each of2 populations
+60s, ordinary handshake10s; compilation180s/actor240s are observation guards,
+cleanup15s per Docker command outside work. Guards/errors/incomplete populations
+invalidate. Use declared disposable Postgres service, no ports/pulls/real secrets.
+Synthetic release metadata remains labeled; this is actual package-function
+binding on Desktop, not the complete CLI/metrics/encryption publication fence,
+non-bypassable worker isolation, durable authority reconstruction, TLS profile,
+OP9 adoption or native Linux/amd64 acceptance. No production/CI/API change.
+
+Final actual b6e37d/1637f4 exits0, sourceca26d970: unmodified package functions make
+and restore a real encrypted backup through2 registered sessions each, with
+full canonical identity and explicit restored row7 equal. Actual interrupted
+Go helper also uses2 streams; parent/group death and wrong-key delivery leave
+the original dump blocked, then correct-key delivery yields ALL original EOFs
+before lock release. Same control/postmaster retained, rows7 then7/42. Closed
+admission yields exact111; real journal-write failure occurs before native dial.
+All14 terminal/framing plus4 deadline controls pass, no test skips. Final
+Linux/amd64 overlay vet5bd1d6 passes;62d424 binds retained v1 to final
+source/runner and excludes
+fixture password/private key in observation. New range needs independent review.
+Next full supervisor/OP9 binding must include actual CLI/outer metrics and
+interrupted output publication, not relabel this package-function proof as those.
+
 **Actual CLI/Go broker experiment,2026-11-04:** download only public Linux/amd64
 Docker28.4.0 client and Compose2.39.4 into ignored research storage; extract no
 daemon, install no host tool or new shipping dependency. Official Docker index

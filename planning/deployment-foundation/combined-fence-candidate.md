@@ -385,3 +385,69 @@ It now requires the actual2-line ready/trace shape; an old/new shape control
 reproduces the false rejection. The retained complete run follows correction.
 Do not repeat these compatibility positives instead of constructing the missing
 durable per-job producer/admission/receipt bindings.
+
+### Actual backup/restore package connection binding
+
+The [manual package-overlay study](probes/backup-operation-gateway_test.go.txt),
+[declared-fixture runner](probes/backup-operation-gateway.py.txt) and
+[source-bound observation](backup-operation-gateway-observation.v1.json) call
+the unchanged `CreatePostgresBackup` and `RestorePostgresBackup` functions.
+Existing synthetic metadata/seed/identity test helpers are reused through a
+virtual compiler input; no production source or normal CI test changes.
+
+Final actual b6e37d/1637f4 exits0. A real age-encrypted backup and actual pg_restore
+round trip preserve the complete canonical database/player/history identity
+and explicit probe row7. Each helper uses2 actual streams: its pgx connection
+and libpq child. A multiple-connection gateway records and fsyncs experimental
+admission before each dial, retains all streams through original server EOF,
+and verifies acknowledged journal rows against the actual journal file. Secret
+BackendKeyData stays in memory, never in the journal/report.
+
+The interrupted population observes both the actual backup helper's idle
+snapshot exporter and its pg_dump blocked on the controlled table lock. It
+closes further admission and kills the fixture-local helper process group.
+Both frontends end, but the original dump remains blocked. Wrong-key delivery
+does not make it terminal. Correct-key delivery produces ALL original server
+EOFs before the relation lock is released; the same Postgres/control connection
+then retains row7 and inserts42. No backup package or completion report appears.
+The closed listener yields exact ECONNREFUSED111, and a real closed-journal
+write failure prevents native dial/admission acknowledgement. Fourteen actual
+terminal/framing controls include partial/oversized/bad/duplicate frames,
+one-sided EOF, open admission and native/deadline errors. All pass, no skips.
+Four additional actual deadline cases require timely completion and refuse past,
+cancelled or missing bounds; local dial/SQL/cancel/child observations check the
+clock after collection. Final Linux/amd64 overlay vet5bd1d6 passes. New range
+awaits independent review.
+
+This is a disposable SSL-disabled fixture, on Desktop Linux/arm64 running the
+amd64 package test executable and pinned PG16.15. Synthetic manifest hashes are
+not a release artifact. The package-function subprocess is not the full backup
+CLI, its outer metrics writer or a supported production containment scope.
+The gateway is reachable over fixture loopback, not non-bypassable worker
+isolation. Experimental row fsync is not the adopted OP1/OP3 format, parent-
+directory/power-loss reconstruction or a recoverable supervisor. No TLS profile,
+unknown-startup reconstruction, Engine request binding, daemon generation,
+interrupted encryption/publication, full lifetime/adoption or R-006 follows.
+Successful encrypted publication is proved; interruption is before dump output,
+so it does not fence a later writer. Root process-group signaling is confined
+to test children in the owned fixture namespace and is not production PID-only
+cleanup authority.
+
+Reproduce from repository root using the cached pinned PG image and declared
+Docker service, without ports, image pulls or real secrets:
+
+```sh
+python3 planning/deployment-foundation/probes/backup-operation-gateway.py.txt
+make vet GO_PACKAGES=./deploymentbackup GOFLAGS="-overlay=$PWD/.cache/backup-operation-gateway-research/overlay.json" GOOS=linux GOARCH=amd64 CGO_ENABLED=0
+```
+
+The runner builds through root `make test-go` with a manual virtual test file,
+then composes an exact unique disposable project from the existing declaration.
+Setup30s and each of2 populations60s are checked in the actor; ordinary
+handshakes10s. Compilation180s/actor240s are observation guards, not production
+RTO budgets. Parent final collection10s is checked after hashes/serialization;
+Docker cleanup15s per command is outside work. Completed output requires actor
+exit0, both named tests actually passing without skips, all original stream
+rows and verified empty owned container/network/volume inventories.
+Next construct the complete native supervisor/job/write/publication binding;
+do not repeat this intact round trip or infer whole CR4 from its2 connections.
