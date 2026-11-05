@@ -9724,3 +9724,32 @@ e9a729b6 needs independent technical review alongside the original full five-pat
 1d1b244a..801d2fee range. Review by: Codex root, proposal/model author and first
 filter. Recorded by: Codex root. Owner adoption and actual code gates remain;
 no archival, release approval or publication. Existing failures stay visible.
+
+## 2026-11-05 — Complete checked-power proposal independently technically approved
+
+APPROVED, full original-plus-correction union:
+`1d1b244a82ff14fe141e95af632cbf79c404a265..801d2fee6b11837a9c26f28e25045b5d81d6dc44`
+and `e9a729b6e0f7b2b593ffd7631021d72d8d1cd565..06da156d915120689f927ec73f69aa7334025a98`.
+Review by: independent Codex `/root/numeric_exhaustion_contract_review` under
+Marco's technical-specification delegation. Recorded by: Codex root,
+transcribing the verdict. Full combined normative/model/evidence/record range
+inspected. No remaining findings. Original negative verdict remains historical.
+
+Independent actual model completes990 cases:966 raw results unchanged,24 targets,
+seven overrides (two NaN/five growing infinity). Separate tuple-order reference
+agrees on all990, including84 preserved cases outside the finite-operation
+profile. Fresh-output/stdout reproduction is byte-identical; existing output
+returns exact EEXIST without mutation. All ten source/model/artifact bindings
+remain unchanged. ObservationSHA256
+016f5d28d8342cf5b17e6f7b27b33b7b2ce3f9e2de1fad744cbf48b4d6f5090d.
+Actual direct-call inventory matches three Economy/two Commons; indirect binding
+remains an implementation obligation. Both review ranges pass diff checks.
+No tracked reviewer edit, runtime change, service or publication; handles terminal.
+
+This approves the technical proposal and bounded client-only model, not owner
+adoption, actual checked exports/native guards, migration, full-domain proof,
+original feature acceptance or release. Exact-aggregation adoption is a distinct
+already-pending question; do not repeat or merge its authority into this one.
+Next request the concrete reviewed power-guard contract's adoption once, then
+build only after the actual answer and execute all native/client/caller/ledger
+gates. Full1.0 remains active, with runtime kernel229 and earlier failures intact.

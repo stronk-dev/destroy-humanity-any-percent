@@ -19,8 +19,10 @@ combat, Tier3–8 and ending construction ahead. No new tier or release is compl
   Linux three-engine/types/build checks pass. Complete16-path92067c0c..2e75c853
   has independent corrective APPROVAL in the [Clout plan](../clout-v1-and-pr-interns/plan.md).
   RP-664's corrected full proposal has separate technical approval, not adoption.
-  Its original negative verdict remains. RP-663's Go-only diagnostic draft still
-  has CHANGES REQUIRED; prepare its complete operand-aware correction before adoption.
+  Its original negative verdict remains. RP-663's complete corrected operand-aware
+  proposal/model is independently technically approved through06da156d; owner
+  adoption and actual native/client/caller implementation remain. Keep its old
+  negative verdict and today's unresolved runtime cases visible.
 - **Latest reviewed artifact:** local reconstruction at
   `a7d5a4a4` includes the reviewed continuation-clock/mode-policy fixes, kernel228/
   migration87/epoch8. Complete five-path `a7d5a4a4..beef6cff` has independent

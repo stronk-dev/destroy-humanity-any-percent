@@ -207,6 +207,9 @@ node --experimental-strip-types planning/clout-v1-and-pr-interns/probes/checked-
 
 The small observation artifact is
 `planning/clout-v1-and-pr-interns/checked-power-policy-observation.json`.
+For exact byte reproduction, use source `06da156d` and locked dependencies
+matching the recorded hashes. On a later runtime, retain this historical
+observation and write any newly bound result separately; metadata may differ.
 Passing this model does not adopt the proposal or repair today's runtime.
 
 ## Open decision before acceptance

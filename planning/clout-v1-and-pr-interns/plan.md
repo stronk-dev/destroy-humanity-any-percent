@@ -22,9 +22,9 @@ and limits; do not repeat that completed review.
 RP-664's complete corrected proposal union has separate independent technical
 APPROVAL, with its original negative verdict preserved. Explicit owner adoption,
 full proof/workload/report-provenance/cutover gates remain. RP-663's independently
-demonstrated client valid-zero populations now have a revised operand-aware
-proposal and client-only model; complete normative re-review remains before
-adoption. The old Go-only verdict remains rejected. No further positive
+demonstrated client valid-zero populations now have an independently approved
+complete operand-aware proposal and client-only model. Adoption/implementation
+remain; the old Go-only negative verdict is retained. No further positive
 aggregation census or weakening of the27 partition failures is authorized.
 
 ### RP-663 checked-operation proposal probe — predeclared 2026-11-05
@@ -44,6 +44,10 @@ path with its artifact hash unchanged.
 No sampling, truncation, guard-derived budget or live caller replacement. This
 manual proposal model may support technical review only; it cannot authorize
 implementation/adoption, prove native code, indirect callers or full-domain math.
+Completed990 cases and exact output-refusal/reproduction controls; complete
+original-plus-correction proposal/model union has independent technical APPROVAL
+through06da156d. The owning log has exact ranges/evidence. Request adoption once;
+implement only after the actual answer, preserving all native/caller/atomicity gates.
 
 ## Observer and delegated-wording review — 2026-11-04
 
@@ -579,8 +583,8 @@ decision or accounting adoption follows from the bounded fixes. Existing valid
 arithmetic paths, numeric goldens and original research outputs stay unchanged.
 [Numeric Diagnostic Exponent Limits](../../rfc/numeric-diagnostic-exponent-limits.md)
 now proposes both the operand-aware checked client boundary and native
-fail-closed exception. Its source-bound client-only model is not implementation;
-the complete corrected proposal requires normative re-review/adoption. Continue
+fail-closed exception. Complete corrected proposal/model has independent technical
+approval through06da156d; owner adoption and actual implementation remain. Continue
 other accepted work without inferring this proposal or either accounting draft accepted.
 Current re-observation of the unchanged20 lower-domain profiles now gives19 cumulative
 proofs plus one refused one-shot projection, and18 complete deferred work-cut sequences
