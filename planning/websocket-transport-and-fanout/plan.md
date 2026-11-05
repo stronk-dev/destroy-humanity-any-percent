@@ -12,8 +12,9 @@ backend cancellation. Root native affected race/vet/build pass. Broader SQL run
 retains RP-770's first-hour verification failure, also reproduced against the
 original relay; no complete SQL-green or cause claim. Final focused relay tests
 pass after correcting an unsupported instantaneous-backend-cleanup assertion.
-Complete source/tests/docs/ledger/plan/log batch after3aeb811c needs fresh
-independent corrective review. No drain limit, receipt/order/lease, kernel226,
+Complete seven-path `3aeb811c..baddca78` receives fresh independent corrective
+APPROVAL after exact-old/current native and real-PG race execution plus affected
+outbox/recovery/lifecycle controls; the owning log records provenance. No drain limit, receipt/order/lease, kernel226,
 epoch8, gameplay or acceptance-policy change. RP-770 diagnosis remains separate.
 
 2026-11-04 RP-768 is independently APPROVED under Account D2 / Transport T1/T5.

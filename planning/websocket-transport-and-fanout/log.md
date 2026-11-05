@@ -1392,3 +1392,32 @@ artifact excludes this new correction; no rebuild per edit or hosted/full-CI/
 clean-host/R-006/full-feature/release acceptance is claimed. Full nine-tier1.0
 stays active and all pending owner questions remain unanswered rather than inferred.
 Review by: Codex root (implementer first filter). Recorded by: Codex root.
+
+## 2026-11-05 — RP-769 independently approved; RP-770 remains red
+
+APPROVED, no findings, complete seven-path base-exclusive/tip-inclusive range
+3aeb811c8561a2e37bb28676e179954c9ebb5e70..
+baddca7869bee21b5e36470baca3173f7c37f741.
+Review by: fresh independent Codex /root/relay_cancellation_corrective_review.
+Recorded by: Codex root, transcribing the actual verdict.
+
+Independent exact-old native3-case and actual Linux/PG2-bound controls FAIL at
+the intended assertions. Corrected native cancellation/relay/recovery/lifecycle
+controls and vet PASS. Current real-PG/race new witness passes both arms3.92/16.61s
+including setup; lock retained through worker/backend cancellation, deadline error
+and false readiness. Original SQL/race fails5.65/18.72s incl setup/containment.
+Additional serial SQL/race outbox ordering/dead-letter/size, relay failure/remainder,
+actual socket recovery/membership, live-only courtesy, composed clearing/GC/drain
+and lifecycle controls PASS with no selected skips. Exclusivity, active-caller
+independence, post-acquire cancellation and slot reuse are independently checked.
+
+Reviewer inspects/hashes root's red full SQL and original-relay first-hour proof,
+not a fresh complete-suite rerun. Full SQL remains RED on RP-770; no feature,
+archival/hosted/clean-host/R-006/release gate is promoted. All reviewer handles
+29814/32894/17204/94584/44658/55964 terminal; tracked source unchanged, shared
+caches/builders and PG22513ca563dd preserved; unrelated fw containers untouched.
+RP-769 closes only its reproduced hang. RP-770's next diagnostic must read the
+queue without the archive JOIN (which currently hides status), actual worker
+failure state and archive/log counts before cleanup; keep the5s observer unchanged
+and measure the real blocked/slow phase before proposing a remedy. No owner
+question, new RFC, timeout increase or goal pause is needed for that debugging.
