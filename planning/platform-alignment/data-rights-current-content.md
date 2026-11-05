@@ -260,5 +260,15 @@ protected persistent state while retaining private original history and honest
 verification/source binding. Existing sampled null admission does not authorize
 redaction. Authored SG8/AC10/OD-12 and API C14 need an accepted contract before
 publication; no salt rotation, stored-byte rewrite, weaker proof or blanket
-ranking suppression follows. Research author/first filter: Codex root;
-independent corrective evidence review pending for the complete containing batch.
+ranking suppression follows. Research author/first filter: Codex root.
+
+**Independent evidence review:** APPROVED complete eight-path `ce932586..e153eaf6`.
+Review by: fresh independent Codex `/root/garden_public_archive_evidence_review`.
+Recorded by: Codex root. Its exact retained observer passes cold1.47s, both arms/no
+skips, with a freshly generated salt, all actual private/public source bindings,
+real board authorization and Go replay/corrupt-receipt refusal. Affected vet passes.
+No TypeScript credit. It independently confirms the privacy FAILURE, not repair,
+default/deployed exposure or feature/release approval. All handles terminal,
+temporary copy/owned tmpfs PG removed, shared resources preserved, SQL released.
+Ignored `.cache/garden-public-archive-review/review-results.json`, digest checked
+by root: `afeabf2c50b4582a4ec0330b6e945d0624f18301a3c39e2d3cc7a9f242265ba3`.

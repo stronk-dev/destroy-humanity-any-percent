@@ -3373,3 +3373,27 @@ Review by: Codex root (research author/first filter only). Recorded by: Codex ro
 Complete batch after ce932586 awaits independent corrective evidence review.
 No release/feature/rights/owner adoption or goal pause; accepted privacy still
 requires an authored public-evidence protocol, not silent field stripping.
+
+## 2026-11-05 — RP-606 actual archive observation independently approved
+
+APPROVED complete eight-path `ce932586bcd4f53197cc9b6c8f9b98035b920561..e153eaf6ffd1efed3b82fd0529c5771068fd8a90`,
+corrective evidence scope only. Review by: fresh independent Codex
+`/root/garden_public_archive_evidence_review`. Recorded by: Codex root,
+transcribing its executed verdict. Exact retained observer42128 passes cold1.47s
+(dormant0.96/initialized0.51, no skips); affected vet passes. Fresh generated
+current salt follows private head/Founder log2/Company log1/actual verified archive
+into anonymous original-byte HTTP200. Actual four board rows per arm,404 before,
+all ordinary/metadata/credential negatives and Go replay/corrupt-receipt refusal
+execute. Optional TypeScript seam unrequested; no credit. This is independent
+confirmation of the privacy FAILURE, never privacy/feature acceptance.
+
+Root checks manifest `.cache/garden-public-archive-review/review-results.json`
+SHAafeabf2c50b4582a4ec0330b6e945d0624f18301a3c39e2d3cc7a9f242265ba3.
+All handles terminal; exact temporary copy removed after hash check, owned tmpfs
+PG removed, SQL released, shared network/cache/builders preserved, cleane153eaf6.
+No tracked runtime differences c5130acf..e153eaf6; no rebuild for these records.
+Fixture-only catalog/controlled progression/budget and non-default/deployed/
+release-binary/native/R006 limitations stand. RP-606 remains OPEN; next is a
+privacy-preserving public Company-verification contract with honest source binding,
+not repetition of this observer or silent field stripping. No pending owner
+adoption, source/CI/schema change, publication or goal pause is inferred.

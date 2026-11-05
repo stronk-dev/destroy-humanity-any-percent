@@ -16,6 +16,9 @@ does not pass. Next engineering work is a reviewed public-evidence contract that
 preserves private history and independent verification without publishing the
 persistent salt. No stored-byte rewrite, rotation or ranking suppression is adopted.
 Publication/content and authored SG8/API C14 reconciliation remain held.
+Complete `ce932586..e153eaf6` evidence range is independently approved, with a fresh
+server-generated salt reproducing the failure; this supplies no privacy fix or
+full Garden acceptance. Do not repeat the completed observer for reassurance.
 
 **Current bounded repair, 2026-10-15 (RP-670):** menu command/Close handoff retains a
 newer focus choice even when its element disappears before the render tick. Six old-component

@@ -84,6 +84,11 @@ test, migration, accepted RFC or authored-content change in this wave.
 
 ## 2026-11-05 — RP-606 actual producer / verified-board archive extension
 
+Status: observation complete and independently approved over `ce932586..e153eaf6`;
+the initialized arm fails privacy. Do not repeat this completed boundary for
+reassurance. The next engineering action is the public/private replay contract
+and its required proof, not reopening the adopted salt exclusion.
+
 Question: can a real server-initialized Garden salt reach an unauthenticated C14
 archive download after actual Company Exit, replay verification and SQL compaction?
 The older constructed archive/reader cannot establish this boundary. Use current
