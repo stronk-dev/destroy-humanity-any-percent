@@ -112,3 +112,33 @@ full nine-tier1.0 proof follows. All reviewer sessions are terminal and SQL
 ownership returns. Root verifies containerd2f39e9ee7b1 has no durable mounts,
 only tmpfs data, removes solely that task-owned service and checks the final
 Compose inventory empty. Images, caches, networks and unrelated resources remain.
+
+
+## 2026-11-05 — RP-778: prepare a concrete contribution direction for owner choice
+
+After3aa86e6d, traced actual ApplyLogged/ApplyLoggedExit/catch-up, certified
+Minigame/Garden transactions and Soul suppression. The latter evaluates/time-
+hooks then restores output authorities: a raw evaluator callback is not enough.
+No product, schema, balance or author body is edited. Full writer/window/privacy
+closure cannot be invented independently of the contribution/personal-axis choice.
+
+The new contribution-basis-proposal.md makes one candidate explicit: published
+per-faction capped means for shared progress, with personal percentiles separate.
+It declares the deviation from draft WL2/design05, not a silent reconciliation.
+Its producer/lifecycle requirements remain OPEN, not implementation authority.
+Predeclared contribution-basis-plan.md precedes exact Fraction execution. All
+four positive uniform populations and three two-faction replications retain
+identical totals; sum-without-denominator/all-zero controls do not qualify.
+The heterogeneous model reduces1000×raw→10×credit with mathematical unit cap10,
+NOT game balance. The lone-positive case remains100% of human output; its strict
+fractional-share criterion explicitly FAILS. No anti-domination/solo/NPC proof,
+Decimal/ppm performance, actual population or pacing is claimed.
+
+`python3 planning/world-layer-foundation/contribution-basis-probe.py` executes
+all exact controls and produces contribution-basis.json; no DB/software/CI suite
+is relevant to this prose/formal candidate. Source hashes bind both unchanged
+author bodies, the packet/probe and RP-777's actual producer artifact. Fresh
+independent bounded technical/evidence review remains pending for the complete
+batch after3aa86e6d. Only after that review should the owner be offered the
+explicit directional choice, including its unresolved strict fractional-share
+limit. Adoption must not claim full World acceptance or authorize code/minting.

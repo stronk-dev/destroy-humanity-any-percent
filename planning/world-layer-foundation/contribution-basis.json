@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "source_base": "3aa86e6d",
+  "scope": "owner-choice candidate, exact rational model; not adopted gameplay",
+  "source_sha256": {
+    "rfc/world-layer-foundation.md": "2bf0fdab2a4451aca668f9927b3246cff30eda728d913a3c493f174e1a7592aa",
+    "design/05-mmo.md": "c27e04f34bc7f329cd76fe4c5438bd9e89d9b1ea8273221c8d0133e9d41f184f",
+    "planning/world-layer-foundation/contribution-basis-proposal.md": "a708d8889d232015bee6173bacda0c67d2c375070aff7b0b6c685aa990660ba4",
+    "planning/world-layer-foundation/contribution-basis-probe.py": "ce9ec6c776cff63469df261c8163dba0fa65a606330732e43c2a6423435dc918",
+    "planning/world-layer-foundation/producer-boundary.json": "0655eadf41128aa56642d4c806c7e6b0b1252a49659519d1730b8b18fcc50fc6"
+  },
+  "mathematical_unit_cap_not_balance": "10/1",
+  "uniform_counts": [
+    1,
+    200,
+    20000,
+    200000
+  ],
+  "uniform_totals": [
+    "1/1",
+    "1/1",
+    "1/1",
+    "1/1"
+  ],
+  "uncapped_sum_totals": [
+    "1/1",
+    "200/1",
+    "20000/1",
+    "200000/1"
+  ],
+  "all_zero_meaningful_invariance": false,
+  "faction_replication_factors": [
+    1,
+    10,
+    1000
+  ],
+  "faction_totals": [
+    "2/1",
+    "2/1",
+    "2/1"
+  ],
+  "empty_faction_total_no_redistribution": "1/2",
+  "heterogeneous_total": "200009/200000",
+  "high_to_low_raw_ratio": "1000/1",
+  "high_to_low_credit_ratio": "10/1",
+  "per_founder_absolute_bound": "1/20000",
+  "single_positive_total": "1/20000",
+  "single_positive_fraction_of_human_total": "1/1",
+  "strict_fractional_share_bound_below_one_satisfied": false,
+  "invalid_inputs_refused": [
+    "negative_output",
+    "zero_cap",
+    "negative_cap"
+  ],
+  "adopted": false,
+  "implementation_authority": false,
+  "limitations": [
+    "no qualified-source/time/population/rank/rounding grammar",
+    "no NPC production, solo viability or full anti-domination proof",
+    "no Decimal/ppm/runtime or actual player/pacing measurement",
+    "original World/design bodies unchanged; owner direction choice required"
+  ]
+}
