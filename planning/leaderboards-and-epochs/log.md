@@ -693,3 +693,17 @@ full-observed SHA0e15b54ee281245d3aa480355b1827fc665c252238fe21256367dffedad9053
 Initial sandbox metadata-only denials run no tests and are resolved by narrow
 escalation. All test handles terminal; SQL remains serial. No workflow/image-tag/
 product/schema/version/copy/guard change or publication; full nine-tier1.0 active.
+
+## 2026-11-05 — Runtime diagnostic review closeout
+
+APPROVED complete five-path `571bd919..a530b8661ae7f18d039571d09d30765d34dd6b20`.
+Review by: independent Codex `/root/replay_event_batch_corrective_review`.
+Recorded by: Codex root. Reviewer independently inspects the complete diff, C33
+and actual624d42c8 history, hashes retained manifests/red/full logs, and executes
+one pinned ARM64/actual-Postgres normal first-hour journey: PASS41.24s, both archives
+and post-delete boards. Actual startup go1.26.10/linux-arm64/14CPUs/14GOMAXPROCS;
+container ed3b00e3/image2598a8e/pinned manifest220fc85e independently captured.
+Ignored review-runtime-normal.log retains execution. No new race/broad-suite run,
+latency/CI/feature/release approval. Handle33550 terminal; SQL ownership released.
+Tree unchanged by reviewer. RP-770 remains OPEN; continue the bounded observer
+cancellation/invariant repair under the unchanged guard, not a larger allowance.
