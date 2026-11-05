@@ -5,7 +5,18 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest bounded checkpoint (2026-11-05):** ordinary Exit rewards now reach the
+**Latest bounded checkpoint (2026-11-05):** RP-773's missing immutable Founder age
+is corrected and independently approved over complete44-path `c195c0ae..a12218ab`.
+Input13/ending4 freezes the actual committed age; historical outputs remain
+unchanged. Both runtimes and real Postgres ending/refusal/migration/worker/archive/
+board checks pass. The age display, authored label and full obituary/AC7 remain
+unfinished; this is a factual producer/decoder repair, not another completed tier.
+Runtime is now kernel0.3.227/migration87. The last validated `c5130acf` local
+candidate below predates it and must not be presented as this runtime's artifact.
+Current hosted CI/Clout, privacy, rights, accessibility, later-tier/endings and
+native clean-host/release obligations remain open. [Exact review and limits](prestige-and-exits/log.md).
+
+**Previous bounded checkpoint (2026-11-05):** ordinary Exit rewards now reach the
 hint-purchase projector without delayed-delivery overspend (RP-772), independently
 approved `408517bf..1ccdb7a0`. Matching local candidate trees at source `c5130acf`,
 kernel0.3.226/epoch8/migration86, have complete independent artifact-evidence

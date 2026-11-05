@@ -784,3 +784,36 @@ age display/owner copy, original feature acceptance and full AC7 stay open.
 The public Company evidence draft's reviewed2–12 support does not silently gain13.
 The reviewed kernel226/migration86 `c5130acf` candidate now predates this runtime;
 rebuild after coherent review, never relabel it as227. No push/deploy/archival.
+
+## 2026-11-05 — Frozen-age correction independently approved
+
+**APPROVED**, complete44-path `c195c0ae..a12218ab`.
+Review by: fresh independent Codex `/root/run_end_age_corrective_review` under
+Marco's corrective-review delegation. Recorded by: Codex root. Reviewer executes
+new Go producer/store/projector, unchanged historical full fixture and six current
+observers cold (Production1.309s/Save0.157/Leaderboard0.145); actual Postgres
+atomic/refusal/current curriculum/worker/archive/board and HTTP Go re-verification
+pass (Save0.395s/Production0.459/GameServer1.950), corrupted receipt refuses.
+Actual Save Integration/Migration passes2.144s; TS new+historical198/two files and
+existing UI runtime73/one file, affected vet and strict types all pass. Independent
+recursive six-report comparison confirms262 input/24 event/19 source-hash changes
+only, all other measured states/results unchanged. The first client selector also
+named a nonexistent file: no execution credit claimed for it; actual files/counts
+above are explicit. Full native27 Clout failures remain separately disclosed.
+
+Nonblocking finding: complete-range `git diff --check` exits2 for migration87's
+extra EOF blank line. Root staged check reported it before commit, but root
+incorrectly continued to commit instead of handling the result. Earlier diff
+checks omitted the then-untracked migration; they were not a full-range green.
+The already-applied migration and reviewed history stay unchanged; no meaningless
+SQL migration is added for whitespace. Independent review confirms no behavior
+defect follows from that formatting finding.
+
+Root verifies evidence `.cache/run-end-age-corrective-review/review-results.json`
+SHA256 `bfd810a3ee055abfa37f4747f4283605f0eabcf4952e58cdbcd0bfd3a7d77a42`.
+All handles terminal, tree clean/no reviewer mutations, SQL lease returned with
+parent-owned disposable Postgres retained. This closes RP-773's factual
+producer/decoder defect only; age rendering/copy/full AC7, RP-771, original
+feature acceptance, public-profile adoption and release remain open. Current
+kernel227/migration87 now needs later coherent artifact refresh; no relabel of
+the approved kernel226 `c5130acf` package. No push/archive/goal pause.

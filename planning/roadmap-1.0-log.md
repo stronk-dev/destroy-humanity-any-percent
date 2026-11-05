@@ -5981,3 +5981,22 @@ are not repeated to hide RP-770. Boards now name the current candidate and next
 privacy authority. No new tier or release is complete; all nine tiers/endings,
 accounting/guard/current CI, rights/accessibility and native/clean-host/predecessor
 proof remain. Goal stays active; no push, deployment, archival or release call.
+
+## 2026-11-05 — Immutable Founder age corrected; whole-product scope unchanged
+
+RP-773 complete44-path c195c0ae..a12218ab is independently APPROVED by fresh
+Codex run_end_age_corrective_review. Input13/ending4 freezes the actual committed
+age; old replay/event bytes remain unchanged. Independently executed Go/TS, actual
+Postgres source-binding refusals/current curriculum, migrations, worker/archive/
+board and HTTP Go verification pass. The Prestige log owns exact provenance,
+evidence hash, checks and nonblocking migration EOF whitespace; full Production
+still has the known27 Clout partition failures. This closes the data defect, not
+age display/owner copy/full AC7 or original feature acceptance.
+
+Runtime kernel0.3.227/migration87 now postdates the last validated c5130acf
+local package. Current boards/plans explicitly preserve that artifact as older;
+next coherent packaging uses the reviewed source. Public Company evidence still
+needs adoption, and its reviewed profile currently stops at input12: no implicit
+13 admission or privacy repair. RP-771, accounting/search/history guard, rights/
+accessibility/native clean-host/release and full nine-tier construction remain.
+Goal stays ACTIVE; no push, deployment, archival or inferred owner approval.

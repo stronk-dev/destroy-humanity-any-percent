@@ -22,12 +22,14 @@ events; the event-only screen cannot display the required correct Founder age.
 The owning log retains the cold failing requirement regression, actual UI decoder/
 term-consumer observation and exact manual probes. Independent evidence/authority
 review approves `f2a2c82f..c195c0ae` and confirms D3/AC7 authorizes the bounded
-versioned correction. Locally implemented next: input v13 / ending v4 freezes
+versioned correction. Corrected input v13 / ending v4 freezes
 the exact committed age, old v2–v12 outputs remain unchanged, and the UI decoder
 preserves age without a live-state read. New/old Go/TS, real Postgres insertion/
 refusal/current curriculum, worker/archive and board checks pass; full native
-Production still has the known Clout partition failures. Complete corrective
-implementation review is next, not full AC7 acceptance. New player copy remains
+Production still has the known Clout partition failures. Complete44-path
+`c195c0ae..a12218ab` has independent corrective APPROVAL, with fresh Go/TS/current
+Postgres/archive/board/migration checks and disclosed nonblocking migration EOF
+whitespace. This closes the data defect, not full AC7. New player copy remains
 owner-authored; the age label and full obituary rendering remain open.
 The kernel227/migration87 runtime now postdates the kernel226 `c5130acf` local
 candidate; rebuild only after this coherent correction's independent review.

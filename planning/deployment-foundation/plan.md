@@ -68,6 +68,12 @@ reconcile parent bodies under the actual delegation and implement adopted
 contract dependencies with their full producer/native/clean-host proof. No
 product implementation or goal pause is claimed at this checkpoint.
 
+**Runtime follow-up,2026-11-05:** RP-773 complete `c195c0ae..a12218ab` is
+independently corrective-approved with kernel0.3.227/migration87. The artifact
+below remains the last validated package but predates this runtime. Its manifest,
+scans and approvals cannot be relabelled. Next coherent artifact refresh must
+build the reviewed new source; no release/hosted/clean-host status is promoted.
+
 **Last validated exact artifact, 2026-11-05:** source
 `c5130acf` includes independently approved RP-772 Exit-credit projection and
 migration00086, kernel0.3.226/epoch8 unchanged. Fresh current/rebuild roots

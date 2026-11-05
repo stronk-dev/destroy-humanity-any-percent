@@ -28,6 +28,12 @@ combat, Tier3–8 and ending construction ahead. No new tier or release is compl
   its complete `c5130acf..21a889b7` artifact-evidence range is independently approved in the
   [Deployment plan](../deployment-foundation/plan.md). Earlier b8042450 evidence
   stays historical, not proof of the newer runtime.
+- **Closed immutable-data defect:** RP-773 complete44-path `c195c0ae..a12218ab`
+  is independently approved: input13/ending4 carries the exact committed Founder
+  age, with retained historical bytes and actual Go/TS/Postgres/archive/board
+  checks. Full obituary/AC7 and owner-authored age rendering remain open. Current
+  kernel227/migration87 now postdates the validated `c5130acf` kernel226 candidate;
+  next artifact evidence must use the new source rather than relabel that package.
 - **Garden public evidence privacy:** RP-606's actual verified-board archive leak
   and two-runtime Company-only feasibility are independently approved. The
   [repair draft](../../rfc/public-company-replay-evidence.md) is independently
@@ -52,9 +58,10 @@ combat, Tier3–8 and ending construction ahead. No new tier or release is compl
   API descriptor/transport, tenant HTTP, recovery/renewal, authored body/copy,
   accessibility and native Deployment proposals keep their named adoption gates;
   a pending choice blocks its dependent new contract, not unrelated accepted work.
-  Local candidate source`c5130acf`/kernel0.3.226/epoch8 has independent artifact-
+  Last validated local candidate source`c5130acf`/kernel0.3.226/epoch8 has independent artifact-
   evidence approval through21a889b7. Prior b8042450 approval stays historical.
-  Do not repeat artifact/profiling populations or relabel them as hosted/native/clean-host proof.
+  It now predates the RP-773 runtime. Refresh after the coherent reviewed batch;
+  do not repeat unchanged profiling or relabel local packaging as hosted/native/clean-host proof.
   [Deployment's plan](../deployment-foundation/plan.md) owns actual native/host/
   predecessor/R-006 prerequisites. RP-770 and the historical guard/current CI
   failures remain visible; focused passes do not waive them or any1.0 criterion.

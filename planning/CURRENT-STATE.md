@@ -1,5 +1,16 @@
 # Current repository state
 
+**Latest bounded correction,2026-11-05:** complete44-path `c195c0ae..a12218ab`
+has independent corrective approval. New input13/ending4 freezes the committed
+Founder age and preserves all historical ending bytes. Both replay runtimes and
+actual Postgres store/curriculum/migration/worker/archive/board checks pass;
+age rendering, authored copy and full Prestige AC7 remain open. Runtime now uses
+kernel0.3.227/migration87, so the last validated `c5130acf`/kernel226 package is
+historical relative to this correction. [Prestige evidence](prestige-and-exits/log.md)
+includes the nonblocking migration EOF whitespace finding and known full-native
+Clout failures. No current hosted CI, full feature, privacy or release acceptance
+follows; the whole nine-tier1.0 scope below is unchanged.
+
 **Membership drain correction,2026-11-05:** RP-767 is independently approved with
 kernel `0.3.226` under normal accepted KV-1 corrective delivery. No new owner choice
 or scope exception was required; root's earlier neutrality hold was overbroad.
