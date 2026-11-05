@@ -4949,3 +4949,21 @@ First filter: inspected actual archive/transport/Company verifier owners and
 existing API versioning/registry contracts; diff checked. No runtime/code/CI change
 or software-suite claim for this normative draft. Technical review and owner
 adoption are pending; RP-606 stays open. Current packaged runtime is unchanged.
+
+## 2026-11-05 — Public Company evidence draft review and bounded correction
+
+CHANGES REQUIRED complete four-path `1dee7a81..60e4616c`.
+Review by: fresh independent Codex `/root/public_company_evidence_spec_review`.
+Recorded by: Codex root. S1: specify honest404-only retired operation descriptors,
+current generated artifacts and an exact restricted historical-pin transition;
+existing generator rejects status loss before output. S2: real already-exposed
+current salts cannot regain secrecy from withdrawal/purge alone, so that population
+must remain held for an owner-adopted remedy/disposition and proof. Reviewer ran
+focused compatibility checks cold0.252s and verified all17 bound feasibility files;
+no redundant census/SQL. Root checked review manifest SHA256
+`5e99f8d348a77aac5c30a6cae5c647f209a3cc2e986dfc89fc3b8576c200b3cd`.
+All reviewer handles terminal, inputs released. Draft now specifies both repairs,
+including permanent historical+active-pin checking and refusal of extra changes/
+reintroduced200. This is normative text only; corrected complete proposal needs
+independent re-review, then explicit owner adoption/body authority. No runtime,
+generated pin, public endpoint or privacy acceptance is changed here.

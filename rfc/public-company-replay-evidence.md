@@ -75,16 +75,55 @@ query flag, alternate router mount or authenticated fallback may expose original
 Other v1 operations and ranking stay available under their current contracts.
 
 This is a deliberate security withdrawal of a published behavior, not an additive
-v1 change. Owner adoption must explicitly authorize it and reconcile API C2/C14;
-there is no generic compatibility-check bypass or silent fixture re-pin. Keep the
-old schema/history as the historical contract and add an explicit test of the
-three retired operations' withdrawal. New v2 pins use the ordinary compatibility
-checker. Do not describe the retired v1 resources as continuing to meet C14.
+v1 change. Owner adoption must explicitly authorize it and reconcile API C2/C14.
+Keep the three old operation IDs, methods, paths, public-v1 surface, auth and
+parameters registered, but replace each response set with only the existing exact
+404 `APIError` response. Their handlers perform the uniform retirement response,
+never read private evidence or invoke caching. Current generated OpenAPI and SDK
+must therefore advertise only404 for those operations, with no raw/DTO200 success
+arm. Preserve existing named schema definitions, even if now unreferenced; do not
+hide an unrelated schema removal in this transition. New v2 operations have their
+own descriptors and success types.
+
+The generator's current unmodified compatibility check correctly rejects this
+status removal. Establish a single explicit security baseline transition:
+
+1. Preserve the exact pre-cutover `api-compat-v1.json` bytes as
+   `docs/generated/history/api-compat-before-company-public-v1.json`; bind its
+   SHA256 in the reviewed transition code/record. It is never regenerated.
+2. A dedicated transition check requires all three exact original operation rows
+   and changes ONLY their response lists to the already present404 alternative.
+   All other operation/schema/generator bytes in that decoded baseline remain
+   unchanged. Missing/extra target IDs, an altered original row/hash, a different
+   replacement response or any other non-additive delta refuse.
+3. Invoke the unchanged generic `CheckCompatibilityPin` on that derived baseline
+   and the actual merged live registry. It continues to enforce every other old
+   operation/schema and ordinary additive evolution. Separately require all three
+   retired live rows to match their exact404-only definitions; the generic check
+   must not permit accidentally reintroducing a success arm by response widening.
+4. Only this checked transition may generate the successor active pin from the
+   real merged registry. Afterward ordinary generation checks BOTH the frozen
+   historical transition and the active pin. New v2 responses are pinned normally;
+   future generation cannot regenerate the historical source or use an unverified
+   `-update-pin` path to evade either check.
+
+This narrow owner-authorized transition is not a generic exception tag, ignored
+compatibility error or hand-edited successor pin. Keep the historical original
+check's expected rejection as a test, while the validated transition passes.
+Removal/status loss on any fourth operation must still fail. Do not describe
+retired v1 as continuing to meet the old C14 promise.
 
 Already downloaded/cached originals cannot be recalled by changing the origin.
 Before publication/cutover, inventory actual deployments and caches, purge any
 controlled unsafe cached responses, and record any irrecoverable exposure honestly.
 Neither this RFC nor the fixture study asserts that deployed users were exposed.
+If the inventory finds a real externally obtained salt that remains current,
+withdrawal/purge/recording cannot restore its hidden status. Keep RP-606 and full
+hidden-information acceptance OPEN for that population until a separately
+owner-adopted remedy or explicit disposition and its required proof are complete.
+This draft does not choose rotation, erase the exposure, or treat endpoint closure
+as resolution of compromised persistent state. A clean future download is not
+proof that an already downloaded secret became private again.
 
 ### P3 — Closed Company-only projection profile
 
@@ -221,7 +260,13 @@ reconciliation; owner copy and unrelated product choices are not delegated here.
    digest is mislabeled as the public digest and no server attestation is described
    as cryptographic proof of omitted Founder history. Record the deployment/cache
    exposure inventory and limits without deleting historical evidence.
-7. Run cold affected Go/vet, both replay corpora, actual generated client checks,
+7. Execute the actual registry→generator→OpenAPI/SDK/pins pipeline for the narrow
+   retirement transition. The untouched old baseline must reject the removal;
+   the checked historical transition and active pin must pass. Wrong source hash,
+   changed target definition, missing/extra target, reintroduced200, altered schema,
+   fourth-operation removal/status loss and bypassed transition must fail. Generated
+   clients have no v1 evidence success arm; v2 retains its real success types.
+8. Run cold affected Go/vet, both replay corpora, actual generated client checks,
    `make api-check`, migration checks and affected real-Postgres/public consumer
    populations. Run aggregate push verification before publication and reconcile
    hosted CI when available. Independent implementation review and existing full
