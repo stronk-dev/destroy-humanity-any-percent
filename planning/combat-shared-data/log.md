@@ -670,3 +670,25 @@ controls: u00 target any, u01 cost11, all spell bypass flags false. Preserve the
 other two predicates each time. Row deletion remains supplementary only.
 Re-review the complete corrected range; no adoption or implementation follows
 from the numeric/source evidence. Parent/child bodies and artifacts unchanged.
+
+## 2026-11-05 — Complete catalog proposal independently technically approved
+
+APPROVED, complete original-plus-correction five-path range
+`d38a4372fc80d0888451ad2d23aaa435bb3ce05f..a4634ad09bde9c18e8ad487197a9505c13115afc`.
+Review by: fresh independent Codex `/root/combat_catalog_contract_review` under
+Marco's technical-specification delegation. Recorded by: Codex root,
+transcribing its verdict. Complete combined diff inspected; the isolated-bypass
+acceptance correction is the only normative delta. No additional findings.
+
+Reviewer executes all three specified semantic negatives afresh: each retains
+counts/numeric constraints and the other two predicates. Its unchanged50-row
+recipe, all effect arms, reference/coverage,101,101 critical compositions, six
+examples, Soul extremes and actual-source/hash inspection remain applicable.
+Range whitespace passes; no product-path change, tracked reviewer edit or live
+service. This is technical proposal approval, not adopted values, implemented
+loaders, balance, original feature acceptance or child-engine authority.
+
+Next: obtain explicit adoption/body delegation for the complete catalog proposal
+alongside the already-pending distinct care contract, then build the complete
+parent chain and prove actual Go/TS consumers. Do not send the care question
+again, mint test coefficients into an epoch or start the deferred engines.

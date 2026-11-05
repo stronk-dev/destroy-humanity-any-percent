@@ -35,8 +35,10 @@ and limits. Adjacent construction and full parent acceptance remain separately o
    - `rfc/combat-catalog-contract.md` proposes the complete missing envelope,
      effects, row domains, capacity units, bypass predicates, care/critical data,
      reproducible synthetic fixture and exact-byte artifact registration. It
-     preserves PA9/GAP-5 and all deferred engine transitions; technical review
-     and explicit adoption/body authority remain before construction.
+     preserves PA9/GAP-5 and all deferred engine transitions. Complete five-path
+     d38a4372..a4634ad0 has independent technical APPROVAL after requiring
+     count-preserving isolated bypass negatives. Explicit adoption/body authority
+     remain before construction; no implemented catalog is claimed.
    - C2's species row is now structurally decoded in Go/TS: exact root/stat keys,
      signed-int32 fields, existing temperament/runtime axes, four ordered declared
      moves and ordered tags. `TestSpeciesRecordVectors` and
