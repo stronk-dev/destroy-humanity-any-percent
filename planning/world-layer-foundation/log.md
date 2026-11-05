@@ -191,3 +191,18 @@ ready for Marco's direction choice; technical approval does not adopt World,
 reconcile author bodies, implement mechanics, choose rates or waive any complete
 anti-domination/NPC/solo/later-tier/release criterion. Present both dilution and
 lone-positive100% limitations in the question; no answer is inferred from review.
+
+Owner direction question delivered through the async input tool after final review
+and closeout125d648a: adopt capped per-faction means/separate personal percentiles
+and delegate direction-body reconciliation, or retain the multiplicative direction.
+The question explicitly discloses dilution, lone-positive100% and the remaining
+full-specification/NPC/solo/anti-domination gates. **Unanswered**; no default,
+elapsed time or technical approval is treated as adoption. Continue independent
+authorized work while that choice is pending; do not reconcile author bodies yet.
+
+A read-only follow-up confirms GC2 defines existing presence counts without a new
+population calculation; transport credentials key UserID by account, while
+World's current Online source is Hub.NumClients through ConnectionCount. Neither
+is automatically the proposed eligible-Founder denominator. This is a binding
+constraint for the future population contract, not a proved GC2 defect or authority
+to change the existing public counter. No runtime or acceptance status changes.
