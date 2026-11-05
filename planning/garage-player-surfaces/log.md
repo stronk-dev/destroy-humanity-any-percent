@@ -9077,3 +9077,29 @@ review. Review by: Codex root (implementer first filter). Recorded by: Codex roo
 RP-774's prior code approval remains04642f4c..a12346b0; no implicit expansion.
 No runtime/kernel/wire/copy/balance/CI/deadline/package change or feature/push/
 deploy/archival claim. Full nine-tier1.0 goal stays active.
+
+## 2026-11-05 — Exact final real-service timing supplement approved
+
+APPROVED complete four-path `8c887be1..64394095`.
+Review by: fresh independent Codex `/root/continued_clock_live_evidence_review`.
+Recorded by: Codex root. Exact FINAL main driver, including after>before assertion,
+executes0 against fresh built client/service, real HTTP/WebSocket/declared PG.
+Refresh8/8/all10 persisted parents, current/history public SDK HTTP→TS replay and
+receipt/event/gap/constants refusals, stored Guild→TS controls, both actual clocks
+0→1, existing Fiscal/opportunity/Pitch/Recovery/lost-reply/SIGKILL/new-process and
+production asset identity pass. Main-account trace64608ms; not entire-run duration.
+Eleven independently executed actual-function controls refuse frozen/malformed/
+missing/out-of-range values and a false-positive wait; fake-DOM controls do not
+replace the actual main run. No findings. Scope remains MAIN, controlled setup,
+Chromium, not all aggregate descendants/hosted/fullfeature/natural-pacing/R006.
+
+Root checks `.cache/continued-clock-live-evidence-review/review-results.json`
+SHA256 `3c9c00684eec0091f6adadc774ce9d0533d42df7435d762f63ad94781f03104a`.
+All handles terminal; reviewer tree clean/no mutations, driver server/browser/
+listeners cleaned, SQL lease returned. Root inspects owned PG e1d76e0118bb and
+removes only that completed disposable container; shared network/builders/caches
+preserved. Prior RP-774 code verdict stays distinct. No original feature/obituary/
+privacy/rights/release approval. Exact packageaa5e16e8 still predates later UI
+fix; no repeat packaging for this test-only supplement. Founder-age label/copy
+adoption question is delivered, unanswered, not implied by technical review or
+preselection. Continue independent accepted work; full nine-tier1.0 goal ACTIVE.

@@ -5,7 +5,17 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest bounded checkpoint (2026-11-05):** RP-773's missing immutable Founder age
+**Latest player integration checkpoint (2026-11-05):** the next-Company frozen
+clock defect RP-774 is corrected and independently approved `04642f4c..a12346b0`.
+Its real-service supplement is independently approved `8c887be1..64394095`:
+fresh built-client main journey, both actual clocks, public HTTP→TypeScript
+current/history replay/refusals and existing recovery/crash controls pass. This
+is the main journey under controlled setup, not every composed descendant or
+full Garage/obituary/hosted/release acceptance. The exact `aa5e16e8` package
+below predates the later UI fix; include it in a future coherent artifact batch.
+Founder-age label adoption is requested; no answer or authored content is inferred.
+
+**Founder-age data/artifact checkpoint (2026-11-05):** RP-773's missing immutable Founder age
 is corrected and independently approved over complete44-path `c195c0ae..a12218ab`.
 Input13/ending4 freezes the actual committed age; historical outputs remain
 unchanged. Both runtimes and real Postgres ending/refusal/migration/worker/archive/

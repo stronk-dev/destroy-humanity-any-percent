@@ -1,6 +1,15 @@
 # Current repository state
 
-**Latest bounded correction,2026-11-05:** complete44-path `c195c0ae..a12218ab`
+**Latest integrated player proof,2026-11-05:** RP-774's next-Company frozen clock
+is corrected/independently approved `04642f4c..a12346b0`. Complete real-service
+supplement `8c887be1..64394095` has independent approval after fresh main journey
+execution: both actual clocks, public HTTP→TS current/history/refusal, recovery/
+crash controls and built-asset identity pass. Controlled main journey only, not
+all composed descendants/fullfeature/hosted/clean-host proof. The last validated
+aa5e16e8 package predates the later UI fix; do not relabel it. Age rendering/copy
+and full nine-tier construction remain; the new exact label question is unanswered.
+
+**Founder-age correction,2026-11-05:** complete44-path `c195c0ae..a12218ab`
 has independent corrective approval. New input13/ending4 freezes the committed
 Founder age and preserves all historical ending bytes. Both replay runtimes and
 actual Postgres store/curriculum/migration/worker/archive/board checks pass;

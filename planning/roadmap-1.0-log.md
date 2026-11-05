@@ -6019,3 +6019,21 @@ Full obituary display/copy, accounting/history guard, ongoing accepted gameplay
 construction and all nine tiers/endings remain. Goal stays ACTIVE. Continue
 accepted implementation while named adoption questions remain unanswered; do
 not repeat unchanged packaging/profiling merely for editorial records.
+
+## 2026-11-05 — Continued clocks proved in the actual main player journey
+
+RP-774's accepted display-clock correction is independently approved over complete
+04642f4c..a12346b0. Complete test/evidence supplement8c887be1..64394095 is also
+independently APPROVED after exact final real-service main execution: fresh built
+client/service, HTTP/WebSocket/Postgres, actual scripted/ordinary clocks0→1,
+public SDK HTTP→TS current/history replay/refusals, Guild controls, existing
+recovery/crash populations and production asset binding pass.11 instrument
+negative controls discriminate, including false-positive wait refusal. Garage
+log owns exact provenance/evidence/cleanup. This is MAIN under controlled setup,
+not all aggregate descendants/natural pacing/hosted/fullfeature/release proof.
+
+Last validated packageaa5e16e8 remains source-exact but predates that later UI
+change; batch future artifact refresh. The new exact Founder-age label question
+is delivered/unanswered; adoption is not inferred, and other accepted work can
+continue. Full obituary, accounting/history guard, privacy/rights/accessibility,
+clean-host and full nine-tier1.0 construction remain. Goal stays ACTIVE.
