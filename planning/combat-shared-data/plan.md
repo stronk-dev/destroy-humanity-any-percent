@@ -32,6 +32,11 @@ and limits. Adjacent construction and full parent acceptance remain separately o
      literal temperament chart; twelve shared invalid pairs refuse in both slots.
      This does not populate tags/species/sprites, supply a battle consumer or close C2/C5.
 3. [ ] Add the strict combat catalog/schema and the complete Phase-0 fixture.
+   - `rfc/combat-catalog-contract.md` proposes the complete missing envelope,
+     effects, row domains, capacity units, bypass predicates, care/critical data,
+     reproducible synthetic fixture and exact-byte artifact registration. It
+     preserves PA9/GAP-5 and all deferred engine transitions; technical review
+     and explicit adoption/body authority remain before construction.
    - C2's species row is now structurally decoded in Go/TS: exact root/stat keys,
      signed-int32 fields, existing temperament/runtime axes, four ordered declared
      moves and ordered tags. `TestSpeciesRecordVectors` and

@@ -33,6 +33,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [Minigame Platform Foundation](minigame-platform-foundation.md) | accepted — C1–C40 ruled; implementing | Gameserver Composition / Founder Attendance / Combat |
 | [Combat Shared Data & Arithmetic](combat-data-model.md) | implementing | — |
 | [Combat Care Tables](combat-care-tables.md) | draft — RP-072; fixture-only C5 proposal independently technically approved; owner adoption/body delegation pending; not implementation authority | Combat Shared Data C3/C5 / Pet Care input seam |
+| [Combat Catalog Contract](combat-catalog-contract.md) | draft — RP-072; complete C2 schema/effects/fixture/pinning proposal; not implementation authority | Combat Shared Data / Combat Care Tables / exact-byte replay catalogs |
 | [Combat — Duel Engine](combat-duel-engine.md) | draft | Combat Shared Data |
 | [Combat — Lane Engine](combat-lane-engine.md) | draft | Combat Shared Data |
 | [Combat — Bots & Integration](combat-bots-and-integration.md) | draft | Combat engines / Account Bootstrap |

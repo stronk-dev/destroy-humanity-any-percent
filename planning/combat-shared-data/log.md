@@ -610,3 +610,38 @@ is not owner adoption, implementation acceptance or child-engine authority.
 Next: request adoption of this concrete fixture-only table contract and exact
 body-reconciliation delegation, then implement only within actual authority.
 C2's catalog/effect/crit gap and full parent/player/release acceptance remain.
+
+## 2026-11-05 — Make the remaining full catalog choice concrete
+
+Previous goal turn is progress: reviewed C5 proposal and actual source-quantity
+correction, not an idle wait. Resume clean d38a4372. C5 adoption/body-delegation
+question is pending; do not ask it again or treat a selected default as an answer.
+Ground C2 against both current structural readers, parent/child contracts, PA9,
+actual replay-bundle allowlist/typed owners and exact-byte constants hashing.
+The pet-species/combat-species and one-pet/three-slot gaps are already explicit
+PA9/GAP-5, not newly discovered defects or permission to change adoption.
+
+Draft `rfc/combat-catalog-contract.md` supplies a complete proposed envelope,
+effect/spell arms, numeric domains, explicit capacity deci-unit costs, metadata,
+care/critical tables, deterministic test-fixture recipe and optional artifact
+pinning. Both hashes retain original bytes; no fake FNV/SHA/aggregate identity.
+It preserves all deferred engine ordering, target, snapshot, input and event
+choices. A specific dependency is visible: removing bypass rows cannot yield
+an ordinary loader-valid catalog while parent presence enforcement holds; the
+future child's ablation population needs its own exact contract, not a disabled
+loader or a silently changed gate. No child ruling is supplied here.
+
+Independent one-off Python recipe/arithmetic checks pass:12 species/24 moves/
+8 units/3 buildings/3 spells,50 unique admitted mechanical IDs, all five proposed
+effect arms, off-temperament coverage for every species, two species per
+temperament/runtime, three independent missing-bypass-predicate controls and six
+critical-chance coefficient examples. This validates a recipe's consistency,
+not runtime loaders, battle behavior, balance or the still-uncommitted fixture.
+Diff/paths/source assertions checked; no software suite for a Markdown draft.
+
+No product, author-owned body, data mint, epoch, kernel, schema or replay version
+changes. Complete new draft/index/plan/log/RP-072 range after d38a4372 needs fresh
+independent technical review, then actual owner adoption/body authority before
+construction. Care contract dependency remains unadopted. No original-feature
+acceptance, archival, release promotion, publication or permission for engines.
+Review by: Codex root, proposal author/first filter. Recorded by: Codex root.
