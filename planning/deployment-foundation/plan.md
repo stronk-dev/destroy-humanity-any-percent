@@ -68,21 +68,23 @@ reconcile parent bodies under the actual delegation and implement adopted
 contract dependencies with their full producer/native/clean-host proof. No
 product implementation or goal pause is claimed at this checkpoint.
 
-**Current exact-artifact construction, 2026-11-05:** exact clean source
-`28aefd29` has fresh independent trees `.cache/release-current-28aefd29/bundle-a`
-and `.cache/release-rebuild-28aefd29/bundle-b`, matching all75 files/modes and74
-bound artifacts. The [new retained record](release-builds/candidate-28aefd29.json)
-includes approved RP-768/RP-767 at kernel0.3.226, epoch8 unchanged. Both complete
-builds and two fresh gameserver scans pass. Six immutable upstream/rehearsal
-inventories per tree explicitly reuse prior scans, with exact old checksums,
-producer-output equality and fresh registry/config/platform checks.
-The actual shipped Linux helper passes intact/build-record consumers and all9
-exact-exit semantic tampering checks; source/image secret scan is clean. Complete
-four-path `28aefd29..d3e52571` is independently APPROVED after fresh executable
-rebuild, native/shipped-Linux consumers, registry reads and retained-inventory
-replay. Original scans/secret-scan result are inspected retained evidence, not
-independently rerun. Neither tree is a
-predecessor or native/clean-host/R-006/rights/current-hosted/full-feature proof.
+**Current exact-artifact construction, 2026-11-05:** fresh source
+`b8042450` includes approved RP-769 relay cancellation and7c850359 reader batching
+alongside RP-768/RP-767 at kernel0.3.226/epoch8. Separate roots
+`.cache/release-current-b8042450/bundle-a` and
+`.cache/release-rebuild-b8042450/bundle-b` match75 files/modes and74 bound artifacts.
+Both six-executable/content/image reconstructions and independently retained client
+builds pass; both actual gameserver scans report41 packages. The6 unchanged
+upstream/rehearsal inventories explicitly reuse checksum-bound prior raw/canonical
+inputs, with fresh manifest/config/platform checks and producer-normalization replay.
+Shipped Linux helper build/intact results are0; all9 semantic mutations return exact3.
+All4 original/fixture trees remain intact and work empty. Native record/package pass;
+source/image scan covers2,568 tracked files and reports zero findings. The
+[new retained record](release-builds/candidate-b8042450.json) awaits independent
+corrective artifact-evidence review of the complete range afterb8042450; no current
+R-006/rights/predecessor/native/current-CI/full-feature/release acceptance follows.
+The approved28aefd29 record remains historical. Preserve RP-770's race failure and
+all outstanding adoption questions; no repeated question or inferred approval.
 The local preview label is unchanged; full nine-tier1.0 remains the objective.
 
 **Direct upstream-Compose proposal, 2026-11-04 (RP-759):** the current

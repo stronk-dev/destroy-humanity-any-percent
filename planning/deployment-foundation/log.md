@@ -12221,3 +12221,56 @@ now refer to source28aefd29; old records/logs remain historical. No native profi
 clean host/R-006, current hosted green, rights, legitimate predecessor, complete
 feature/archival or release approval follows. Full nine-tier1.0 remains active;
 pending owner questions are neither repeated nor inferred accepted.
+
+## 2026-11-05 — Current reviewed runtime rebuilt into matching local candidates
+
+Accepted DP1/AC1/AC8 construction at clean source
+b80424502d9c92c2e5d5f5598a0e33be9bec2775 / epoch1793843642 /
+2026-11-05T01:54:02Z. Prior28aefd29 predates approved RP-769 relay and7c850359
+reader changes; this candidate includes them, kernel0.3.226/epoch8 unchanged.
+The local0.1.0-preview.2 label is not a release call or reduced nine-tier floor.
+
+Root Make builds74998/81459 independently reconstruct client/six static Linux-
+amd64 executables/content/metadata in current/rebuild-b8042450 roots. Host Go1.27.3,
+Node26.13.0; declared pnpm11.15.1/frozen dependencies confirmed after permitted
+install. Initial sandbox cannot write its ordinary manager cache: install99610
+fails and version14769 falls back to global12.16.1; no build uses that fallback.
+The shared client/dist overwrites the unretained first output: do NOT claim that
+as a retained comparison. Capture actual B output, separately rebuild A client67002,
+retain/compare all7 file hashes/modes, and restore B snapshot before B assembly.
+Six executable pairs, both staged trees/metadata and both no-cache images match.
+Actual builder image pin matches unchanged Make definition/frontend.
+
+Image25632/47203 config61fc24a5ae78af67a821f9c6d47afaec6872fc20b3db3423e664e5c35bf279a0;
+archive4455c6ca6404ee678bbcded8c229aa43cf99d620510ee222acd7f5fb313c0e61.
+Two FRESH gameserver Syft scans6795/73024:41 packages, actual raw times02:02:56/
+02:03:59Z. App metadata54 packages/53 DEPENDS_ON; notices SHA21900c836ec78e2cb516c3e2cc8d4d93fa450073290ecd87c89793bae0823c35
+unchanged. All6 immutable upstream/rehearsal manifest/config/platform identities
+freshly reread/hash-checked;2 roots explicitly reuse their OWN prior28aefd29 raw
+and checksum-bound canonical inventories. Normalizer89872 completes12 outputs
+and12 strict canonical replays;7 normalized inventories match. These are not14
+fresh scans. Initial index-only parser refuses direct Caddy/Playwright manifests;
+correct parsing proves both direct and indexed identities, no omitted population.
+
+Assemblies54209/29223 match all75 files/modes and74 manifest-bound artifacts.
+Manifest9cb75f9f6cccd8fc44d55661f91b414581e1c65403a5a24a9073b1059c6dd59e.
+Native freshly built helper60029 validates build record/intact package. Actual
+DELIVERED Linux helper executes in cached config593dc355... with network none,
+readonly root, no caps/new privileges, UID501:20, only one owned common fixture
+mount/TMPDIR and existing emulation AVX2 fallback. Build-record and intact results0;
+all9 semantic tampering populations return exact3/fixture_rejected, never guard/
+setup refusal. All4 original/private75-file trees remain unchanged; work empty,
+all11 containers absent. They are two identical candidates, NOT predecessor proof.
+
+Manifest/source-bound secret scan71863 passes2,568 tracked files plus actual image,
+findings integer0/objective_completed=true/guard_exhausted=false. An inspection
+initially expects an array; correct scalar inspection confirms the producer's
+actual zero result. All root handles terminal; source fixed until these records.
+Raw logs/source/client snapshots/reuse/probe/scan summaries remain in the two
+b8042450 roots and release-linux-probes-b8042450. New retained candidate JSON,
+canonical docs/plan/log form the complete four-path review batch afterb8042450.
+Designated corrective artifact-evidence review PENDING; no self-approval, native/
+clean-host/R-006, full current CI, rights, legitimate predecessor, full-feature or
+release acceptance. RP-770 remains open. No pending-question repeat/adoption,
+push, deployment, archival or goal pause. Shared builders/caches preserved.
+Review by: Codex root (implementer/output first filter). Recorded by: Codex root.
