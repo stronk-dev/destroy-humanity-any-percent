@@ -3415,3 +3415,15 @@ Review by: Codex root (author first filter only). Designated evidence review pen
 for the complete range after base. RP-606 remains OPEN. Next: reviewed versioned
 public Company contract preserving private originals and source/refusal guarantees;
 owner adoption is still required before implementation.
+
+## 2026-11-05 — RP-606 feasibility evidence independently approved
+
+Review by: fresh independent Codex `/root/garden_public_projection_review`.
+Recorded by: Codex root. APPROVED complete nine-path `3a1b8737..ddda9f4c`,
+technical evidence only. Fresh actual producer PASS1.14s/no skips; cold Go
+PASS0.03s/package0.339s; Node, full comparison and vet exit0. Independent removal
+of TS null-arm Exit events makes comparison exit1; honest results restored.
+Original/stored source unchanged. Dossier records exact evidence manifest/hash,
+controls and limits. All handles terminal, temporary inputs/owned PG removed,
+shared resources preserved, root evidence restored; SQL released. No privacy fix,
+public protocol adoption or feature acceptance. Next: versioned public contract.

@@ -382,4 +382,16 @@ source binding and refusal strength remain required. SG8/AC10/OD-12 and API C14
 still require an accepted reconciliation before implementation/publication.
 RP-606 stays OPEN. Ignored evidence manifest `evidence.json` SHA256
 `04fd43829cbe80d0736f49ebdc1f13f3d92ab15b51711b917e1526fe3be3345b`.
-Author/first filter: Codex root; independent evidence review pending.
+Author/first filter: Codex root.
+
+**Independent technical evidence review:** APPROVED complete nine-path
+`3a1b8737..ddda9f4c`. Review by: fresh independent Codex
+`/root/garden_public_projection_review`. Recorded by: Codex root. Fresh actual
+producer PASS1.14s/no skips, Go PASS0.03s/package0.339s, Node/comparison/vet exit0.
+Independent deletion of the null-arm TypeScript Exit events makes the comparator
+exit1; honest results are restored. All original/source hashes unchanged. It
+confirms feasibility only, not privacy repair/protocol adoption/full acceptance.
+All handles terminal; temporary tests/owned PG removed, shared resources preserved,
+root evidence restored, SQL released. Ignored review manifest
+`.cache/garden-public-projection-review/review-results.json`, root-checked SHA256
+`945b29fd2b588a578f3f32ca19c399a006c4dabcbe5a0713f88242a3a69b9b15`.
