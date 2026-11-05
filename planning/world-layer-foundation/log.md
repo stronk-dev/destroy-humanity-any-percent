@@ -44,3 +44,38 @@ is approved, not an accepted World specification. Next close actual population/
 share/per-faction inputs and the object of concavity before choosing curve/producer/
 replay/consumer contracts. Original author/ruling text remains untouched; no
 product, packaging, CI, implementation authorization or full1.0 status promotion.
+
+
+## 2026-11-05 — RP-777: measure the actual World producer boundary
+
+Runtime source2cc892d0, kernel228, unchanged product/author bodies. The new
+producer-boundary-plan.md predeclares7 current Service.Handle/real-PG arms under
+immutable epoch5; the follow-up explicitly declares actual retry EventProjector
+delivery after initial33605. No source qualification/formula/schema is adopted.
+
+Initial82321 command placed the custom flag before the package through Make;
+Go reports no Go files, no test execution. Correct declared Docker flag order
+33605 executes all7 arms PASS0.676s. Final84035 uses Linux-amd64/PG/race and
+passes2.022s, no skips/races. Net purchase-10.3 accompanies passive reference1;
+manual-at-same-time gains1 with passive0; progress can remain0 while producing1.
+Rejected intent/log persists without applied revision; injected SQL failure
+leaves no new durable rows. Retry preserves full state/receipt/counts and
+redelivers the SAME event to the observer. Source/runtime/instrument hashes
+and all7 observations are retained in producer-boundary.json, SHA256
+0655eadf41128aa56642d4c806c7e6b0b1252a49659519d1730b8b18fcc50fc6.
+
+Existing-output control65403 fails before DB work, exit1, artifact hash unchanged.
+Production vet7208 passes. Native19167 reports the explicit manual-selection
+SKIP; this is compilation/skip behavior, not SQL evidence. No full Production,
+Clout/history-guard, CI or release green claimed/repeated. Instrument DDL exists
+only in the owned disposable DB; the trigger/function clean up per subtest.
+
+The dossier separates pure-stage reference, actual commit/receipt/event behavior
+and source-only Guild/replay/World traces. A typed transactional fact is one
+option; complete replay-derived production is not disproved. Close qualification,
+amount/interval/identity and dedup/recovery across commit paths before World
+adoption, together with RP-775's population/faction/concavity definitions.
+Whole feature/later tiers and1.0 remain open. Independent technical/evidence
+review is pending for the complete batch after2cc892d0; no implementation or
+archival authority follows from this research. All root checks are terminal;
+the temporary declared SQL service stays available for the independent reviewer.

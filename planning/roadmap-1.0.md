@@ -2265,7 +2265,10 @@ every listed change is authorized immediately. Accepted RFCs and their owning pl
    player proof. World WL2's population/share/per-faction/concavity inputs need
    explicit closure: [RP-775's independently reviewed conditional check](world-layer-foundation/contribution-contract.md)
    prevents a raw-share interpretation from silently defeating diminishing credit.
-   It selects no formula or implementation. Close Commons' literal producer/governance/effect contracts (RP-529)
+   It selects no formula or implementation. Close the [measured committed-output
+   producer boundary](world-layer-foundation/producer-boundary.md) too: net balances,
+   progress deltas and retry callbacks cannot silently become World output.
+   Close Commons' literal producer/governance/effect contracts (RP-529)
    before promoting its dependency availability into an implementable spec. Completing
    Garage or publishing a preview does not complete this 1.0 goal.
 

@@ -36,7 +36,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [Combat — Lane Engine](combat-lane-engine.md) | draft | Combat Shared Data |
 | [Combat — Bots & Integration](combat-bots-and-integration.md) | draft | Combat engines / Account Bootstrap |
 | [Commons Onboarding & Governance](commons-onboarding-and-governance.md) | draft — dependency foundations available; ballot/cohort contracts still unclosed (RP-529; [readiness](../planning/commons-onboarding-and-governance/log.md)) | Commons Compact |
-| [World Layer Foundation](world-layer-foundation.md) | draft — WL2 contribution inputs/per-faction binding need closure (RP-775; [conditional arithmetic check](../planning/world-layer-foundation/contribution-contract.md)); not implementation authority | Commons / Production / Save |
+| [World Layer Foundation](world-layer-foundation.md) | draft — WL2 normalization/per-faction binding (RP-775) and committed-output producer (RP-777) need closure; [arithmetic](../planning/world-layer-foundation/contribution-contract.md) / [producer evidence](../planning/world-layer-foundation/producer-boundary.md); not implementation authority | Commons / Production / Save |
 | [Feed & Dispatch Foundation](feed-and-dispatch-foundation.md) | draft | Transport / Production / Clout |
 | [Events Engine — Layer 1](events-engine-layer1.md) | draft | Production / Save / Meters |
 | [Minigame & Recovery API + Surface](minigame-api-and-surface.md) | accepted — MA-C1–C15 ruled; implementing | API Foundation / Minigame Platform (accepted, implementing) / Soul / UI Foundation |

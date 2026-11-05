@@ -1,0 +1,283 @@
+{
+  "fixture_constants_hash": "sha256:63ab30c96b5d76b941b053131fcee63c94b6b3ad91322f9160d94973ce8c58fa",
+  "kernel_version": "0.3.228",
+  "observations": [
+    {
+      "name": "online_purchase",
+      "mode": "online",
+      "elapsed_ms": 1000,
+      "reference_passive_delta": "1e0",
+      "reference_progress_delta_ppm": 1426,
+      "persisted_balance_delta": "-1.03e1",
+      "receipt_summary": {
+        "outcome": "applied",
+        "receipt": {
+          "changes": [
+            {
+              "after": "8.97e1",
+              "before": "1e2",
+              "delta": "-1.03e1",
+              "resource_id": "company.cash"
+            }
+          ]
+        }
+      },
+      "revision_before": 1,
+      "revision_after": 2,
+      "cursor_advanced": true,
+      "revision_event_intent_log_outbox_counts": [
+        2,
+        1,
+        1,
+        1,
+        2
+      ],
+      "applied_log_rows": 1,
+      "events": [
+        {
+          "kind": "generator_purchased",
+          "payload": {
+            "cost": "1.13e1",
+            "count": 1,
+            "generator_id": "generator.beige_tower",
+            "cost_resource_id": "company.cash"
+          }
+        }
+      ],
+      "error_class": "none",
+      "retry_unchanged": true,
+      "retry_event_redelivery": true
+    },
+    {
+      "name": "same_time_manual",
+      "mode": "online",
+      "elapsed_ms": 0,
+      "reference_passive_delta": "0",
+      "reference_progress_delta_ppm": 0,
+      "persisted_balance_delta": "1e0",
+      "receipt_summary": {
+        "outcome": "applied",
+        "receipt": {
+          "changes": [
+            {
+              "after": "1.01e2",
+              "before": "1e2",
+              "delta": "1e0",
+              "resource_id": "company.cash"
+            }
+          ]
+        }
+      },
+      "revision_before": 1,
+      "revision_after": 2,
+      "cursor_advanced": false,
+      "revision_event_intent_log_outbox_counts": [
+        2,
+        0,
+        1,
+        1,
+        1
+      ],
+      "applied_log_rows": 1,
+      "events": [],
+      "error_class": "none",
+      "retry_unchanged": false,
+      "retry_event_redelivery": false
+    },
+    {
+      "name": "online_manual",
+      "mode": "online",
+      "elapsed_ms": 1000,
+      "reference_passive_delta": "1e0",
+      "reference_progress_delta_ppm": 1426,
+      "persisted_balance_delta": "2e0",
+      "receipt_summary": {
+        "outcome": "applied",
+        "receipt": {
+          "changes": [
+            {
+              "after": "1.02e2",
+              "before": "1e2",
+              "delta": "2e0",
+              "resource_id": "company.cash"
+            }
+          ]
+        }
+      },
+      "revision_before": 1,
+      "revision_after": 2,
+      "cursor_advanced": true,
+      "revision_event_intent_log_outbox_counts": [
+        2,
+        0,
+        1,
+        1,
+        1
+      ],
+      "applied_log_rows": 1,
+      "events": [],
+      "error_class": "none",
+      "retry_unchanged": false,
+      "retry_event_redelivery": false
+    },
+    {
+      "name": "offline_purchase",
+      "mode": "offline",
+      "elapsed_ms": 1000,
+      "reference_passive_delta": "9e-1",
+      "reference_progress_delta_ppm": 1284,
+      "persisted_balance_delta": "-1.04e1",
+      "receipt_summary": {
+        "outcome": "applied",
+        "receipt": {
+          "changes": [
+            {
+              "after": "8.96e1",
+              "before": "1e2",
+              "delta": "-1.04e1",
+              "resource_id": "company.cash"
+            }
+          ]
+        }
+      },
+      "revision_before": 1,
+      "revision_after": 2,
+      "cursor_advanced": true,
+      "revision_event_intent_log_outbox_counts": [
+        2,
+        1,
+        1,
+        1,
+        2
+      ],
+      "applied_log_rows": 1,
+      "events": [
+        {
+          "kind": "generator_purchased",
+          "payload": {
+            "cost": "1.13e1",
+            "count": 1,
+            "generator_id": "generator.beige_tower",
+            "cost_resource_id": "company.cash"
+          }
+        }
+      ],
+      "error_class": "none",
+      "retry_unchanged": false,
+      "retry_event_redelivery": false
+    },
+    {
+      "name": "saturated_progress",
+      "mode": "online",
+      "elapsed_ms": 1000,
+      "reference_passive_delta": "1e0",
+      "reference_progress_delta_ppm": 0,
+      "persisted_balance_delta": "-1.03e1",
+      "receipt_summary": {
+        "outcome": "applied",
+        "receipt": {
+          "changes": [
+            {
+              "after": "9.897e2",
+              "before": "1e3",
+              "delta": "-1.03e1",
+              "resource_id": "company.cash"
+            }
+          ]
+        }
+      },
+      "revision_before": 1,
+      "revision_after": 2,
+      "cursor_advanced": true,
+      "revision_event_intent_log_outbox_counts": [
+        2,
+        1,
+        1,
+        1,
+        2
+      ],
+      "applied_log_rows": 1,
+      "events": [
+        {
+          "kind": "generator_purchased",
+          "payload": {
+            "cost": "1.13e1",
+            "count": 1,
+            "generator_id": "generator.beige_tower",
+            "cost_resource_id": "company.cash"
+          }
+        }
+      ],
+      "error_class": "none",
+      "retry_unchanged": false,
+      "retry_event_redelivery": false
+    },
+    {
+      "name": "unaffordable_purchase",
+      "mode": "online",
+      "elapsed_ms": 1000,
+      "reference_passive_delta": "1e0",
+      "reference_progress_delta_ppm": 1426,
+      "persisted_balance_delta": "0",
+      "receipt_summary": {
+        "outcome": "rejected"
+      },
+      "revision_before": 1,
+      "revision_after": 1,
+      "cursor_advanced": false,
+      "revision_event_intent_log_outbox_counts": [
+        1,
+        0,
+        1,
+        1,
+        1
+      ],
+      "applied_log_rows": 0,
+      "events": [],
+      "error_class": "none",
+      "retry_unchanged": false,
+      "retry_event_redelivery": false
+    },
+    {
+      "name": "revision_write_failure",
+      "mode": "online",
+      "elapsed_ms": 1000,
+      "reference_passive_delta": "1e0",
+      "reference_progress_delta_ppm": 1426,
+      "persisted_balance_delta": "0",
+      "receipt_summary": null,
+      "revision_before": 1,
+      "revision_after": 1,
+      "cursor_advanced": false,
+      "revision_event_intent_log_outbox_counts": [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "applied_log_rows": 0,
+      "events": [],
+      "error_class": "injected_revision_write_failure",
+      "retry_unchanged": false,
+      "retry_event_redelivery": false
+    }
+  ],
+  "runtime": {
+    "arch": "amd64",
+    "go": "go1.26.10",
+    "os": "linux",
+    "postgres": "16.15"
+  },
+  "schema_version": 1,
+  "source_sha256": {
+    "server/accrualhook/contract.go": "654dce0229127deb59b6365e922cdc107e175d2159e909d9b1c579f2146af54b",
+    "server/gameserver/world_source.go": "488add059c43ae3abe6efae0651d9395e08ccbccd289eaff5acfd50617e3182a",
+    "server/guild/hook.go": "04c990f05c4647bcec9c80e3c190c34845a82861f0ce21a3481e57c74aa11ac9",
+    "server/production/engine.go": "b872d4746779a097f68f88475cef66214a2a7f8970817298f788ffad515ae875",
+    "server/production/intents.go": "cb0fffd602091f5f3a38ec2f3624637c5e99602247687042163a6077c7328c87",
+    "server/production/replay.go": "7074ecabc2be1bcf8c1dac71a566081e1090e28fa204a8771e70dddb0cd8f23e",
+    "server/production/world_producer_research_test.go": "e3bad0a5b39cc98f97c7d738d8a4708eee4adcb4a6931c8bc4d57a5f8a541b50",
+    "server/save/intent.go": "47bd17157699cebb45ef0c2b3b72f082c522eb5448f5b5a81a92bbec56dfde1e"
+  }
+}
