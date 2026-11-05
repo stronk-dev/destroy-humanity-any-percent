@@ -2268,6 +2268,9 @@ every listed change is authorized immediately. Accepted RFCs and their owning pl
    It selects no formula or implementation. Close the [measured committed-output
    producer boundary](world-layer-foundation/producer-boundary.md) too: net balances,
    progress deltas and retry callbacks cannot silently become World output.
+   The [independently reviewed basis packet](world-layer-foundation/contribution-basis-proposal.md)
+   is ready for an owner direction choice, including its explicit dilution and
+   strict-share limitations; it does not adopt or implement World.
    Close Commons' literal producer/governance/effect contracts (RP-529)
    before promoting its dependency availability into an implementable spec. Completing
    Garage or publishing a preview does not complete this 1.0 goal.

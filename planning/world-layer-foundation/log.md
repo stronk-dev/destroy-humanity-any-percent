@@ -166,3 +166,28 @@ remeasurement, the plan declares both new controls. Probe/result retain zero-
 weight positive output0 and membership10→5. Original author/product/CI bytes
 remain unchanged. Full corrected range needs independent re-review; no owner
 choice is offered on the rejected wording, and no implementation is authorized.
+
+
+## 2026-11-05 — RP-778 corrected decision packet independently APPROVED
+
+Review by: fresh independent Codex `/root/world_basis_proposal_review`.
+Recorded by: Codex root, transcribing the actual bounded technical/evidence
+verdict. **APPROVED**, no actionable findings, complete7-path/two-commit range
+`3aa86e6dc81a03a123d8aec9f21252729f45df69` exclusive through
+`b2cb27f7c7e0f5f30e0842918a39e2adb6866004` inclusive. The earlier CHANGES
+REQUIRED verdict stays intact; no history or initial manifest is rewritten.
+
+Independent final probe is byte-identical005ce57f…518f8, all5 source bindings
+match;956 replication/pair controls,64 positive-total equivalence controls and
+4 invalid count/weight refusals pass. Zero-weight/dilution controls and the
+failed strict-share property remain explicit. Full-range whitespace/tree checks
+pass. Source traces are inspected, not extra executed populations. No unrelated
+DB/software/CI tests or SQL resources are required or claimed.
+
+Final manifest `.cache/world-basis-proposal-review/review-results-final.json`,
+SHA25628bd8b18a73fcf433dc6024acaa0b2ec482594c01fbe743c6ad0844711e8977c.
+All reviewer processes terminal, zero tracked reviewer edits. The packet is now
+ready for Marco's direction choice; technical approval does not adopt World,
+reconcile author bodies, implement mechanics, choose rates or waive any complete
+anti-domination/NPC/solo/later-tier/release criterion. Present both dilution and
+lone-positive100% limitations in the question; no answer is inferred from review.
