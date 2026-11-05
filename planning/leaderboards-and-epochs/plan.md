@@ -16,8 +16,13 @@ rows, no archive), so this is partial construction, not a completed timing repai
 The owning log records diagnostics, profiling, invalid fixture attempts and all
 results. Complete seven-path `8d868309..7c850359` is independently APPROVED for
 reader correctness/diagnostics, with fresh current normal/race journeys and
-old/new archive compatibility. RP-770 remains OPEN. Next: measure remaining replay/completion cost in the failing full-run
-context; no raised bound, skipped case, new kernel identity or full-CI claim.
+old/new archive compatibility. RP-770 remains OPEN. A subsequent observation-only
+full run passes, recording run2 input150ms/replay3.930s/archive682ms; it does not
+reproduce the earlier failed context or exercise its late-completion branch.
+Next: compare the same first-hour/race path in the declared default architecture,
+recording the actual container architecture; this is a diagnostic control, never
+a substitute for native Linux-amd64/reference or uninstrumented acceptance.
+No raised bound, skipped case, new kernel identity or full-CI claim.
 
 2026-10-15 RP-124: the existing real-Postgres archive test now preserves a populated
 two-command/four-event fixture, with independent complete-content and corruption/omission

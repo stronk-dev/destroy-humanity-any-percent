@@ -592,3 +592,40 @@ completion can never pass. Read final queue/archive state before cleanup; absent
 successful completion marks the phase observation incomplete, not a higher allowed
 cost. This measurement adopts no budget or new behavior; the ordinary shipping
 test and production source remain unchanged. Full nine-tier1.0 stays active.
+
+## 2026-11-05 — Complete phase samples in a passing instrumented full context
+
+Observation-only full28898 terminates0 at execution HEAD6224880c; reviewed product/
+test bytes remain those of7c850359 (hashes checked before the compiler overlay).
+The exact-source timers plus original-failure/extra-window diagnostic are ignored
+artifacts, not shipping code. Full actual Linux-amd64/PG race reports170PASS/0FAIL/
+1existing opt-in skip; Gameserver269.581s. First-hour passes82.45s and reaches
+both archives/post-delete public boards. Its original5s success predicate is unchanged.
+
+Completed first-hour samples: run1(181 entries) input133.886458ms, replay1.801901084s,
+archive355.622167ms; run2(363) input149.927125ms, replay3.929952585s,
+archive682.108375ms. Replay is the largest measured remaining stage in THIS run.
+These are not matched before/after benchmarks, native reference proof or a new
+allowed budget. The earlier uninstrumented full remains RED; no code change
+between its failure and this passing observed context explains that variability.
+
+The original deadline does NOT fire here. Extra5s window/post-deadline query/
+unconditional failure branch therefore do NOT execute and are not claimed as
+an independently discriminating oracle. Phase samples complete; the specific
+failed-context reproduction objective does not. RP-770 remains OPEN, not softened
+to the passing context. Raw log SHA
+b955c34e42a089d270d72b70bc9b8e3ceede3653a36580e459abe0c5d3176a98;
+ignored phase-full-results.json explicitly records both outcomes and limitations.
+Next useful control is the SAME first-hour/race command through the declared
+default architecture, verifying actual image/architecture before interpreting
+it. It may distinguish emulated/instrumented cost, but cannot replace the required
+supported native Linux-amd64/reference acceptance or establish the prior cause.
+Do not repeat positive event-reader censuses or tune ceilings from this one run.
+
+All root/reviewer handles terminal. Inspect22513ca563dd confirms owned test Compose
+labels and tmpfs; remove only that disposable PG container after SQL release.
+Removal succeeds; only the two pre-existing builders remain. Shared caches/raw
+proof preserved. No product/RFC/copy/schema/CI/feature/release status promotion,
+push, deployment or goal pause; full nine-tier1.0 stays active.
+Review by: Codex root (debugging observation, not designated feature approval).
+Recorded by: Codex root.
