@@ -3770,3 +3770,15 @@ Routine output partly truncated, terminal totals retained. Old6 failures/6 compa
 not independently re-manufactured. All handles terminal, browser Compose empty, port51204 free,
 reviewer edits/commits/removes nothing. RP-670 closes, not SG13/content/authored/privacy/
 renewal/natural-maturation/manual-AT/performance/SQL/hosted-CI/full-Garden/archival/release gates.
+
+## 2026-11-05 — Remove stale child-cwd review debt
+
+Editorial reconciliation after inspecting exact9ba37f9b Garden test diff and the
+Pet log's complete17-path9c3b49c1..9ba37f9b independent APPROVAL by
+/root/pet_admission_corrective_review. That verdict inspected all paths and ran
+actual Garden child/startup/nontermination controls. Earlier Garden verdicts
+excluded cwd from THEIR ranges, not from every review. Current plan now links
+existing approval instead of commissioning a duplicate review. Historical cause/
+reliability stays open; no new software execution, feature acceptance or archival.
+Source/corpus/guard unchanged. Leaderboard plan and RP-770 next-action wording
+also stop restarting the completed artifact/phase-profile observations.

@@ -33,8 +33,9 @@ No remaining cause, larger budget or runtime optimization is established.
 Stop repeating these populations for reassurance. Preserve the prior red race
 result and investigate the next actual failure with these source-bound controls;
 any kernel-neutral optimization still needs its existing authority/eligibility.
-Continue other accepted work, including the current release-artifact refresh
-(the retained28aefd29 package predates the approved relay/reader corrections).
+Continue other accepted work. The current independently reviewed `c5130acf`
+candidate includes approved relay/reader and Exit-credit corrections; the older
+28aefd29 package is historical, not a reason to repeat the completed rebuild.
 CI's5min workflow floor, supported native Linux-amd64 and UI
 reference-profile gates remain distinct and unchanged. The owning log holds exact
 runtime/image provenance, controls, review correction and limits.

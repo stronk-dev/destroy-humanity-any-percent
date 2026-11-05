@@ -87,9 +87,16 @@ driver/Make construction. Complete RP-438/RP-445 observer corrections are approv
 actual12 observer controls and real server/Postgres harvest/retry/reload execution. RP-434/
 RP-435 approve only the identified intent-column/proxy-byte corrections inside their mixed
 new-journey range, not new construction/Make/CI or full-feature acceptance. Exact ranges and
-per-path limitations are in the owning log. Keep remaining new-feature and child-cwd review,
+per-path limitations are in the owning log. Keep remaining new-feature review,
 RP-233/RP-430 incidents, authored/privacy/renewal/content/AC13 gates separate. Continue other
 accepted work and outstanding corrective reviews; do not restart these approved ranges.
+
+**Child-process cwd review reconciled,2026-11-05:** the working-directory
+correction is inside complete17-path `9c3b49c1..9ba37f9b`, already independently
+approved by `/root/pet_admission_corrective_review`. The Pet log records actual
+Garden child/startup/nontermination execution. Earlier Garden verdicts excluded
+it only from their own ranges; it is not outstanding review debt. No repeated
+review/test or closure of the historical startup cause is needed.
 
 **Prior execution, 2026-10-08:** all original G1–G7 batches now have complete designated
 CHANGES REQUIRED dispositions; their exact ranges and evidence are in the latest [log](log.md).
