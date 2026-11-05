@@ -68,7 +68,7 @@ reconcile parent bodies under the actual delegation and implement adopted
 contract dependencies with their full producer/native/clean-host proof. No
 product implementation or goal pause is claimed at this checkpoint.
 
-**Current exact-artifact construction, 2026-11-05:** fresh source
+**Last validated exact artifact, 2026-11-05:** fresh source
 `b8042450` includes approved RP-769 relay cancellation and7c850359 reader batching
 alongside RP-768/RP-767 at kernel0.3.226/epoch8. Separate roots
 `.cache/release-current-b8042450/bundle-a` and
@@ -87,6 +87,11 @@ consumers,24 normalization comparisons and6 fresh identity checks. Original scan
 are inspected, not independently rerun. No current R-006/rights/predecessor/native/
 current-CI/full-feature/release acceptance follows. Retain this artifact while
 runtime bytes stay unchanged; do not rebuild it for editorial records.
+The later independently approved runtime correction `408517bf..1ccdb7a0`
+changes the Route projector and adds migration00086. This b8042450 artifact
+does not contain that correction; retain its evidence as historical packaging
+proof, not proof of the newer runtime. The next release candidate must include
+and verify the corrected binary/migration before any current-artifact claim.
 The approved28aefd29 record remains historical. Preserve RP-770's race failure and
 all outstanding adoption questions; no repeated question or inferred approval.
 The local preview label is unchanged; full nine-tier1.0 remains the objective.

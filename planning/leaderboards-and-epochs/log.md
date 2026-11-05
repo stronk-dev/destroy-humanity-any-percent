@@ -821,3 +821,13 @@ approved RP-769 relay and7c850359 reader code. Existing roots measure342MiB each
 host has7.3GiB available. No deletion/prune or new resource allowance is proposed.
 Review by: Codex root (diagnostic execution/interpretation, not designated approval).
 Recorded by: Codex root.
+
+## 2026-11-05 — Pre-timer / epoch correction independently reviewed
+
+APPROVED bounded20-path `6f4704d9b2824100ca61910fd0b7d310f2a7916b..ec2460b115602720ead0150aca53667367a1ef31`.
+Review by: fresh independent Codex `/root/prestige_epoch_corrective_review`.
+Recorded by: Codex root. Exact execution, private legacy-migration failure controls,
+manifest digest and exclusions are in the
+[owning Prestige log](../prestige-and-exits/log.md#2026-11-05--legacy-save--epoch-corrective-range-independently-approved).
+Current1ccdb7a0 Save/Leaderboard SQL and epoch-board membership pass; historical
+kernel identity, adjacent/original feature acceptance and archival remain open.

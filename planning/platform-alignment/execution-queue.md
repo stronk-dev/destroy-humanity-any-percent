@@ -19,6 +19,13 @@ combat, Tier3–8 and ending construction ahead. No new tier or release is compl
   expired access/refresh/receipt do not stop original recovery-code login from
   B_pre; B_post denies all originals. [RP-125 dossier](data-rights-restore-resurrection.md)
   owns method/results/limits. D-009/D-015 remain decisions, not an implied policy.
+- **Closed ordinary gameplay defect:** RP-772's actual epoch8 Exit reward now
+  pays for a hint through the real projector without delayed-delivery overspend.
+  Complete `408517bf..1ccdb7a0` is independently approved; the
+  [Prestige log](../prestige-and-exits/log.md) owns execution and limits. RP-771's
+  separate capacity choice and full Prestige acceptance remain open. Last validated
+  artifact b8042450 predates this runtime/migration correction; preserve its evidence
+  without treating it as a package of current runtime bytes.
 - **Accounting and its real consumers:** delegated CV3/AC6 wording is reconciled.
   Accounting/search technical proposals are reviewed but adoption remains pending.
   [Clout's plan/log](../clout-v1-and-pr-interns/plan.md) owns the actual operation/
@@ -36,8 +43,8 @@ combat, Tier3–8 and ending construction ahead. No new tier or release is compl
   API descriptor/transport, tenant HTTP, recovery/renewal, authored body/copy,
   accessibility and native Deployment proposals keep their named adoption gates;
   a pending choice blocks its dependent new contract, not unrelated accepted work.
-  Current local artifact source`b8042450`/kernel0.3.226/epoch8 has independent
-  evidence approval; retain it while runtime bytes stay unchanged. Do not repeat
+  Last validated local artifact source`b8042450`/kernel0.3.226/epoch8 has independent
+  evidence approval; retain its historical packaging proof. Do not repeat
   artifact/profiling populations or relabel them as hosted/native/clean-host proof.
   [Deployment's plan](../deployment-foundation/plan.md) owns actual native/host/
   predecessor/R-006 prerequisites. RP-770 and the historical guard/current CI

@@ -534,3 +534,52 @@ are terminal. Review by: Codex root (implementer first filter only). Designated
 independent corrective review is pending for the complete408517bf..batch-tip
 range, including implementation, migration, tests, docs and records. No archival,
 publication, deployment, owner adoption or goal pause. Recorded by: Codex root.
+
+## 2026-11-05 — RP-772 complete correction independently approved
+
+APPROVED complete12-path `408517bf..1ccdb7a0`.
+Review by: fresh independent Codex `/root/exit_knowledge_corrective_review`.
+Recorded by: Codex root, transcribing its independently executed verdict.
+The actual epoch8 consumer passes twice (0.67/0.29s); full projector SQL with
+race/count1 passes3.828s, migration/Save checks1.903s, native Route/Save and affected
+four-package vet pass (native DB skips excluded). An additional private existing-
+cache/preclaimed-hint fixture passes: the missing Exit credit applies once, with
+duplicates and rebuild unchanged. Private overlay removes ONLY incremental
+pending-hint subtraction: the consumer fails0.52s/Make2 because the second hint
+applies with both hints owned and nil handler error. No main mutation.
+
+Reviewer independently reads PG16.15 migration86,61 game tables and the exact
+new columns/FK/amount bound; rights supplement correctly refuses joined-deletion
+proof. Root's broader production/server and195-client evidence is inspected,
+not independently rerun. Ignored `.cache/exit-knowledge-review/evidence.json`
+SHA861833bbd3ed329c606173655d688b93fdacd916aac060fe4677c6723a627493
+is digest-checked by root. All review handles terminal; owned PG removed, shared
+network/caches preserved, SQL released. RP-772 closes, not RP-771, full Prestige,
+mounted hint UI, natural pacing, hosted/native/clean-host or release gates.
+Runtime now differs from the b8042450 artifact; its evidence stays historical.
+
+## 2026-11-05 — Legacy save / epoch corrective range independently approved
+
+APPROVED bounded correction across all20 paths of
+`6f4704d9b2824100ca61910fd0b7d310f2a7916b..ec2460b115602720ead0150aca53667367a1ef31`.
+Review by: fresh independent Codex `/root/prestige_epoch_corrective_review`.
+Recorded by: Codex root, transcribing its independently executed verdict.
+Original diff inspected; execution uses current1ccdb7a0, not historicalec2460b1.
+Native Save/Prestige/Leaderboard pass (16 DB skips excluded), affected vet and
+207 client Prestige/replay checks pass. Full real-PG Save/Leaderboard Integration
+passes2.223/1.683s with no skips; Prestige lifecycle passes0.776s. Literalv6
+backfill, terminal pre_timer, next-run reset, changed-byte old/new epoch pins,
+event hashes, replay refusal and epoch-board membership actually execute.
+
+Private overlay removes only legacy start/marker backfill: six Company corpus
+rows fail, with Founder/invalid-cursor controls retained; actualv6 SQL Exit fails
+`invalid prestige arithmetic` (Make2,0.349s). Historical00017 DDL is unchanged.
+The original correction changed watched behavior without advancing kernel0.1.0:
+historical identity/guard debt remains unresolved. This verdict supplies neither
+retroactive identity compliance nor adjacent/original-feature/archival approval.
+Ignored `.cache/prestige-epoch-review-evidence.json`
+SHAc9b4089cfe4043492d194d0b77ecae5dd31974b6b5d6da9680b66359fce91e6e
+is digest-checked by root. All handles terminal; owned tmpfs PG removed, shared
+network/caches preserved, SQL released. Go/PG images are Linux-amd64 under ARM64
+Desktop emulation, not supported native-host/R-006 proof. RP-038/RP-771/RP-770,
+Clout and current hosted/release gates stay open; no goal pause or publication.

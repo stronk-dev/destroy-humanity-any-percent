@@ -8,14 +8,19 @@
   epoch-8 pacing evidence has Codex's designated approval (`a965538e^..a965538e`; see log).
   The final P5c/P2d corrective four-path range `d9d8ad59..4589a642` now also has
   fresh independent Codex approval under Marco's corrective-review delegation.
+  The20-path pre-timer/epoch correction `6f4704d9..ec2460b1` and complete
+  Exit-credit correction `408517bf..1ccdb7a0` have bounded independent approval too;
+  historical kernel identity, RP-771 and original feature acceptance remain open.
   Next: reconcile complete foundational implementation/review coverage for item9;
   these scoped verdicts do not authorize archival or approve adjacent changes.
 
-**Current correction,2026-11-05 (RP-772; independent review pending):** the actual epoch8 curriculum
-producer saves75 earned Knowledge, but a real projector makes the affordable50
-hint reject: saved75/projection0/hint false (private real-PG68322). Correct the
-missing Exit-credit → projection → hint-consumer binding under accepted Routes
-D5/C6 and Prestige D3 using transactional Exit/hint event claims and one Founder-row lock.
+**Closed correction,2026-11-05 (RP-772):** the old actual epoch8 curriculum
+producer saved75 earned Knowledge, but a real projector made the affordable50
+hint reject: saved75/projection0/hint false (private real-PG68322). Complete
+`408517bf..1ccdb7a0` corrects the Exit-credit → projection → hint-consumer binding
+under accepted Routes D5/C6 and Prestige D3 using transactional Exit/hint event claims
+and one Founder-row lock. Fresh independent Codex review approves all12 paths;
+its private pending-debit severing fails the second-purchase assertion.
 The current-content regression now passes with the real projector, held hint delivery,
 unaffordable second purchase and exact receipt retry. Projector checks cover late/duplicate
 delivery, existing/missing rows, rollback, invalid ownership, concurrent repair and Registry
@@ -60,7 +65,7 @@ Use post-rewrite coordinates; anonymous legacy prose cannot supply reviewer iden
 |---|---|---|
 | Original save, arithmetic, atomic store and lifecycle | `9e2ccc6f5dbb8660a5cad32f85865c1b87a3c200..c3c58b950dd8908a6ba09a0b185a98dce930a134` | Four construction commits/35 paths. Historical findings are retained; new explicit designated implementation review needed. |
 | Original run-log integration | `cbe0ad968c11faa9e8e3d04309907e5d0ba8e987..ce0a5ece584daace9b91f4ba14d12796698df928` | One construction commit/16 paths; explicit designated coverage needed. |
-| Pre-timer/cross-epoch correction | `6f4704d9b2824100ca61910fd0b7d310f2a7916b..ec2460b115602720ead0150aca53667367a1ef31` | Mixed20-path corrective batch; inspect actual Prestige/Save/Leaderboard scope rather than silently approving adjacent systems. |
+| Pre-timer/cross-epoch correction | `6f4704d9b2824100ca61910fd0b7d310f2a7916b..ec2460b115602720ead0150aca53667367a1ef31` | Fresh independent corrective APPROVAL2026-11-05: all20paths inspected, current1ccdb7a0 executed with actual legacy-v6/cross-epoch/refusal/board checks. Original kernel identity remains unresolved; no adjacent/original-feature approval. |
 | Lifecycle review remediation | `2359c4f7668828964002a628b12a3cf7edfce6e1..0a7f129280f5307a2add8b3cdcc676a7fd5f27be` | Fresh independent corrective APPROVAL only as the exact corrected union with d9d8ad59..4589a642; historical0a7f alone/intervening commits are not approved. Current RP-771 remains a separate AC5 finding. |
 | Hash-pinned attended ceiling | `498f8ae51fda9d0e71470ac3ce3c2da6f98f55a1..e5ad0bacd056dce983376a5b7d97256877a13f1e` | Mixed16-path Prestige/Faction correction; determine its explicit existing coverage before assigning duplicate review. |
 | Final P5c/P2d correction | `d9d8ad590b1fade049e3a804f114673d2ec92373..4589a642cc1c951fd73ec0d50f37d7c9471a119b` | Fresh four-path corrective APPROVAL,2026-11-05; do not repeat. |
