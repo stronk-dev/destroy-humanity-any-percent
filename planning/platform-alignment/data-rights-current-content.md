@@ -63,6 +63,10 @@ feature payloads. Fresh joined feature-data deletion/restore remains unproved.
 
 ## RP-606 — protected Garden salt meets original-byte public verification
 
+The [2026-11-05 real SQL/HTTP supplement](#2026-11-05--actual-garden-producer-to-verified-public-archive)
+advances the original controlled-reader finding below: actual verification, compaction and
+board authorization now execute. The deployed/default-release boundary remains unproved.
+
 Garden OD-12(b), adopted with the recommended defaults, keeps its per-Founder
 salt from clients/exports; SG9/AC10 repeat the hidden-information requirement.
 The actual `founderCarry` / `buildReplayInputs` producer nevertheless includes
@@ -174,3 +178,87 @@ Remaining: fuller historical receipt/resolved-input maps, nested shared-party
 data, actual authorization→compaction→public reader and populated deletion/
 restore proofs, explicit rights policy and reviewed implementation. No release,
 feature approval or legal conclusion follows from this tranche.
+
+## 2026-11-05 — Actual Garden producer to verified public archive
+
+Source `ce932586` (runtime source `c5130acf`, kernel0.3.226), migration86.
+Question/method/limits were declared in the
+[payload plan](data-rights-payload-core-plan.md#2026-11-05--rp-606-actual-producer--verified-board-archive-extension).
+This closes the older synthetic-reader/compaction evidence gap, not RP-606's
+privacy conflict. PASS means the observation completed; **the initialized arm
+fails the adopted hidden-salt boundary**.
+
+Two fresh disposable compositions use the unchanged complete `grown` Garden
+corpus catalog: actual Company18/Founder25. Initial Company tier/lifetime value
+and Fiscal credit are explicit controlled genesis, not earned progression.
+Real Account HTTP supplies credentials; the progressed fixture Founder is linked
+before those credentials are issued. In the initialized arm, real authenticated
+Fiscal-unlock and Garden-plant requests generate the salt; it is never seeded by
+the observer. The other arm omits those actions and remains null-salted. This is
+a same-format control, not a single-field causal comparison.
+
+Both execute actual Wind Down, the normal verification worker and SQL compactor.
+Each queue reaches verified, archive terminal sequence1 and zero unreferenced live
+rows; each gets four real `verified_runs` rows. No board row is inserted by the
+observer, no archive is constructed and no reader is replaced. Before completion,
+the same public archive path returns404. Afterward unauthenticated HTTP returns200,
+exact stored gzip bytes, matching digest/ETag and
+`public,max-age=31536000,immutable`. The salt is still the current Founder salt
+following Exit into the next Company.
+
+| Actual source / reader | Dormant arm | Server-initialized arm |
+|---|---|---|
+| Private Founder head | No salt | Same generated salt retained |
+| Private Founder replay | No matching value | Sequence2 contains the generated salt |
+| FK-retained Company run-log row1 | No matching value | Same salt in replay inputs |
+| Verified gzip archive → public HTTP | Null field, no salt value | Same salt in original bytes |
+| Ordinary Garden view/command receipts | Salt-free | Salt-free |
+| Public verdict / genesis | Salt-free | Salt-free |
+
+The exact exposed JSON location is
+`entries[0].replay_inputs.resolved.founder_carry.founder_extensions.server_garden.salt_hex`.
+Both raw-byte search and a separate decoded-string/path walk agree. Access,
+refresh and recovery credentials are absent from the downloaded evidence. Actual
+Founder histories verify. The existing public evidence consumer also downloads
+all three resources, checks storage/hash/cache bindings and Go-reverifies the
+Company archive; corrupting its first receipt refuses. That consumer's ordinary
+credential checks can pass while the separately measured Garden salt leaks.
+The optional TypeScript public seam is explicitly not requested and gets no credit;
+DB-pinned catalogs are supplied, so this is not the complete public catalog loop.
+
+Initial direct chain68860 passes1.51s. Added lineage/consumer checks30181 pass1.67s
+(two subcases, no skips); no product/assertion/guard/corpus change. In that second
+execution, initialized salt commitment is
+`sha256:eafa6dded2d85fb1170f1a1b0d3835cbd7b93d2c5fe5eebbf8b95024c1fbd200`;
+public archive digest is
+`sha256:1902bceb5a5f027887243542262d124d4f0e5b941e4cdf28e9b4990d6d26aa99`.
+Those bind this observation, not future random salts/IDs/times or a golden file.
+Raw local logs/results are `.cache/garden-public-archive-observation/`;
+`evidence.json` SHA256
+`b660bb9ba7a213c578dd4c8573e41520e7bda834fe2760598a18a90cfe1b9b53`.
+
+The [retained manual observer](probes/garden-verified-public-archive.go.txt),
+SHA256 `399b00ab25800961ae39095d309b36ce000918ca9679a7d0a5f6fe13fccbd49b`,
+is byte-identical to the executed final temporary test. To reproduce at compatible
+source, copy it to the previously absent
+`server/gameserver/rights_garden_archive_observation_test.go`, then run from root:
+
+```sh
+make test-save-integration SAVE_TEST_PACKAGES=./gameserver SAVE_TEST_FLAGS='-run TestRightsGardenVerifiedArchiveObservationIntegration -v' SAVE_TEST_COUNT=1
+```
+
+Remove only that temporary copy after all handles terminate. It is deliberately
+outside ordinary CI: a future privacy fix may yield exposed=false rather than
+being forced to preserve the leak. Root removed its copy after execution and only
+the newly owned tmpfs PG `fea6446f...`; shared network/caches remain. Both actual
+Go/PG images are Linux-amd64 under ARM64 Desktop emulation. No supported native
+host, Caddy/release-binary, default epoch8, natural pacing, deployed-player,
+delete/restore or complete rights proof is claimed.
+
+Next: specify and prove a public Company-verification representation that excludes
+protected persistent state while retaining private original history and honest
+verification/source binding. Existing sampled null admission does not authorize
+redaction. Authored SG8/AC10/OD-12 and API C14 need an accepted contract before
+publication; no salt rotation, stored-byte rewrite, weaker proof or blanket
+ranking suppression follows. Research author/first filter: Codex root;
+independent corrective evidence review pending for the complete containing batch.

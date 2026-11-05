@@ -3355,3 +3355,21 @@ by: Codex (test/research author first filter). Recorded by: Codex. Full batch af
 `0c54a6fa` through this containing commit needs designated Claude review; no
 acceptance/archival/publication. Next rights evidence: active/claimed deletion and
 joined restore, not repeating terminal/shared-consumer observations.
+
+## 2026-11-05 — RP-606 actual verified archive boundary observed
+
+Predeclared payload-plan extension replaces no production/contract/CI bytes.
+At ce932586, actual authenticated unlock/plant → persistent current salt → Exit →
+real worker verification/SQL compaction/four board rows → unauthenticated original
+archive exposes the salt in the fixture-only Garden population. Dormant and
+ordinary/public metadata controls pass; Go public replay/corrupt-receipt refusal
+executes, optional TypeScript seam not requested. Root68860/30181 pass1.51/1.67s,
+no skips, but privacy FAILS. [Dossier](data-rights-current-content.md#2026-11-05--actual-garden-producer-to-verified-public-archive)
+owns exact path, commands, digests, seeded-genesis and non-default/deployed limits.
+Retain byte-identical manual probe outside CI; temporary copy removed after all
+handles terminal. Newly owned tmpfs PG removed, shared network/caches preserved;
+SQL released. Inventory/decision evidence, RP-606 and Garden next action reconcile.
+Review by: Codex root (research author/first filter only). Recorded by: Codex root.
+Complete batch after ce932586 awaits independent corrective evidence review.
+No release/feature/rights/owner adoption or goal pause; accepted privacy still
+requires an authored public-evidence protocol, not silent field stripping.

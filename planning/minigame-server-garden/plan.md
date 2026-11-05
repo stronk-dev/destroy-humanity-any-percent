@@ -5,6 +5,18 @@ Fixture-first: no production mint (SG13). Numbering is landing-order: the RFC's 
 means next-free, and at landing that is **Founder v25** (v22 Reputation, v23 Pet, v24 Cosmetics).
 Replay inputs take the next free wire version, and the event migration takes the next free number.
 
+**Current privacy evidence,2026-11-05 (RP-606):** actual authenticated unlock/plant
+draws a server salt, which survives Exit and real replay verification/SQL compaction
+and appears in an unauthenticated original-byte public archive with four actual
+board rows. Matched dormant control is unsalted; ordinary Garden/receipt and
+public verdict/genesis controls stay salt-free. [Exact source, method and limits](../platform-alignment/data-rights-current-content.md#2026-11-05--actual-garden-producer-to-verified-public-archive).
+This is fixture-only content with controlled progression/budget, not default epoch8,
+deployed-player or release-artifact exposure. The measurement completes; privacy
+does not pass. Next engineering work is a reviewed public-evidence contract that
+preserves private history and independent verification without publishing the
+persistent salt. No stored-byte rewrite, rotation or ranking suppression is adopted.
+Publication/content and authored SG8/API C14 reconciliation remain held.
+
 **Current bounded repair, 2026-10-15 (RP-670):** menu command/Close handoff retains a
 newer focus choice even when its element disappears before the render tick. Six old-component
 native failures establish the regression; retained-focus companions pass. The observer starts

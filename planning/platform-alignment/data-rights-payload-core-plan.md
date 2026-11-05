@@ -81,3 +81,50 @@ backlog for new contradictions, D-008/D-009/D-015 evidence, 1.0 board and
 append-only logs. This may frame options but cannot adopt export scope,
 deletion/retention semantics, player copy or a legal conclusion. No product,
 test, migration, accepted RFC or authored-content change in this wave.
+
+## 2026-11-05 — RP-606 actual producer / verified-board archive extension
+
+Question: can a real server-initialized Garden salt reach an unauthenticated C14
+archive download after actual Company Exit, replay verification and SQL compaction?
+The older constructed archive/reader cannot establish this boundary. Use current
+ce932586 code, the existing complete fixture-only Garden catalog and actual
+Postgres/Compose HTTP handlers. No production mint, product/schema/copy change,
+manual verified_runs insertion, fabricated archive or replacement public reader.
+
+Population: two separately initialized disposable compositions with identical
+controlled progressed Company genesis and adequate initial Fiscal credit. Mark
+those grants as fixture setup, not natural progression. Salted arm performs the
+actual authenticated Fiscal unlock and Garden plant, drawing its salt server-side;
+dormant arm leaves Garden locked/uninitialized. Both perform actual Wind Down.
+Use existing replay worker and compactor, requiring their verified status, archive
+and actual public-board row; setup/timeout/dead verification is INVALID, not a
+privacy pass. Preserve the existing worker guard; do not raise/retry-hide it.
+
+Before completion, unknown/unboarded evidence must return404. After completion,
+observe unauthenticated verdict/genesis/archive status, original storage/digest
+binding, cache policy and whether the exact nonempty private salt occurs in the
+decompressed archive. Confirm the salt persists after Exit; report a digest rather
+than the value. Dormant same-format/version control must remain unsalted. Record
+Founder/private replay and Company log/archive locations separately; account/session
+credentials are negative transport controls, not the Garden privacy criterion.
+Actual public access plus matching private salt is exposure for THIS fixture
+population. No source-only inference or positive default-release/live-player claim.
+
+Retain a temporary package-local observation outside the ordinary test tree after
+execution. PASS means measurement objective completed, never that privacy passed;
+explicit exposed/absent fields carry that outcome. If actual verification/refusal
+prevents the download, retain the precise blocker rather than seed a board row or
+bypass it. This may refine RP-606 and the required authored public-evidence contract;
+it cannot authorize stripping stored bytes, salt rotation, suppressing ranking,
+loosening verification, choosing rights policy or treating this as R-006/natural pacing.
+
+The first complete two-arm run on2026-11-05 reaches real verification/compaction,
+four public board rows per run and original-byte HTTP200. Follow-up instrument
+coverage identifies exact public JSON paths, private Founder history and any
+FK-retained live Company source row separately, and reuses the existing Go public
+verdict/genesis/archive re-verifier with its corrupt-receipt refusal. This adds
+missing lineage/consumer checks, not a repeated positive census. The optional
+TypeScript seam is not enabled and gets no credit. If the source row is correctly
+pruned, report absent rather than invent one. Neither arm requires the public
+salt to remain exposed: measurements may report exposed=false after a future
+adopted correction. Initial run/source/log remain separate evidence.

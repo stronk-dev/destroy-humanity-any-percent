@@ -43,9 +43,12 @@ required for D-008/D-009/D-015; a stable table count does not close that work.
 
 The [newer-content tranche](data-rights-current-content.md) separately maps selected
 Company19/Founder22–25 state, receipt and private replay fields. RP-606 identifies
-the hidden Garden salt/original-byte public-evidence conflict; its executed
-producer/HTTP observation uses a controlled archive/reader, not live SQL or a
-deployed disclosure. Rights options must respect Garden's already-adopted salt
+the hidden Garden salt/original-byte public-evidence conflict. Its original
+controlled archive/reader observation is now supplemented by the2026-11-05 real
+HTTP producer → Postgres verification/compaction → actual board-authorized public
+download, with the current private salt present. This uses a fixture-only Garden
+catalog and controlled progressed genesis/budget, not default/deployed disclosure.
+Rights options must respect Garden's already-adopted salt
 exclusion, and public verification needs its own authored contract reconciliation.
 
 ## Producer-backed session deletion — 2026-10-15

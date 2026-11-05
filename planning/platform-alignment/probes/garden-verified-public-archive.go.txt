@@ -1,0 +1,331 @@
+package gameserver
+
+import (
+	"bytes"
+	"compress/gzip"
+	"context"
+	"crypto/sha256"
+	"database/sql"
+	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
+	"net/http/httptest"
+	"os"
+	"sort"
+	"testing"
+	"time"
+
+	"cloud-clicker/server/account"
+	"cloud-clicker/server/economy"
+	"cloud-clicker/server/production"
+	"cloud-clicker/server/publicread"
+	"cloud-clicker/server/save"
+)
+
+// Manual, source-bound RP-606 observation. A completed measurement is not a
+// privacy pass. The disclosure result is an explicit field, never a CI gate
+// requiring the product to keep exposing protected data.
+func TestRightsGardenVerifiedArchiveObservationIntegration(t *testing.T) {
+	for _, initialized := range []bool{false, true} {
+		name := "dormant"
+		if initialized {
+			name = "server_initialized"
+		}
+		t.Run(name, func(t *testing.T) {
+			url := os.Getenv("TEST_DATABASE_URL")
+			if url == "" {
+				t.Fatal("declared Postgres service is required; measurement invalid")
+			}
+			ctx := t.Context()
+			db, err := save.OpenPostgres(ctx, url)
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer db.Close()
+			if err := save.Migrate(ctx, db); err != nil {
+				t.Fatal(err)
+			}
+			const cleanup = `TRUNCATE accounts,save_streams,catalog_sets,epochs,founder_route_state,commons_cohorts,verified_runs,verification_queue RESTART IDENTITY CASCADE`
+			if _, err := db.ExecContext(ctx, cleanup); err != nil {
+				t.Fatal(err)
+			}
+			now := time.Now().UTC().Truncate(time.Millisecond)
+			composition, err := Compose(ctx, CompositionConfig{
+				DB: db, RepositoryRoot: composedGardenRepositoryRoot(t, filepathRoot(t)),
+				ServerID: "01986666-f120-4000-8000-000000000001", ActivityBracket: "activity.standard",
+				PublicCursorKeys: testPublicCursorKeys(), Clock: func() time.Time { return time.Now().UTC() },
+				SigningKeys:   account.SigningKeys{CurrentID: "privacy-fixture", Current: bytes.Repeat([]byte{0x71}, 32)},
+				BootstrapKeys: account.BootstrapReceiptKeys{CurrentID: "privacy-bootstrap", Current: bytes.Repeat([]byte{0x72}, 32)},
+			})
+			if err != nil {
+				t.Fatal(err)
+			}
+			workerCtx, cancel := context.WithCancel(ctx)
+			defer cancel()
+			if err := composition.Server.Start(workerCtx); err != nil {
+				t.Fatal(err)
+			}
+			defer func() {
+				cancel()
+				drain, stop := context.WithTimeout(context.Background(), 2*time.Second)
+				defer stop()
+				if err := composition.Server.Drain(drain, time.Now().UTC()); err != nil {
+					t.Errorf("observation cleanup: %v", err)
+				}
+			}()
+			server := httptest.NewServer(composition.Server.Handler())
+			defer server.Close()
+			waitHTTPStatus(t, server.Client(), server.URL+"/readyz", http.StatusNoContent)
+			createdResponse := compositionRequest(t, server.Client(), http.MethodPost, server.URL+"/api/v1/account", "", `{}`)
+			if createdResponse.StatusCode != http.StatusCreated {
+				t.Fatalf("account status=%d", createdResponse.StatusCode)
+			}
+			var created account.CreatedAccount
+			decodeCompositionResponse(t, createdResponse, &created)
+			initial, err := composition.Accounts.ActiveFounder(ctx, created.AccountID)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if _, err := db.ExecContext(ctx, `UPDATE account_founders SET archived_at=$2 WHERE account_id=$1 AND archived_at IS NULL`, created.AccountID, now); err != nil {
+				t.Fatal(err)
+			}
+			if _, err := db.ExecContext(ctx, `UPDATE save_streams SET archived_at=$2 WHERE owner_kind='founder' AND owner_id=$1 AND archived_at IS NULL`, initial.ID, now); err != nil {
+				t.Fatal(err)
+			}
+			store, err := save.NewStore(db, composition.Catalogs, nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+			const founderID = "018f0000-0000-4000-8000-000000000502"
+			founder, company, frozen := progressedCompositionStates(t, composition.Catalogs, composition.CurrentHash, now)
+			bundle, ok := composition.Catalogs.ResolveReplayCatalogs(composition.CurrentHash)
+			if !ok || bundle.Garden == nil || bundle.Fiscal == nil {
+				t.Fatal("complete Garden fixture missing")
+			}
+			founder.FiscalCredit = bundle.Fiscal.Credit.Hardcap // Controlled initial budget, not earned-pacing evidence.
+			if founder.ServerGarden == nil || founder.ServerGarden.SaltHex != nil {
+				t.Fatal("fixture must start with an uninitialized Garden")
+			}
+			founderRevision, err := store.CreateStream(ctx, save.StreamKey{OwnerKind: save.OwnerFounder, OwnerID: founderID, Scope: economy.ScopeFounder}, composition.CurrentHash, founder, save.WriteContext{Cause: "privacy.garden.fixture"})
+			if err != nil {
+				t.Fatal(err)
+			}
+			companyRevision, err := store.CreateStream(ctx, save.StreamKey{OwnerKind: save.OwnerFounder, OwnerID: founderID, Scope: economy.ScopeCompany}, composition.CurrentHash, company, save.WriteContext{Cause: "privacy.garden.fixture"})
+			if err != nil {
+				t.Fatal(err)
+			}
+			if _, err := db.ExecContext(ctx, `INSERT INTO account_founders(account_id,founder_id,created_at) VALUES($1,$2,$3)`, created.AccountID, founderID, now); err != nil {
+				t.Fatal(err)
+			}
+			tx, err := db.BeginTx(ctx, nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer tx.Rollback()
+			var genesis []byte
+			if err := tx.QueryRowContext(ctx, `SELECT state::text FROM save_revisions WHERE stream_id=$1 AND revision=1`, companyRevision.StreamID).Scan(&genesis); err != nil {
+				t.Fatal(err)
+			}
+			if _, err := save.PinRunWithGenesisTx(ctx, tx, companyRevision.StreamID, founderID, 1, composition.CurrentHash, companyRevision.Version, genesis); err != nil {
+				t.Fatal(err)
+			}
+			if err := save.InsertRunFrozenContributionsTx(ctx, tx, companyRevision.StreamID, 1, frozen); err != nil {
+				t.Fatal(err)
+			}
+			if err := tx.Commit(); err != nil {
+				t.Fatal(err)
+			}
+			login := compositionRequest(t, server.Client(), http.MethodPost, server.URL+"/api/v1/session", "", fmt.Sprintf(`{"account_id":%q,"recovery_code":%q}`, created.AccountID, created.RecoveryCode))
+			if login.StatusCode != http.StatusOK {
+				t.Fatalf("session status=%d", login.StatusCode)
+			}
+			var tokens account.TokenPair
+			decodeCompositionResponse(t, login, &tokens)
+			base := "/api/public/v1/runs/" + companyRevision.StreamID + "/1"
+			before, err := server.Client().Get(server.URL + base + "/replay-log")
+			if err != nil {
+				t.Fatal(err)
+			}
+			beforeBytes := readCompositionBytes(t, before)
+			if before.StatusCode != http.StatusNotFound {
+				t.Fatalf("unboarded public status=%d", before.StatusCode)
+			}
+			receipts := [][]byte{beforeBytes}
+			post := func(id, kind string, revision int64, fields string) []byte {
+				t.Helper()
+				body := fmt.Sprintf(`{"intent_id":%q,"kind":%q,"expected_revision":%d,%s}`, id, kind, revision, fields)
+				response := compositionRequest(t, server.Client(), http.MethodPost, server.URL+"/api/v1/intents", tokens.AccessToken, body)
+				data := readCompositionBytes(t, response)
+				var receipt struct {
+					Outcome string `json:"outcome"`
+				}
+				if response.StatusCode != http.StatusOK || json.Unmarshal(data, &receipt) != nil || receipt.Outcome != "applied" {
+					t.Fatalf("%s status=%d receipt=%s", kind, response.StatusCode, data)
+				}
+				receipts = append(receipts, data)
+				return data
+			}
+			if initialized {
+				post("01986666-f120-7000-8000-000000000001", "spend_fiscal_credit", 1, `"target":{"kind":"unlock","unlock_id":"minigame.server_garden"}`)
+				current, err := store.LoadLatest(ctx, founderRevision.StreamID)
+				if err != nil {
+					t.Fatal(err)
+				}
+				post("01986666-f120-7000-8000-000000000002", "garden_plant", current.Revision.Number, `"row":0,"col":0,"species_id":"strain_a"`)
+			}
+			private, err := store.LoadLatest(ctx, founderRevision.StreamID)
+			if err != nil {
+				t.Fatal(err)
+			}
+			salt := ""
+			if private.State.ServerGarden.SaltHex != nil {
+				salt = *private.State.ServerGarden.SaltHex
+			}
+			if initialized != (salt != "") {
+				t.Fatal("salt initialization positive/negative control failed")
+			}
+			viewResponse := compositionRequest(t, server.Client(), http.MethodGet, server.URL+"/api/v1/garden/current", tokens.AccessToken, "")
+			view := readCompositionBytes(t, viewResponse)
+			if viewResponse.StatusCode != http.StatusOK {
+				t.Fatalf("garden view status=%d", viewResponse.StatusCode)
+			}
+			assertGardenHTTPPublicJSON(t, view, salt)
+			post("01986666-f120-7000-8000-000000000003", "wind_down", companyRevision.Number, fmt.Sprintf(`"expected_founder_revision":%d`, private.Revision.Number))
+			current, err := store.LoadLatest(ctx, companyRevision.StreamID)
+			if err != nil || current.State.RunSeq != 2 {
+				t.Fatalf("Exit continuation err=%v", err)
+			}
+			retained, err := store.LoadLatest(ctx, founderRevision.StreamID)
+			if err != nil || retained.State.ServerGarden == nil {
+				t.Fatal("Garden carry missing", err)
+			}
+			retainedSalt := ""
+			if retained.State.ServerGarden.SaltHex != nil {
+				retainedSalt = *retained.State.ServerGarden.SaltHex
+			}
+			if retainedSalt != salt {
+				t.Fatal("Exit changed hidden salt")
+			}
+			awaitComposedRunArchive(t, ctx, db, companyRevision.StreamID, 1)
+			var boardRows int
+			if err := db.QueryRowContext(ctx, `SELECT count(*) FROM verified_runs WHERE run_id=$1`, companyRevision.StreamID+":1").Scan(&boardRows); err != nil || boardRows == 0 {
+				t.Fatalf("actual board authorization absent: rows=%d err=%v", boardRows, err)
+			}
+			response, err := server.Client().Get(server.URL + base + "/replay-log")
+			if err != nil {
+				t.Fatal(err)
+			}
+			compressed := readCompositionBytes(t, response)
+			if response.StatusCode != http.StatusOK || response.Header.Get("Content-Type") != "application/gzip" {
+				t.Fatalf("public archive status=%d type=%q", response.StatusCode, response.Header.Get("Content-Type"))
+			}
+			var stored []byte
+			var storedHash string
+			if err := db.QueryRowContext(ctx, `SELECT bytes,sha256 FROM run_log_archive WHERE company_stream_id=$1 AND run_seq=1`, companyRevision.StreamID).Scan(&stored, &storedHash); err != nil {
+				t.Fatal(err)
+			}
+			actualHash := fmt.Sprintf("sha256:%x", sha256.Sum256(compressed))
+			if !bytes.Equal(stored, compressed) || actualHash != storedHash || response.Header.Get(publicread.EvidenceHashHeader) != actualHash[7:] || response.Header.Get("ETag") != `"`+actualHash[7:]+`"` {
+				t.Fatal("public archive/storage/digest binding failed")
+			}
+			zipped, err := gzip.NewReader(bytes.NewReader(compressed))
+			if err != nil {
+				t.Fatal(err)
+			}
+			decoded, err := io.ReadAll(zipped)
+			_ = zipped.Close()
+			if err != nil {
+				t.Fatal(err)
+			}
+			for _, secret := range []string{tokens.AccessToken, tokens.RefreshToken, created.RecoveryCode} {
+				if secret != "" && bytes.Contains(decoded, []byte(secret)) {
+					t.Fatal("unexpected credential in public evidence")
+				}
+			}
+			for _, receipt := range receipts {
+				assertGardenHTTPPublicJSON(t, receipt, salt)
+			}
+			history, err := store.LoadFounderHistory(ctx, founderRevision.StreamID)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if verdict := production.VerifyFounderHistory(history, composition.Catalogs.replay); verdict != production.ReplayVerified {
+				t.Fatalf("actual Founder history verdict=%s", verdict)
+			}
+			privateSequences := []int64{}
+			for _, entry := range history.Entries {
+				if salt != "" && bytes.Contains(entry.ReplayInputs, []byte(salt)) {
+					privateSequences = append(privateSequences, entry.Sequence)
+				}
+			}
+			privateHeadContains := salt != "" && bytes.Contains(history.HeadState, []byte(salt))
+			if initialized && (!privateHeadContains || len(privateSequences) == 0) {
+				t.Fatal("private-source positive control did not retain the generated salt")
+			}
+			var liveSource []byte
+			liveErr := db.QueryRowContext(ctx, `SELECT replay_inputs::text FROM run_log WHERE company_stream_id=$1 AND run_seq=1 AND seq=1`, companyRevision.StreamID).Scan(&liveSource)
+			if liveErr != nil && liveErr != sql.ErrNoRows {
+				t.Fatal(liveErr)
+			}
+			publicPaths := rightsGardenSaltPaths(t, decoded, salt)
+			if (len(publicPaths) > 0) != (salt != "" && bytes.Contains(decoded, []byte(salt))) {
+				t.Fatal("byte search and decoded-string exposure observers disagree")
+			}
+			publicBodiesContain := map[string]bool{}
+			for _, endpoint := range []string{"verdict", "genesis"} {
+				download, err := server.Client().Get(server.URL + base + "/" + endpoint)
+				if err != nil {
+					t.Fatal(err)
+				}
+				body := readCompositionBytes(t, download)
+				if download.StatusCode != http.StatusOK {
+					t.Fatalf("public %s status=%d", endpoint, download.StatusCode)
+				}
+				publicBodiesContain[endpoint] = salt != "" && bytes.Contains(body, []byte(salt))
+			}
+			// This existing consumer checks original-byte/storage binding and full
+			// Go replay, including corrupt-receipt refusal. Its privacy enumeration
+			// covers credentials; the protected Garden field is measured above.
+			assertPublicVerifiedEvidence(t, db, server, companyRevision.StreamID, genesis, bundle, map[string]string{
+				"access": tokens.AccessToken, "refresh": tokens.RefreshToken, "recovery": created.RecoveryCode,
+			})
+			t.Logf("RP-606 lineage initialized=%t private_head_contains=%t private_log_sequences=%v live_company_row=%t live_company_contains=%t public_paths=%q public_other_bodies=%v",
+				initialized, privateHeadContains, privateSequences, liveErr == nil, salt != "" && bytes.Contains(liveSource, []byte(salt)), publicPaths, publicBodiesContain)
+			saltDigest := ""
+			if salt != "" {
+				saltDigest = fmt.Sprintf("sha256:%x", sha256.Sum256([]byte(salt)))
+			}
+			t.Logf("RP-606 observation initialized=%t private_salt_present=%t public_archive_has_salt_field=%t public_archive_contains_same_salt=%t salt_commitment=%s http=%d board_rows=%d archive_digest=%s cache=%q founder_version=%d company_version=%d original_bytes=true worker_verified_and_compacted=true", initialized, salt != "", bytes.Contains(decoded, []byte(`"salt_hex"`)), salt != "" && bytes.Contains(decoded, []byte(salt)), saltDigest, response.StatusCode, boardRows, actualHash, response.Header.Get("Cache-Control"), private.Revision.Version, companyRevision.Version)
+		})
+	}
+}
+
+func rightsGardenSaltPaths(t *testing.T, data []byte, salt string) []string {
+	t.Helper()
+	var value any
+	if err := json.Unmarshal(data, &value); err != nil {
+		t.Fatal(err)
+	}
+	paths := []string{}
+	var walk func(any, string)
+	walk = func(value any, path string) {
+		switch value := value.(type) {
+		case string:
+			if salt != "" && value == salt {
+				paths = append(paths, path)
+			}
+		case []any:
+			for index, child := range value {
+				walk(child, fmt.Sprintf("%s[%d]", path, index))
+			}
+		case map[string]any:
+			for key, child := range value {
+				walk(child, fmt.Sprintf("%s[%q]", path, key))
+			}
+		}
+	}
+	walk(value, "$")
+	sort.Strings(paths)
+	return paths
+}

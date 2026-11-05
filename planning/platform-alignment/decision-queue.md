@@ -108,6 +108,11 @@ the coverage correction; no export, deletion or retention option is selected.
 state/receipt/replay coverage. Garden OD-12's salt exclusion is already adopted, not another
 export preference to infer or reopen. Its conflict with original-byte public replay evidence
 needs engineering/author contract reconciliation; broader D-008/D-009/D-015 remain unruled.
+The2026-11-05 supplement now proves the actual HTTP-producer → verified SQL archive →
+unauthenticated-download boundary in the fixture-only Garden population. The salt
+remains current after Exit and appears in the exact publicly cached replay bytes;
+ordinary Garden responses and verdict/genesis remain salt-free. This is stronger
+publication-blocker evidence, not permission to reopen OD-12 or silently redact C14.
 
 The2026-10-15 [Guild consumer supplement](data-rights-fields-guild.md#current-producer-backed-consumer-deletion--2026-10-15)
 executes the shared-party allocation concern: actual clearing→consumer DELETE
