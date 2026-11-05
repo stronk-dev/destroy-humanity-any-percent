@@ -2,8 +2,10 @@ package economy
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"reflect"
+	"strings"
 	"testing"
 
 	"cloud-clicker/server/decimal"
@@ -324,5 +326,96 @@ func TestCatalogAccessorsDoNotExposeMutableHardcaps(t *testing.T) {
 	again, _ := catalog.Resource("company.cash")
 	if again.Hardcap.ReasonKey == "changed" {
 		t.Fatal("catalog hardcap was mutated through an accessor")
+	}
+}
+
+func TestCompositeWeightAdmissionSharedCases(t *testing.T) {
+	var fixture struct {
+		Version     int    `json:"version"`
+		CatalogPath string `json:"catalog_path"`
+		Cases       []struct {
+			Name        string   `json:"name"`
+			Weights     []string `json:"weights"`
+			ExpectValid bool     `json:"expect_valid"`
+		} `json:"cases"`
+	}
+	data, err := os.ReadFile("../../testdata/economy-composite-weight-admission-v1.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := json.Unmarshal(data, &fixture); err != nil || fixture.Version != 1 ||
+		fixture.CatalogPath != "balance/testdata/epoch5/economy.json" || len(fixture.Cases) != 5 {
+		t.Fatalf("invalid composite admission fixture: %v", err)
+	}
+	base, err := os.ReadFile("../../" + fixture.CatalogPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var root map[string]json.RawMessage
+	var coordinates []json.RawMessage
+	if json.Unmarshal(base, &root) != nil || json.Unmarshal(root["progress_coordinates"], &coordinates) != nil || len(coordinates) != 4 {
+		t.Fatal("invalid complete catalog fixture")
+	}
+	for index, coordinate := range coordinates {
+		var identity struct{ Tier int }
+		if json.Unmarshal(coordinate, &identity) != nil || identity.Tier != index {
+			t.Fatal("catalog fixture must retain all four tier coordinates")
+		}
+	}
+	population := 0
+	for _, row := range fixture.Cases {
+		for rotation := range row.Weights {
+			population++
+			t.Run(fmt.Sprintf("%s/rotation%d", row.Name, rotation), func(t *testing.T) {
+				weights := append(append([]string{}, row.Weights[rotation:]...), row.Weights[:rotation]...)
+				terms := make([]map[string]any, len(weights))
+				for index, weight := range weights {
+					terms[index] = map[string]any{"kind": "count_fraction", "count": "generators.total_owned", "required": 1, "weight": weight}
+				}
+				selected, err := json.Marshal(map[string]any{"tier": 0, "kind": "composite", "terms": terms})
+				if err != nil {
+					t.Fatal(err)
+				}
+				modified := append([]json.RawMessage{}, coordinates...)
+				modified[0] = selected
+				encoded, err := json.Marshal(modified)
+				if err != nil {
+					t.Fatal(err)
+				}
+				candidate := make(map[string]json.RawMessage, len(root))
+				for key, value := range root {
+					candidate[key] = value
+				}
+				candidate["progress_coordinates"] = encoded
+				source, err := json.Marshal(candidate)
+				if err != nil {
+					t.Fatal(err)
+				}
+				original := append([]byte{}, source...)
+				catalog, err := LoadCatalog(source)
+				if row.ExpectValid {
+					if err != nil {
+						t.Fatal(err)
+					}
+					coordinate, ok := catalog.ProgressCoordinate(0)
+					if !ok || coordinate.Kind != ProgressComposite || len(coordinate.Terms) != len(weights) {
+						t.Fatal("missing composite coordinate")
+					}
+					for index, term := range coordinate.Terms {
+						if term.Weight.String() != weights[index] {
+							t.Fatal("loader changed term ordering or weights")
+						}
+					}
+				} else if err == nil || catalog != nil || !strings.Contains(err.Error(), "weights must sum exactly") {
+					t.Fatalf("expected weight-sum refusal, catalog=%v err=%v", catalog, err)
+				}
+				if !reflect.DeepEqual(source, original) {
+					t.Fatal("loader mutated catalog source")
+				}
+			})
+		}
+	}
+	if population != 18 {
+		t.Fatalf("composite admission population = %d, want 18", population)
 	}
 }

@@ -11,11 +11,14 @@ Its real-service supplement is independently approved `8c887be1..64394095`:
 fresh built-client main journey, both actual clocks, public HTTP→TypeScript
 current/history replay/refusals and existing recovery/crash controls pass. This
 is the main journey under controlled setup, not every composed descendant or
-full Garage/obituary/hosted/release acceptance. The exact current-source package
-`a7d5a4a4` now includes both reviewed UI/mode-policy fixes; complete five-path
+full Garage/obituary/hosted/release acceptance. The latest reviewed local package
+`a7d5a4a4` includes both reviewed UI/mode-policy fixes; complete five-path
 `a7d5a4a4..beef6cff` has independent artifact-evidence approval after own rebuild
 and actual image/inventory/consumer checks. [Deployment's plan](deployment-foundation/plan.md)
 holds the one-local-candidate limits; prior `aa5e16e8` below stays historical.
+Current runtime is kernel0.3.229 after RP-779's locally verified client
+catalog-admission correction, pending independent review. The kernel228 package
+predates that change; batch its future refresh. [Owning evidence](clout-v1-and-pr-interns/log.md).
 No native clean-host/R-006, full-feature/hosted or release approval follows.
 Founder-age label adoption is requested; no answer or authored content is inferred.
 
@@ -25,7 +28,7 @@ Input13/ending4 freezes the actual committed age; historical outputs remain
 unchanged. Both runtimes and real Postgres ending/refusal/migration/worker/archive/
 board checks pass. The age display, authored label and full obituary/AC7 remain
 unfinished; this is a factual producer/decoder repair, not another completed tier.
-That checkpoint is kernel0.3.227/migration87. Current runtime is0.3.228 after
+That checkpoint is kernel0.3.227/migration87. The later mode-policy checkpoint uses0.3.228 after
 RP-776's independently approved mode-policy guard (184e1dfc..512024c7);
 [the owning log](minigame-platform-foundation/log.md) retains SQL/race proof and
 unchanged full-feature/CI holds. Matching75-file local candidates at

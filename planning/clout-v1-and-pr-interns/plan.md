@@ -6,6 +6,24 @@ through `buy_upgrade`, OD-4 = social mint deferred, OD-6 = slot after `milestone
 withheld). Fixture-first: no production epoch is minted by this plan; the CV8 numbers are proposals
 ratified later by owner SHA (OD-5).
 
+## Composite catalog parity correction — 2026-11-05
+
+RP-779 is a shared-catalog conformance defect under Economy K1/AC1, Production
+D5 and server authority. Actual complete epoch5 catalogs with one plus six1e-15
+weights are rejected by Go but accepted by the old client in five rotations.
+The client now uses the same existing grouped helper as Go, at kernel0.3.229.
+The shared actual-reader fixture preserves grouped rounding; owning log records
+old failures, final native/Linux checks and the still-red historical guard.
+No exact-sum, catalog-data, epoch, report, formula or save change. Complete
+correction/tests/docs/versions and RP-664 compatibility reconciliation need
+independent review after92067c0c through the implementation checkpoint.
+
+RP-664's earlier technical verdict remains CHANGES REQUIRED until the complete
+corrected proposal and separate code scope are reviewed. RP-663's independently
+demonstrated client valid-zero populations still need an explicit operand-aware
+contract; the old Go-only proposal is not ready for adoption. No further positive
+aggregation census or weakening of the27 partition failures is authorized.
+
 ## Observer and delegated-wording review — 2026-11-04
 
 RP-382's complete test-only observer correction `cd0c8581..73e1c9da` and

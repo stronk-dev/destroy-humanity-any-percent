@@ -75,9 +75,15 @@ report, environment variable, cache state or deploy-current content lookup.
 
 ## A2 — Complete current caller disposition
 
-Baseline38cba707 has13 direct Go and7 direct TS product calls (excluding declarations/imports).
-The landing review rederives this inventory; a newly discovered caller needs a disposition,
-not default migration or silent exclusion.
+Baseline38cba707 has13 direct Go and7 direct TS product helper calls (excluding
+declarations/imports). It also has a TS catalog weight boundary using an ordered
+Add fold, while Go already uses the grouped helper. Independent review proves
+different admission for one plus six1e-15 weights (RP-779). The separate
+accepted shared-catalog conformance correction aligns TS with authoritative Go
+admission; it is not part of activating exact sums. After that correction the
+TS helper inventory is8, including this explicitly pinned catalog consumer.
+The landing review rederives the full inventory, including non-helper reducers;
+a newly discovered caller needs a disposition, not silent migration/exclusion.
 
 | Consumer | Proposed operation / behavior |
 |---|---|
@@ -89,7 +95,7 @@ not default migration or silent exclusion.
 | Go simulation resource totals and ProjectRates resource/isolated-generator totals | SumExact, matching authoritative production; reads still cannot settle, write or emit events. |
 | Commons AggregateHealth capacity | SumExact; integer health arithmetic unchanged; follow A5 before serving derived rows. |
 | Harness resourceTotals and production consumers | SumExact under the new producer identity/report contract in A6; preserve all experiments and populations. |
-| Existing catalog composite-weight admission | KEEP grouped SumDeterministic's exact raw equality to One. No stored/retuned catalog acquires a different grammar because runtime arithmetic changed. |
+| Catalog composite-weight admission after the independently approved RP-779 shared-loader conformance correction | KEEP grouped SumDeterministic's exact raw equality to One in both runtimes. Exact-sum activation must not introduce a second admission change. |
 | Pitch engine1.0.0 scoring, both runtimes | KEEP grouped SumDeterministic. No tenant engine identity/session migration/coexistence change. |
 
 The last two are explicit pinned consumers, not fallback for invalid exact sums. Adding
@@ -98,10 +104,21 @@ refusals through the grouped operator to make an exact result acceptable.
 
 ## A3 — Catalog and Pitch compatibility proof
 
-Both catalog loaders must keep their existing weight grammar and byte/hash identity.
-Compare old/new admission on all retained content plus accepted and refused boundary
-fixtures, including the exact equality calculation; no normalized/reweighted substitute.
-Progress execution may change under the new kernel while admission remains the same law.
+First complete and independently review RP-779 under the existing shared-catalog
+contract. Its historical ordered-TS/grouped-Go mismatch is not an admission law
+this new arithmetic proposal may silently preserve, normalize or claim never
+existed. The exact-sum implementation baseline must include that reviewed
+conformance correction; technical review of this draft cannot approve its code
+by implication. This is an explicit prerequisite, not owner adoption of SumExact.
+
+From that corrected baseline, both loaders retain grouped weight admission and
+original byte/hash identity. Compare actual old/new loaders on all retained
+content and the shared composite-admission fixture, preserving its rejecting
+positive-tail population and admitted subresolution/rounding controls under
+every retained term rotation. No canonicalized/reweighted substitute or change
+to the existing grouped helper. Progress execution may change under the new
+kernel while admission remains the same corrected law. Original mismatch and
+pre-correction results remain historical evidence, not rewritten expectations.
 
 Pitch's admitted retuned seed2 hand remains5.97255552034e3 and enters shop at that funding
 threshold under engine1.0.0. Test actual Go registry Create/Apply, TS tenant and persisted

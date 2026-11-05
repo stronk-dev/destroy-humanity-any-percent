@@ -272,10 +272,15 @@ No new minigame version, content epoch or session migration is authorized here.
   unavailable pinned engine. Reuse this accepted policy, with the existing real-DB
   drift/deferral tests at activation; no perpetual per-run calculation fork or
   persisted arithmetic-mode flag is justified by this study.
-- Catalog admission: composite weights use raw equality to One after the current
-  grouped reducer. A new mathematical sum cannot silently redefine acceptance
-  of old stored/retuned artifacts. The follow-up must explicitly preserve that
-  grammar or specify and prove its compatibility; do not adjust weights for green.
+- Catalog admission: at the study coordinate, Go uses grouped raw equality to
+  One, but TS uses an ordered Add fold. Independent actual-loader review later
+  finds RP-779: one plus six1e-15 weights accepts in TS and refuses in Go, while
+  [.5,.5]/[.5,.4] controls agree. This earlier study did not prove a shared
+  admission recipe. The separate accepted shared-catalog conformance correction
+  must be independently reviewed before the exact-sum proposal uses its new
+  common baseline. Then preserve that grouped admission, including its admitted
+  subresolution/rounding controls; do not migrate it to SumExact, retune weights
+  or mislabel the earlier parity repair as unchanged historical TS behavior.
 - Commons: capacity is not just a pure diagnostic. `commonsprojection.refreshScope`
   parses persisted member samples and writes derived capacity to
   commons_health_scopes. A changed reducer needs real projection/replay evidence

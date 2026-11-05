@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "catalog_path": "balance/testdata/epoch5/economy.json",
+  "cases": [
+    {
+      "name": "equal halves",
+      "weights": ["5e-1", "5e-1"],
+      "expect_valid": true
+    },
+    {
+      "name": "below one",
+      "weights": ["5e-1", "4e-1"],
+      "expect_valid": false
+    },
+    {
+      "name": "grouped positive tail exceeds one",
+      "weights": ["1e0", "1e-15", "1e-15", "1e-15", "1e-15", "1e-15", "1e-15"],
+      "expect_valid": false
+    },
+    {
+      "name": "retain grouped subresolution tail",
+      "weights": ["1e0", "1e-18"],
+      "expect_valid": true
+    },
+    {
+      "name": "retain grouped rounding below half point",
+      "weights": ["1e0", "1e-15", "1e-15", "1e-15", "1e-15"],
+      "expect_valid": true
+    }
+  ]
+}

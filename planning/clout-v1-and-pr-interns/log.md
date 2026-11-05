@@ -9566,3 +9566,62 @@ compatibility claims. The broader RP-663 operation-aware contract remains a real
 normative design gap; no narrowing of its release hold or implementation is
 inferred. Existing27 partitions, historical guard and pending accounting/search
 adoptions remain. No publication, archival, code or numeric activation here.
+
+## 2026-11-05 — Align client composite admission with the authoritative catalog
+
+Outcome: RP-779 is ordinary conformance under accepted Economy K1/AC1,
+Production D5's shared coordinate catalog and server authority, not adoption of
+SumExact or a new weight grammar. Keep Go's current grouped helper and raw
+equality law; replace only the TS ordered Add fold with that existing helper.
+Kernel228→229 mirrors the actual client admission change; migration87/epoch8,
+old artifacts, prices, saves, reports and numeric operators remain unchanged.
+
+Before runtime edits, shared five-case/18-rotation fixture executes both ACTUAL
+loaders over complete otherwise-valid four-tier epoch5 catalogs. Old Node fails
+five excess-weight rotations,13 selected controls pass/55 unrelated deselected;
+Go18 subcases pass. Valid grouped subresolution and below-half-point controls
+prevent quietly replacing admission with mathematical exact summation. Successful
+decodes preserve slot order/weights; source bytes/objects remain unchanged.
+
+Finished source: cold `make test-go GO_PACKAGES='./decimal ./economy ./kernel
+./replaycatalog' GO_TEST_FLAGS='-count=1'` and same-package vet pass. Node three
+affected files6402 pass, including the unchanged6296 golden rows. Declared
+Linux ARM64 Chromium/Firefox/WebKit three-file population19206 passes. Initial
+strict types fail because the test's terms field remains optional in its TS
+interface; add the required presence assertion after that browser run ends.
+Final affected file73 Node/219 Linux-browser executions and full types0/0 pass.
+Shipped client build succeeds on the unchanged final runtime source; its later
+edit is test-only. No source/test mutation during any active reader.
+
+Selected CI `make test-go-ci CI_TEST_PACKAGES='./decimal ./economy ./kernel
+./replaycatalog' CI_TEST_FLAGS='-v'` exits0 on declared Linux-amd64/Postgres;
+actual StoredFormulaReplayIntegration passes rather than skipping. Verbose
+Decimal/Economy output is substantially truncated; do not claim every printed
+case was individually retained. The new Go population asserts18 executions and
+the native targeted output retains all18. Task-created Postgres service is
+stopped after completion; browser test containers use --rm and all handles end.
+No host-network workaround or task-specific compiler cache. A narrow process
+inventory attempt fails because sysmond is unavailable; terminal tool handles,
+not that failed inventory, establish completed execution.
+
+Actual current `node client/tools/verify-kernel-version.mjs` exits1 at existing
+50a3a514 against0cf9f7a6 for historical client minigame paths without a bump.
+It is still RED, not waived or hidden by the new mirror version. Full Production's
+known27 partitions are not rerun or repaired; no full CI/hosted/player/SQL-change/
+release acceptance. Actual source mirroring and new-bump intent are inspected;
+the full historical guard failure prevents claiming a complete guard pass.
+
+Correct RP-664 A2/A3 and its dossier body: historical TS admission was ordered,
+not grouped; this conformance correction must receive independent review before
+the exact-sum activation baseline. Inventory becomes13 direct Go/8 TS helper
+calls, including the pinned catalog consumer. Preserve historical findings and
+the draft/adoption gates. RP-663's broader checked-operation gap remains.
+Current overview/queue distinguish kernel229 runtime from reviewed kernel228
+a7d5a4a4 package; batch future artifact refresh instead of rebuilding75 files
+for this parser repair. No native clean-host, original feature or release claim.
+
+Review by: Codex root, corrective implementer and proposal first filter.
+Recorded by: Codex root. Complete code/tests/fixture/docs/versions/records and
+proposal-reconciliation range after92067c0c through the containing checkpoint
+needs independent corrective/technical review. Original RP-664 review union
+must be reread too; no self-approval, adoption, archival or publication.

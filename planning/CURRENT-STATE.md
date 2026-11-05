@@ -1,11 +1,14 @@
 # Current repository state
 
-Current runtime is kernel0.3.228/migration87 after the independently approved
-Minigame mode-policy correction RP-776, complete184e1dfc..512024c7.
-[Owning evidence](minigame-platform-foundation/log.md) includes old-source failures
-and real SQL/race consumers; full Platform/CI/release gates remain open.
+Current runtime is kernel0.3.229/migration87 after the locally verified RP-779
+client catalog-admission correction; independent corrective review is pending.
+The [Clout log](clout-v1-and-pr-interns/log.md) owns actual old-failing/new-passing
+Go/TS/browser evidence and the separate numeric-proposal findings. RP-776's
+earlier mode-policy correction retains independent approval at kernel228;
+full Platform/CI/release gates remain open.
 
-The latest local package source `a7d5a4a4` includes the reviewed continuation-clock
+The latest reviewed local package is kernel228/source `a7d5a4a4`, predating
+the later RP-779 client correction. It includes the reviewed continuation-clock
 and mode-policy fixes. Its complete five-path `a7d5a4a4..beef6cff` record/docs
 range is independently approved after rebuilding six binaries, client/content/metadata
 and checking the actual image, inventories and package consumers. [Exact candidate](deployment-foundation/release-builds/candidate-a7d5a4a4.json).

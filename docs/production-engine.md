@@ -263,6 +263,17 @@ Both Go and TypeScript evaluate the same closed catalog union:
 - `count_fraction`: total owned generator count divided by a required safe integer;
 - `composite`: deterministic weighted sum of those two kinds.
 
+Both catalog loaders validate composite weights with the existing grouped
+deterministic sum and require its unquantized result to equal exactly one.
+Admission is independent of term order; summing with an ordered sequence of
+binary additions is not equivalent. In particular, a weight of one plus six
+`1e-15` terms refuses in either runtime, even though canonical12-digit rendering
+would hide the excess. Existing grouped subresolution/rounding behavior remains
+the admission rule; this is not exact represented-input summation. The shared
+`testdata/economy-composite-weight-admission-v1.json` tests both readers with
+complete four-tier catalogs and retained positive/refusal controls. Kernel
+`0.3.229` records the client admission correction; server admission is unchanged.
+
 Resource-log targets are canonical Decimals greater than or equal to `5e-15`; loaders reject any
 target whose post-parse denominator is not finite and strictly positive. Go and TypeScript both
 divide through their Decimal implementations. Native JavaScript `/` is forbidden in this

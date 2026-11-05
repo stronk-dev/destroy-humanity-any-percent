@@ -13,11 +13,19 @@ verdicts. The [whole-product overview](../CURRENT-STATE.md#whole-product-overvie
 still describes incomplete Garage/Tier2 integration with substantial world,
 combat, Tier3–8 and ending construction ahead. No new tier or release is complete.
 
-- **Current-source artifact independently approved:** local reconstruction at
+- **Current correction:** RP-779 aligns the client's composite weight admission
+  with authoritative Go's existing grouped recipe, kernel229/migration87. Shared
+  actual-reader regressions retain five old client failures; affected Go/Node/
+  Linux three-engine/types/build checks pass. Complete corrective/specification
+  range needs independent review in the [Clout plan](../clout-v1-and-pr-interns/plan.md).
+  RP-663's Go-only diagnostic draft and RP-664's original catalog-exception
+  wording have independent CHANGES REQUIRED verdicts; neither is adopted.
+- **Latest reviewed artifact:** local reconstruction at
   `a7d5a4a4` includes the reviewed continuation-clock/mode-policy fixes, kernel228/
   migration87/epoch8. Complete five-path `a7d5a4a4..beef6cff` has independent
   artifact-evidence approval after actual rebuild/package/image/consumer checks.
   [Deployment's plan](../deployment-foundation/plan.md) owns exact evidence/limits.
+  This kernel228 package predates the RP-779 client correction; refresh in a batch.
   Prior `aa5e16e8` stays historical; no native/clean-host/full-feature/release claim.
 - **Completed evidence:** original HTTP and actual composed bootstrap/delete/
   restore instruments are independently approved. The lifetime supplement

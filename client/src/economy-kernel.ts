@@ -823,7 +823,7 @@ function parseProgressCoordinate(
       const value = exactObject(source, ["tier", "kind", "terms"], path);
       if (!Array.isArray(value.terms) || value.terms.length === 0) throw new SyntaxError(`${path}.terms must be non-empty`);
       const terms = value.terms.map((term, termIndex) => parseProgressTerm(term, `${path}.terms[${termIndex}]`, resources, true));
-      const sum = terms.reduce((total, term) => total.add(parseCanonical(term.weight)), new Decimal(0));
+      const sum = sumDeterministic(terms.map((term) => parseCanonical(term.weight)));
       if (!sum.eq(1)) throw new SyntaxError(`${path}.terms weights must sum to 1e0`);
       return Object.freeze({ tier, kind: "composite", terms: Object.freeze(terms) });
     }

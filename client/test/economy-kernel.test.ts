@@ -5,6 +5,8 @@ import permitsEconomyJson from "../../balance/testdata/valid/permits-economy-can
 import fixtureJson from "../../testdata/economy-kernel.json";
 import engineFixtureJson from "../../testdata/production-engine.json";
 import foundationV4Json from "../../testdata/economy-foundation-v4.json";
+import compositeAdmissionJson from "../../testdata/economy-composite-weight-admission-v1.json";
+import compositeAdmissionCatalogJson from "../../balance/testdata/epoch5/economy.json";
 import {
   canonicalBulkCost,
   parseCatalog,
@@ -55,6 +57,40 @@ const engineFixture = engineFixtureJson as {
 };
 
 describe("shared economy catalog", () => {
+  const compositeCases = compositeAdmissionJson.cases.flatMap((row) =>
+    row.weights.map((_, rotation) => ({
+      ...row,
+      rotation,
+      weights: [...row.weights.slice(rotation), ...row.weights.slice(0, rotation)],
+    })),
+  );
+
+  it.each(compositeCases)("uses shared composite weight admission: $name rotation $rotation", (row) => {
+    expect(compositeAdmissionJson.version).toBe(1);
+    expect(compositeAdmissionJson.catalog_path).toBe("balance/testdata/epoch5/economy.json");
+    expect(compositeCases).toHaveLength(18);
+    const source = structuredClone(compositeAdmissionCatalogJson) as Record<string, unknown>;
+    const coordinates = source.progress_coordinates as Array<Record<string, unknown>>;
+    expect(coordinates.map((coordinate) => coordinate.tier)).toEqual([0, 1, 2, 3]);
+    coordinates[0] = {
+      tier: 0,
+      kind: "composite",
+      terms: row.weights.map((weight) => ({
+        kind: "count_fraction", count: "generators.total_owned", required: 1, weight,
+      })),
+    };
+    const original = JSON.stringify(source);
+    if (row.expect_valid) {
+      const catalog = parseCatalog(source);
+      const coordinate = catalog.progressCoordinates.find((value) => value.tier === 0);
+      if (!coordinate || coordinate.kind !== "composite" || !coordinate.terms) throw new Error("missing composite coordinate");
+      expect(coordinate.terms.map((term) => term.weight)).toEqual(row.weights);
+    } else {
+      expect(() => parseCatalog(source)).toThrow(/weights must sum/);
+    }
+    expect(JSON.stringify(source)).toBe(original);
+  });
+
   it("loads strict versioned definitions", () => {
     const catalog = parseCatalog(fixture.catalog);
     expect(fixture.version).toBe(1);
