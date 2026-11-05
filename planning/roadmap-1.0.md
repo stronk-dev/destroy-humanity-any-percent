@@ -2259,7 +2259,10 @@ every listed change is authorized immediately. Accepted RFCs and their owning pl
 5. **Construct the rest of the game.** Progress through the cumulative v0.2–v1.0 milestones:
    world/social/events, combat and fair bots, Tier 3–8 content, categories/challenges and all
    final endings. Each needs accepted specifications, real content, balance and integrated
-   player proof. Close Commons' literal producer/governance/effect contracts (RP-529)
+   player proof. World WL2's population/share/per-faction/concavity inputs need
+   explicit closure: [RP-775's independently reviewed conditional check](world-layer-foundation/contribution-contract.md)
+   prevents a raw-share interpretation from silently defeating diminishing credit.
+   It selects no formula or implementation. Close Commons' literal producer/governance/effect contracts (RP-529)
    before promoting its dependency availability into an implementable spec. Completing
    Garage or publishing a preview does not complete this 1.0 goal.
 

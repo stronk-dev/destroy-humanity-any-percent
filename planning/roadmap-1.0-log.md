@@ -6037,3 +6037,17 @@ change; batch future artifact refresh. The new exact Founder-age label question
 is delivered/unanswered; adoption is not inferred, and other accepted work can
 continue. Full obituary, accounting/history guard, privacy/rights/accessibility,
 clean-host and full nine-tier1.0 construction remain. Goal stays ACTIVE.
+
+## 2026-11-05 — World contribution contract grounded before construction
+
+Complete seven-path40c14203..ca29beca has independent technical evidence APPROVAL.
+RP-775 binds design05's per-faction term and draft WL2's undefined population/share/
+concavity objects to a retained exact-rational constraint. Under the explicitly
+ratio-only model, uniform population invariance amplifies1000× raw output into
+1,000,000× credit. This is conditional, not a shipped defect or selected gameplay
+formula; controls show different fully specified semantics can meet the modeled
+pair. World readiness dossier/log retain derivation, source hashes, controls,
+review provenance and limits. Close those inputs/meanings before an implementable
+World proposal; do not invent them or treat dependency availability as acceptance.
+No new tier/runtime/release gate advances. Existing decisions/copy and full
+nine-tier1.0 construction remain, with goal ACTIVE and no push/deployment.
