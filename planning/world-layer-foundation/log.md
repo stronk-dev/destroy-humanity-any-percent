@@ -142,3 +142,27 @@ independent bounded technical/evidence review remains pending for the complete
 batch after3aa86e6d. Only after that review should the owner be offered the
 explicit directional choice, including its unresolved strict fractional-share
 limit. Adoption must not claim full World acceptance or authorize code/minting.
+
+
+## 2026-11-05 — RP-778 initial independent review: CHANGES REQUIRED
+
+Review by: fresh independent Codex `/root/world_basis_proposal_review`.
+Recorded by: Codex root, transcribing actual verdict. All7 paths in
+`3aa86e6dc81a03a123d8aec9f21252729f45df69` exclusive through
+`45b928101a1f7f9e9656858ac5d0b2e4b35118f7` inclusive. Independent model is
+byte-identical with all5 hashes;956 extra exact controls and4 invalid refusals
+pass. Source traces/scope are accurate. Review does NOT approve the packet:
+positive output in an allowed zero-weight faction can yield0, ratio statements
+need x_high>=x_low>0 and positive weight, and the lone-positive100% statement
+needs positive credited output. Reviewer additionally requests visible dilution:
+admitting an eligible zero-output member changes unchanged10-output total10→5.
+Manifest `.cache/world-basis-proposal-review/review-results.json`, SHA256
+acef6bf1b8c5c1481fd1fe2e5d08f2ab81e87a4b386b7ff509f86818fadb2be6.
+No tracked reviewer mutation, SQL or unrelated software suite; all sessions terminal.
+
+Forward correction qualifies all3 claims and discloses dilution/closure; formula,
+domain, sample cap and original strict-share failure remain unchanged. Before
+remeasurement, the plan declares both new controls. Probe/result retain zero-
+weight positive output0 and membership10→5. Original author/product/CI bytes
+remain unchanged. Full corrected range needs independent re-review; no owner
+choice is offered on the rejected wording, and no implementation is authorized.

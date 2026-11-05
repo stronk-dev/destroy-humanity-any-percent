@@ -39,6 +39,12 @@ assert factions == [F(2)] * 3
 empty_faction_total = subtotal([(200, F(1))], weight=F(1, 2)) + subtotal([], weight=F(1, 2))
 assert empty_faction_total == F(1, 2)  # no silent redistribution
 
+zero_weight_positive_total = subtotal([(1, F(10))], weight=F(0)) + subtotal([(1, F(0))], weight=F(1))
+assert zero_weight_positive_total == 0
+before_zero_member = subtotal([(1, F(10))])
+after_zero_member = subtotal([(1, F(10)), (1, F(0))])
+assert before_zero_member == 10 and after_zero_member == 5
+
 cap, n = F(10), 200_000
 high, low = F(1000), F(1)
 high_credit, low_credit = min(high, cap) / n, min(low, cap) / n
@@ -90,6 +96,9 @@ result = {
     "faction_replication_factors": replicas,
     "faction_totals": [text(x) for x in factions],
     "empty_faction_total_no_redistribution": text(empty_faction_total),
+    "positive_output_in_zero_weight_faction_total": text(zero_weight_positive_total),
+    "before_eligible_zero_member_total": text(before_zero_member),
+    "after_eligible_zero_member_total": text(after_zero_member),
     "heterogeneous_total": text(heterogeneous_total),
     "high_to_low_raw_ratio": text(high / low),
     "high_to_low_credit_ratio": text(high_credit / low_credit),

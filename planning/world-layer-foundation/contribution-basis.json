@@ -5,8 +5,8 @@
   "source_sha256": {
     "rfc/world-layer-foundation.md": "2bf0fdab2a4451aca668f9927b3246cff30eda728d913a3c493f174e1a7592aa",
     "design/05-mmo.md": "c27e04f34bc7f329cd76fe4c5438bd9e89d9b1ea8273221c8d0133e9d41f184f",
-    "planning/world-layer-foundation/contribution-basis-proposal.md": "a708d8889d232015bee6173bacda0c67d2c375070aff7b0b6c685aa990660ba4",
-    "planning/world-layer-foundation/contribution-basis-probe.py": "ce9ec6c776cff63469df261c8163dba0fa65a606330732e43c2a6423435dc918",
+    "planning/world-layer-foundation/contribution-basis-proposal.md": "0216449e4a40a93ecd56480d4edc23fcb1a4eb87bb998f32bac95755193a78c5",
+    "planning/world-layer-foundation/contribution-basis-probe.py": "7ad10ee1e60e77a9dec9bb1f1d5d8b41e00a8dfcb96e7fb4aeb163255ab909e8",
     "planning/world-layer-foundation/producer-boundary.json": "0655eadf41128aa56642d4c806c7e6b0b1252a49659519d1730b8b18fcc50fc6"
   },
   "mathematical_unit_cap_not_balance": "10/1",
@@ -40,6 +40,9 @@
     "2/1"
   ],
   "empty_faction_total_no_redistribution": "1/2",
+  "positive_output_in_zero_weight_faction_total": "0/1",
+  "before_eligible_zero_member_total": "10/1",
+  "after_eligible_zero_member_total": "5/1",
   "heterogeneous_total": "200009/200000",
   "high_to_low_raw_ratio": "1000/1",
   "high_to_low_credit_ratio": "10/1",

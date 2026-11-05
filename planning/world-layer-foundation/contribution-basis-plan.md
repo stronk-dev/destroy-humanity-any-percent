@@ -25,3 +25,10 @@ may support choosing a direction before complete source/window/rank/NPC grammar.
 It cannot adopt that direction, select literals, prove actual output attribution,
 whole anti-domination/solo fallback, performance, Decimal/ppm implementation,
 World construction or release readiness. Do not reinterpret a failed property.
+
+
+Follow-up declared after independent review of45b92810: retain the original
+formula/domain, add explicit zero-weight positive-output total0 and denominator
+control (eligible outputs[10]→[10,0], total10→5). These expose a false unqualified
+positivity sentence and a membership tradeoff, not a new passing acceptance bound.
+Qualify ratio/positive-share claims; retain failed strict fractional-share result.

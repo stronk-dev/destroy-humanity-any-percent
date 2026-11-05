@@ -45,16 +45,17 @@ units; the formula does not invent those rates or qualifying resources.
 ## What the candidate provides
 
 Replicating each faction's count and output distribution leaves the human total
-identical and positive when output is positive. Within the same faction/cap,
-with a positive weight credit grows with output until the hardcap; the higher-
-output to lower-output contribution ratio never exceeds their raw-output ratio. A Founder's absolute
+identical. The total is positive exactly when some positive output belongs to a
+positive-weight faction. Within the same faction/cap and positive faction weight,
+credit grows with output until the hardcap. For `x_high >= x_low > 0`, the higher-
+output to lower-output contribution ratio never exceeds `x_high / x_low`. A Founder's absolute
 contribution is bounded by `w_f * C_f / N_f`. This uses an explicit hardcap,
 not a hidden curve or a soft ceiling. The model comparison uses cap10 only as
 mathematical units; no gameplay cap or weight is selected.
 
 **It does not bound a Founder's fraction of the human total below100%.** With one
-positive output and all other outputs zero, that Founder supplies the entire
-human subtotal. Strict fractional anti-domination and meaningful lone-player
+positive credited output and all other credited outputs zero, that Founder
+supplies the entire positive human subtotal. Strict fractional anti-domination and meaningful lone-player
 progress cannot both be inferred from a cap/mean. NPC contributions could change
 the denominator but need their own honest, labeled, validated contract; this
 proposal supplies none. The original broad “no single output dominates” claim
@@ -65,6 +66,15 @@ not evidence of meaningful invariance. The required low/zero-player NPC fallback
 and solo viability remain mandatory before World acceptance. Personal payouts,
 percentile ties, milestone failure/success and permanent unlocks remain separate
 contracts, preserving the intended dual reward axes.
+
+**Denominator dilution is a real tradeoff.** A single eligible Founder producing10
+units has human progress10 in a weight1/cap10 faction. Admitting one eligible
+zero-output Founder makes `N_f=2` and progress5 even though the first output did
+not change. This is not replication of the same output distribution. Zero-weight
+factions can likewise have positive raw output while contributing0. Eligibility
+and window closure therefore need an explicit rule before final progress or
+unlocks can be committed; an incomplete mean cannot later silently retract an
+already-finalized milestone. This packet does not choose that rule.
 
 ## The producer contract this direction would require
 
