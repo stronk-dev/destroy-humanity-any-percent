@@ -123,6 +123,17 @@ test-deployment-backup:
 	docker compose --project-name cloud-clicker-backup-test -f compose.deployment-backup-test.yml down --volumes; \
 	exit $$status
 
+# Manual rights observation: actual composed bootstrap + encrypted dump/restore.
+# Separate project/binary; policy-neutral research, outside verify and CI.
+.PHONY: test-account-restore
+test-account-restore:
+	mkdir -p $(REPO_CACHE_DIR)/bin
+	cd server && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go test -c -o ../.cache/bin/account-restore.test ./gameserver
+	@status=0; \
+	docker compose --project-name cloud-clicker-account-restore-test -f compose.deployment-backup-test.yml -f compose.account-restore-test.yml run --rm backup-test || status=$$?; \
+	docker compose --project-name cloud-clicker-account-restore-test -f compose.deployment-backup-test.yml -f compose.account-restore-test.yml down --volumes; \
+	exit $$status
+
 # Real Postgres + gameserver + Caddy witness for authenticated socket drain,
 # admission refusal, admitted-work completion, bounded closure and restart.
 test-deployment-release:

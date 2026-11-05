@@ -1,5 +1,42 @@
 # D-008/D-009/D-015 — current data-rights inventory plan
 
+## Composed bootstrap restore supplement — 2026-11-05 at 9a4bf86f
+
+Question: does the actual gameserver, with repository epoch/catalogs, Founder
+initialization and Guild deletion participation, expose the same credential
+revival, and does its protected bootstrap retry survive the selected restore?
+Account D5/AC6 and Deployment DP6/AC4 authorize observation, not a policy change.
+Use a separate disposable Compose project with real Postgres16 tools and a
+compiled gameserver test binary; mount only repository balance/changelog/
+moderation content read-only. No product, migration, balance or CI changes.
+
+Create subject and bystander through actual composed `/api/v1/bootstrap`,
+retain each exact response privately, and prove Founder access and initial
+Company state. Freeze application time within token validity, keep synthetic
+signing/bootstrap/cursor material unchanged, and record actual epoch/migration.
+Take encrypted B_pre, HTTP DELETE204, observe denial, then B_post. Restore both
+into a fresh declared target. Before composition/HTTP can alter the population,
+compare six SQL families exactly: accounts, Founder links, session families,
+sessions, access tokens and bootstrap receipts. Start a new composed service,
+require readiness and healthy bystander access, then observe original subject
+access/refresh/recovery and original bootstrap retry. Any successful credential
+must reach the original Founder; a successful retry must reproduce the exact
+original response and reach that Founder. An absent account must deny all old
+credentials and return the existing `bootstrap_expired` conflict for the
+tombstoned retry, without creating another account. Wrong recovery/access and
+malformed bootstrap keys supply negative controls. Accept only documented
+success/unauthorized/conflict observations; transport, readiness, other status,
+missing population or incomplete restore invalidates measurement.
+
+Log counts/statuses and public content coordinate only, never credentials,
+identifiers, SQL rows, raw responses, keys or database URLs. Use the existing
+synthetic backup manifest builder with the actual epoch bytes/migration and
+actual content hash substituted; do not call it a built release manifest.
+This can close the constructor-only/bootstrap-retry evidence gap, not expiry,
+rotation, gameplay actions, populated Guild membership, Caddy/off-host operation,
+RPO/RTO, exact artifact/clean-host R-006 or D-009/D-015. Preserve failures as
+findings; no assertion that revival is desirable, no deletion-policy repair.
+
 ## HTTP credential restore supplement — 2026-10-15 at 42ce00f0
 
 Extend RP-125 with actual Account HTTP create/session/delete and real encrypted

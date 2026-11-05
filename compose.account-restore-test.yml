@@ -1,0 +1,13 @@
+# Companion to compose.deployment-backup-test.yml: real gameserver composition
+# with Postgres16 dump/restore tools, without mounting the entire checkout.
+services:
+  backup-test:
+    environment:
+      TEST_ACCOUNT_RESTORE: "1"
+      TEST_REPOSITORY_ROOT: /fixture
+    volumes:
+      - ./.cache/bin/account-restore.test:/usr/local/bin/deploymentbackup.test:ro
+      - ./balance:/fixture/balance:ro
+      - ./changelog:/fixture/changelog:ro
+      - ./moderation:/fixture/moderation:ro
+    command: ["-test.run", "^TestComposedBootstrapDeletionRestoreIntegration$", "-test.count=1", "-test.timeout=10m", "-test.v"]

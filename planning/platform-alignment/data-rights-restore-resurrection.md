@@ -1,5 +1,41 @@
 # RP-125 — retained current-HEAD backup/delete/restore witness
 
+## Composed bootstrap observation — 2026-11-05
+
+Baseline `9a4bf86f`; predeclared composed supplement in the inventory plan.
+`make test-account-restore` executes
+`TestComposedBootstrapDeletionRestoreIntegration` through actual gameserver
+composition, repository epoch/catalogs, Founder initialization and the attached
+Guild deletion participant. Both accounts originate in `/api/v1/bootstrap`;
+their original credentials reach their Founder and the initial Company state
+is readable under the actual content hash. Six selected SQL table populations,
+now including bootstrap receipts, match before the restored service starts.
+
+| Observation | Subject account | Original access | Original refresh | Original recovery | Original bootstrap retry | Bystander |
+|---|---:|---:|---:|---:|---:|---:|
+| Deleted source | 0 | 401 | 401 | 401 | 409 `bootstrap_expired` | 200 |
+| Restore B_pre | 1 | **200** | **200** | **200** | **201, exact original response** | 200 |
+| Restore B_post | 0 | 401 | 401 | 401 | 409 `bootstrap_expired` | 200 |
+
+The successful retry's original access token and every returned credential pair
+reach the original Founder. Wrong code/token and malformed bootstrap keys refuse;
+no observation creates an extra account. The observer permits future credential/
+retry refusal rather than prescribing resurrection. Only counts/statuses and the
+public content coordinate are logged. Final cold Linux-amd64/Postgres16 run42376
+passes all three populations in3.64s, no skips. Epoch8, migration85, actual hash
+`sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6`.
+Missing source URL with the manual lane enabled fails immediately (8873, exit1),
+rather than skipping. Native package42103/vet pass; DB/manual populations skip
+natively and receive no DB credit. The owning Deployment log records setup
+limitations, cleanup and independent review status.
+
+This removes the constructor-only and unretained bootstrap-retry evidence gaps.
+The backup manifest is still synthetic metadata with actual content/epoch/migration
+substituted; this is not the built release artifact or R-006. Synthetic keys stay
+unchanged and time stays within token validity. No expiry/rotation, gameplay action,
+populated Guild membership, Caddy, off-host storage or RPO/RTO proof. No product/
+balance/migration/schema/policy change; D-009/D-015 and RP-125 remain open.
+
 ## Current HTTP credential observation — 2026-10-15
 
 Baseline `42ce00f0`; method in the HTTP credential supplement of

@@ -12335,3 +12335,40 @@ green. RP-125 remains open: constructor-only catalog/no-gameplay seam and frozen
 unchanged synthetic keys do not cover composed bootstrap/Guild, expiry/rotation,
 off-host operations or clean-host release. No D-009/D-015, feature acceptance,
 archival or release approval; next useful boundary is actual composed bootstrap.
+
+## 2026-11-05 — Composed bootstrap/delete/restore rights observation
+
+Account D5/AC6 + Deployment DP6/AC4; baseline9a4bf86f. Predeclare the bounded
+composed supplement in the existing inventory plan before measuring. New manual
+`make test-account-restore` and a small companion Compose file reuse declared
+Postgres16 dump/restore tools with a separate project/binary and only read-only
+balance/changelog/moderation mounts. No production/balance/schema/migration/CI
+bytes change. Actual Compose/Server.Start/readiness, Foundation initializer and
+Guild deletion wiring replace the earlier constructor/no-gameplay seam.
+
+Subject/bystander originate through bootstrap, Founder/initial Company reads
+work, encrypted B_pre/B_post bind all six credential-table populations before
+restored startup. Final cold42376 passes3.64s with no skips: deleted source and
+B_post0 account/401 access/401 refresh/401 recovery/409 bootstrap_expired;
+B_pre1/200/200/200/201 exact original response. All successful credentials and
+the retry reach the original Founder; bystander200 and wrong-code/token/key
+controls discriminate, no extra account created. Epoch8/migration85/hashbaa89050...
+is actual content; fixture manifest with those coordinates is not a release.
+
+First SQL22496 also passes3.86s. Final adds explicit manual-lane configuration
+failure: missing source URL8873 exits1 immediately, not skipped; owned project
+then removed. Native package42103 and selected vet pass, DB/manual populations
+skip natively and are not credited as SQL. Initial native36202 accidentally
+loses `$` through Make's flag expansion and runs no tests; native6980 cannot
+open an existing httptest listener in sandbox. SQL69043/27725 cannot access
+Docker in sandbox. These are invalid/no-evidence attempts, not hidden passes;
+permitted runs above finish successfully. All handles terminal; disposable
+containers/network removed, shared builders/caches preserved. Current artifact
+b8042450 remains valid for unchanged runtime; no rebuild performed.
+
+RP-125 remains open. This closes only composed initialization/bootstrap-retry
+evidence, not expiry/rotation, populated Guild membership, gameplay actions,
+Caddy/off-host/RPO/RTO, exact-release/clean-host R-006, rights decisions or full
+feature acceptance. Complete eight-path batch after9a4bf86f needs designated
+corrective test/research review. Review by: Codex root (implementer first filter).
+Recorded by: Codex root. No owner adoption, push, deployment or goal pause.
