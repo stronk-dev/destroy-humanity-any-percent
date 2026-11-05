@@ -570,3 +570,23 @@ implementation. C2's full catalog/effects/crit and DU-C1 remain blockers; live
 care policy and Pet Care's carried consumer proof remain separate acceptance.
 Review by: Codex root, proposal author/first filter. Recorded by: Codex root.
 No publication, archival, self-acceptance or release promotion.
+
+## 2026-11-05 — Care draft review catches deferred snapshot overreach
+
+CHANGES REQUIRED, complete five-path range
+`0dcf71fd1a65fc26871b15e32083c0797c26bdb0..d1d8a84b0fe3efb12f8c61c78cff175256d9c332`.
+Review by: fresh independent Codex `/root/combat_care_contract_review` under
+Marco's technical-specification delegation. Recorded by: Codex root,
+transcribing its verdict. CT2's snapshot sentence prescribes frozen inputs/
+identity and excludes policy tables, partially ruling still-deferred DU-C2/7.
+Remove the prescription; leave all snapshot fields/inclusion/serialization to
+the later child ruling. Root forward-corrects that paragraph; no parent body,
+deferred ruling or runtime changes. Re-review the complete corrected range.
+
+Reviewer independently confirms source-column diagnosis, actual Go/TS input
+domains and integer helpers. Its Python checks pass six literal examples,
+12,040 table comparisons and102,010 fixture compositions, including signed
+endpoints, clamping, monotonicity/bounds and both floor-discrimination controls.
+Maximum intermediate products fit int64. No other finding. No software suite
+for Markdown or runtime acceptance inferred; no tracked reviewer mutation,
+services, publication or adoption. Previous incorrect tip remains on record.

@@ -84,9 +84,10 @@ storage, and invalid input returns an error with no partial policy/result.
 
 The full C2 amendment must bind this object to its versioned artifact and
 original-byte content hash. This is not a new artifact family, live pin, API
-resource or permission to add a partial catalog endpoint. A snapshot carries
-frozen inputs plus the pinned catalog identity, not another editable policy
-table; the exact snapshot envelope remains with the deferred child ruling.
+resource or permission to add a partial catalog endpoint. Snapshot fields,
+whether they include inputs, identity or tables, and their serialization remain
+entirely with the deferred child ruling. This proposal specifies the catalog
+policy object only.
 
 ### CT3 — Interpolation, composition and bounded arithmetic
 
