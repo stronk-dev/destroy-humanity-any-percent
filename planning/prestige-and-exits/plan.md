@@ -11,6 +11,14 @@
   Next: reconcile complete foundational implementation/review coverage for item9;
   these scoped verdicts do not authorize archival or approve adjacent changes.
 
+**Current AC5 defect,2026-11-05 (RP-771):** actual Postgres proves eligible
+Wind Down fails at the admitted Route Knowledge maximum, including a companion
+owning every hint. Full state/revision/history rollback holds; the original six
+matrix rows still pass. [Retained red regression and contract boundary](route-knowledge-capacity.md).
+Resolve counter capacity/preview/grant semantics before repair; do not infer
+Route Knowledge saturation from Reputation P2c, narrow valid states or claim
+universal AC5 from the older bounded matrix. No code change is adopted here.
+
 1. [x] Add save v7 Company/Founder state, validation, migrations, and corpus fixtures.
 2. [x] Implement cross-runtime prestige arithmetic and declarative Phase-0 policy.
 3. [x] Implement deterministic offers, timers, decline, wind-down, accept, and gated IPO intents.
@@ -40,7 +48,7 @@ Use post-rewrite coordinates; anonymous legacy prose cannot supply reviewer iden
 | Original save, arithmetic, atomic store and lifecycle | `9e2ccc6f5dbb8660a5cad32f85865c1b87a3c200..c3c58b950dd8908a6ba09a0b185a98dce930a134` | Four construction commits/35 paths. Historical findings are retained; new explicit designated implementation review needed. |
 | Original run-log integration | `cbe0ad968c11faa9e8e3d04309907e5d0ba8e987..ce0a5ece584daace9b91f4ba14d12796698df928` | One construction commit/16 paths; explicit designated coverage needed. |
 | Pre-timer/cross-epoch correction | `6f4704d9b2824100ca61910fd0b7d310f2a7916b..ec2460b115602720ead0150aca53667367a1ef31` | Mixed20-path corrective batch; inspect actual Prestige/Save/Leaderboard scope rather than silently approving adjacent systems. |
-| Lifecycle review remediation | `2359c4f7668828964002a628b12a3cf7edfce6e1..0a7f129280f5307a2add8b3cdcc676a7fd5f27be` | Mixed22-path correction; old c3af220 review lacks present provenance. Fresh corrective review is within existing delegation. |
+| Lifecycle review remediation | `2359c4f7668828964002a628b12a3cf7edfce6e1..0a7f129280f5307a2add8b3cdcc676a7fd5f27be` | Fresh independent corrective APPROVAL only as the exact corrected union with d9d8ad59..4589a642; historical0a7f alone/intervening commits are not approved. Current RP-771 remains a separate AC5 finding. |
 | Hash-pinned attended ceiling | `498f8ae51fda9d0e71470ac3ce3c2da6f98f55a1..e5ad0bacd056dce983376a5b7d97256877a13f1e` | Mixed16-path Prestige/Faction correction; determine its explicit existing coverage before assigning duplicate review. |
 | Final P5c/P2d correction | `d9d8ad590b1fade049e3a804f114673d2ec92373..4589a642cc1c951fd73ec0d50f37d7c9471a119b` | Fresh four-path corrective APPROVAL,2026-11-05; do not repeat. |
 

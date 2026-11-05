@@ -2,6 +2,15 @@
 
 Coordinate: product tree `190a4fa`; audit checkpoint after `79939b0`; 2026-08-20.
 
+**2026-11-05 current supplement:** the exact corrected lifecycle-remediation
+union now has fresh independent corrective approval, as recorded in the owning
+Prestige log. This does not approve the original construction or full archival
+union. New [RP-771](../prestige-and-exits/route-knowledge-capacity.md) proves
+eligible Wind Down fails at the valid Route Knowledge maximum, including with
+all hints owned. The six original matrix rows still pass; their historical
+approval cannot establish universal AC5 after this counterexample. Counter
+capacity/grant/preview semantics remain unruled and no clamp is inferred.
+
 Post-coordinate reconciliation (2026-08-21): owner-delegated edits reconciled D2–D5/P3–P5,
 `design/11`, the Prestige plan, and canonical docs to shipped behavior and D-012. RP-034–RP-036 are
 closed. The original acceptance classifications below are the frozen audit basis. Post-coordinate

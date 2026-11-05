@@ -2,6 +2,23 @@
 
 Implementation agents may gather evidence and frame options; they may not infer these choices.
 
+## Prestige Route Knowledge capacity — RP-771 (unruled)
+
+The [retained real-Postgres counterexample](../prestige-and-exits/route-knowledge-capacity.md)
+proves otherwise-eligible Wind Down fails at the admitted Route Knowledge maximum,
+including when every hint is already owned. AC5 requires the Exit; Routes D5/C6
+does not settle reward overflow, and P2c's Reputation saturation is not a Route
+Knowledge ruling. A typed refusal alone would leave the AC5 failure intact.
+
+Resolve whether Route Knowledge preserves complete grants through wider exact
+representation, or has an explicit visible finite cap with defined reward and
+preview rules. The latter cannot silently break P3's preview promise; the former
+must own versioned state/wire/projection/replay compatibility and all producers,
+including curriculum bonuses. This is a concrete contract choice, not permission
+to narrow valid states, discard rewards or select a convenient clamp. No direction
+has been requested/adopted by this record; prepare the bounded remedy contract
+before implementation. It blocks this repair/full AC5, not unrelated accepted work.
+
 ## Kernel-neutral versioning — RP-131 direction requested2026-10-15
 
 The [existing history-guard draft](../../rfc/kernel-history-guard-integrity.md) now explicitly

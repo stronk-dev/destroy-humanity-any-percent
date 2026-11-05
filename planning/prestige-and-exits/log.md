@@ -416,3 +416,49 @@ for this editorial preparation and no approval inferred. Existing independent
 Codex delegation covers corrective/spec work, not original new-feature acceptance;
 the concrete request can use the existing designated party or an explicit owner
 extension. No process or acceptance criterion changes. Recorded by: Codex root.
+
+## 2026-11-05 — Lifecycle corrective union approved; current AC5 counterexample found
+
+APPROVED for the exact corrected historical union, not historical0a7f1292 alone:
+
+- `2359c4f7668828964002a628b12a3cf7edfce6e1..0a7f129280f5307a2add8b3cdcc676a7fd5f27be`
+  (all22 changed paths inspected).
+- `d9d8ad590b1fade049e3a804f114673d2ec92373..4589a642cc1c951fd73ec0d50f37d7c9471a119b`
+  (inspected already-approved P5c/P2d remedy).
+
+Review by: fresh independent Codex `/root/prestige_lifecycle_remediation_review`.
+Recorded by: Codex root, transcribing its independently executed verdict.
+At current6827120c, cold full Go Prestige/Save63241, client52919(16), vet73597
+and strict types59098 pass; eight native DB skips get no integration credit.
+Declared migration/Save SQL16600 passes2.052s; actual Prestige lifecycle/eligible
+matrix67199 passes1.171s. Actual Go/PG images are Linux-amd64 under emulation,
+not supported native-host evidence. No intervening/original-feature approval.
+
+Adversarial review additionally finds RP-771: otherwise-eligible Tier1/prior-Exit
+Wind Down at the admitted Route Knowledge maximum returns internal engine error.
+Both ordinary and all7-hints-owned rows fail; original six controls pass. The
+refusal predates this union's Reputation-specific repair, so its bounded
+corrective approval remains, but universal AC5/full-feature acceptance is blocked.
+Original82182 establishes direct failure.63330's unchecked EncodeState results
+are insufficient for complete byte-rollback proof; root catches this instrument
+weakness and reviewer corrects it privately.59962 reruns all8 rows: all four
+encodings successful/nonempty, both cap cases fail, original6 pass, exact state/
+revision rollback and zero event/intent/run-log writes verified. No natural
+reachability, public HTTP or absence of every other Exit path is claimed.
+
+Retain the small exact red regression patch and [finding/contract brief](route-knowledge-capacity.md),
+including original/patch/executed-source/corrected-log SHA bindings. Root applies
+the retained patch only to a new ignored private copy; git-apply check passes
+and its SHA03cfafc1... exactly matches the executed source. Tracked Go remains
+SHA2cca513b.... No duplicate SQL run is claimed for this portability check.
+The proof does not choose reward clamping: Reputation P2c is specific, Routes
+does not define capacity disposition, and previews cannot silently lose rewards.
+The decision queue frames the representation/capacity choice; no ruling inferred.
+
+All review/follow-up handles terminal, newly owned PG removed, existing empty
+network/compiler/module caches preserved; SQL ownership released. No tracked
+reviewer edit or code/runtime/balance/schema/epoch/CI change. RP-038 and RP-771,
+original implementation acceptance and the full nine-tier1.0 remain open.
+The separate full-implementation-review delegation question is delivered and
+unanswered; existing corrective authority alone supports this union. No push,
+deployment, archival, owner adoption or goal pause.

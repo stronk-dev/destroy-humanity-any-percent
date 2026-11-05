@@ -48,13 +48,20 @@ search. TypeScript constructs the ratio directly from mantissa division and expo
 matching the Go Decimal path without reciprocal double-rounding. Neither runtime calls a floating-
 point cube-root function. Exit modifiers are integer ppm applied to the positive level delta and
 then floored using exact integer products (`big.Int` in Go and `BigInt` in TypeScript); a result
-beyond the exact integer domain saturates at `9,007,199,254,740,991` so an
-extreme valid run cannot become un-exitable. The shared Prestige vector corpus asserts cube
+beyond the exact integer domain saturates at `9,007,199,254,740,991` so Reputation
+overflow does not block an Exit. The shared Prestige vector corpus asserts cube
 boundaries including non-unit thresholds, modifier rounding, saturation, zero, threshold equality,
 and the exact-number cap in both runtimes.
 
 Server-computed terms also clamp Reputation delta to the Founder's remaining exact-domain
 headroom. Offer previews therefore never promise a payout that the Founder hardcap cannot accept.
+
+Known limitation (RP-771): Route Knowledge has a different current boundary. At
+its admitted exact-integer maximum, a positive collapse grant makes otherwise-eligible
+Wind Down return an engine error and leaves saved state/history unchanged. Owning all
+hints does not provide a spending escape. This violates the full eligible-state criterion;
+no saturation or wider representation has been adopted. The [retained counterexample](../planning/prestige-and-exits/route-knowledge-capacity.md)
+records the real Postgres evidence and required contract resolution.
 
 ## Offers and intents
 
