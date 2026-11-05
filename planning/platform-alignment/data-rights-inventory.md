@@ -8,6 +8,20 @@ schema, or authorization to delete replay history. `[V]` means directly observed
 source or an executed Postgres test; `[P]` means a configured operator mechanism not yet proved
 on the supported clean host; `unknown` means no verified production bound.
 
+## Exit-credit claim supplement — 2026-11-05
+
+Migration00086 (RP-772): the installed declared Postgres test
+database now has 61 game tables, excluding Goose, at migration86. Routes gains
+`exit_knowledge_projection_events(event_id,founder_id,amount)`: three non-null columns,
+source-event FK and Founder lookup index. The projector/read-repair produces and consumes these
+claims to apply earned Exit credit exactly once. They are Founder-linked derived history;
+Account deletion has no direct or FK-cascade deletion path to this table. This is DDL/caller
+inspection, not a joined deletion test or an adopted retention/export rule. The
+[field supplement](data-rights-fields-shared.md#exit-credit-claim-supplement--2026-11-05)
+covers the addition. The original eleven-group 60-table census and dated 60/60 column maps below
+remain historical; adding this one-table supplement accounts for the 61st relation without
+claiming a fresh audit of all current writers, fields, nested data or deletion outcomes.
+
 ## Bounded current-source revalidation — 2026-10-14 at 089849ad
 
 An ordered Up source fold through 00084 confirms 61 table creates/one drop and

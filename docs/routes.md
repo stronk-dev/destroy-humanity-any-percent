@@ -93,8 +93,9 @@ legacy and new company state at 1.
 
 ## Registry and founder projections
 
-The company event stream is the source of truth. After commit—and again on replay after a lost
-response—the route projector consumes event records in `(occurred_at, event_id)` byte order.
+Company route events and Founder Exit/hint events are the source of truth. After commit—and
+again on replay after a lost response—the route projector consumes event records in
+`(occurred_at, event_id)` byte order.
 Projection writes are idempotent by event ID, and `(founder, company stream, run, route)` is unique,
 so a route cannot be farmed repeatedly in one run. Registry decisions are serialized per route and
 compare this immutable order across separate deliveries; whichever batch happens to arrive first
@@ -130,7 +131,20 @@ When event ordering replaces a provisional Registry winner, the projector append
 correction consumes cached spendable Knowledge first; any amount already spent becomes
 non-spendable projection debt that later grants repay before increasing the balance. Purchased
 hints remain permanent and founder saves never become negative. Read-repair rebuilds the same
-balance and debt from uncompensated grants minus purchases. `buy_route_hint` runs on the Founder
+balance and debt from uncompensated route grants plus Exit rewards minus purchases. Exit rewards
+come from the persisted Founder `founder_advanced.route_knowledge` fact; they do not create a
+second reward or change the Exit payout. They repay projection debt before becoming spendable.
+
+Exit-credit and hint-debit claims are keyed by their source event IDs. Projection and read-repair
+serialize on the same Founder projection row and atomically reconcile committed, unclaimed
+credits and purchases. A committed purchase therefore reduces the next hint's available balance
+even while its post-commit callback is delayed. Retries and late callbacks do not apply it twice.
+A missing projection row rebuilds the same net balance/debt from all source facts, including
+already-claimed events; failed updates roll back both the claims and the cache. Migration
+`00086` adds the Exit claim table. The existing exact-integer capacity remains unchanged;
+[RP-771](../planning/prestige-and-exits/route-knowledge-capacity.md) is still unresolved.
+
+`buy_route_hint` runs on the Founder
 stream, costs the catalog's 50 Route Knowledge, and permanently adds the route ID to
 `hints_unlocked`. Hints reveal catalog predicates only; the predicate context and evaluator do not
 contain hint state.
@@ -152,3 +166,8 @@ migration, gate debit/event behavior, hint non-interference, and Postgres integr
 suite races first executions, reverses delivery order across batches, exercises equal-time UUID
 ordering and an already-spent provisional award, rebuilds the cache from immutable history, and
 asserts one active Registry grant with no duplicated adoption.
+The current-epoch curriculum integration also earns an actual scripted Exit reward, buys a hint,
+refuses a second unaffordable hint while delivery is held, and retries the first exact receipt.
+Projector tests cover Exit/hint delivery order, missing/existing caches, rollback, concurrent
+repair, invalid source ownership, debt repayment and exact-domain overflow refusal. These are
+service/Postgres checks, not a mounted hint-purchase UI or natural-pacing proof.

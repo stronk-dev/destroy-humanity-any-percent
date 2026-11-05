@@ -9,6 +9,21 @@ export/deletion/retention rule.
 
 ## Exact current-schema field map
 
+### Exit-credit claim supplement — 2026-11-05
+
+Migration00086 adds `exit_knowledge_projection_events`: `event_id` UUID primary key/FK to
+`events(event_id)` without cascading deletion; `founder_id` non-null UUID with a lookup index;
+`amount` non-null bigint constrained to 0–9,007,199,254,740,991. Route projection and Founder
+read-repair claim committed `founder_advanced` rewards and consume these claims with hint
+claims to maintain spendable balance/debt. Source-event identity and Founder/reward amount
+are retained in this derived table. Account deletion does not reference it and no Account FK
+can cascade into it. This source/DDL observation supplies no populated Account-delete test,
+expiry, export or rights decision. Actual installed Postgres reports these three exact columns,
+migration86 and 61 game tables (Goose excluded). This supplements the dated 16-table map below;
+it does not make that older execution a 17-table or full current rights test.
+
+### Original sixteen-table map
+
 Original Up DDL is in migrations `00003`, `00005`–`00007`, `00013`; later Up changes in
 `00008`, `00009`, `00021`, `00024`, `00043`, `00045` affect current fields/constraints.
 `account.DeleteAccount` archives Founder save streams and deletes the account row; it does not

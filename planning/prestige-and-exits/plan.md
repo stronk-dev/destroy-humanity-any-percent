@@ -11,6 +11,19 @@
   Next: reconcile complete foundational implementation/review coverage for item9;
   these scoped verdicts do not authorize archival or approve adjacent changes.
 
+**Current correction,2026-11-05 (RP-772; independent review pending):** the actual epoch8 curriculum
+producer saves75 earned Knowledge, but a real projector makes the affordable50
+hint reject: saved75/projection0/hint false (private real-PG68322). Correct the
+missing Exit-credit → projection → hint-consumer binding under accepted Routes
+D5/C6 and Prestige D3 using transactional Exit/hint event claims and one Founder-row lock.
+The current-content regression now passes with the real projector, held hint delivery,
+unaffordable second purchase and exact receipt retry. Projector checks cover late/duplicate
+delivery, existing/missing rows, rollback, invalid ownership, concurrent repair and Registry
+debt repayment. Migration00086 adds the Exit claim table; canonical docs and rights inventory
+are updated. Full affected production/server SQL and client curriculum/replay checks pass;
+retain exact commands/results/limits in the log. Preserve current numeric capacity and source/replay wire.
+This ordinary-value correction is independent of RP-771's pending capacity choice.
+
 **Current AC5 defect,2026-11-05 (RP-771):** actual Postgres proves eligible
 Wind Down fails at the admitted Route Knowledge maximum, including a companion
 owning every hint. Full state/revision/history rollback holds; the original six

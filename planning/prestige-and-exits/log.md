@@ -477,3 +477,60 @@ original context-bearing reviewer patch stays in ignored evidence. Dossier's
 recipe/digest reconcile. Separate `git diff --check` exits0. No duplicate SQL
 execution, test change, softened assertion, code/runtime change or acceptance.
 Recorded by: Codex root. RP-771 and full1.0 remain open.
+
+## 2026-11-05 — RP-772 earned Exit credit reaches the real hint consumer
+
+Outcome: conform to accepted Routes D5/C6 and Prestige D3. At408517bf, a private
+real-projector extension of the actual epoch8 curriculum test reproduces saved75,
+projected0, unaffordable50-point hint (`insufficient_route_knowledge`),0.63s/Make2
+(68322). The reward is saved; the consumer's read-repair omits Exit credit.
+
+Correction: consume persisted FounderAdvanced Exit rewards with event-ID claims
+in new append-only migration00086. Exit/hint delivery and read-repair share one
+Founder-row lock, source snapshot and transaction. Reconcile pending hint debits
+before another purchase; missing caches rebuild combined Exit/route credits less
+purchases, including Registry compensation/debt. Failed source validation/update
+rolls back claims/cache and leaves the caller unchanged. No payout, pure replay,
+wire, balance data, copy, epoch or kernel change: production changes are outside
+kernel/affecting-paths.json; its production test exclusion applies to the fixture.
+Current numeric capacity remains; RP-771 is unresolved. Canonical Routes/Prestige
+docs and the rights inventory's bounded61st-table/three-field supplement reconcile.
+Installed declared PG query returns61 game tables (Goose excluded), migration86.
+
+Executed from root with cold counts, on this batch unless identified otherwise:
+
+- `make test-save-integration SAVE_TEST_PACKAGES=./production SAVE_TEST_FLAGS='-run TestCurriculumAutomaticFailurePersistsAndReplaysIntegration -v' SAVE_TEST_COUNT=2`:
+  PASS78673,0.43/0.29s on the same DB. Actual current-content Exit75 → hint50 → saved/
+  projected25, held delivery, refused second hint, exact retry and single claims.
+- Full `./routeprojection` real-PG `-race -run Integration -v`, count1:
+  PASS3.651s. Covers five delivery/rebuild modes, debt repayment and existing
+  Registry/order/naming/public-read integrations. Added capacity regression then
+  passes separately with race/count1 (97784,1.334s): exact maximum admitted,
+  plus-one and rebuild refused with rollback. That is no remedy for RP-771.
+- Full `./routeprojection ./save` real-PG Integration/count1 passes (85187);
+  `make validate-migrations` passes92854,2.026s. No Up/Down round-trip claim.
+- Full `./production ./gameserver` real-PG Integration/count1 passes70258:
+  32.201s/138.087s. Two explicit manual-study skips (composed restore and one-minute
+  credential cleanup) get no credit. The ordinary first-hour check passes here;
+  this does not erase RP-770's retained race failure or certify all CI.
+- Native full Go `./routeprojection ./save` count1 passes77547 (DB skips excluded);
+  production `TestFounder` replay/version population passes91280. Affected
+  routeprojection/production/save/gameserver vet passes37378. Client curriculum
+  and replay files pass99037,195 tests. No public wire/shared-math change.
+
+Failures retained: an initial selector containing unquoted shell alternation
+fails before valid test execution (127/broken pipe; no population credit). The
+first held-delivery attempt90261 fails with saved50 because prior runs left a
+25-point projection in the test fixture; include founder_route_state in cleanup,
+then the same-DB count2 above passes. Do not hide either setup failure or infer
+an accounting-policy change. Raw local results are under ignored
+`.cache/route-credit-repro/`; the checked-in tests are the reproducible witnesses.
+
+Coverage is service/current-content/real-PG integration plus client replay, not
+mounted hint UI, natural earning/pacing, supported native host, current hosted CI,
+clean-host release or complete Prestige acceptance. Existing27 Clout failures,
+historical guard and other release blockers remain. All implementation handles
+are terminal. Review by: Codex root (implementer first filter only). Designated
+independent corrective review is pending for the complete408517bf..batch-tip
+range, including implementation, migration, tests, docs and records. No archival,
+publication, deployment, owner adoption or goal pause. Recorded by: Codex root.

@@ -1,5 +1,5 @@
 // Package routeprojection maintains idempotent founder and public Registry
-// projections from authoritative company-stream route events.
+// projections from authoritative route, Founder Exit and hint events.
 package routeprojection
 
 import (
@@ -10,7 +10,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"math/big"
 	"sort"
 	"strings"
 	"time"
@@ -88,6 +87,10 @@ func (p *Projector) Project(ctx context.Context, source []save.EventRecord) erro
 		switch event.Kind {
 		case save.EventRouteExecuted:
 			if err := p.projectExecution(ctx, tx, event); err != nil {
+				return err
+			}
+		case save.EventFounderAdvanced:
+			if err := p.projectExitKnowledge(ctx, tx, event); err != nil {
 				return err
 			}
 		case save.EventRouteHintPurchased:
@@ -274,40 +277,8 @@ func (p *Projector) applyKnowledgeDelta(ctx context.Context, tx *sql.Tx, founder
 	if delta == 0 || delta < -decimal.MaxExactInteger || delta > decimal.MaxExactInteger {
 		return ErrProjection
 	}
-	if _, err := tx.ExecContext(ctx, `INSERT INTO founder_route_state(founder_id,route_knowledge_balance,route_knowledge_debt) VALUES($1,0,0) ON CONFLICT DO NOTHING`, founderID); err != nil {
-		return err
-	}
-	var balance, debt int64
-	if err := tx.QueryRowContext(ctx, `SELECT route_knowledge_balance,route_knowledge_debt FROM founder_route_state WHERE founder_id=$1 FOR UPDATE`, founderID).Scan(&balance, &debt); err != nil {
-		return err
-	}
-	if delta > 0 {
-		repaid := min(debt, delta)
-		debt -= repaid
-		spendable := delta - repaid
-		if balance > decimal.MaxExactInteger-spendable {
-			return fmt.Errorf("%w: Route Knowledge overflow", ErrProjection)
-		}
-		balance += spendable
-	} else {
-		correction := -delta
-		consumed := min(balance, correction)
-		balance -= consumed
-		correction -= consumed
-		if debt > decimal.MaxExactInteger-correction {
-			return fmt.Errorf("%w: Route Knowledge debt overflow", ErrProjection)
-		}
-		debt += correction
-	}
-	result, err := tx.ExecContext(ctx, `UPDATE founder_route_state SET route_knowledge_balance=$2,route_knowledge_debt=$3 WHERE founder_id=$1`, founderID, balance, debt)
-	if err != nil {
-		return err
-	}
-	affected, err := result.RowsAffected()
-	if err != nil || affected != 1 {
-		return ErrProjection
-	}
-	return nil
+	_, _, err := p.synchronizeKnowledge(ctx, tx, founderID, delta)
+	return err
 }
 
 func (p *Projector) projectHint(ctx context.Context, tx *sql.Tx, event save.EventRecord) error {
@@ -315,21 +286,17 @@ func (p *Projector) projectHint(ctx context.Context, tx *sql.Tx, event save.Even
 	if err := decodeStrict(event.Payload, &payload); err != nil || payload.Cost <= 0 {
 		return fmt.Errorf("%w: hint event", ErrProjection)
 	}
-	result, err := tx.ExecContext(ctx, `INSERT INTO route_hint_projection_events(event_id,founder_id,route_id,cost) VALUES($1,$2,$3,$4) ON CONFLICT DO NOTHING`, event.EventID, event.OwnerID, payload.RouteID, payload.Cost)
-	if err != nil {
+	if _, _, err := p.synchronizeKnowledge(ctx, tx, event.OwnerID, 0); err != nil {
 		return err
 	}
-	inserted, err := result.RowsAffected()
-	if err != nil || inserted == 0 {
-		return err
+	var routeID string
+	var cost int64
+	if err := tx.QueryRowContext(ctx, `SELECT c.route_id,c.cost FROM route_hint_projection_events c JOIN events e ON e.event_id=c.event_id
+		WHERE c.event_id=$1 AND c.founder_id=$2 AND e.stream_id=$3`, event.EventID, event.OwnerID, event.StreamID).Scan(&routeID, &cost); err != nil {
+		return fmt.Errorf("%w: hint source: %v", ErrProjection, err)
 	}
-	result, err = tx.ExecContext(ctx, `UPDATE founder_route_state SET route_knowledge_balance=route_knowledge_balance-$2 WHERE founder_id=$1 AND route_knowledge_balance >= $2`, event.OwnerID, payload.Cost)
-	if err != nil {
-		return err
-	}
-	affected, err := result.RowsAffected()
-	if err != nil || affected != 1 {
-		return fmt.Errorf("%w: projected hint has insufficient balance", ErrProjection)
+	if routeID != payload.RouteID || cost != payload.Cost {
+		return ErrProjection
 	}
 	return nil
 }
@@ -343,48 +310,9 @@ func (p *Projector) RepairFounder(ctx context.Context, founderID string, state *
 		return err
 	}
 	defer tx.Rollback()
-	result, err := tx.ExecContext(ctx, `INSERT INTO founder_route_state(founder_id,route_knowledge_balance,route_knowledge_debt) VALUES($1,0,0) ON CONFLICT DO NOTHING`, founderID)
+	balance, _, err := p.synchronizeKnowledge(ctx, tx, founderID, 0)
 	if err != nil {
 		return err
-	}
-	inserted, err := result.RowsAffected()
-	if err != nil {
-		return err
-	}
-	var balance, debt int64
-	if err := tx.QueryRowContext(ctx, `SELECT route_knowledge_balance,route_knowledge_debt FROM founder_route_state WHERE founder_id=$1 FOR UPDATE`, founderID).Scan(&balance, &debt); err != nil {
-		return err
-	}
-	if inserted == 1 {
-		var netText string
-		if err := tx.QueryRowContext(ctx, `
-			SELECT (
-				COALESCE(sum((e.payload->>'amount')::numeric) FILTER (
-					WHERE e.kind='route_knowledge_granted' AND NOT EXISTS (
-						SELECT 1 FROM events compensation
-						WHERE compensation.kind='compensation'
-						  AND compensation.payload->>'compensates_event_id'=e.event_id::text
-					)
-				),0)
-				- COALESCE(sum((e.payload->>'cost')::numeric) FILTER (WHERE e.kind='route_hint_purchased'),0)
-			)::text
-			FROM events e JOIN save_streams s ON s.id=e.stream_id
-			WHERE s.owner_id=$1 AND e.kind IN ('route_knowledge_granted','route_hint_purchased')`, founderID).Scan(&netText); err != nil {
-			return err
-		}
-		net, ok := new(big.Int).SetString(netText, 10)
-		limit := big.NewInt(decimal.MaxExactInteger)
-		if !ok || new(big.Int).Abs(new(big.Int).Set(net)).Cmp(limit) > 0 {
-			return ErrProjection
-		}
-		if net.Sign() >= 0 {
-			balance = net.Int64()
-		} else {
-			debt = new(big.Int).Neg(net).Int64()
-		}
-		if _, err := tx.ExecContext(ctx, `UPDATE founder_route_state SET route_knowledge_balance=$2,route_knowledge_debt=$3 WHERE founder_id=$1`, founderID, balance, debt); err != nil {
-			return err
-		}
 	}
 	if err := tx.Commit(); err != nil {
 		return err

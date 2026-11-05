@@ -3,8 +3,11 @@ package production
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"os"
 	"strings"
+	"sync"
+	"sync/atomic"
 	"testing"
 	"time"
 
@@ -16,6 +19,7 @@ import (
 	"cloud-clicker/server/minigame"
 	"cloud-clicker/server/pet"
 	prestigecore "cloud-clicker/server/prestige"
+	"cloud-clicker/server/routeprojection"
 	"cloud-clicker/server/routes"
 	"cloud-clicker/server/save"
 )
@@ -34,7 +38,7 @@ func TestCurriculumAutomaticFailurePersistsAndReplaysIntegration(t *testing.T) {
 	if err := save.Migrate(ctx, db); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := db.ExecContext(ctx, `TRUNCATE epochs,catalog_sets,save_streams RESTART IDENTITY CASCADE`); err != nil {
+	if _, err := db.ExecContext(ctx, `TRUNCATE epochs,catalog_sets,founder_route_state,save_streams RESTART IDENTITY CASCADE`); err != nil {
 		t.Fatal(err)
 	}
 	current := activeContentBundle(t)
@@ -115,7 +119,15 @@ func TestCurriculumAutomaticFailurePersistsAndReplaysIntegration(t *testing.T) {
 		t.Fatal(err)
 	}
 	commonsCatalogs := commons.CatalogSet{current.ConstantsHash: current.Commons.(commonsbinding.ReplayPolicy).Catalog, next.ConstantsHash: next.Commons.(commonsbinding.ReplayPolicy).Catalog}
+	routeProjector, err := routeprojection.New(db, resolver)
+	if err != nil {
+		t.Fatal(err)
+	}
+	hintProjection := &heldHintProjection{delegate: routeProjector, entered: make(chan struct{}), release: make(chan struct{})}
+	unblockProjection := sync.OnceFunc(func() { close(hintProjection.release) })
+	defer unblockProjection()
 	service, err := NewService(store, resolver, FrozenContributionProvider{DB: db}, nil, nil,
+		WithRouteCatalogs(resolver), WithRouteProjector(hintProjection),
 		WithProgressionRuntime(resolver), WithCurrentConstantsHash(next.ConstantsHash),
 		WithReplayCatalogs(ReplayCatalogSet{current.ConstantsHash: current, next.ConstantsHash: next}), WithGuildSettlements(emptyGuildSettlements{}),
 		WithMinigameActivity(minigameRepository), WithCompactPolicies(commonsCatalogs), WithCommonsWeightResolver(integrationWeight(1_000_000)))
@@ -161,4 +173,97 @@ func TestCurriculumAutomaticFailurePersistsAndReplaysIntegration(t *testing.T) {
 	if err != nil || terminal.SelectedBranch == nil || *terminal.SelectedBranch != "burnout" || terminal.IntentKind != IntentPerformManualBatch {
 		t.Fatalf("terminal=%+v err=%v", terminal, err)
 	}
+
+	var routeIDs []string
+	for _, gate := range current.Routes.Gates() {
+		for _, route := range gate.Routes {
+			routeIDs = append(routeIDs, route.RouteID)
+		}
+	}
+	cost := current.Routes.KnowledgePolicy().HintCost
+	if len(routeIDs) < 2 || loadedFounder.State.RouteKnowledgeBalance < cost || loadedFounder.State.RouteKnowledgeBalance >= 2*cost {
+		t.Fatal("earned-credit fixture must afford exactly one of two distinct hints")
+	}
+	requestHint := func(id, route string, revision int64) []byte {
+		return []byte(fmt.Sprintf(`{"intent_id":%q,"kind":"buy_route_hint","expected_revision":%d,"route_id":%q}`, id, revision, route))
+	}
+	purchase := requestHint("01986666-ad00-7000-8000-000000000003", routeIDs[0], loadedFounder.Revision.Number)
+	wait, cancel := context.WithTimeout(t.Context(), 10*time.Second)
+	defer cancel()
+	type completion struct {
+		result HandleResult
+		err    error
+	}
+	finished := make(chan completion, 1)
+	go func() {
+		result, err := service.Handle(wait, founderRevision.StreamID, ModeOnline, now, purchase)
+		finished <- completion{result, err}
+	}()
+	select {
+	case <-hintProjection.entered:
+	case early := <-finished:
+		t.Fatalf("affordable hint failed before projection: receipt=%s err=%v", early.result.Receipt, early.err)
+	case <-wait.Done():
+		t.Fatal("hint did not reach the post-commit projection barrier")
+	}
+	// Its authoritative debit has committed, while delivery remains held. A
+	// second purchase must include that debit when repairing the projection.
+	paid, err := store.LoadLatest(wait, founderRevision.StreamID)
+	if err != nil || paid.State.RouteKnowledgeBalance != 75-cost || !paid.State.HintsUnlocked[routeIDs[0]] {
+		t.Fatalf("earned hint did not persist: state=%+v err=%v", paid.State, err)
+	}
+	second := requestHint("01986666-ad00-7000-8000-000000000004", routeIDs[1], paid.Revision.Number)
+	refused, err := service.Handle(wait, founderRevision.StreamID, ModeOnline, now, second)
+	if err != nil || !strings.Contains(string(refused.Receipt), `"category":"insufficient_route_knowledge"`) {
+		t.Fatalf("delayed debit allowed another hint: receipt=%s err=%v", refused.Receipt, err)
+	}
+	unblockProjection()
+	var first completion
+	select {
+	case first = <-finished:
+	case <-wait.Done():
+		t.Fatal("released hint projection did not finish")
+	}
+	if first.err != nil || !strings.Contains(string(first.result.Receipt), `"outcome":"applied"`) {
+		t.Fatalf("hint completion=%s err=%v", first.result.Receipt, first.err)
+	}
+	repeated, err := service.Handle(wait, founderRevision.StreamID, ModeOnline, now, purchase)
+	if err != nil || !repeated.Replay || string(repeated.Receipt) != string(first.result.Receipt) {
+		t.Fatal("hint retry changed its applied receipt")
+	}
+	after, err := store.LoadLatest(wait, founderRevision.StreamID)
+	if err != nil || after.Revision.Number != paid.Revision.Number || after.State.RouteKnowledgeBalance != 75-cost || after.State.HintsUnlocked[routeIDs[1]] {
+		t.Fatalf("rejected/retried hint changed state: state=%+v err=%v", after.State, err)
+	}
+	var projected, exitClaims, hintClaims int64
+	if err := db.QueryRowContext(wait, `SELECT route_knowledge_balance,
+		(SELECT count(*) FROM exit_knowledge_projection_events WHERE founder_id=$1),
+		(SELECT count(*) FROM route_hint_projection_events WHERE founder_id=$1)
+		FROM founder_route_state WHERE founder_id=$1`, founderID).Scan(&projected, &exitClaims, &hintClaims); err != nil || projected != 75-cost || exitClaims != 1 || hintClaims != 1 {
+		t.Fatalf("projection=%d exit_claims=%d hint_claims=%d err=%v", projected, exitClaims, hintClaims, err)
+	}
+}
+
+type heldHintProjection struct {
+	delegate RouteProjector
+	entered  chan struct{}
+	release  chan struct{}
+	held     atomic.Bool
+}
+
+func (p *heldHintProjection) Project(ctx context.Context, events []save.EventRecord) error {
+	for _, event := range events {
+		if event.Kind == save.EventRouteHintPurchased && p.held.CompareAndSwap(false, true) {
+			close(p.entered)
+			select {
+			case <-p.release:
+			case <-ctx.Done():
+				return ctx.Err()
+			}
+		}
+	}
+	return p.delegate.Project(ctx, events)
+}
+func (p *heldHintProjection) RepairFounder(ctx context.Context, id string, state *save.State) error {
+	return p.delegate.RepairFounder(ctx, id, state)
 }

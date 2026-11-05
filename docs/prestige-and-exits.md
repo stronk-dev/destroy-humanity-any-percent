@@ -65,6 +65,13 @@ records the real Postgres evidence and required contract resolution.
 
 ## Offers and intents
 
+Committed Exit Route Knowledge is consumed by the actual hint balance projection, including
+read-repair before a purchase. A delayed Exit or purchase callback cannot lose an earned credit
+or apply it twice. The current-epoch integration earns 75 from the scripted first Exit, buys a
+50-point hint, and preserves 25 while refusing a second hint and replaying the first receipt.
+See [Routes accounting](routes.md#registry-and-founder-projections) for projection, rebuild and
+Registry-debt behavior. This ordinary-value correction does not resolve RP-771's capacity failure.
+
 The production intent surface adds:
 
 - `accept_exit_offer`, with the live offer id and both expected stream revisions;
