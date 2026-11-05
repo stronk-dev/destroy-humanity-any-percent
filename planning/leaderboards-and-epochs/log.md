@@ -629,3 +629,67 @@ proof preserved. No product/RFC/copy/schema/CI/feature/release status promotion,
 push, deployment or goal pause; full nine-tier1.0 stays active.
 Review by: Codex root (debugging observation, not designated feature approval).
 Recorded by: Codex root.
+
+## 2026-11-05 — Verify architecture; separate the polling guard from accepted intent
+
+Previous goal turn progresses: batched reader review7c850359 and completed passing-
+context samples571bd919. Current default golang:1.26 is config593dc355... linux/amd64
+on Engine linux/aarch64. A default Compose invocation therefore does not establish
+native execution. Original reviewer /root/replay_event_batch_corrective_review
+checks its retained files and explicitly corrects the earlier3.831s “native” label:
+actual architecture was NOT captured. That execution remains a pass, not architecture
+diversity/native proof. Original verdict/range and code-correctness approval remain;
+this is its append-only provenance correction. Recorded by: Codex root.
+
+Root selects both children of immutable Go index670bb5aa5349ae03b8516764718486f4f16399134bdc9acd0c46a23f043ab05c.
+Retained raw index/manifests hash-match their references; amd64 child4ddd76d... binds
+existing593dc355... config. ARM64 child220fc85e089da8f6ebdb609cfe9c952e4c0784d525679419ca2bbd53f5a6cdfe
+binds config2598a8e246db775d72795705a4c41c0632252c8353a3a6bccb96296359dcbdaf.
+Both declare1.26.10-trixie/source650cf2f338d22da87df8c773cfc88afa26699502.
+Pull ARM64 child by digest without retagging593 default. Ignored platform-only
+Compose companion/root Make recipe reuses declared service URL/network/shared Go
+caches. Postgres remains identical AMD64 config6a2e324e... in ownedd27b0f4a56d0.
+This is a Go-target contrast, not a native whole-stack or supported-amd64 rehearsal.
+
+Actual image2598/container2a10b7b... and live Go env prove initial ARM64 race26034:
+Go1.26.10 linux/arm64. It FAILS97.33s at the same5s observer, healthy/claimed run2,
+363 rows/archive0. Thus AMD64 Go emulation is not necessary. No root cause inferred.
+Add only runtime startup logging (Go/compiled target/logical CPUs/GOMAXPROCS) to the
+real test; GOMAXPROCS(0)'s getter path is checked in that pinned Go source and sets
+nothing. Actual subsequent ARM64 normal7623 passes16.68s and race61597 passes51.51s,
+both logging linux/arm64/go1.26.10/14CPUs/14GOMAXPROCS and reaching archives/post-delete
+boards. Normal container auto-removes before secondary inspection; do not invent
+its missing Docker identity (actual compiled-runtime output is retained). Race
+container/image identity is captured. Vet passes; all original assertions remain.
+
+One planned observation-only full ARM64 race99499 passes170/0/one existing opt-in
+skip, Gameserver228.207s; first-hour57.02s. Run1 input112.498375ms/replay1.346503959s/
+archive283.645458ms; run2 input170.049584ms/replay2.830590127s/archive552.68ms.
+Both phases complete in this PASSING context. Original5s does not fire: extra5s
+window, post-deadline query and unconditional failure branch are NOT exercised.
+The failed-context objective is not obtained; no rerun-until-red or green erasure.
+Root source/guard/math/epoch and all scopes are fixed; only metadata plus an
+observation-only compiler overlay differ. No matched speedup/latency SLO inferred.
+
+Independent technical-authority review by /root/first_hour_wait_contract_review
+(read-only; no tests/SQL executed; Recorded by: Codex root) traces owner T01-C33
+(archived log2728), accepted RFC section C33 and designated reviewdf56b6f: required
+milestones/order/run2 state/persisted replay, not a5s service latency. Original
+1914b3bd called verification directly;624d42c8 introduced5s polling specifically
+to avoid a live-log/compaction race, explicitly test-only. Correct root-authored
+“acceptance deadline” comment to “test wait guard”; no bound changes. A routine
+justified wait correction needs no new owner adoption, but neither a larger literal
+nor the remaining Go package timeout is justified just by incidental classification.
+The proposed outer-deadline replacement is NOT adopted. Fail-closed cancellation,
+worker-error and committed-verified-without-archive checks at the current bound are
+authorized next work; full producer/Founder/archive/board proof and real negative
+controls remain. CI's5min whole-workflow, UI cadence and native-amd64 release gates
+are independent and unchanged. RP-770 stays OPEN; no full-CI/feature/release claim.
+
+Ignored evidence: .cache/first-hour-architecture-571bd919/ (selected immutable
+manifests, live identity/env, all logs and source-pinned observation overlay).
+Initial ARM64-red SHA075479d033898affdecab8bd6cd458baf9048bd320a047e65472cda5c09f2d23;
+full-observed SHA0e15b54ee281245d3aa480355b1827fc665c252238fe21256367dffedad9053d.
+Initial sandbox metadata-only denials run no tests and are resolved by narrow
+escalation. All test handles terminal; SQL remains serial. No workflow/image-tag/
+product/schema/version/copy/guard change or publication; full nine-tier1.0 active.

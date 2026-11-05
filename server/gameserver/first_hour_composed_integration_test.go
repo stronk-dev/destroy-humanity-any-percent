@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"runtime"
 	"strings"
 	"testing"
 	"time"
@@ -29,6 +30,8 @@ func TestComposedGameserverReplaysRatifiedFirstHourAtPinnedSeed(t *testing.T) {
 	if databaseURL == "" {
 		t.Skip("TEST_DATABASE_URL not set")
 	}
+	t.Logf("test runtime at start: go=%s target=%s/%s logical_cpus=%d gomaxprocs=%d",
+		runtime.Version(), runtime.GOOS, runtime.GOARCH, runtime.NumCPU(), runtime.GOMAXPROCS(0))
 	ctx := context.Background()
 	db, err := save.OpenPostgres(ctx, databaseURL)
 	if err != nil {
@@ -411,7 +414,7 @@ func waitFirstHourRunVerifiedAndArchived(t *testing.T, ctx context.Context, db *
 		}
 		time.Sleep(20 * time.Millisecond)
 	}
-	// The acceptance deadline and success condition are unchanged. Only on
+	// The test wait guard and durable-success condition are unchanged. Only on
 	// failure, expose whether the worker rejected, deferred or is still busy;
 	// an inner archive join previously hid every one of those queue states.
 	var workerFailure error

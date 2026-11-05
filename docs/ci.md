@@ -196,6 +196,14 @@ make vectors-check-ci
 Postgres, including packages whose integration tests are not selected by the
 focused `test-save-integration` target.
 
+`test-save-integration` does not pin the test-container architecture. A cached
+foreign-architecture image can still run under emulation; omitting the CI override
+does not prove native execution. The first-hour test's verbose/failure output
+records its compiled Go version, OS/architecture, logical CPU count and initial
+GOMAXPROCS. Use those fields and the actual image/host identities when comparing
+executions. These diagnostics do not establish the supported native Linux/amd64
+release or reference-profile gates.
+
 The default SQL targets share a database within their Compose project, and several
 fixtures truncate accounts, catalogs and epochs. Run these targets serially across
 implementers and reviewers unless the project and database are explicitly isolated.

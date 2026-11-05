@@ -7,22 +7,23 @@
   accepted foundation already authorizes AC5 and AC1/AC3/AC6 remediation; only the absent
   reader/player capability remains behind the draft successor's explicit acceptance gate.
 
-2026-11-05 RP-770 remains OPEN: batched owner-scoped event reads remove the
-per-command replay/archive SQL loop without changing transition math or evidence
-bytes. Complete verifier/real-PG race package and fixed-fixture old/new byte
-comparison pass; focused composed first-hour race passes its unchanged5s check.
-The full affected race run still fails that check (healthy claimed run2,363 live
-rows, no archive), so this is partial construction, not a completed timing repair.
-The owning log records diagnostics, profiling, invalid fixture attempts and all
-results. Complete seven-path `8d868309..7c850359` is independently APPROVED for
-reader correctness/diagnostics, with fresh current normal/race journeys and
-old/new archive compatibility. RP-770 remains OPEN. A subsequent observation-only
-full run passes, recording run2 input150ms/replay3.930s/archive682ms; it does not
-reproduce the earlier failed context or exercise its late-completion branch.
-Next: compare the same first-hour/race path in the declared default architecture,
-recording the actual container architecture; this is a diagnostic control, never
-a substitute for native Linux-amd64/reference or uninstrumented acceptance.
-No raised bound, skipped case, new kernel identity or full-CI claim.
+2026-11-05 RP-770 remains OPEN. Reader batching is independently approved for
+correctness/diagnostics (`8d868309..7c850359`), not a complete observer repair.
+Actual pinned ARM64 execution also reproduces the wait failure; subsequent normal,
+race and instrumented-full ARM64 executions pass. This rules out AMD64 Go emulation
+as necessary, not the remaining cause. Startup runtime metadata is now explicit;
+the earlier review's default-container “native” label was unsupported and corrected.
+
+Independent contract review traces the5s literal to test-only624d42c8, not an
+accepted verification SLO. T01-C33 still requires the natural worker's durable
+verdict/archive, Founder replay and post-delete board assertions. The current
+5s guard remains; neither a larger literal nor the remaining package timeout is
+a justified replacement yet. Next authorized work: cancellation/worker-error/
+committed-verified-without-archive refusal under the existing guard, with real
+Postgres negative controls. Complete relevant evidence must justify any later
+containment change. CI's5min workflow floor, supported native Linux-amd64 and UI
+reference-profile gates remain distinct and unchanged. The owning log holds exact
+runtime/image provenance, controls, review correction and limits.
 
 2026-10-15 RP-124: the existing real-Postgres archive test now preserves a populated
 two-command/four-event fixture, with independent complete-content and corruption/omission
