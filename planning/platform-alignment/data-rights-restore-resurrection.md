@@ -37,6 +37,12 @@ populated Guild membership, browser renewal, off-host/RPO/RTO/R-006 and policy
 remain separate. No production, balance, migration, schema, deadline or CI change.
 The owning Deployment log records review status and cleanup; RP-125 remains open.
 
+Independent corrective review APPROVES the complete six-path
+`0f3a5318..6df67ab2` supplement. Fresh real run85435 passes7.31s with all seven
+states/zero skips and reproduces the full matrix; native6871/vet/format pass,
+with15 top-level native manual/DB skips excluded. Exact provenance and cleanup
+are in the owning log; no policy, feature or release acceptance follows.
+
 ## Initial composed bootstrap observation — 2026-11-05
 
 Baseline `9a4bf86f`; predeclared composed supplement in the inventory plan.

@@ -12434,3 +12434,26 @@ Complete six-path batch after0f3a5318 needs designated corrective test/research
 review; this is no new feature/policy acceptance. Review by: Codex root
 (implementer first filter). Recorded by: Codex root. Goal remains active; no
 repeated owner question, inferred adoption, push, deployment or archival.
+
+## 2026-11-05 — Restored credential lifetime instrument independently approved
+
+APPROVED, no findings, corrective test/research instrument only; complete
+six-path range0f3a53186466502dd2ba454e53e55dfc0578f580..
+6df67ab206abaf69f74c5a15e2ec12c082b7a3d3.
+Review by: fresh independent Codex `/root/restored_credential_lifetime_review`.
+Recorded by: Codex root, transcribing its independently executed verdict.
+
+Fresh real target85435 passes7.31s/all seven states/no skips. B_pre16min is
+401/200/200/201; B_pre31days401/401/200/409; B_post all three ages denies
+401/401/401/409. Successful pairs reach original Founder; freshly authenticated
+bystanders stay200, six SQL families bind before startup, invalid inputs refuse,
+no extra account appears and aged receipt replay is not called usable access.
+Native6871/vet/format/whitespace pass;15 native manual/DB skips get no SQL credit.
+Reviewer leaves no tracked edits; all handles terminal, owned containers/network
+absent, project/binary ownership released. No repeat software run for editorial
+closeout. RP-125 stays open: token expiry alone does not remove this measured
+recovery-code access, but no permanent-validity or retention/deletion policy is
+adopted. Other lifetimes/rotation/Guild/browser/off-host/clean-host gates remain.
+The live execution-queue header is reconciled to current routing; its October
+snapshot stays historical. No source/artifact rebuild, full-feature acceptance,
+push, deployment, archival, repeated question, inferred adoption or goal pause.

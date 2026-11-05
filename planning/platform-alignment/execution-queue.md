@@ -5,7 +5,48 @@ their independent review obligations remain live.
 
 <a id="current-action--2026-10-14"></a>
 
-## Current action — 2026-10-15
+## Current action — 2026-11-05
+
+This is routing, not a second implementation contract. Use accepted RFCs and
+their owning plans/logs; older checkpoints below retain historical evidence and
+verdicts. The [whole-product overview](../CURRENT-STATE.md#whole-product-overview)
+still describes incomplete Garage/Tier2 integration with substantial world,
+combat, Tier3–8 and ending construction ahead. No new tier or release is complete.
+
+- **Completed evidence:** original HTTP and actual composed bootstrap/delete/
+  restore instruments are independently approved. The lifetime supplement
+  `0f3a5318..6df67ab2` is independently approved too: at31 days of application time,
+  expired access/refresh/receipt do not stop original recovery-code login from
+  B_pre; B_post denies all originals. [RP-125 dossier](data-rights-restore-resurrection.md)
+  owns method/results/limits. D-009/D-015 remain decisions, not an implied policy.
+- **Accounting and its real consumers:** delegated CV3/AC6 wording is reconciled.
+  Accounting/search technical proposals are reviewed but adoption remains pending.
+  [Clout's plan/log](../clout-v1-and-pr-interns/plan.md) owns the actual operation/
+  caller contract and original128-case gate. Do not repeat positive censuses,
+  remove accepted bucket rounding, or substitute an unused wrapper for repair.
+- **Headcount/Tier2:** paid hiring with producing/redirecting roles and the new
+  six-hour test-persona windows are already adopted and body-reconciled. Do not
+  ask them again. [Headcount](../headcount-allocation/plan.md) and
+  [Tier2](../tier2-content/plan.md) identify the distinct unadopted activation/AC3
+  and full paid-hiring-policy contracts before complete catalog→save→commands→
+  production/replay→panel→persisted-workflow construction. Prices/rates/copy and
+  full measured pacing/content ratification retain their own gates.
+- **Other accepted features/platform:** continue concrete corrections and exact
+  outstanding reviews in the owning plans without restarting approved scopes.
+  API descriptor/transport, tenant HTTP, recovery/renewal, authored body/copy,
+  accessibility and native Deployment proposals keep their named adoption gates;
+  a pending choice blocks its dependent new contract, not unrelated accepted work.
+  Current local artifact source`b8042450`/kernel0.3.226/epoch8 has independent
+  evidence approval; retain it while runtime bytes stay unchanged. Do not repeat
+  artifact/profiling populations or relabel them as hosted/native/clean-host proof.
+  [Deployment's plan](../deployment-foundation/plan.md) owns actual native/host/
+  predecessor/R-006 prerequisites. RP-770 and the historical guard/current CI
+  failures remain visible; focused passes do not waive them or any1.0 criterion.
+
+No queue row adopts a draft, authorizes publication/deployment, supplies
+independent feature acceptance or shrinks the full nine-tier1.0 goal.
+
+## Historical current-action snapshot — 2026-10-15
 
 Whole-product base `77fe2275`; latest bounded production correction `137f7a8d`,
 kernel0.3.222, epoch8, research `f7ca2b96`. Later review records and bounded work are in the
