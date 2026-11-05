@@ -16,6 +16,14 @@
   Next: reconcile complete foundational implementation/review coverage for item9;
   these scoped verdicts do not authorize archival or approve adjacent changes.
 
+**AC7 run-end data defect,2026-11-05 (RP-773):** actual current-epoch8
+Go/TS replay pairs end at distinct Founder ages but emit identical `run_ended`
+events; the event-only screen cannot display the required correct Founder age.
+The owning log retains the cold failing requirement regression, actual UI decoder/
+term-consumer observation and exact manual probes. No SQL/browser or full AC7
+claim; independent evidence/technical repair-authority review is next. New player
+copy remains owner-authored; do not fill historical facts from mutable live state.
+
 **Closed correction,2026-11-05 (RP-772):** the old actual epoch8 curriculum
 producer saved75 earned Knowledge, but a real projector made the affordable50
 hint reject: saved75/projection0/hint false (private real-PG68322). Complete

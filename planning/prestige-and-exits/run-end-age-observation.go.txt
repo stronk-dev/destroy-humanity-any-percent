@@ -1,0 +1,93 @@
+package production
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"os"
+	"reflect"
+	"testing"
+	"time"
+
+	"cloud-clicker/server/save"
+)
+
+// Manual AC7 diagnostic, not a passing acceptance gate for incomplete behavior.
+func TestRunEndFounderAgeObservation(t *testing.T) {
+	bundle := activeContentBundle(t)
+	floor, _ := bundle.versionFloors()
+	now := time.Date(2026, 11, 5, 12, 0, 0, 0, time.UTC)
+	ages := []int64{3_600_000, 7_200_000}
+	var ended []json.RawMessage
+	var before, after []int64
+	var fixtureCases []reputationExitCase
+	for index, age := range ages {
+		row := makeReputationPlanExitCase(t, fmt.Sprintf("age-%d", index), bundle, bundle, floor, 0, nil, now,
+			func(company *save.State, founder *save.State) {
+				founder.AgeMS = age
+				company.RunStartedAt = now.Add(-time.Second)
+				company.EvaluatedThrough = now.Add(-time.Second)
+			})
+		if row.Founder == nil || row.Company.Case.Outcome != "applied" {
+			t.Fatal("actual Company/Founder Exit did not apply")
+		}
+		var pre, post struct {
+			AgeMS int64 `json:"age_ms"`
+		}
+		if err := json.Unmarshal(row.Founder.PreState, &pre); err != nil {
+			t.Fatal(err)
+		}
+		if err := json.Unmarshal([]byte(row.Founder.PostStateJSON), &post); err != nil {
+			t.Fatal(err)
+		}
+		if pre.AgeMS != age || post.AgeMS <= pre.AgeMS {
+			t.Fatalf("Founder age controls failed: pre=%d post=%d expected_pre=%d", pre.AgeMS, post.AgeMS, age)
+		}
+		before, after = append(before, pre.AgeMS), append(after, post.AgeMS)
+		found := false
+		for _, event := range row.Company.Case.CompanyEndedEvents {
+			if event.Kind == string(save.EventRunEnded) {
+				if found {
+					t.Fatal("duplicate ended event")
+				}
+				ended = append(ended, event.Payload)
+				found = true
+			}
+		}
+		if !found {
+			t.Fatal("missing actual run_ended event")
+		}
+		fixtureCases = append(fixtureCases, row)
+	}
+	if after[0] == after[1] {
+		t.Fatal("different Founder ages collapsed in actual transition")
+	}
+	equal := bytes.Equal(ended[0], ended[1])
+
+	t.Logf("initial Founder ages=%v; actual post-Exit ages=%v; run_ended_payloads_identical=%t; constants=%s; founder_version=%d", before, after, equal, bundle.ConstantsHash, floor)
+	if !bytes.Equal(fixtureCases[0].Company.Case.PreState, fixtureCases[1].Company.Case.PreState) ||
+		!bytes.Equal(fixtureCases[0].Company.Case.CanonicalPayload, fixtureCases[1].Company.Case.CanonicalPayload) {
+		t.Fatal("paired Company input/command changed")
+	}
+	var first, second map[string]any
+	if json.Unmarshal(fixtureCases[0].Founder.PreState, &first) != nil || json.Unmarshal(fixtureCases[1].Founder.PreState, &second) != nil {
+		t.Fatal("paired Founder input decode failed")
+	}
+	delete(first, "age_ms")
+	delete(second, "age_ms")
+	if !reflect.DeepEqual(first, second) {
+		t.Fatal("paired Founder inputs differ beyond age")
+	}
+	data, err := json.MarshalIndent(map[string]any{"source_commit": "f2a2c82f", "constants_hash": bundle.ConstantsHash,
+		"initial_ages": before, "post_exit_ages": after, "run_ended_payloads_identical": equal, "cases": fixtureCases}, "", "  ")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile("../../.cache/run-end-age-observation/results.json", append(data, '\n'), 0644); err != nil {
+		t.Fatal(err)
+	}
+	if equal {
+		t.Fatal("Prestige AC7: distinct actual post-Exit Founder ages produce identical run_ended payloads; event-only Founder card cannot display the correct age")
+	}
+
+}

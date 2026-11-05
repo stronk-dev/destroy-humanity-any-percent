@@ -618,3 +618,62 @@ Linux-amd64 under ARM64 Desktop emulation, not supported native-host proof.
 No adjacent/original-feature/archival approval. RP-038/RP-771/RP-770,27 Clout
 failures, historical guard and full nine-tier1.0/release gates remain open.
 No code/runtime/schema/epoch/owner decision or goal status change in this record.
+
+## 2026-11-05 — AC7 cannot distinguish two valid Founder ages (RP-773)
+
+Accepted authority: Prestige D3/AC7 and design/11§3 require the event to provide
+the Founder card's age; archived Game UI U1/GU-C3 consumes `run_ended` exclusively.
+The narrower archived Phase-A screen is not proof of the full Prestige criterion.
+At sourcef2a2c82f, use current unchanged epoch8 bundle
+`sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6`,
+Company18/Founder21, actual `ApplyLoggedExit` and paired Founder replay. Both
+fixtures have the same Company, command/identity/time/pin and Founder state
+except `age_ms` (explicitly deep-compared after removing that one field).
+Both actual Exits apply; ages3600000/7200000 become3601000/7201000. Complete
+`run_ended` payloads are byte-identical. The required-distinguishable-output
+assertion fails, so this is a retained regression, not a green acceptance witness.
+
+Actual TypeScript replay on the exported original artifacts/inputs reproduces
+both ages and matches each entire Go ended event. Actual transport and Game UI
+decoders admit them and yield identical inputs; the existing copy term-row
+consumer renders identical rows. No UI can derive the correct distinct Founder
+age from those identical event-only inputs. No guessed new field name, altered
+copy, live snapshot fallback, natural reachability, SQL persistence, mounted
+browser, full run-end template or full AC7 proof is claimed.
+
+Retained manual probes are `run-end-age-observation.go.txt` and
+`run-end-age-observation.mjs.txt` in this directory. Temporarily copy the Go
+probe to the previously absent `server/production/run_end_age_observation_test.go`,
+create ignored `.cache/run-end-age-observation`, and run from root:
+
+```sh
+make test-go GO_PACKAGES=./production GO_TEST_FLAGS='-run TestRunEndFounderAgeObservation -v'
+```
+
+Expected current result: Make2/package1, exactly at the final Prestige AC7
+information-loss assertion, after fixture/source controls and artifact export.
+A compiler/setup error does not reproduce this defect. Copy the JS probe to
+`.cache/run-end-age-observation/observe.mjs` and run `node` on that file; it exits0
+only after actual TS replay/Go-event equality/current decoded-input/term-row
+checks complete. That diagnostic PASS confirms missing information, not correct
+Founder-card behavior. Final Go16663 fails at the named assertion (test0.02s,
+package0.315s); Node exits0; `make vet GO_PACKAGES=./production` exits0.
+All handles terminal; root retains exact probes and removes only its temporary
+Go test afterward. No ordinary CI is taught to preserve the defect.
+
+Initial instrument compile mismatched string/EventKind; corrected before any
+execution credit. The first fixture helper's60s gap was correctly classified
+offline, so the observer's assumed positive age increment failed; both arms were
+corrected to1s without policy/clock/ceiling changes. The intermediate observation
+PASS only confirmed the collision; final retained requirement regression is RED.
+Ignored evidence `.cache/run-end-age-observation/evidence.json` SHA256
+`e72db3e381c30c1d769031cb5e7b35af2946a12cc4b4dbba5e5e092a477fd27e` binds final source/results/programs. Product, kernel0.3.226,
+API/transport versions, copy, balance and current local candidate stay unchanged.
+
+Review by: Codex root (diagnostic implementer first filter). Recorded by: Codex
+root. Complete probe/ledger/plan/log range afterf2a2c82f needs fresh independent
+technical evidence review. Separately determine whether D3/AC7 already authorizes
+a versioned factual event/decoder correction without new gameplay/copy decisions;
+do not create an unnecessary RFC or infer wire/copy authority from this failure.
+Full AC7 and original feature acceptance stay open alongside RP-771; RP-772 stays
+closed. No archival, publication or goal pause.

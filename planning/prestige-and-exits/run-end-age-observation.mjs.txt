@@ -1,0 +1,41 @@
+import { readFileSync, writeFileSync } from "node:fs";
+import { createHash } from "node:crypto";
+import { resolve } from "node:path";
+import { pathToFileURL } from "node:url";
+const root=resolve(".cache/run-end-age-observation");
+const bytes=readFileSync(`${root}/results.json`), source=JSON.parse(bytes);
+const must=(ok,message)=>{if(!ok)throw new Error(message);};
+const {createServer}=await import(pathToFileURL(resolve("client/node_modules/vite/dist/node/index.js")));
+const vite=await createServer({configFile:resolve("client/vite.config.ts"),root:resolve("client"),server:{middlewareMode:true},appType:"custom"});
+try {
+ const api=await vite.ssrLoadModule("/src/replay.ts");
+ const {decodeTransportEnvelope}=await vite.ssrLoadModule("/src/transport.ts");
+ const {decodeGameUIEvent}=await vite.ssrLoadModule("/src/game-ui/events.ts");
+ const {renderPrestigeTermRows}=await vite.ssrLoadModule("/src/game-ui/prestige-terms.ts");
+ const {canonicalJSONString}=api, ages=[], events=[], decoded=[], rendered=[];
+ must(source.cases.length===2,"missing paired population");
+ for(const row of source.cases){
+  const {company}=row,c=company.case;
+  const catalogs=await api.loadReplayCatalogBundle(company.constants_hash,company.artifacts);
+  const state=api.restoreReplayState(c.pre_state,18,catalogs.economy,{meters:catalogs.meters,achievements:catalogs.achievements,doctrines:catalogs.doctrines,opportunities:catalogs.opportunities});
+  const transition=await api.applyLoggedExit(state,canonicalJSONString(c.canonical_payload),catalogs,c.replay_inputs);
+  must(transition.outcome==="applied","actual TS Exit refused");
+  const ended=transition.companyEndedEvents.filter(event=>event.kind==="run_ended");
+  const recorded=c.company_ended_events.filter(event=>event.kind==="run_ended");
+  must(ended.length===1&&recorded.length===1,"missing/duplicate ended event");
+  must(canonicalJSONString(ended[0])===canonicalJSONString(recorded[0]),"Go/TS ended event differs");
+  ages.push(transition.founder.age_ms);events.push(ended[0]);
+  const payload=ended[0].payload;
+  const envelope=decodeTransportEnvelope({v:2,ch:`player:${payload.founder_id}`,kind:"event",rev:2,constants_hash:company.constants_hash,ts:new Date(payload.ended_at_ms).toISOString(),payload:{event_id:"run-end-age-probe",kind:"run_ended",scope:"company",rev:2,cursor_effect:"advance",payload}});
+  must(envelope!==undefined,"transport decoder rejected current event");
+  const view=decodeGameUIEvent(envelope);must(view?.kind==="run_ended","UI decoder lost current event");
+  decoded.push(view);rendered.push(renderPrestigeTermRows(view.payload.payout,"era_2000"));
+ }
+ must(canonicalJSONString(ages)===canonicalJSONString(source.post_exit_ages)&&ages[0]!==ages[1],"actual TS age control failed");
+ must(canonicalJSONString(events[0])===canonicalJSONString(events[1]),"current event collision no longer reproduced");
+ must(canonicalJSONString(decoded[0])===canonicalJSONString(decoded[1]),"UI event inputs unexpectedly differ");
+ must(canonicalJSONString(rendered[0])===canonicalJSONString(rendered[1]),"existing term rows unexpectedly differ");
+ must(bytes.equals(readFileSync(`${root}/results.json`)),"source artifact mutated");
+ const result={source_sha256:createHash("sha256").update(bytes).digest("hex"),post_exit_ages:ages,Go_TS_complete_ended_events_match:true,ended_events_identical:true,decoded_UI_inputs_identical:true,existing_term_rows_identical:true,correct_full_Founder_age_render_possible_from_these_inputs:false,SQL_or_browser_journey:false,production_or_copy_changed:false};
+ writeFileSync(`${root}/ts-results.json`,JSON.stringify(result,null,2)+"\n");console.log(JSON.stringify(result,null,2));
+} finally {await vite.close();}
