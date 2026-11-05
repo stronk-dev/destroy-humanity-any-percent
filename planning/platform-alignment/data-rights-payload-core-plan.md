@@ -133,3 +133,48 @@ TypeScript seam is not enabled and gets no credit. If the source row is correctl
 pruned, report absent rather than invent one. Neither arm requires the public
 salt to remain exposed: measurements may report exposed=false after a future
 adopted correction. Initial run/source/log remain separate evidence.
+
+## 2026-11-05 — RP-606 public Company replay feasibility
+
+Question: can the existing Company verifier preserve complete public transitions
+without the persistent Garden salt, while private Founder verification stays
+unchanged? This is an UNAPPLIED, in-memory protocol study, not authorized field
+stripping or an implementation of a new public format. Current C14 still promises
+original bytes. Use current3a1b8737 runtime and exact committed grown Garden policy.
+
+Population: one actual HTTP-initialized salted Founder, one ordinary manual
+Company command, then Wind Down; normal worker must verify/compact and produce
+real board authorization. Export its original downloaded genesis/archive/pinned
+artifacts solely into ignored local evidence. Existing controlled progressed
+genesis/Fiscal budget remains explicit. This new run supplies a TWO-entry real
+archive for a new whole-consumer experiment, not another exposure census. No
+manual board insertion, synthetic archive, source-row rewrite or clock/bound change.
+
+Arms in BOTH actual Go and TypeScript Company consumers: original; replace only
+`resolved.founder_carry.founder_extensions.server_garden.salt_hex` with explicit
+null wherever present; remove that member; remove the entire Garden extension.
+Require the original to verify; observe the other verdicts rather than force them
+to pass. For original/null arms compare every Company transition's complete state,
+receipt, ordered events, terminal/new-Company output, plus the whole-run verdict.
+Report full Founder-output changes separately: Company equality never licenses
+private Founder-state substitution. Hash/check original bytes before and after;
+record changed paths/count and the different derived representation identity.
+
+Negative controls: corrupt a receipt, corrupt ordered events, remove a sequence,
+and change the declared constants hash. They must still refuse on a candidate
+that otherwise verifies. Missing-member/extension arms test existing private
+codec admission, not a requirement that a future public codec use that shape.
+Also classify the four committed Company harvest cases: transformed fields/count,
+complete outcome/state/receipt/events and honest nonterminal log_gap; retain their
+existing independent payload/resolved harvest-hash refusal controls. Those cases
+already omit the salt and cannot be called salt-elision successes with changed
+fields. Reuse the earlier private-Founder growth-dependency refusal evidence;
+no repeat of the completed eighteen-comparison salt census.
+
+A failed original/control or missing population invalidates that lane. A prototype
+failure narrows the design; do not loosen parsers, change corpus/goldens, replace
+state with empty Garden, or pretend private verification passed with missing salt.
+A positive result may support a separately versioned, explicit public Company
+projection contract and its further acceptance requirements; it cannot adopt one,
+prove all Company/history versions, authorize new wire/API behavior, or weaken
+privacy/private history/ranking/full nine-tier1.0 requirements.

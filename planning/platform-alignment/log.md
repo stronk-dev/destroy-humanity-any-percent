@@ -3397,3 +3397,21 @@ release-binary/native/R006 limitations stand. RP-606 remains OPEN; next is a
 privacy-preserving public Company-verification contract with honest source binding,
 not repetition of this observer or silent field stripping. No pending owner
 adoption, source/CI/schema change, publication or goal pause is inferred.
+
+## 2026-11-05 — RP-606 public Company replay feasibility, no product change
+
+Base `3a1b8737`; question/arms declared in payload plan. One fresh actual HTTP/SQL
+ordinary-command + Exit archive supplies both offline Go/TS consumers. Null-surrogate
+arm verifies with complete Company state/receipt/ordered-event/final/next-Company
+equality; full Founder output changes. Missing field/extension refuse; four corruption
+controls refuse in both verifying arms. Four existing harvest shapes are unchanged,
+nonterminal `log_gap`, with both hash mismatch controls. Original source/stored gzip
+unchanged. [Dossier](data-rights-current-content.md#2026-11-05--public-company-replay-projection-feasibility)
+owns exact commands, hashes, failed observer corrections, retained small probes and
+limits. Final producer, Go, Node, cross-runtime comparison and affected vet pass.
+Temporary tests and owned tmpfs PG removed after terminal handles; shared resources
+preserved, SQL released. No runtime/wire/corpus/CI change or repeated package build.
+Review by: Codex root (author first filter only). Designated evidence review pending
+for the complete range after base. RP-606 remains OPEN. Next: reviewed versioned
+public Company contract preserving private originals and source/refusal guarantees;
+owner adoption is still required before implementation.

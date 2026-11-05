@@ -1,0 +1,81 @@
+"""Compare complete public replay observations; never print source salt values."""
+import base64
+import gzip
+import hashlib
+import json
+from pathlib import Path
+
+root = Path('.cache/garden-public-projection-feasibility')
+sha = lambda data: hashlib.sha256(data).hexdigest()
+source_bytes = (root / 'source.json').read_bytes()
+source = json.loads(source_bytes)
+binding = json.loads((root / 'source-binding.json').read_text())
+go = json.loads((root / 'go-results.json').read_text())
+ts = json.loads((root / 'ts-results.json').read_text())
+assert sha(source_bytes) == binding['source_file_sha256']
+archive_bytes = base64.b64decode(source['archive'])
+assert 'sha256:' + sha(archive_bytes) == binding['original_archive_sha256']
+for result in [go, ts]:
+    assert result['source_sha256'] == sha(source_bytes)
+    assert result['original_archive_sha256'] == sha(archive_bytes)
+    assert result['original_bytes_unchanged'] is True
+    assert result['private_history_changed'] is False
+    assert result['implementation_adopted'] is False
+assert len(go['arms']) == len(ts['arms']) == 4
+summaries = []
+for index, name in enumerate(['original', 'null_surrogate', 'missing_salt', 'missing_garden']):
+    a, b = go['arms'][index], ts['arms'][index]
+    assert a['arm'] == b['arm'] == name
+    verdict = 'verified' if index < 2 else 'state_divergence'
+    assert a['verdict'] == b['verdict'] == verdict
+    assert a['changed_fields'] == b['changed_fields'] == (0 if index == 0 else 2)
+    assert a['views'] == b['views'], f'Go/TS public views differ: {name}'
+    if index < 2:
+        assert len(a['views']) == 2
+        for view in a['views']:
+            assert set(view) == {'company', 'new_company', 'receipt', 'events'}
+            assert isinstance(view['events'], list) and view['events']
+        assert a['controls'] == b['controls'] == {
+            'receipt': 'state_divergence', 'events': 'state_divergence',
+            'gap': 'log_gap', 'constants': 'constants_mismatch'}
+    if index == 1:
+        assert a['public_views_equal'] is b['public_views_equal'] is True
+        assert a['founder_outputs_changed'] is b['founder_outputs_changed'] is True
+    summaries.append({'arm': name, 'verdict': verdict, 'changed_carry_inputs': a['changed_fields'],
+                      'complete_public_views_match': index < 2})
+assert go['arms'][0]['views'] == go['arms'][1]['views']
+assert go['harvest'] == ts['harvest']
+assert len(go['harvest']) == 4
+for row in go['harvest']:
+    assert row['changed_fields'] == 0 and row['verdict'] == 'log_gap'
+    assert row['payload_hash_control'] == row['resolved_hash_control'] == 'state_divergence'
+archive = json.loads(gzip.decompress(archive_bytes))
+assert len(archive['entries']) == 2
+original_json = json.dumps(archive, sort_keys=True, separators=(',', ':')).encode()
+salts, paths = [], []
+for index, entry in enumerate(archive['entries']):
+    garden = entry['replay_inputs']['resolved']['founder_carry']['founder_extensions']['server_garden']
+    salt = garden['salt_hex']
+    assert isinstance(salt, str) and len(salt) == 16 and all(c in '0123456789abcdef' for c in salt)
+    salts.append(salt)
+    garden['salt_hex'] = None
+    paths.append(f'entries[{index}].replay_inputs.resolved.founder_carry.founder_extensions.server_garden.salt_hex')
+assert salts[0] == salts[1]
+projection = json.dumps(archive, sort_keys=True, separators=(',', ':')).encode()
+assert all(s.encode() not in projection for s in salts)
+assert sha(projection) != sha(original_json)
+assert source_bytes == (root / 'source.json').read_bytes()
+(root / 'unapplied-projection.json').write_bytes(projection + b'\n')
+result = {
+    'source_file_sha256': sha(source_bytes), 'original_archive_sha256': sha(archive_bytes),
+    'runtime_public_views_match': True, 'arms': summaries, 'harvest_cases': 4,
+    'harvest_inputs_changed': 0, 'harvest_verdict': 'log_gap; deliberately nonterminal',
+    'harvest_payload_and_resolved_hash_refusals': True,
+    'private_source_bytes_unchanged': True, 'changed_paths': paths,
+    'salt_value_absent_from_in_memory_projection': True,
+    'source_canonical_json_sha256': sha(original_json), 'derived_canonical_json_sha256': sha(projection),
+    'current_C14_original_bytes_contract_satisfied_by_projection': False,
+    'private_state_substitution_authorized': False, 'new_protocol_implemented_or_adopted': False,
+    'founder_digests_compared_only_within_each_runtime': True}
+(root / 'comparison.json').write_text(json.dumps(result, indent=2) + '\n')
+print(json.dumps(result, indent=2))

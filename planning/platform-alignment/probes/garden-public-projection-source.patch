@@ -1,0 +1,40 @@
+--- a/server/gameserver/rights_garden_archive_observation_test.go
++++ b/server/gameserver/rights_garden_archive_observation_test.go
+@@ -29,2 +29,2 @@
+-func TestRightsGardenVerifiedArchiveObservationIntegration(t *testing.T) {
+-	for _, initialized := range []bool{false, true} {
++func TestGardenProjectionSourceObservationIntegration(t *testing.T) {
++	for _, initialized := range []bool{true} {
+@@ -176,0 +177,5 @@
++			post("01986666-f120-7000-8000-000000000004", "perform_manual_batch", companyRevision.Number, `"action_id":"manual.click","count":1,"window_ms":1`)
++			beforeExit, err := store.LoadLatest(ctx, companyRevision.StreamID)
++			if err != nil {
++				t.Fatal(err)
++			}
+@@ -194 +199 @@
+-			post("01986666-f120-7000-8000-000000000003", "wind_down", companyRevision.Number, fmt.Sprintf(`"expected_founder_revision":%d`, private.Revision.Number))
++			post("01986666-f120-7000-8000-000000000003", "wind_down", beforeExit.Revision.Number, fmt.Sprintf(`"expected_founder_revision":%d`, private.Revision.Number))
+@@ -210 +215 @@
+-			awaitComposedRunArchive(t, ctx, db, companyRevision.StreamID, 1)
++			awaitComposedRunArchive(t, ctx, db, companyRevision.StreamID, 2)
+@@ -294,0 +300,20 @@
++			frame, err := json.Marshal(struct {
++				ConstantsHash   string            `json:"constants_hash"`
++				CompanyStreamID string            `json:"company_stream_id"`
++				GenesisVersion  int               `json:"genesis_version"`
++				Genesis         []byte            `json:"genesis"`
++				Archive         []byte            `json:"archive"`
++				Artifacts       map[string][]byte `json:"artifacts"`
++			}{bundle.ConstantsHash, companyRevision.StreamID, companyRevision.Version, genesis, compressed, bundle.Artifacts})
++			if err != nil {
++				t.Fatal(err)
++			}
++			file, err := os.OpenFile(filepathRoot(t)+"/.cache/garden-public-projection-feasibility/source.json", os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0644)
++			if err != nil {
++				t.Fatal(err)
++			}
++			_, writeErr := file.Write(frame)
++			closeErr := file.Close()
++			if writeErr != nil || closeErr != nil {
++				t.Fatal("export exact fixture evidence failed", writeErr, closeErr)
++			}

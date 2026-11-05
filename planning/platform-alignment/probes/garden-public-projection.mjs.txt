@@ -1,0 +1,85 @@
+import { readFileSync, writeFileSync } from "node:fs";
+import { createHash } from "node:crypto";
+import { gunzipSync } from "node:zlib";
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+const root=path.resolve(".cache/garden-public-projection-feasibility");
+const sourceBytes=readFileSync(path.join(root,"source.json"));
+const source=JSON.parse(sourceBytes);
+const archive=JSON.parse(gunzipSync(Buffer.from(source.archive,"base64")));
+const sha=(value)=>createHash("sha256").update(value).digest("hex");
+const must=(ok,message)=>{if(!ok)throw new Error(message);};
+must(archive.entries.length===2,"actual source must contain ordinary command + Exit");
+const {createServer}=await import(pathToFileURL(path.resolve("client/node_modules/vite/dist/node/index.js")));
+const vite=await createServer({configFile:path.resolve("client/vite.config.ts"),root:path.resolve("client"),server:{middlewareMode:true},appType:"custom"});
+try {
+ const api=await vite.ssrLoadModule("/src/replay.ts");
+ const {loadReplayCatalogBundle,restoreReplayState,encodeReplayState,applyLogged,applyLoggedExit,verifyReplayRun,canonicalJSONString}=api;
+ const artifacts=Object.fromEntries(Object.entries(source.artifacts).map(([name,value])=>[name,Buffer.from(value,"base64").toString("utf8")]));
+ const catalogs=await loadReplayCatalogBundle(source.constants_hash,artifacts);
+ const genesis=JSON.parse(Buffer.from(source.genesis,"base64"));
+ const identity={constantsHash:source.constants_hash,genesisVersion:source.genesis_version};
+ const restore=(state,version)=>restoreReplayState(state,version,catalogs.economy,{meters:catalogs.meters,achievements:catalogs.achievements,doctrines:catalogs.doctrines,opportunities:catalogs.opportunities});
+ const entries=archive.entries.map(entry=>({seq:entry.seq,canonicalPayload:canonicalJSONString(entry.canonical_payload),replayInputs:entry.replay_inputs,receiptJSON:canonicalJSONString(entry.receipt),eventsJSON:canonicalJSONString(entry.events.filter(event=>event.stream_id===source.company_stream_id||event.kind==="founder_advanced").map(({kind,schema_version,intent_id,payload})=>({kind,schema_version,intent_id,payload}))),terminal:entry.replay_inputs.resolved.kind==="exit"&&entry.receipt.outcome==="applied"}));
+ const project=(input,arm)=>{
+  const copy=structuredClone(input);
+  const extensions=copy.resolved?.founder_carry?.founder_extensions;
+  if(arm==="original"||extensions?.server_garden===undefined)return {value:copy,changed:0};
+  must(Object.hasOwn(extensions.server_garden,"salt_hex"),"input missing original salt member");
+  if(arm==="null_surrogate")extensions.server_garden.salt_hex=null;
+  else if(arm==="missing_salt")delete extensions.server_garden.salt_hex;
+  else if(arm==="missing_garden")delete extensions.server_garden;
+  else throw new Error("unknown arm");
+  return {value:copy,changed:1};
+ };
+ const views=async(rows)=>{
+  let state=restore(genesis,source.genesis_version);const output=[],founders=[];
+  for(const row of rows){
+   let transition,newCompany=null,events;
+   if(row.replayInputs.resolved.kind==="exit"){
+    transition=await applyLoggedExit(state,row.canonicalPayload,catalogs,row.replayInputs);
+    events=[...transition.founderEvents,...transition.companyEndedEvents,...transition.companyStartedEvents];
+    state=transition.finalCompany;newCompany=transition.newCompany===null?null:encodeReplayState(transition.newCompany);
+    founders.push(sha(canonicalJSONString(transition.founder)));
+   }else{transition=await applyLogged(state,row.canonicalPayload,catalogs,row.replayInputs);state=transition.state;events=transition.events;}
+   output.push({company:encodeReplayState(state),new_company:newCompany,receipt:transition.receipt,events});
+  }
+  return {views:output,founder_digests:founders};
+ };
+ const results=[];let baseViews,baseFounders;
+ for(const arm of ["original","null_surrogate","missing_salt","missing_garden"]){
+  let changed=0;
+  const rows=entries.map(row=>{const value=project(row.replayInputs,arm);changed+=value.changed;return {...row,replayInputs:value.value};});
+  const verdict=await verifyReplayRun(genesis,catalogs,rows,identity);
+  if(arm==="original")must(verdict==="verified"&&changed===0,"original TS source failed");else must(changed===2,"TS projection missed a carry");
+  const result={arm,verdict,changed_fields:changed,views:[],founder_digests:[]};
+  if(verdict==="verified"){
+   Object.assign(result,await views(rows));
+   const viewBytes=canonicalJSONString(result.views),founderBytes=JSON.stringify(result.founder_digests);
+   if(arm==="original"){baseViews=viewBytes;baseFounders=founderBytes;}else{result.public_views_equal=viewBytes===baseViews;result.founder_outputs_changed=founderBytes!==baseFounders;}
+   const corruptReceipt=rows.map((row,index)=>index===rows.length-1?{...row,receiptJSON:"{}"}:row);
+   const corruptEvents=rows.map((row,index)=>index===rows.length-1?{...row,eventsJSON:"[]"}:row);
+   result.controls={receipt:await verifyReplayRun(genesis,catalogs,corruptReceipt,identity),events:await verifyReplayRun(genesis,catalogs,corruptEvents,identity),gap:await verifyReplayRun(genesis,catalogs,rows.slice(1),identity),constants:await verifyReplayRun(genesis,catalogs,rows,{...identity,constantsHash:`sha256:${"0".repeat(64)}`})};
+   must(result.controls.receipt==="state_divergence"&&result.controls.events==="state_divergence"&&result.controls.gap==="log_gap"&&result.controls.constants==="constants_mismatch",`lost TS refusal for ${arm}`);
+  }
+  results.push(result);
+  console.log(JSON.stringify({arm,verdict,changed_fields:changed,public_views_equal:result.public_views_equal,founder_outputs_changed:result.founder_outputs_changed,controls:result.controls}));
+ }
+ const corpus=JSON.parse(readFileSync("testdata/replay/garden-v1.json"));must(corpus.company_cases.length===4,"missing harvest population");const harvest=[];
+ for(const row of corpus.company_cases){
+  const projected=project(row.replay_inputs,"null_surrogate");must(projected.changed===0&&canonicalJSONString(projected.value)===canonicalJSONString(row.replay_inputs),"secret-free harvest changed");
+  const transition=await applyLogged(restore(row.pre_state,row.state_version),canonicalJSONString(row.canonical_payload),catalogs,projected.value);
+  must(transition.outcome===row.outcome&&canonicalJSONString(encodeReplayState(transition.state))===row.post_state_json&&canonicalJSONString(transition.receipt)===row.receipt_json&&canonicalJSONString(transition.events)===row.events_json,`harvest baseline diverged: ${row.name}`);
+  const entry={seq:1,canonicalPayload:canonicalJSONString(row.canonical_payload),replayInputs:projected.value,receiptJSON:row.receipt_json,eventsJSON:row.events_json,terminal:false};const id={constantsHash:source.constants_hash,genesisVersion:row.state_version};
+  const verdict=await verifyReplayRun(row.pre_state,catalogs,[entry],id);must(verdict==="log_gap","nonterminal harvest misclassified");
+  const falseHash=`sha256:${"0".repeat(64)}`;must(row.canonical_payload.harvest_hash!==falseHash&&row.replay_inputs.resolved.harvest_hash!==falseHash,"hash control already poisoned");
+  const badPayload={...row.canonical_payload,harvest_hash:falseHash};
+  const inputs=structuredClone(row.replay_inputs);inputs.resolved.harvest_hash=falseHash;
+  const payload_hash_control=await verifyReplayRun(row.pre_state,catalogs,[{...entry,canonicalPayload:canonicalJSONString(badPayload)}],id);
+  const resolved_hash_control=await verifyReplayRun(row.pre_state,catalogs,[{...entry,replayInputs:inputs}],id);
+  must(payload_hash_control==="state_divergence"&&resolved_hash_control==="state_divergence","harvest hash refusal lost");
+  harvest.push({name:row.name,changed_fields:0,verdict,payload_hash_control,resolved_hash_control,state:encodeReplayState(transition.state),receipt:transition.receipt,events:transition.events});
+ }
+ must(sourceBytes.equals(readFileSync(path.join(root,"source.json"))),"source bytes changed");
+ writeFileSync(path.join(root,"ts-results.json"),JSON.stringify({source_sha256:sha(sourceBytes),original_archive_sha256:sha(Buffer.from(source.archive,"base64")),arms:results,harvest,original_bytes_unchanged:true,private_history_changed:false,implementation_adopted:false},null,2)+"\n");
+}finally{await vite.close();}

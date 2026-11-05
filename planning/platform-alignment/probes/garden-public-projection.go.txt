@@ -1,0 +1,333 @@
+package production
+
+import (
+	"bytes"
+	"compress/gzip"
+	"crypto/sha256"
+	"encoding/json"
+	"fmt"
+	"io"
+	"os"
+	"testing"
+	"time"
+
+	"cloud-clicker/server/economy"
+	"cloud-clicker/server/save"
+)
+
+type rightsProjectionSource struct {
+	ConstantsHash   string            `json:"constants_hash"`
+	CompanyStreamID string            `json:"company_stream_id"`
+	GenesisVersion  int               `json:"genesis_version"`
+	Genesis         []byte            `json:"genesis"`
+	Archive         []byte            `json:"archive"`
+	Artifacts       map[string][]byte `json:"artifacts"`
+}
+type rightsProjectionArchive struct {
+	Entries []struct {
+		Sequence int64           `json:"seq"`
+		Payload  json.RawMessage `json:"canonical_payload"`
+		Inputs   json.RawMessage `json:"replay_inputs"`
+		Receipt  json.RawMessage `json:"receipt"`
+		Events   []struct {
+			Stream  string          `json:"stream_id"`
+			Kind    string          `json:"kind"`
+			Version int             `json:"schema_version"`
+			Intent  string          `json:"intent_id"`
+			Payload json.RawMessage `json:"payload"`
+		} `json:"events"`
+	} `json:"entries"`
+}
+type rightsProjectionRow struct {
+	Arm                   string                   `json:"arm"`
+	Verdict               ReplayVerdict            `json:"verdict"`
+	ChangedFields         int                      `json:"changed_fields"`
+	Views                 []json.RawMessage        `json:"views"`
+	FounderDigests        []string                 `json:"founder_digests"`
+	PublicViewsEqual      *bool                    `json:"public_views_equal,omitempty"`
+	FounderOutputsChanged *bool                    `json:"founder_outputs_changed,omitempty"`
+	Controls              map[string]ReplayVerdict `json:"controls,omitempty"`
+}
+
+// UNAPPLIED in-memory feasibility study. Current C14 original-byte transport
+// remains unchanged. Null is an experimental replay surrogate, not private state.
+func TestGardenProjectionFeasibilityObservation(t *testing.T) {
+	const root = "../../.cache/garden-public-projection-feasibility/"
+	originalFile, err := os.ReadFile(root + "source.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var source rightsProjectionSource
+	if err := json.Unmarshal(originalFile, &source); err != nil {
+		t.Fatal(err)
+	}
+	catalogs := gardenContentBundle(t)
+	if source.ConstantsHash != catalogs.ConstantsHash || len(source.Artifacts) != len(catalogs.Artifacts) {
+		t.Fatal("source catalog identity mismatch")
+	}
+	for name, data := range source.Artifacts {
+		if !bytes.Equal(data, catalogs.Artifacts[name]) {
+			t.Fatal("stored artifact bytes mismatch", name)
+		}
+	}
+	reader, err := gzip.NewReader(bytes.NewReader(source.Archive))
+	if err != nil {
+		t.Fatal(err)
+	}
+	decoded, err := io.ReadAll(reader)
+	_ = reader.Close()
+	if err != nil {
+		t.Fatal(err)
+	}
+	var archive rightsProjectionArchive
+	if err := json.Unmarshal(decoded, &archive); err != nil || len(archive.Entries) != 2 {
+		t.Fatal("invalid actual archive", err)
+	}
+	entries := make([]ReplayLogEntry, len(archive.Entries))
+	for i, row := range archive.Entries {
+		events := []map[string]any{}
+		for _, event := range row.Events {
+			if event.Stream == source.CompanyStreamID || event.Kind == "founder_advanced" {
+				events = append(events, map[string]any{"kind": event.Kind, "schema_version": event.Version, "intent_id": event.Intent, "payload": event.Payload})
+			}
+		}
+		encoded, err := json.Marshal(events)
+		if err != nil {
+			t.Fatal(err)
+		}
+		payload, err := normalizeReplayJSON(row.Payload)
+		if err != nil {
+			t.Fatal(err)
+		}
+		entries[i] = ReplayLogEntry{Sequence: row.Sequence, CanonicalPayload: payload, ReplayInputs: row.Inputs, ReceiptJSON: row.Receipt, EventsJSON: encoded}
+	}
+	verify := func(rows []ReplayLogEntry) ReplayVerdict {
+		return VerifyReplayRun(source.Genesis, source.GenesisVersion, catalogs, rows, source.ConstantsHash, false)
+	}
+	results := []rightsProjectionRow{}
+	var baseViews, baseFounder []byte
+	for _, arm := range []string{"original", "null_surrogate", "missing_salt", "missing_garden"} {
+		projected := append([]ReplayLogEntry(nil), entries...)
+		count := 0
+		for i := range projected {
+			projected[i].ReplayInputs, err = rightsProjectGardenInput(projected[i].ReplayInputs, arm)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if !bytes.Equal(projected[i].ReplayInputs, entries[i].ReplayInputs) {
+				count++
+			}
+		}
+		verdict := verify(projected)
+		if arm == "original" && (verdict != ReplayVerified || count != 0) {
+			t.Fatal("original control failed", verdict, count)
+		}
+		if arm != "original" && count != 2 {
+			t.Fatal("projection population lost a carry", arm, count)
+		}
+		result := rightsProjectionRow{Arm: arm, Verdict: verdict, ChangedFields: count, Views: []json.RawMessage{}, FounderDigests: []string{}}
+		if verdict == ReplayVerified {
+			result.Views, result.FounderDigests = rightsProjectionViews(t, source, catalogs, projected)
+			viewBytes, _ := json.Marshal(result.Views)
+			founderBytes, _ := json.Marshal(result.FounderDigests)
+			if arm == "original" {
+				baseViews, baseFounder = viewBytes, founderBytes
+			} else {
+				equal := canonicalJSONEqual(viewBytes, baseViews)
+				different := !bytes.Equal(founderBytes, baseFounder)
+				result.PublicViewsEqual = &equal
+				result.FounderOutputsChanged = &different
+			}
+			corrupt := append([]ReplayLogEntry(nil), projected...)
+			corrupt[len(corrupt)-1].ReceiptJSON = []byte(`{}`)
+			receipt := verify(corrupt)
+			corrupt = append([]ReplayLogEntry(nil), projected...)
+			corrupt[len(corrupt)-1].EventsJSON = []byte(`[]`)
+			events := verify(corrupt)
+			gap := verify(projected[1:])
+			constants := VerifyReplayRun(source.Genesis, source.GenesisVersion, catalogs, projected, "sha256:0000000000000000000000000000000000000000000000000000000000000000", false)
+			result.Controls = map[string]ReplayVerdict{"receipt": receipt, "events": events, "gap": gap, "constants": constants}
+			if receipt != ReplayStateDivergence || events != ReplayStateDivergence || gap != ReplayLogGap || constants != ReplayConstantsMismatch {
+				t.Fatal("projection lost a refusal", arm, result.Controls)
+			}
+		}
+		results = append(results, result)
+		t.Logf("Go projection summary=%s", mustJSON(map[string]any{"arm": arm, "verdict": verdict, "changed_fields": count, "public_views_equal": result.PublicViewsEqual, "founder_outputs_changed": result.FounderOutputsChanged, "controls": result.Controls}))
+	}
+	corpusBytes, err := os.ReadFile(gardenCorpusPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var corpus gardenCorpus
+	if err := json.Unmarshal(corpusBytes, &corpus); err != nil || len(corpus.CompanyCases) != 4 {
+		t.Fatal("missing four harvest shapes", err)
+	}
+	harvestResults := []map[string]any{}
+	for _, row := range corpus.CompanyCases {
+		payload, err := normalizeReplayJSON(row.CanonicalPayload)
+		if err != nil {
+			t.Fatal(err)
+		}
+		inputs, err := rightsProjectGardenInput(row.ReplayInputs, "null_surrogate")
+		if err != nil || !bytes.Equal(inputs, row.ReplayInputs) {
+			t.Fatal("already secret-free harvest was changed", row.Name, err)
+		}
+		state, err := save.RestoreState(row.PreState, row.StateVersion, catalogs.Economy, economy.ScopeCompany, time.Time{})
+		if err != nil {
+			t.Fatal(err)
+		}
+		transition, err := ApplyLogged(state, payload, catalogs, inputs)
+		if err != nil || string(transition.Outcome) != row.Outcome || !canonicalJSONEqual(mustEncodeState(t, transition.State), []byte(row.PostStateJSON)) || !canonicalJSONEqual(transition.Receipt, []byte(row.ReceiptJSON)) || !canonicalJSONEqual(marshalReplayEvents(transition.Events), []byte(row.EventsJSON)) {
+			t.Fatal("harvest original control diverged", row.Name, err)
+		}
+		entry := ReplayLogEntry{Sequence: 1, CanonicalPayload: payload, ReplayInputs: inputs, ReceiptJSON: []byte(row.ReceiptJSON), EventsJSON: []byte(row.EventsJSON)}
+		honest := VerifyReplayRun(row.PreState, row.StateVersion, catalogs, []ReplayLogEntry{entry}, catalogs.ConstantsHash, false)
+		if honest != ReplayLogGap {
+			t.Fatal("nonterminal harvest was misclassified", row.Name, honest)
+		}
+		var request map[string]json.RawMessage
+		if err := json.Unmarshal(payload, &request); err != nil {
+			t.Fatal(err)
+		}
+		request["harvest_hash"] = json.RawMessage(`"sha256:0000000000000000000000000000000000000000000000000000000000000000"`)
+		poisoned := entry
+		poisoned.CanonicalPayload, err = normalizeReplayJSON(mustJSON(request))
+		if err != nil {
+			t.Fatal(err)
+		}
+		bad := VerifyReplayRun(row.PreState, row.StateVersion, catalogs, []ReplayLogEntry{poisoned}, catalogs.ConstantsHash, false)
+		if bad != ReplayStateDivergence {
+			t.Fatal("harvest hash refusal lost", row.Name, bad)
+		}
+		var replayWire replayInputsWire
+		if err := json.Unmarshal(inputs, &replayWire); err != nil {
+			t.Fatal(err)
+		}
+		var resolved gardenCompanyResolved
+		if err := json.Unmarshal(replayWire.Resolved, &resolved); err != nil {
+			t.Fatal(err)
+		}
+		if resolved.HarvestHash == "sha256:0000000000000000000000000000000000000000000000000000000000000000" {
+			t.Fatal("resolved control already poisoned")
+		}
+		resolved.HarvestHash = "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+		replayWire.Resolved = mustJSON(resolved)
+		poisoned = entry
+		poisoned.ReplayInputs = mustJSON(replayWire)
+		badResolved := VerifyReplayRun(row.PreState, row.StateVersion, catalogs, []ReplayLogEntry{poisoned}, catalogs.ConstantsHash, false)
+		if badResolved != ReplayStateDivergence {
+			t.Fatal("resolved harvest hash refusal lost", row.Name, badResolved)
+		}
+		harvestResults = append(harvestResults, map[string]any{"name": row.Name, "changed_fields": 0, "verdict": honest, "payload_hash_control": bad, "resolved_hash_control": badResolved, "state": json.RawMessage(mustEncodeState(t, transition.State)), "receipt": json.RawMessage(transition.Receipt), "events": json.RawMessage(marshalReplayEvents(transition.Events))})
+	}
+	after, err := os.ReadFile(root + "source.json")
+	if err != nil || !bytes.Equal(after, originalFile) {
+		t.Fatal("source bytes changed", err)
+	}
+	output := map[string]any{"source_sha256": fmt.Sprintf("%x", sha256.Sum256(originalFile)), "original_archive_sha256": fmt.Sprintf("%x", sha256.Sum256(source.Archive)), "arms": results, "harvest": harvestResults, "original_bytes_unchanged": true, "private_history_changed": false, "implementation_adopted": false}
+	if err := os.WriteFile(root+"go-results.json", mustJSON(output), 0644); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func rightsProjectGardenInput(data []byte, arm string) ([]byte, error) {
+	if arm == "original" {
+		return append([]byte(nil), data...), nil
+	}
+	var wire, resolved, carry, extensions, garden map[string]json.RawMessage
+	if err := json.Unmarshal(data, &wire); err != nil {
+		return nil, err
+	}
+	if err := json.Unmarshal(wire["resolved"], &resolved); err != nil {
+		return nil, err
+	}
+	if len(resolved["founder_carry"]) == 0 {
+		return append([]byte(nil), data...), nil
+	}
+	if err := json.Unmarshal(resolved["founder_carry"], &carry); err != nil {
+		return nil, err
+	}
+	if err := json.Unmarshal(carry["founder_extensions"], &extensions); err != nil {
+		return nil, err
+	}
+	if len(extensions["server_garden"]) == 0 {
+		return append([]byte(nil), data...), nil
+	}
+	if err := json.Unmarshal(extensions["server_garden"], &garden); err != nil {
+		return nil, err
+	}
+	switch arm {
+	case "null_surrogate":
+		garden["salt_hex"] = json.RawMessage("null")
+	case "missing_salt":
+		delete(garden, "salt_hex")
+	case "missing_garden":
+		delete(extensions, "server_garden")
+	default:
+		return nil, fmt.Errorf("unknown projection arm")
+	}
+	if arm != "missing_garden" {
+		extensions["server_garden"] = mustJSON(garden)
+	}
+	carry["founder_extensions"] = mustJSON(extensions)
+	resolved["founder_carry"] = mustJSON(carry)
+	wire["resolved"] = mustJSON(resolved)
+	return json.Marshal(wire)
+}
+
+func rightsProjectionViews(t *testing.T, source rightsProjectionSource, catalogs CatalogBundle, entries []ReplayLogEntry) ([]json.RawMessage, []string) {
+	t.Helper()
+	state, err := save.RestoreState(source.Genesis, source.GenesisVersion, catalogs.Economy, economy.ScopeCompany, time.Time{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	views := []json.RawMessage{}
+	founders := []string{}
+	for _, entry := range entries {
+		wire, err := parseReplayInputs(entry.ReplayInputs)
+		if err != nil {
+			t.Fatal(err)
+		}
+		var discriminator struct {
+			Kind string `json:"kind"`
+		}
+		if err := json.Unmarshal(wire.Resolved, &discriminator); err != nil {
+			t.Fatal(err)
+		}
+		var receipt, events, newCompany json.RawMessage
+		if discriminator.Kind == "exit" {
+			transition, err := ApplyLoggedExit(state, entry.CanonicalPayload, catalogs, entry.ReplayInputs)
+			if err != nil {
+				t.Fatal(err)
+			}
+			state = transition.Company
+			receipt = transition.Decision.Receipt
+			newCompany = mustEncodeState(t, transition.Decision.NewCompanyState)
+			emitted := append([]save.EventWrite(nil), transition.Decision.FounderEvents...)
+			emitted = append(emitted, transition.Decision.CompanyEndedEvents...)
+			emitted = append(emitted, transition.Decision.CompanyStartedEvents...)
+			events = marshalReplayEvents(emitted)
+			var resolved replayExitResolved
+			if err := json.Unmarshal(wire.Resolved, &resolved); err != nil {
+				t.Fatal(err)
+			}
+			encoded := mustJSON(replayFounderOutput(transition.Founder, resolved.FounderCarry))
+			founders = append(founders, fmt.Sprintf("%x", sha256.Sum256(encoded)))
+		} else {
+			transition, err := ApplyLogged(state, entry.CanonicalPayload, catalogs, entry.ReplayInputs)
+			if err != nil {
+				t.Fatal(err)
+			}
+			state = transition.State
+			receipt = transition.Receipt
+			events = marshalReplayEvents(transition.Events)
+		}
+		view := mustJSON(map[string]json.RawMessage{"company": mustEncodeState(t, state), "new_company": newCompany, "receipt": receipt, "events": events})
+		normalized, err := normalizeReplayJSON(view)
+		if err != nil {
+			t.Fatal(err)
+		}
+		views = append(views, normalized)
+	}
+	return views, founders
+}

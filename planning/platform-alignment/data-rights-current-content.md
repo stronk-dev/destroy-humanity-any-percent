@@ -272,3 +272,114 @@ default/deployed exposure or feature/release approval. All handles terminal,
 temporary copy/owned tmpfs PG removed, shared resources preserved, SQL released.
 Ignored `.cache/garden-public-archive-review/review-results.json`, digest checked
 by root: `afeabf2c50b4582a4ec0330b6e945d0624f18301a3c39e2d3cc7a9f242265ba3`.
+
+## 2026-11-05 — Public Company replay projection feasibility
+
+Predeclared in the [payload plan](data-rights-payload-core-plan.md#2026-11-05--rp-606-public-company-replay-feasibility),
+source `3a1b8737`, unchanged runtime/kernel0.3.226/migration86. This is an **unapplied
+in-memory experiment**, not a privacy fix or adopted public wire format.
+
+A fresh actual HTTP unlock/plant → ordinary manual command → Wind Down run passes
+normal verification/SQL compaction (terminal sequence2), with four actual board
+rows and original-byte unauthenticated download. Both archived Company inputs carry
+the same server-generated salt. Private Founder head/history retain it; the live
+Company source row is correctly pruned in this run. Progressed genesis and initial
+Fiscal budget use the prior fixture-only grown catalog, not natural progression
+or default epoch8. No board insertion, synthetic archive or changed worker guard.
+The exported original genesis/archive/pinned catalog bytes feed both actual replay
+libraries offline. The optional TypeScript HTTP/catalog-download seam is not run.
+
+| Arm | Go / TypeScript verdict | Company result |
+|---|---|---|
+| Original | verified / verified | Baseline |
+| Replace only salt value with null | verified / verified | Identical complete state, receipt and ordered events at both entries, including final and next Company |
+| Remove salt member | state_divergence / state_divergence | Existing private codec rejects it |
+| Remove Garden extension | state_divergence / state_divergence | Existing private codec rejects it |
+
+The null arm changes two carry inputs, at
+`entries[0..1].replay_inputs.resolved.founder_carry.founder_extensions.server_garden.salt_hex`.
+Its full Founder output changes in each runtime: **it is not a valid private-state
+substitution**. Founder digests establish within-runtime changes only; differing
+Go/TS Founder encodings are not claimed byte-equal. All complete public view objects
+are independently compared across runtimes and between original/null arms.
+Receipt corruption, ordered-event corruption, sequence removal and wrong constants
+identity still refuse in both verifying arms and both runtimes. These are real
+consumer refusals, not merely changed metadata assertions.
+
+The four existing Company harvest cases match complete committed state/receipt/
+event goldens in both runtimes. They already omit salt: zero changed inputs, not
+four additional elision successes. Each deliberately nonterminal run returns
+`log_gap`; independently wrong payload and resolved harvest hashes each return
+`state_divergence`. The prior private-Founder growth-dependency study remains the
+private-verification evidence; it was not repeated.
+
+Original gzip SHA256 is
+`f9e4cafe345d725e3cfda49e2a845c8c7b6c1d52d09f50dad94c812722959973`.
+Read-only SQL before/after and a final direct query match it; source-file bytes
+also remain unchanged. Under the same canonical JSON serialization the original
+object hashes `82ae720c9c40ef8bf08b013810d3ebd16c8b3adb7281dddd522501cfc3d10ce6`,
+and the derived object `ffc89e832d437fb0fe1158578ec7a33c88706f4c97f8cb431c195d8f1b3f3636`.
+Thus the derived representation has a different identity; it cannot silently claim
+to satisfy C14's current original-byte promise. Raw exported fixture evidence stays
+ignored in `.cache/garden-public-projection-feasibility/`; no raw salt is committed.
+
+Executed producer53839 PASS1.10s/no skips; final Go70709 PASS0.04s (package0.343s).
+Final Node exits0, and the cross-runtime comparison exits0 after explicitly
+requiring nonempty event lists at both entries. Affected `make vet GO_PACKAGES=./production`
+exits0. The initial TypeScript instrument omitted Exit events, so its first output
+is excluded as complete equality evidence. The first extraction correction also
+changed the harvest loop incorrectly and failed with ReferenceError; retained as
+invalid, then corrected narrowly. Final results include both Exit and harvest
+events. The earlier vet handle's lost exit status is not credited; the directly
+observed repeat passed. No product/library/assertion/corpus change was made.
+
+Reproduction uses small retained manual observers, outside ordinary CI. Start with
+no other SQL owner and an absent `.cache/garden-public-projection-feasibility/source.json`
+(the exporter refuses replacement), then from repository root:
+
+```sh
+mkdir -p .cache/garden-public-projection-feasibility
+cp planning/platform-alignment/probes/garden-verified-public-archive.go.txt server/gameserver/rights_garden_archive_observation_test.go
+git apply --unidiff-zero planning/platform-alignment/probes/garden-public-projection-source.patch
+make test-save-integration SAVE_TEST_PACKAGES=./gameserver SAVE_TEST_FLAGS='-run TestGardenProjectionSourceObservationIntegration -v' SAVE_TEST_COUNT=1
+cp planning/platform-alignment/probes/garden-public-projection.go.txt server/production/rights_garden_projection_observation_test.go
+make test-go GO_PACKAGES=./production GO_TEST_FLAGS='-count=1 -run TestGardenProjectionFeasibilityObservation -v'
+cp planning/platform-alignment/probes/garden-public-projection.mjs.txt .cache/garden-public-projection-feasibility/observe.mjs
+node .cache/garden-public-projection-feasibility/observe.mjs
+```
+
+Bind the fresh source rather than reuse this run's random IDs/times/salt/hash:
+
+```sh
+python3 - <<'PY'
+import base64, hashlib, json
+from pathlib import Path
+p = Path('.cache/garden-public-projection-feasibility')
+b = (p / 'source.json').read_bytes()
+s = json.loads(b)
+(p / 'source-binding.json').write_text(json.dumps({
+    'source_file_sha256': hashlib.sha256(b).hexdigest(),
+    'original_archive_sha256': 'sha256:' + hashlib.sha256(base64.b64decode(s['archive'])).hexdigest()
+}) + '\n')
+PY
+cp planning/platform-alignment/probes/garden-public-projection-compare.py.txt .cache/garden-public-projection-feasibility/compare.py
+python3 .cache/garden-public-projection-feasibility/compare.py
+make vet GO_PACKAGES=./production
+```
+
+Remove only the two temporary test copies after all handles terminate. Root retained
+the executed source and verified the zero-context producer patch reconstructs its
+exact bytes, removed its temporary tests/owned tmpfs PG and preserved shared
+network/caches. The SQL image is Linux-amd64 under ARM64 Desktop emulation.
+No all-historical-version/all-command, mature Garden-production, natural pacing,
+release-binary, native supported-host, R-006, deletion/restore or full rights proof.
+
+The result supports specifying a separately versioned **Company-only** public
+representation with its own identity and explicit secret exclusion. A future
+public codec may omit the secret rather than fabricate dormant Garden state; the
+null surrogate here is only a feasibility instrument. Private original history,
+source binding and refusal strength remain required. SG8/AC10/OD-12 and API C14
+still require an accepted reconciliation before implementation/publication.
+RP-606 stays OPEN. Ignored evidence manifest `evidence.json` SHA256
+`04fd43829cbe80d0736f49ebdc1f13f3d92ab15b51711b917e1526fe3be3345b`.
+Author/first filter: Codex root; independent evidence review pending.

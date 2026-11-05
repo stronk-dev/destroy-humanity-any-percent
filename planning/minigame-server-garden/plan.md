@@ -20,6 +20,12 @@ Complete `ce932586..e153eaf6` evidence range is independently approved, with a f
 server-generated salt reproducing the failure; this supplies no privacy fix or
 full Garden acceptance. Do not repeat the completed observer for reassurance.
 
+**Public replay feasibility,2026-11-05:** the [unapplied Go/TypeScript study](../platform-alignment/data-rights-current-content.md#2026-11-05--public-company-replay-projection-feasibility)
+preserves complete Company outputs on an actual ordinary-command/Exit archive and
+retains refusal controls; full Founder output changes. This supports drafting a
+versioned public representation, not private substitution or a silent C14 rewrite.
+RP-606 remains open; independent evidence review pending.
+
 **Current bounded repair, 2026-10-15 (RP-670):** menu command/Close handoff retains a
 newer focus choice even when its element disappears before the render tick. Six old-component
 native failures establish the regression; retained-focus companions pass. The observer starts
