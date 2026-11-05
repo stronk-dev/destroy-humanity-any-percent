@@ -1,0 +1,588 @@
+{
+  "version": 1,
+  "projection_only": true,
+  "runtime_implemented": false,
+  "provider_version": "2.2.0",
+  "kernel_version": "0.3.229",
+  "source_sha256": {
+    "client/src/numeric.ts": "40c33bd394b71e2c436f90fc5c995cbe595a8feaed3d298d9a2533aa35055ead",
+    "client/src/economy.ts": "433377eb916a70f55c4b72a67a33c588e96b0bfd86ac62baf1423b031a9fa318",
+    "client/src/commons.ts": "0082f38a24aab037a9ad8457d2d3926cbecc3148195f1f5bffb1b21c40f6c2d1",
+    "server/decimal/decimal.go": "0f20973d76fa607003bd72dc51a6fc7f6cc738f9eccd920ba7e5965deea02138",
+    "kernel/VERSION": "31c4a305b0b49f21a5356c78c0e9a04435fb199a194f7ca17ee8ca6b87b0d7f9",
+    "testdata/decimal-vectors.json": "879ce1306cfd01bc7cfc493a98441280f35f7686a1b9e8801fcc7c55011a0f22",
+    "testdata/numeric-lower-domain-v1.json": "892e90203d2a8fdaeaf692b9f9f829584cba8c92a04dbcf4bb790a631b49eca2",
+    "client/node_modules/break_infinity.js/dist/break_infinity.common.js": "f3be0918a5ed463a887e5b622574de81dd035c393021af7db9485f34400bda06"
+  },
+  "model_sha256": "7229fd2aa3f8ee24799f05b54ec31ac23cfdc4b737d61cd52bc02295041799a0",
+  "populations": {
+    "retained_golden": 953,
+    "retained_lower": 13,
+    "targeted": 24
+  },
+  "counters": {
+    "evaluations": 990,
+    "overrides": 7,
+    "shrinking": 2,
+    "growing": 5,
+    "unexpected": 0
+  },
+  "excluded_cases": 0,
+  "truncated": false,
+  "guard_exhausted": false,
+  "objective_reached": true,
+  "observations": [
+    {
+      "name": "lower-pow2048",
+      "op": "pow",
+      "power": "2048",
+      "source": [
+        "1",
+        "-8999999999999999"
+      ],
+      "raw": {
+        "class": "finite",
+        "state": false,
+        "wire": null,
+        "mantissa": "1",
+        "exponent": "-18431999999999997952"
+      },
+      "projected": {
+        "class": "finite",
+        "state": false,
+        "wire": null,
+        "mantissa": "1",
+        "exponent": "-18431999999999997952"
+      }
+    },
+    {
+      "name": "lower-exp-1e20",
+      "op": "exp",
+      "power": null,
+      "source": [
+        "-1",
+        "20"
+      ],
+      "raw": {
+        "class": "finite",
+        "state": false,
+        "wire": null,
+        "mantissa": "1",
+        "exponent": "-43429448190325178368"
+      },
+      "projected": {
+        "class": "finite",
+        "state": false,
+        "wire": null,
+        "mantissa": "1",
+        "exponent": "-43429448190325178368"
+      }
+    },
+    {
+      "name": "lower-exp-1e308",
+      "op": "exp",
+      "power": null,
+      "source": [
+        "-1",
+        "308"
+      ],
+      "raw": {
+        "class": "finite",
+        "state": false,
+        "wire": null,
+        "mantissa": "1",
+        "exponent": "-43429448190325181664326212384354712475304195311206997910264123136536485371698426420242644848277108275589154799559282273784670658305678441219111463993421139996154609836819355496117075140762319534090573829933051853845343039802570211641179328951258596936099189032805939103300416122507157475790865582796574818304"
+      },
+      "projected": {
+        "class": "finite",
+        "state": false,
+        "wire": null,
+        "mantissa": "1",
+        "exponent": "-43429448190325181664326212384354712475304195311206997910264123136536485371698426420242644848277108275589154799559282273784670658305678441219111463993421139996154609836819355496117075140762319534090573829933051853845343039802570211641179328951258596936099189032805939103300416122507157475790865582796574818304"
+      }
+    },
+    {
+      "name": "lower-exp-1e309",
+      "op": "exp",
+      "power": null,
+      "source": [
+        "-1",
+        "309"
+      ],
+      "raw": {
+        "class": "finite",
+        "state": true,
+        "wire": "0",
+        "mantissa": "0",
+        "exponent": "0"
+      },
+      "projected": {
+        "class": "nan",
+        "state": false,
+        "wire": null,
+        "mantissa": "NaN",
+        "exponent": "NaN"
+      }
+    },
+    {
+      "name": "lower-finite-power-overflow",
+      "op": "pow",
+      "power": "1e+308",
+      "source": [
+        "1",
+        "-8999999999999999"
+      ],
+      "raw": {
+        "class": "finite",
+        "state": true,
+        "wire": "0",
+        "mantissa": "0",
+        "exponent": "0"
+      },
+      "projected": {
+        "class": "nan",
+        "state": false,
+        "wire": null,
+        "mantissa": "NaN",
+        "exponent": "NaN"
+      }
+    },
+    {
+      "name": "int64-neighbor-low",
+      "op": "pow",
+      "power": "1024.819115206086",
+      "source": [
+        "1",
+        "-8999999999999999"
+      ],
+      "raw": {
+        "class": "finite",
+        "state": false,
+        "wire": null,
+        "mantissa": "1",
+        "exponent": "-9223372036854773760"
+      },
+      "projected": {
+        "class": "finite",
+        "state": false,
+        "wire": null,
+        "mantissa": "1",
+        "exponent": "-9223372036854773760"
+      }
+    },
+    {
+      "name": "int64-edge",
+      "op": "pow",
+      "power": "1024.8191152060863",
+      "source": [
+        "1",
+        "-8999999999999999"
+      ],
+      "raw": {
+        "class": "finite",
+        "state": false,
+        "wire": null,
+        "mantissa": "1",
+        "exponent": "-9223372036854775808"
+      },
+      "projected": {
+        "class": "finite",
+        "state": false,
+        "wire": null,
+        "mantissa": "1",
+        "exponent": "-9223372036854775808"
+      }
+    },
+    {
+      "name": "int64-neighbor-high",
+      "op": "pow",
+      "power": "1024.8191152060865",
+      "source": [
+        "1",
+        "-8999999999999999"
+      ],
+      "raw": {
+        "class": "finite",
+        "state": false,
+        "wire": null,
+        "mantissa": "1",
+        "exponent": "-9223372036854777856"
+      },
+      "projected": {
+        "class": "finite",
+        "state": false,
+        "wire": null,
+        "mantissa": "1",
+        "exponent": "-9223372036854777856"
+      }
+    },
+    {
+      "name": "lower-negative-odd",
+      "op": "pow",
+      "power": "2049",
+      "source": [
+        "-1",
+        "-8999999999999999"
+      ],
+      "raw": {
+        "class": "finite",
+        "state": false,
+        "wire": null,
+        "mantissa": "-1",
+        "exponent": "-18440999999999997952"
+      },
+      "projected": {
+        "class": "finite",
+        "state": false,
+        "wire": null,
+        "mantissa": "-1",
+        "exponent": "-18440999999999997952"
+      }
+    },
+    {
+      "name": "lower-fractional",
+      "op": "pow",
+      "power": "2048.5",
+      "source": [
+        "1",
+        "-8999999999999999"
+      ],
+      "raw": {
+        "class": "finite",
+        "state": false,
+        "wire": null,
+        "mantissa": "1",
+        "exponent": "-18436499999999997952"
+      },
+      "projected": {
+        "class": "finite",
+        "state": false,
+        "wire": null,
+        "mantissa": "1",
+        "exponent": "-18436499999999997952"
+      }
+    },
+    {
+      "name": "upper-finite-power-overflow",
+      "op": "pow",
+      "power": "1e+308",
+      "source": [
+        "1",
+        "8999999999999999"
+      ],
+      "raw": {
+        "class": "finite",
+        "state": true,
+        "wire": "0",
+        "mantissa": "0",
+        "exponent": "0"
+      },
+      "projected": {
+        "class": "positive-infinity",
+        "state": false,
+        "wire": null,
+        "mantissa": "1",
+        "exponent": "9000000000000000"
+      }
+    },
+    {
+      "name": "upper-finite-exp-overflow",
+      "op": "exp",
+      "power": null,
+      "source": [
+        "1",
+        "309"
+      ],
+      "raw": {
+        "class": "finite",
+        "state": true,
+        "wire": "0",
+        "mantissa": "0",
+        "exponent": "0"
+      },
+      "projected": {
+        "class": "positive-infinity",
+        "state": false,
+        "wire": null,
+        "mantissa": "1",
+        "exponent": "9000000000000000"
+      }
+    },
+    {
+      "name": "upper-negative-base-even-overflow",
+      "op": "pow",
+      "power": "1e+308",
+      "source": [
+        "-1",
+        "8999999999999999"
+      ],
+      "raw": {
+        "class": "finite",
+        "state": true,
+        "wire": "0",
+        "mantissa": "0",
+        "exponent": "0"
+      },
+      "projected": {
+        "class": "positive-infinity",
+        "state": false,
+        "wire": null,
+        "mantissa": "1",
+        "exponent": "9000000000000000"
+      }
+    },
+    {
+      "name": "upper-negative-base-odd2049",
+      "op": "pow",
+      "power": "2049",
+      "source": [
+        "-1",
+        "8999999999999999"
+      ],
+      "raw": {
+        "class": "negative-infinity",
+        "state": false,
+        "wire": null,
+        "mantissa": "-1",
+        "exponent": "18440999999999997952"
+      },
+      "projected": {
+        "class": "negative-infinity",
+        "state": false,
+        "wire": null,
+        "mantissa": "-1",
+        "exponent": "18440999999999997952"
+      }
+    },
+    {
+      "name": "upper-negative-base-even2048",
+      "op": "pow",
+      "power": "2048",
+      "source": [
+        "-1",
+        "8999999999999999"
+      ],
+      "raw": {
+        "class": "positive-infinity",
+        "state": false,
+        "wire": null,
+        "mantissa": "1",
+        "exponent": "18431999999999997952"
+      },
+      "projected": {
+        "class": "positive-infinity",
+        "state": false,
+        "wire": null,
+        "mantissa": "1",
+        "exponent": "18431999999999997952"
+      }
+    },
+    {
+      "name": "upper-negative-base-safe-odd",
+      "op": "pow",
+      "power": "9007199254740991",
+      "source": [
+        "-1",
+        "8999999999999999"
+      ],
+      "raw": {
+        "class": "negative-infinity",
+        "state": false,
+        "wire": null,
+        "mantissa": "-1",
+        "exponent": "81064793292668909985601490518016"
+      },
+      "projected": {
+        "class": "negative-infinity",
+        "state": false,
+        "wire": null,
+        "mantissa": "-1",
+        "exponent": "81064793292668909985601490518016"
+      }
+    },
+    {
+      "name": "small-base-negative-power-overflow",
+      "op": "pow",
+      "power": "-1e+308",
+      "source": [
+        "1",
+        "-8999999999999999"
+      ],
+      "raw": {
+        "class": "finite",
+        "state": true,
+        "wire": "0",
+        "mantissa": "0",
+        "exponent": "0"
+      },
+      "projected": {
+        "class": "positive-infinity",
+        "state": false,
+        "wire": null,
+        "mantissa": "1",
+        "exponent": "9000000000000000"
+      }
+    },
+    {
+      "name": "negative-small-base-negative-overflow",
+      "op": "pow",
+      "power": "-1e+308",
+      "source": [
+        "-1",
+        "-8999999999999999"
+      ],
+      "raw": {
+        "class": "finite",
+        "state": true,
+        "wire": "0",
+        "mantissa": "0",
+        "exponent": "0"
+      },
+      "projected": {
+        "class": "positive-infinity",
+        "state": false,
+        "wire": null,
+        "mantissa": "1",
+        "exponent": "9000000000000000"
+      }
+    },
+    {
+      "name": "zero-power-zero",
+      "op": "pow",
+      "power": "0",
+      "source": [
+        "0",
+        "0"
+      ],
+      "raw": {
+        "class": "finite",
+        "state": true,
+        "wire": "1e0",
+        "mantissa": "1",
+        "exponent": "0"
+      },
+      "projected": {
+        "class": "finite",
+        "state": true,
+        "wire": "1e0",
+        "mantissa": "1",
+        "exponent": "0"
+      }
+    },
+    {
+      "name": "zero-power-positive",
+      "op": "pow",
+      "power": "2",
+      "source": [
+        "0",
+        "0"
+      ],
+      "raw": {
+        "class": "finite",
+        "state": true,
+        "wire": "0",
+        "mantissa": "0",
+        "exponent": "0"
+      },
+      "projected": {
+        "class": "finite",
+        "state": true,
+        "wire": "0",
+        "mantissa": "0",
+        "exponent": "0"
+      }
+    },
+    {
+      "name": "zero-power-negative-compatibility",
+      "op": "pow",
+      "power": "-1",
+      "source": [
+        "0",
+        "0"
+      ],
+      "raw": {
+        "class": "finite",
+        "state": true,
+        "wire": "0",
+        "mantissa": "0",
+        "exponent": "0"
+      },
+      "projected": {
+        "class": "finite",
+        "state": true,
+        "wire": "0",
+        "mantissa": "0",
+        "exponent": "0"
+      }
+    },
+    {
+      "name": "coefficient-normalization-rescue",
+      "op": "pow",
+      "power": "1.0000000000000002",
+      "source": [
+        "9.999999999999998",
+        "-8999999999999998"
+      ],
+      "raw": {
+        "class": "finite",
+        "state": true,
+        "wire": "1e-8999999999999999",
+        "mantissa": "1.0000000000000004",
+        "exponent": "-8999999999999999"
+      },
+      "projected": {
+        "class": "finite",
+        "state": true,
+        "wire": "1e-8999999999999999",
+        "mantissa": "1.0000000000000004",
+        "exponent": "-8999999999999999"
+      }
+    },
+    {
+      "name": "tiny-power-recovery",
+      "op": "pow",
+      "power": "1e-308",
+      "source": [
+        "1",
+        "-8999999999999999"
+      ],
+      "raw": {
+        "class": "finite",
+        "state": true,
+        "wire": "1e0",
+        "mantissa": "1",
+        "exponent": "0"
+      },
+      "projected": {
+        "class": "finite",
+        "state": true,
+        "wire": "1e0",
+        "mantissa": "1",
+        "exponent": "0"
+      }
+    },
+    {
+      "name": "exp-zero",
+      "op": "exp",
+      "power": null,
+      "source": [
+        "0",
+        "0"
+      ],
+      "raw": {
+        "class": "finite",
+        "state": true,
+        "wire": "1e0",
+        "mantissa": "1",
+        "exponent": "0"
+      },
+      "projected": {
+        "class": "finite",
+        "state": true,
+        "wire": "1e0",
+        "mantissa": "1",
+        "exponent": "0"
+      }
+    }
+  ]
+}

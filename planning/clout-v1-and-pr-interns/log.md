@@ -9672,3 +9672,55 @@ infinity when the provider loses a nonzero value to zero. Operand context must
 be retained at the operation; changing isStateValue cannot distinguish a lost
 result from legitimate0. Do not narrow the release hold to get the old Go-only
 draft approved; author/review the complete explicit checked-operation boundary.
+
+## 2026-11-05 — Specify and probe the complete operand-aware numeric boundary
+
+Previous turn is progress: RP-779 actual parser repair and separate complete
+proposal review. Resume clean e9a729b6; exact-aggregation adoption question is
+pending, not repeated or inferred. RP-663's rejected Go-only draft still has
+necessary author work. Read its body, actual producer/guards, preserved review
+counterexamples, product pow calls and6296-row/24-case source corpora.
+
+Forward-reconcile the draft into N1–N6: static checked client exports, operand
+context retained through the pinned operation, shrinking falsezero→NaN and
+growing falsezero→existing signed infinity; native int64 exhaustion stays its
+explicit irreversible exception. Preserve normalization rescue, unchanged
+representable results, base-zero compatibility, nonfinite diagnostic obligations,
+library pin, state domain and all existing feature-domain validation. Do not
+pretend value-only guards know a zero's origin, narrow the known client population
+out of the release hold, or imply the five direct callers already use new exports.
+The proposal specifies those actual bindings and requires implementation checks.
+
+Predeclare finite population/method/controls/thresholds/limits in the owning plan
+before execution. Manual `probes/checked-power-policy.mjs` invokes the actual
+pinned2.2.0 provider and project state/wire helpers, then separately projects
+the proposed result. All600pow/353exp legacy rows and11pow/2exp lower rows
+retain identical raw fields/classes (966). Ten reviewed lower/eight upper cases
+plus six explicit compatibility/rescue controls give24 targeted cases. Exactly
+seven raw canonical-valid0 results are independently observed before projection,
+then refuse (two shrinking NaNs/five growing positive infinities). Actual proper
+signed-infinity controls stay unchanged. Sources/provider results are unchanged;
+990 evaluations complete, unknown0/excluded0/truncated false/guard exhausted false.
+
+The small source-bound observation stores original/projected results, package/
+kernel identities, all actual numeric/provider/corpus hashes and the model hash.
+Stdout rerun is byte-identical. Existing-output invocation returns exactly EEXIST/
+exit1, preserving artifact bytes. No runtime/prototype consumer is silently
+substituted: metadata says projection_only true/runtime_implemented false.
+This is client-only model evidence, not actual new exports/native implementation,
+all-caller coverage, full-domain math, ledger/SQL/browser proof or numeric repair.
+
+Reproduce with `node --experimental-strip-types
+planning/clout-v1-and-pr-interns/probes/checked-power-policy.mjs`; optional output
+argument must name a NEW file. Retained observation is
+`checked-power-policy-observation.json`, modelSHA256
+7229fd2aa3f8ee24799f05b54ec31ac23cfdc4b737d61cd52bc02295041799a0.
+ObservationSHA256016f5d28d8342cf5b17e6f7b27b33b7b2ce3f9e2de1fad744cbf48b4d6f5090d.
+Initial patch-construction parse failure applied no file and ran no experiment;
+corrected edits precede the declared runs. Diff/source claims checked. No
+software suite for Markdown and no production/schema/kernel/epoch/content/CI
+change. Complete revised draft/model/artifact/plan/index/RP-663/log range after
+e9a729b6 needs independent technical review alongside the original full five-path
+1d1b244a..801d2fee range. Review by: Codex root, proposal/model author and first
+filter. Recorded by: Codex root. Owner adoption and actual code gates remain;
+no archival, release approval or publication. Existing failures stay visible.

@@ -22,9 +22,28 @@ and limits; do not repeat that completed review.
 RP-664's complete corrected proposal union has separate independent technical
 APPROVAL, with its original negative verdict preserved. Explicit owner adoption,
 full proof/workload/report-provenance/cutover gates remain. RP-663's independently
-demonstrated client valid-zero populations still need an explicit operand-aware
-contract; the old Go-only proposal is not ready for adoption. No further positive
+demonstrated client valid-zero populations now have a revised operand-aware
+proposal and client-only model; complete normative re-review remains before
+adoption. The old Go-only verdict remains rejected. No further positive
 aggregation census or weakening of the27 partition failures is authorized.
+
+### RP-663 checked-operation proposal probe — predeclared 2026-11-05
+
+Question: can an operand-aware postcondition on the actual pinned result refuse
+all seven reviewed client false zeros while preserving existing representable
+results and explicit base-zero compatibility? Before execution, fix the population:
+all600 pow/353 exp rows of the unchanged6296-row corpus; all11 pow/2 exp rows
+of the24-case lower-domain fixture; the reviewed10 lower/eight upper cases;
+and six explicit zero/rescue/tiny-power/exp-zero controls. Require complete counts,
+unchanged raw fields/classes on the966 retained cases, exactly seven provider-zero
+overrides (two shrinking→NaN, five growing→positive infinity), refusal by actual
+state/wire helpers, source/result immutability and zero unknown/invalid executions.
+The raw provider must demonstrably accept those seven zeros before projection.
+Require byte-identical stdout reproduction and refusal of an existing output
+path with its artifact hash unchanged.
+No sampling, truncation, guard-derived budget or live caller replacement. This
+manual proposal model may support technical review only; it cannot authorize
+implementation/adoption, prove native code, indirect callers or full-domain math.
 
 ## Observer and delegated-wording review — 2026-11-04
 
@@ -559,8 +578,9 @@ not a hidden clamp, guessed sentinel or claiming full conformance. No new produc
 decision or accounting adoption follows from the bounded fixes. Existing valid
 arithmetic paths, numeric goldens and original research outputs stay unchanged.
 [Numeric Diagnostic Exponent Limits](../../rfc/numeric-diagnostic-exponent-limits.md)
-now proposes the explicit fail-closed exception and its tests; it remains a draft,
-outside corrective-code approval, requiring normative review/adoption. Continue
+now proposes both the operand-aware checked client boundary and native
+fail-closed exception. Its source-bound client-only model is not implementation;
+the complete corrected proposal requires normative re-review/adoption. Continue
 other accepted work without inferring this proposal or either accounting draft accepted.
 Current re-observation of the unchanged20 lower-domain profiles now gives19 cumulative
 proofs plus one refused one-shot projection, and18 complete deferred work-cut sequences
