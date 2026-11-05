@@ -6,10 +6,12 @@ use integer milliseconds and count boards use exact integers.
 
 ## Capability boundary
 
-This is a backend foundation, not yet a player-facing leaderboard product. Production mounts no
-board/epoch/archive reader, and the client has no board browser, historical navigation, Route
-Registry/records composition, or archive-verification workflow. The bundled TypeScript verifier is
-parity code, not proof of player delivery. World-first arbitration is stored but emits no feed/
+This is a backend foundation, not yet a player-facing leaderboard product. API Foundation mounts
+public board, epoch, Route and evidence readers under `/api/public/v1/`; their current contracts
+and remaining catalog/schema boundaries are in [API Foundation](api-foundation.md). The client has
+no complete board browser, historical navigation, Route Registry/records composition or player
+archive-verification workflow. The bundled TypeScript verifier and test-operated download/replay
+seam do not establish that player delivery. World-first arbitration is stored but emits no feed/
 dispatch event; no machine board class exists. These surfaces are routed to the draft
 [`Leaderboard Readers & Player Surface`](../rfc/leaderboard-readers-and-player-surface.md) RFC and
 remain unauthorized until that RFC is accepted.
@@ -180,6 +182,12 @@ receipt, and totally ordered Company/Founder event evidence; stores its SHA-256;
 rows; and token-marks the queue in the same transaction. The delete trigger permits that one
 archive-backed compaction and no update. Rollback/retry tests prove byte-identical archives and no
 partial deletion.
+
+Replay and archiving each fetch their command set's events in one owner-scoped
+query, then restore each intent's event order. Replay includes Company events
+and `founder_advanced`; archives retain all corresponding Founder events too.
+Both use the same scoped reader. The event encodings, exact numeric payloads,
+archive format/compression and verification/claim rules are unchanged.
 
 The Go live service now executes through the shared `ApplyLogged` transition and compares cleanly
 when the persisted input is replayed from the pre-command state. The TypeScript verification kernel

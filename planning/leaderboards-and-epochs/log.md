@@ -496,3 +496,67 @@ gameplay/replay semantics, actual verifier/mark integration, Founder-reference
 retention, deletion/export, public delivery or release recovery. No production,
 migration, policy or feature-acceptance change; other rights/player/epoch gates
 remain. No archival, publication, deployment or hosted/release approval.
+
+## 2026-11-05 — RP-770 partial event-read improvement; full timing case still red
+
+Previous goal turn progresses: RP-769 independently approved/closed8d868309.
+This batch uses accepted D2/L1/L2/L4 and RFC-0000 corrective/refactor authority;
+no math, watched kernel file/version226, epoch8, SQL schema, wire or limits change.
+The first-hour observer retains5s and its original success condition. LEFT JOIN
+now exposes queue status without an archive; failure-only diagnostics expose
+attempt/error/worker health and live-row counts instead of reporting empty strings.
+
+Actual diagnostic29891 fails121.06s: run2 claimed/attempt1/error empty, jobs healthy,
+no worker failure,363 live rows/archive0. Normal pre-refactor78824 passes56.26s,
+both archives and post-deletion public boards. Race/emulation is distinct from the
+normal hosted command; no hosted verdict is inferred. CPU profile26783 also fails
+83.80s; declared Go-container pprof reads actual154718-byte profile (host tool lacks
+pprof). Samples include replay/connection setup, not a dominant archive compression
+cost. Observation-only exact-source compiler overlay82619 passes arguments/verdict
+through unchanged: run1 input456ms/replay1.871s/archive517ms; run2 input1.618s for
+363 entries, then deadline fires while replay runs. That incomplete replay is NOT
+a completed cost measurement or authority for a higher budget.
+
+Replace per-command event fetches with one shared owner-scoped intent-set reader
+per replay/archive stage. Preserve each consumer's Founder-event filter, per-intent
+ordering, empty groups, exact json.Number payloads and all archive/compression/
+claim rules. Preserve per-entry envelope/catalog decision order after prefetching
+the valid input prefix. Keep late iteration failures operational. No parallel
+transition implementation or kernel-neutral exception is introduced.
+
+Actual verifier SQL/race76843 passes22 reported PASS/0FAIL/0SKIP, including new
+mixed/reversed/repeated/empty intent groups, two-owner and wrong-scope refusal,
+exact9007199254740993/Unicode payloads and archive-only Founder events. Two initial
+fixture attempts fail before exercising batching: impossible second Company for
+one Founder and reused global event_seq. Retained red logs; fix the fixtures to
+obey those real constraints, retaining foreign-owner and actual wrong-scope cases.
+The existing populated archive/rollback/corruption oracle passes. Exact old reader
+and ORIGINAL archive test plus one digest log92171 pass12/0/0: old/new683-byte
+archives both SHA21768d21b7152ede1ebca3c1017c0a2dafd090d7e7b3d206d037508d7155ce41.
+This compatibility-only control does not claim the new bulk test ran on old APIs.
+Selected vet82528/native gameserver build51890 pass. Focused new first-hour race
+59814 passes63.33s with the SAME5s criterion and both post-delete archives/boards.
+
+Complete affected Linux/PG race75174 remains RED:169PASS/1FAIL/1existing opt-in
+cleanup skip. Verifier package passes8.894s; Gameserver fails371.208s solely on
+first-hour183.01s with the same healthy/claimed run2 state. All other executed tests,
+including prior expiry/membership/receipt-drain repairs, pass; later assertions
+inside the failed first-hour case remain unexecuted. Source/test hashes
+remain fixed through this run. Do NOT close RP-770, restamp whole-SQL/CI green,
+raise/skip the observer or infer arithmetic/host contention as the remaining cause.
+Late Docker CPU snapshot is after failure and cannot establish earlier contention.
+Next: observe completed replay/archive timing in the failing full-process context
+while retaining its original failed deadline, then choose a contract-conforming
+remedy. Existing independent native-host/arithmetic-adoption gates are not waived.
+
+Raw logs/profile/binary and exact-source observation/compatibility overlays stay
+ignored under .cache/first-hour-verification-8d868309/. Full-red log SHA
+01073673e4b67463944028b7c4ab61c99e494c7eafe140f23e6bf0a08ae26251;
+profile SHA4301fd67cbd8de2030ca0897e976919eb57d675891e0fd3c2165304f1c380904.
+All root handles terminal; default SQL runs serialize. Seven-path complete range
+after8d868309 through this checkpoint needs independent corrective review for
+reader correctness/diagnostics, explicitly NOT RP-770 timing or feature acceptance.
+Also reconcile RP-040's stale docs absence claim to actual mounted public readers;
+player UI/catalog/schema/rights gates remain. No publication/deployment, new tier,
+full-CI/clean-host/R-006/archival/release claim or goal pause; full nine-tier1.0 stays active.
+Review by: Codex root (implementer first filter). Recorded by: Codex root.

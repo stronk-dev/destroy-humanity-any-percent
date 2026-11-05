@@ -248,10 +248,24 @@ func archiveVerifiedRun(ctx context.Context, tx *sql.Tx, streamID string, runSeq
 	if len(archive.Entries) == 0 {
 		return errors.New("cannot archive empty run log")
 	}
+	intentIDs := make([]string, len(archive.Entries))
 	for index := range archive.Entries {
-		archive.Entries[index].Events, err = archiveEvents(ctx, tx, streamID, archive.Entries[index].IntentID)
-		if err != nil {
-			return err
+		intentIDs[index] = archive.Entries[index].IntentID
+	}
+	events, err := loadEventsForIntents(ctx, tx, streamID, intentIDs, false)
+	if err != nil {
+		return err
+	}
+	for index := range archive.Entries {
+		entry := &archive.Entries[index]
+		entry.Events = events[entry.IntentID]
+		if entry.Events == nil {
+			entry.Events = []runArchiveEvent{}
+		}
+		for _, event := range entry.Events {
+			if !json.Valid(event.Payload) {
+				return errors.New("invalid archive event payload")
+			}
 		}
 	}
 	var encoded bytes.Buffer
@@ -304,19 +318,32 @@ func archiveVerifiedRun(ctx context.Context, tx *sql.Tx, streamID string, runSeq
 	return nil
 }
 
-func archiveEvents(ctx context.Context, tx *sql.Tx, companyStreamID, intentID string) ([]runArchiveEvent, error) {
-	rows, err := tx.QueryContext(ctx, `SELECT e.event_id,e.stream_id,e.event_seq,e.kind,e.schema_version,e.intent_id,e.payload::text
+type eventQuerier interface {
+	QueryContext(context.Context, string, ...any) (*sql.Rows, error)
+}
+
+// Both consumers read the same owner-scoped, per-intent ordered event rows.
+// Replay includes only founder_advanced from the Founder stream; archives keep
+// every Founder event belonging to the command. Fetching the whole intent set
+// avoids a database round trip for each command without changing either format.
+func loadEventsForIntents(ctx context.Context, queryer eventQuerier, companyStreamID string, intentIDs []string, founderAdvancedOnly bool) (map[string][]runArchiveEvent, error) {
+	result := make(map[string][]runArchiveEvent, len(intentIDs))
+	if len(intentIDs) == 0 {
+		return result, nil
+	}
+	rows, err := queryer.QueryContext(ctx, `SELECT e.event_id,e.stream_id,e.event_seq,e.kind,e.schema_version,e.intent_id,e.payload::text
 		FROM events e
 		JOIN save_streams company ON company.id=$1 AND company.owner_kind='founder' AND company.scope='company'
-		WHERE e.intent_id=$2 AND (e.stream_id=company.id OR e.stream_id IN (
-			SELECT founder.id FROM save_streams founder
-			WHERE founder.owner_kind='founder' AND founder.scope='founder' AND founder.owner_id=company.owner_id
-		)) ORDER BY CASE WHEN e.stream_id=company.id THEN 1 ELSE 0 END,e.event_seq,e.event_id`, companyStreamID, intentID)
+		WHERE e.intent_id=ANY($2::uuid[]) AND (e.stream_id=company.id OR (
+			(NOT $3::boolean OR e.kind='founder_advanced') AND e.stream_id IN (
+				SELECT founder.id FROM save_streams founder
+				WHERE founder.owner_kind='founder' AND founder.scope='founder' AND founder.owner_id=company.owner_id
+			)
+		)) ORDER BY e.intent_id,CASE WHEN e.stream_id=company.id THEN 1 ELSE 0 END,e.event_seq,e.event_id`, companyStreamID, intentIDs, founderAdvancedOnly)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	result := []runArchiveEvent{}
 	for rows.Next() {
 		var event runArchiveEvent
 		var payload string
@@ -324,10 +351,7 @@ func archiveEvents(ctx context.Context, tx *sql.Tx, companyStreamID, intentID st
 			return nil, err
 		}
 		event.Payload = json.RawMessage(payload)
-		if !json.Valid(event.Payload) {
-			return nil, errors.New("invalid archive event payload")
-		}
-		result = append(result, event)
+		result[event.IntentID] = append(result[event.IntentID], event)
 	}
 	return result, rows.Err()
 }
@@ -559,7 +583,20 @@ func (repository *Repository) VerifyStoredRun(ctx context.Context, streamID stri
 		return production.ReplayStateDivergence, err
 	}
 	defer rows.Close()
+	type replayEnvelope struct {
+		Command struct {
+			IntentID string `json:"intent_id"`
+		} `json:"command"`
+		Resolved struct {
+			Kind              string `json:"kind"`
+			NextConstantsHash string `json:"next_constants_hash"`
+		} `json:"resolved"`
+	}
 	entries := []production.ReplayLogEntry{}
+	envelopes := []replayEnvelope{}
+	validEnvelopes := []bool{}
+	intentIDs := []string{}
+	validPrefix := true
 	for rows.Next() {
 		var entry production.ReplayLogEntry
 		var inputs sql.NullString
@@ -571,26 +608,38 @@ func (repository *Repository) VerifyStoredRun(ctx context.Context, streamID stri
 			return production.ReplayLogGap, nil
 		}
 		entry.ReplayInputs, entry.ReceiptJSON = []byte(inputs.String), []byte(receipt)
-		var envelope struct {
-			Command struct {
-				IntentID string `json:"intent_id"`
-			} `json:"command"`
-			Resolved struct {
-				Kind              string `json:"kind"`
-				NextConstantsHash string `json:"next_constants_hash"`
-			} `json:"resolved"`
+		var envelope replayEnvelope
+		valid := json.Unmarshal(entry.ReplayInputs, &envelope) == nil && uuidPattern.MatchString(envelope.Command.IntentID)
+		// Prefetch only the prefix the original per-entry validation could
+		// reach; keep validation/catalog decisions in their log order below.
+		validPrefix = validPrefix && valid
+		if validPrefix {
+			intentIDs = append(intentIDs, envelope.Command.IntentID)
 		}
-		if json.Unmarshal(entry.ReplayInputs, &envelope) != nil || !uuidPattern.MatchString(envelope.Command.IntentID) {
+		entries = append(entries, entry)
+		envelopes = append(envelopes, envelope)
+		validEnvelopes = append(validEnvelopes, valid)
+	}
+	if err := rows.Err(); err != nil {
+		return production.ReplayStateDivergence, err
+	}
+	if err := rows.Close(); err != nil {
+		return production.ReplayStateDivergence, err
+	}
+	events, err := repository.eventsForIntents(ctx, streamID, intentIDs)
+	if errors.Is(err, errDeterministicReplayData) {
+		return production.ReplayStateDivergence, nil
+	}
+	if err != nil {
+		return production.ReplayStateDivergence, err
+	}
+	for index := range entries {
+		entry, envelope := &entries[index], envelopes[index]
+		if !validEnvelopes[index] {
 			return production.ReplayStateDivergence, nil
 		}
 		entry.Terminal = envelope.Resolved.Kind == "exit"
-		entry.EventsJSON, err = repository.events(ctx, streamID, envelope.Command.IntentID)
-		if errors.Is(err, errDeterministicReplayData) {
-			return production.ReplayStateDivergence, nil
-		}
-		if err != nil {
-			return production.ReplayStateDivergence, err
-		}
+		entry.EventsJSON = events[envelope.Command.IntentID]
 		if entry.Terminal && envelope.Resolved.NextConstantsHash != "" && envelope.Resolved.NextConstantsHash != hash {
 			next, loadErr := loadBundle(envelope.Resolved.NextConstantsHash)
 			if errors.Is(loadErr, errDeterministicCatalogData) {
@@ -601,11 +650,8 @@ func (repository *Repository) VerifyStoredRun(ctx context.Context, streamID stri
 			}
 			entry.NextCatalog = &next
 		}
-		entries = append(entries, entry)
 	}
-	if err := rows.Err(); err != nil {
-		return production.ReplayStateDivergence, err
-	}
+
 	if err := repository.runFault("run_log_rows"); err != nil {
 		return production.ReplayStateDivergence, err
 	}
@@ -640,43 +686,39 @@ func (repository *Repository) artifacts(ctx context.Context, hash string) (map[s
 }
 
 func (repository *Repository) events(ctx context.Context, companyStreamID, intentID string) ([]byte, error) {
-	rows, err := repository.db.QueryContext(ctx, `
-		SELECT e.kind,e.schema_version,e.intent_id,e.payload::text
-		FROM events e
-		JOIN save_streams company ON company.id=$1 AND company.owner_kind='founder' AND company.scope='company'
-		WHERE e.intent_id=$2 AND (
-			e.stream_id=company.id OR (e.kind='founder_advanced' AND e.stream_id IN (
-				SELECT founder.id FROM save_streams founder
-				WHERE founder.owner_kind='founder' AND founder.scope='founder' AND founder.owner_id=company.owner_id
-			))
-		)
-		ORDER BY CASE WHEN e.stream_id=company.id THEN 1 ELSE 0 END,e.event_seq,e.event_id`, companyStreamID, intentID)
+	result, err := repository.eventsForIntents(ctx, companyStreamID, []string{intentID})
+	return result[intentID], err
+}
+
+func (repository *Repository) eventsForIntents(ctx context.Context, companyStreamID string, intentIDs []string) (map[string][]byte, error) {
+	if len(intentIDs) == 0 {
+		return map[string][]byte{}, nil
+	}
+	rows, err := loadEventsForIntents(ctx, repository.db, companyStreamID, intentIDs, true)
 	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	values := []map[string]any{}
-	for rows.Next() {
-		var kind, id, payloadText string
-		var schema int
-		if err := rows.Scan(&kind, &schema, &id, &payloadText); err != nil {
-			return nil, err
-		}
-		decoder := json.NewDecoder(bytes.NewBufferString(payloadText))
-		decoder.UseNumber()
-		var payload any
-		if decoder.Decode(&payload) != nil {
-			return nil, fmt.Errorf("%w: invalid event payload", errDeterministicReplayData)
-		}
-		values = append(values, map[string]any{"kind": kind, "schema_version": schema, "intent_id": id, "payload": payload})
-	}
-	if err := rows.Err(); err != nil {
 		return nil, err
 	}
 	if err := repository.runFault("event_rows"); err != nil {
 		return nil, err
 	}
-	return json.Marshal(values)
+	result := make(map[string][]byte, len(intentIDs))
+	for _, intentID := range intentIDs {
+		values := []map[string]any{}
+		for _, event := range rows[intentID] {
+			decoder := json.NewDecoder(bytes.NewReader(event.Payload))
+			decoder.UseNumber()
+			var payload any
+			if decoder.Decode(&payload) != nil {
+				return nil, fmt.Errorf("%w: invalid event payload", errDeterministicReplayData)
+			}
+			values = append(values, map[string]any{"kind": event.Kind, "schema_version": event.SchemaVersion, "intent_id": event.IntentID, "payload": payload})
+		}
+		result[intentID], err = json.Marshal(values)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return result, nil
 }
 
 func (repository *Repository) runFault(step string) error {

@@ -366,6 +366,78 @@ func TestVerificationEventsAreStreamPairScopedAndIterationFailsClosedIntegration
 	}
 }
 
+func TestVerificationBatchedEventsPreserveIntentOwnershipOrderAndExactPayloadIntegration(t *testing.T) {
+	db := replayIntegrationDB(t)
+	ctx := context.Background()
+	company := "15555555-5555-4555-8555-555555555555"
+	owner := "25555555-5555-4555-8555-555555555555"
+	founder := "35555555-5555-4555-8555-555555555555"
+	foreignCompany := "16666666-6666-4666-8666-666666666666"
+	foreignOwner := "26666666-6666-4666-8666-666666666666"
+	foreignFounder := "36666666-6666-4666-8666-666666666666"
+	seedVerificationRun(t, db, company, owner, 1, kernel.Version)
+	seedVerificationRun(t, db, foreignCompany, foreignOwner, 1, kernel.Version)
+	if _, err := db.ExecContext(ctx, `INSERT INTO save_streams(id,owner_kind,owner_id,scope)
+		VALUES($1,'founder',$2,'founder'),($3,'founder',$4,'founder')`,
+		founder, owner, foreignFounder, foreignOwner); err != nil {
+		t.Fatal(err)
+	}
+	first := "01989999-0001-7000-8000-000000000001"
+	second := "01989999-0002-7000-8000-000000000002"
+	empty := "01989999-0003-7000-8000-000000000003"
+	for _, row := range []struct {
+		stream, intent, kind, payload string
+		sequence                      int64
+	}{
+		{company, first, "upgrade_purchased", `{"slot":2}`, 20},
+		{company, first, "generator_purchased", `{"slot":1,"exact":9007199254740993}`, 10},
+		{founder, first, "founder_advanced", `{"slot":0}`, 200},
+		{founder, first, "fiscal_period_harvested.v1", `{"archive_only":true}`, 100},
+		{company, second, "generator_purchased", `{"text":"α","n":1e3}`, 30},
+		{founder, second, "founder_advanced", `{"slot":3}`, 300},
+		{foreignCompany, first, "generator_purchased", `{"excluded":"foreign-company"}`, 15},
+		{foreignFounder, first, "founder_advanced", `{"excluded":"foreign-founder"}`, 250},
+	} {
+		if _, err := db.ExecContext(ctx, `INSERT INTO events(stream_id,revision,schema_version,kind,intent_id,constants_hash,payload,event_seq)
+			VALUES($1,1,1,$2,$3,$4,$5,$6)`, row.stream, row.kind, row.intent, integrationHash, row.payload, row.sequence); err != nil {
+			t.Fatal(err)
+		}
+	}
+	repository, err := NewRepository(db, &recordingSink{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	// Reversed and repeated input IDs must not merge the ordered event arrays.
+	got, err := repository.eventsForIntents(ctx, company, []string{second, first, empty, first})
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := map[string]string{
+		first:  fmt.Sprintf(`[{"intent_id":%q,"kind":"founder_advanced","payload":{"slot":0},"schema_version":1},{"intent_id":%q,"kind":"generator_purchased","payload":{"exact":9007199254740993,"slot":1},"schema_version":1},{"intent_id":%q,"kind":"upgrade_purchased","payload":{"slot":2},"schema_version":1}]`, first, first, first),
+		second: fmt.Sprintf(`[{"intent_id":%q,"kind":"founder_advanced","payload":{"slot":3},"schema_version":1},{"intent_id":%q,"kind":"generator_purchased","payload":{"n":1000,"text":"α"},"schema_version":1}]`, second, second),
+		empty:  "[]",
+	}
+	if len(got) != len(want) {
+		t.Fatalf("intent groups=%d want=%d", len(got), len(want))
+	}
+	for id, expected := range want {
+		if string(got[id]) != expected {
+			t.Fatalf("intent %s events=%s want=%s", id, got[id], expected)
+		}
+	}
+	wrongScope, err := repository.eventsForIntents(ctx, founder, []string{first})
+	if err != nil || string(wrongScope[first]) != "[]" {
+		t.Fatalf("Founder stream accepted as Company: events=%s err=%v", wrongScope[first], err)
+	}
+	archived, err := loadEventsForIntents(ctx, db, company, []string{second, first, empty}, false)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(archived[first]) != 4 || archived[first][0].Kind != "fiscal_period_harvested.v1" || archived[first][1].Kind != "founder_advanced" || archived[first][2].Kind != "generator_purchased" || archived[first][3].Kind != "upgrade_purchased" || len(archived[second]) != 2 || len(archived[empty]) != 0 {
+		t.Fatalf("archive event grouping/order=%+v", archived)
+	}
+}
+
 func TestVerifiedArchiveCompactionIsDeterministicAtomicAndImmutableIntegration(t *testing.T) {
 	db := replayIntegrationDB(t)
 	ctx := context.Background()
@@ -498,6 +570,7 @@ func TestVerifiedArchiveCompactionIsDeterministicAtomicAndImmutableIntegration(t
 	if !bytes.Equal(firstBytes, secondBytes) || firstHash != secondHash || encoding != "gzip+json.v1" || terminalSeq != 2 {
 		t.Fatalf("archive drift first=%s second=%s encoding=%s terminal=%d", firstHash, secondHash, encoding, terminalSeq)
 	}
+	t.Logf("populated archive compatibility: sha256=%s bytes=%d", secondHash, len(secondBytes))
 	digest := sha256.Sum256(secondBytes)
 	if secondHash != "sha256:"+hex.EncodeToString(digest[:]) {
 		t.Fatal("stored archive digest does not cover stored bytes")
