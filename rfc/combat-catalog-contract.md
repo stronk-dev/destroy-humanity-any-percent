@@ -244,7 +244,13 @@ Verify all36 identity pairs through existing chart consumers while preserving
 the full fixture's two species per temperament. Invalid populations include
 every union arm's unknown/extra/missing/null/wrong-type/domain cases, duplicate
 IDs/keys, unknown tags/references, wrong slots, absent/mistyped/off-type coverage
-and removal of each required bypass population. Test valid escaping and
+and each required bypass predicate. Bypass negatives must preserve row counts
+and every other admission constraint, isolating one failed predicate while the
+other two still hold. From CC5, independently change u00's target to `any`,
+raise u01's cost from10 to11, and set every spell's bypass flag to false.
+Ordinary row-deletion negatives may supplement these controls, but cannot
+replace them: deleting a minimum row also breaks the count floor and fails to
+discriminate bypass validation. Test valid escaping and
 semantically valid reordered object keys without rewriting hash input bytes.
 
 Exercise actual replay-bundle admission with/without combat, hash mismatch,

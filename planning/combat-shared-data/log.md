@@ -645,3 +645,28 @@ independent technical review, then actual owner adoption/body authority before
 construction. Care contract dependency remains unadopted. No original-feature
 acceptance, archival, release promotion, publication or permission for engines.
 Review by: Codex root, proposal author/first filter. Recorded by: Codex root.
+
+## 2026-11-05 — Catalog review requires independently isolated bypass negatives
+
+CHANGES REQUIRED, complete five-path range
+`d38a4372fc80d0888451ad2d23aaa435bb3ce05f..4a09c31a65f80218dc577d153adb73ad8ab2e8d4`.
+Review by: fresh independent Codex `/root/combat_catalog_contract_review` under
+Marco's technical-specification delegation. Recorded by: Codex root,
+transcribing its verdict. One finding, also raised by root while review ran:
+removing minimum fixture rows violates count floors, so removal-only negatives
+still reject when all bypass checks are absent. These cannot be the oracle.
+
+Reviewer independently reconstructs all50 recipe rows and checks counts, IDs,
+axes, references, coverage and all five move-effect arms. It demonstrates all
+three vacuous deletions and three count-preserving semantic controls. Actual
+source/Go/TS/bundle/hash/PA9/deferred-child inspection and101,101 exact-rational
+critical-chance compositions, six literal examples and both Soul extremes pass.
+No other findings, software suite for Markdown, tracked reviewer mutation,
+runtime workload or publication. Root's earlier flag-only one-off controls
+likewise retain counts; they are recipe checks, not loader acceptance.
+
+Forward-correct CC7 to require independently count-preserving, otherwise-valid
+controls: u00 target any, u01 cost11, all spell bypass flags false. Preserve the
+other two predicates each time. Row deletion remains supplementary only.
+Re-review the complete corrected range; no adoption or implementation follows
+from the numeric/source evidence. Parent/child bodies and artifacts unchanged.
