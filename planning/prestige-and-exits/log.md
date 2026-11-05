@@ -462,3 +462,18 @@ original implementation acceptance and the full nine-tier1.0 remain open.
 The separate full-implementation-review delegation question is delivered and
 unanswered; existing corrective authority alone supports this union. No push,
 deployment, archival, owner adoption or goal pause.
+
+## 2026-11-05 — Retained reproduction format corrected without changing its source
+
+Commit98e96643 retains a valid unified patch, but its context markers trigger
+Git's space-before-tab whitespace check. Root incorrectly runs check and stat
+in one shell command, so the latter's exit0 masks the failed check, then commits.
+Correct in a forward commit; do not rewrite history or add a whitespace exception.
+Generate zero-context diff data from the exact bound original and executed
+private source. `git apply --check --unidiff-zero` and actual private-copy apply
+pass; reconstructed source still SHA03cfafc19e761beede570c3c82f989970c46569f97088061b3cd70f845c47dd6,
+tracked original remains2cca513b.... New retained patch SHA2b30fd93c981d843f72646f914a3eaaafa6d5100bf4b4ed1f741a50d520d3f24;
+original context-bearing reviewer patch stays in ignored evidence. Dossier's
+recipe/digest reconcile. Separate `git diff --check` exits0. No duplicate SQL
+execution, test change, softened assertion, code/runtime change or acceptance.
+Recorded by: Codex root. RP-771 and full1.0 remain open.

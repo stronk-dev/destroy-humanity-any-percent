@@ -1,9 +1,6 @@
 --- a/server/production/prestige_integration_test.go
 +++ b/server/production/prestige_integration_test.go
-@@ -866,6 +866,14 @@
- 		prepare  func(string, *save.State, *save.State)
- 	}
- 	rows := []matrixRow{
+@@ -868,0 +869,8 @@
 +		{name: "route_knowledge_at_cap", tier: 1, eligible: true, prepare: func(_ string, founder *save.State, _ *save.State) { founder.RouteKnowledgeBalance = decimal.MaxExactInteger }},
 +		{name: "route_knowledge_at_cap_all_hints_owned", tier: 1, eligible: true, prepare: func(_ string, founder *save.State, _ *save.State) {
 +			founder.RouteKnowledgeBalance = decimal.MaxExactInteger
@@ -12,21 +9,14 @@
 +			}
 +			if len(founder.HintsUnlocked) == 0 { t.Fatal("all-hints control has no declared hints") }
 +		}},
- 		{name: "plain", tier: 1, eligible: true},
- 		{name: "pending_opportunity", tier: 1, eligible: true, prepare: func(owner string, _ *save.State, company *save.State) {
- 			preparePendingOpportunityForExit(t, bundle, owner, company, now)
-@@ -955,8 +963,24 @@
- 			}
- 			intentID := fmt.Sprintf("01985555-9%03d-7000-8000-%012d", index, index+1)
- 			request := []byte(fmt.Sprintf(`{"intent_id":%q,"kind":"wind_down","expected_revision":1,"expected_founder_revision":1}`, intentID))
+@@ -957,0 +966,6 @@
 +			beforeFounder, beforeFounderErr := store.LoadLatest(ctx, founderRevision.StreamID)
 +			beforeCompany, beforeCompanyErr := store.LoadLatest(ctx, companyRevision.StreamID)
 +			if beforeFounderErr != nil || beforeCompanyErr != nil { t.Fatal("pre-request state unavailable") }
 +			beforeFounderBytes, beforeFounderEncodeErr := save.EncodeState(beforeFounder.State)
 +			beforeCompanyBytes, beforeCompanyEncodeErr := save.EncodeState(beforeCompany.State)
 +			if beforeFounderEncodeErr != nil || beforeCompanyEncodeErr != nil || len(beforeFounderBytes) == 0 || len(beforeCompanyBytes) == 0 { t.Fatal("pre-request state encoding failed or empty") }
- 			result, err := service.Handle(ctx, companyRevision.StreamID, ModeOnline, now, request)
- 			if err != nil || result.Replay {
+@@ -959,0 +974,10 @@
 +				afterFounder, afterFounderErr := store.LoadLatest(ctx, founderRevision.StreamID)
 +				afterCompany, afterCompanyErr := store.LoadLatest(ctx, companyRevision.StreamID)
 +				if afterFounderErr != nil || afterCompanyErr != nil { t.Fatal("post-request state unavailable") }
@@ -37,6 +27,3 @@
 +				if countErr := db.QueryRowContext(ctx, `SELECT (SELECT count(*) FROM events WHERE intent_id=$1)+(SELECT count(*) FROM intent_records WHERE intent_id=$1)+(SELECT count(*) FROM run_log WHERE intent_id=$1)`, intentID).Scan(&writes); countErr != nil { t.Fatal(countErr) }
 +				if beforeFounder.Revision.Number != afterFounder.Revision.Number || beforeCompany.Revision.Number != afterCompany.Revision.Number || string(beforeFounderBytes) != string(afterFounderBytes) || string(beforeCompanyBytes) != string(afterCompanyBytes) || writes != 0 { t.Fatal("failed Wind Down mutated state/history") }
 +				t.Logf("review control: persisted valid tier=%d history=%d knowledge_at_max=%v hints_owned=%d; rollback state bytes/revisions and zero intent/event/log writes verified", beforeCompany.State.Tier, len(beforeFounder.State.ExitHistory), beforeFounder.State.RouteKnowledgeBalance == decimal.MaxExactInteger, len(beforeFounder.State.HintsUnlocked))
- 				t.Fatalf("result=%+v err=%v", result, err)
- 			}
- 			loadedFounder, founderErr := store.LoadLatest(ctx, founderRevision.StreamID)

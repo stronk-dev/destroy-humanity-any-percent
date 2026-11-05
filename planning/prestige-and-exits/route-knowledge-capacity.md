@@ -42,15 +42,20 @@ SHA-256 bindings:
 
 - Original `server/production/prestige_integration_test.go`:
   `2cca513b295ce9e35d9b8db7bf886c33d0ae74d22cd68312d9694d1f0fce2c2e`.
-- Retained patch: `323ce066820846046cbf018edf3d740cc8b9c34f13a7639b8087ca31ad362548`.
+- Retained zero-context patch: `2b30fd93c981d843f72646f914a3eaaafa6d5100bf4b4ed1f741a50d520d3f24`.
 - Executed private source: `03cfafc19e761beede570c3c82f989970c46569f97088061b3cd70f845c47dd6`.
 - Corrected result log: `bcfc6a4d6a132135472fb46a8bc4e37c9305818926927c6bb7452918fe717a1a`.
 
 Raw source/overlay/log and manifest remain in ignored
-`.cache/prestige-remediation-review/`. To reproduce without editing tracked Go:
+`.cache/prestige-remediation-review/`. The reviewer's original context-bearing
+patch has SHA`323ce066820846046cbf018edf3d740cc8b9c34f13a7639b8087ca31ad362548`;
+its diff context markers trigger Git's space-before-tab check. The retained
+zero-context representation applies to the bound source and reconstructs the
+identical executed private-source SHA above; no assertion changes or guard
+exceptions. To reproduce without editing tracked Go:
 check the original source binding, copy that file to
 `.cache/rp771-repro/server/production/prestige_integration_test.go`, then apply
-the patch there with `git apply --directory=.cache/rp771-repro
+the patch there with `git apply --unidiff-zero --directory=.cache/rp771-repro
 planning/prestige-and-exits/route-knowledge-cap-repro.patch`. Create an overlay:
 
 ```json
