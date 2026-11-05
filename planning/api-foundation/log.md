@@ -4934,3 +4934,18 @@ and confirmed-empty networke3d90799 removed, pre-existing BuildKit untouched.
 No tracked reviewer edits/commits. This closes these corrective reviews only,
 not original SDK construction/full API, pending amendment adoption, hosted/full CI,
 natural pacing, clean-host proof, feature acceptance, archival or release.
+
+## 2026-11-05 — Draft public Company evidence repair for RP-606
+
+Added `rfc/public-company-replay-evidence.md` after the independently approved
+actual exposure and two-runtime feasibility studies. Proposal: separate immutable
+Company-only public artifacts and adapter, explicit v2 hashes/manifest, unchanged
+private originals, no raw fallback, plus owner-authorized withdrawal of the three
+unsafe v1 evidence resources. P6 names exact parent/ruling reconciliation; no
+accepted body is edited or ruling inferred. Acceptance requires actual stored
+source→HTTP→both consumers/pinned catalogs, full Company outcomes, private-history
+preservation, refusal/leak controls, backfill and cache exposure accounting.
+First filter: inspected actual archive/transport/Company verifier owners and
+existing API versioning/registry contracts; diff checked. No runtime/code/CI change
+or software-suite claim for this normative draft. Technical review and owner
+adoption are pending; RP-606 stays open. Current packaged runtime is unchanged.

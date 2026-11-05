@@ -26,7 +26,10 @@ retains refusal controls; full Founder output changes. This supports drafting a
 versioned public representation, not private substitution or a silent C14 rewrite.
 RP-606 remains open; complete `3a1b8737..ddda9f4c` technical evidence is
 independently approved with a fresh actual run, both consumers and a missing-event
-comparison refusal. Next: draft the explicit public contract; adoption remains required.
+comparison refusal. The [public Company evidence draft](../../rfc/public-company-replay-evidence.md)
+now proposes an explicit projection/v2 transport, immutable private originals and
+retirement of the unsafe raw download. Technical review and owner adoption/body
+reconciliation remain required; no implementation is authorized by the draft.
 
 **Current bounded repair, 2026-10-15 (RP-670):** menu command/Close handoff retains a
 newer focus choice even when its element disappears before the render tick. Six old-component
