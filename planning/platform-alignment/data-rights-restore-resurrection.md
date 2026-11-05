@@ -1,6 +1,43 @@
 # RP-125 — retained current-HEAD backup/delete/restore witness
 
-## Composed bootstrap observation — 2026-11-05
+## Restored credential lifetime observation — 2026-11-05
+
+Baseline `0f3a5318`; method in the predeclared lifetime supplement. The same
+actual composed/bootstrap/HTTP-delete/encrypted-restore witness now restores each
+selected dump at application-clock offsets0,16 minutes and31 days. Six credential
+families match before each startup; the aged bystander logs in afresh with its
+recovery code and must reach its original Founder. This prevents universal
+expired-token denial from masquerading as deletion protection.
+
+| Snapshot | Time after issue | Original access | Original refresh | Original recovery | Bootstrap retry | Bystander |
+|---|---|---:|---:|---:|---:|---:|
+| B_pre | 0 | 200 | 200 | 200 | 201 | 200 |
+| B_pre | 16 minutes | 401 | **200** | **200** | 201 | 200 |
+| B_pre | 31 days | 401 | 401 | **200** | 409 | 200 |
+| B_post | 0 | 401 | 401 | 401 | 409 | 200 |
+| B_post | 16 minutes | 401 | 401 | 401 | 409 | 200 |
+| B_post | 31 days | 401 | 401 | 401 | 409 | 200 |
+
+Every successful refresh/recovery returns a fresh pair reaching the original
+Founder, with no extra account. At16 minutes, bootstrap201 is still the exact
+original response but its original access token is expired401: replayed bytes
+are not proof of usable access. At31 days, the receipt expires409 while the
+original recovery code still opens the restored pre-deletion account. Thus
+waiting out access/refresh expiry alone does not prevent the observed recovery.
+This proves that population, not permanent validity or a retention policy.
+
+Cold `make test-account-restore`20771 passes6.68s, all seven observed states
+(deleted source plus six restores), zero skips. Wrong recovery/access and
+malformed bootstrap controls remain. Native93433/vet pass with manual/DB skips
+excluded. Same actual epoch8/migration85/content hash as the initial composed
+study below. Linux-amd64 runs locally through Docker Desktop; application clock
+offsets are not a31-day wall-time or native clean-host rehearsal. Keys are
+unchanged, manifest metadata remains synthetic, and key rotation, other offsets,
+populated Guild membership, browser renewal, off-host/RPO/RTO/R-006 and policy
+remain separate. No production, balance, migration, schema, deadline or CI change.
+The owning Deployment log records review status and cleanup; RP-125 remains open.
+
+## Initial composed bootstrap observation — 2026-11-05
 
 Baseline `9a4bf86f`; predeclared composed supplement in the inventory plan.
 `make test-account-restore` executes

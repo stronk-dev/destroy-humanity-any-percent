@@ -12400,3 +12400,37 @@ approval; no software rerun for these factual/editorial records. RP-125 and
 D-009/D-015 remain open, as do expiry/rotation, populated Guild behavior, gameplay,
 off-host/clean-host and full feature/release gates. Full nine-tier1.0 goal stays
 active; no artifact rebuild, inferred adoption, push, deployment or archival.
+
+## 2026-11-05 — Restored credential lifetimes do not remove recovery-code access
+
+Account D2/D5 + Deployment DP6; baseline0f3a5318. Predeclare two application-clock
+offsets16min/31days over BOTH selected B_pre/B_post dumps in the existing rights
+plan. Extend the approved composed observer, preserving original three states,
+six-family SQL binding before each startup, actual composition/cleanup, exact
+receipt bytes, original-Founder binding, invalid controls and no-new-account
+check. Aged bystanders obtain fresh sessions through their recovery code, so
+their own expired access cannot make an unhealthy service look protective.
+
+Real declared Linux-amd64/Postgres16 target20771 passes6.68s, seven states/zero
+skips. B_pre16min: access401/refresh200/recovery200/bootstrap201; its exact
+replayed response contains expired access, not fresh usable access. B_pre31days:
+access401/refresh401/bootstrap409, but original recovery200 issues a fresh pair
+reaching the ORIGINAL Founder. All B_post offsets deny access/refresh/recovery
+401 and bootstrap409; bystanders200 throughout and no extra account appears.
+Epoch8/migration85/contenthashbaa89050... unchanged. These measured populations
+refute token expiry alone as a remedy for observed recovery after an older
+full-dump restore. They do not adopt account expiry or any deletion policy.
+
+Native full gameserver93433 and selected vet pass; manual/DB skips excluded from
+integration credit. Only a clarifying test comment changes after SQL execution;
+runtime assertion/fixture bytes remain those executed. All handles terminal;
+owned Compose containers/network removed and independently inventoried absent.
+No production/balance/schema/migration/CI/deadline changes or artifact rebuild.
+Keys stay unchanged; application time offsets are not elapsed wall time, key
+rotation, arbitrary lifetime or native clean-host evidence. Populated Guild,
+gameplay/browser renewal, off-host/RPO/RTO/R-006 and D-009/D-015 remain open.
+
+Complete six-path batch after0f3a5318 needs designated corrective test/research
+review; this is no new feature/policy acceptance. Review by: Codex root
+(implementer first filter). Recorded by: Codex root. Goal remains active; no
+repeated owner question, inferred adoption, push, deployment or archival.

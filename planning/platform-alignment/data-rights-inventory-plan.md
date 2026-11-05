@@ -1,5 +1,30 @@
 # D-008/D-009/D-015 — current data-rights inventory plan
 
+## Restored credential lifetime supplement — 2026-11-05 at 0f3a5318
+
+Extend the approved composed witness with two clock offsets,16 minutes and31
+days after issuance, over BOTH B_pre and B_post. This isolates Account D2's
+15-minute access/30-day refresh lifetimes from D5 deletion and DP6 full-dump
+restore. All six credential families must still match the selected dump before
+startup; then run actual composed startup/cleanup with the advanced application
+clock. Obtain a fresh bystander session through its original recovery code and
+require Founder200, so original-token expiry cannot make every result look denied.
+
+Observe the original subject access, refresh, recovery and bootstrap retry. Old
+access must refuse at both offsets; old refresh must refuse after31 days.
+Recovery and the unexpired refresh may return200 or401, but every200 must yield
+a fresh usable pair for the original Founder. A bootstrap201 must be the exact
+original response; it may legitimately contain an already-expired access token,
+so do not mislabel response replay as usable access. At31 days it must return
+the existing expired-receipt conflict. B_post must deny all old credentials,
+retain that conflict and create no replacement account. Reuse wrong-code/token/
+malformed-key controls. Other statuses, unready service, missing populations or
+incomplete execution invalidate measurement; keep guards unchanged. Log only
+counts/statuses and coordinate, no secret/raw bodies. No key rotation, new
+retention/expiry policy, browser renewal, wall-time31-day wait, release artifact,
+off-host or R-006 proof. This answers whether credential expiration alone removes
+the observed pre-deletion-restore access, without prescribing privacy policy.
+
 ## Composed bootstrap restore supplement — 2026-11-05 at 9a4bf86f
 
 Question: does the actual gameserver, with repository epoch/catalogs, Founder

@@ -1158,9 +1158,11 @@ with encrypted Postgres16 backup/restore. Its companion Compose file mounts only
 repository's balance, changelog and moderation content read-only in a separate disposable
 project. Six credential-table populations must match before restored composition starts;
 the test observes original credentials and exact bootstrap retry with bystander/invalid
-credential controls. Missing database configuration fails when this manual lane is enabled.
+credential controls at application-clock offsets0,16 minutes and31 days. Aged controls
+obtain a fresh bystander session; a replayed bootstrap body is distinguished from its
+expired access token. Missing database configuration fails when this manual lane is enabled.
 The fixture manifest and unchanged synthetic keys do not prove a release artifact,
-key expiry/rotation, populated Guild behavior or clean-host deployment. Current findings
+key rotation, arbitrary lifetimes, populated Guild behavior or clean-host deployment. Current findings
 and policy limits are in the [RP-125 dossier](../planning/platform-alignment/data-rights-restore-resurrection.md).
 
 `make test-deployment-ingress-profile` exercises the actual proxy-outage arm in its own private

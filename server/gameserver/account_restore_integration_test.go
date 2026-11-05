@@ -130,7 +130,7 @@ func TestComposedBootstrapDeletionRestoreIntegration(t *testing.T) {
 	if status, _ := request(t, api, http.MethodDelete, "/api/v1/account", subject.bootstrap.Session.AccessToken, ""); status != http.StatusNoContent {
 		t.Fatalf("composed account deletion failed: status=%d", status)
 	}
-	observeAccountRestoreCredentials(t, "deleted-source", source, api, subject, bystander, true)
+	observeAccountRestoreCredentials(t, "deleted-source", source, api, subject, bystander, true, 0)
 	postRows := accountRestoreCredentialRows(t, source)
 	post := backup("000000000012")
 	stopSource()
@@ -140,26 +140,34 @@ func TestComposedBootstrapDeletionRestoreIntegration(t *testing.T) {
 		absent     bool
 	}{{"pre-deletion-restore", pre, preRows, false}, {"post-deletion-restore", post, postRows, true}} {
 		t.Run(arm.name, func(t *testing.T) {
-			resetAccountRestoreDatabase(t, adminURL, "cloud_clicker_restore")
-			if _, err := deploymentbackup.RestorePostgresBackup(t.Context(), deploymentbackup.PostgresRestoreInput{
-				BackupPath: arm.path, ExpectedManifestSHA256: fmt.Sprintf("sha256:%x", sha256.Sum256(manifestBytes)),
-				IdentityFile: identityPath, TargetDatabaseURLFile: targetSecret,
-			}); err != nil {
-				t.Fatal(err)
+			for _, lifetime := range []struct {
+				name string
+				age  time.Duration
+			}{{"current", 0}, {"access-expired", 16 * time.Minute}, {"refresh-expired", 31 * 24 * time.Hour}} {
+				t.Run(lifetime.name, func(t *testing.T) {
+					resetAccountRestoreDatabase(t, adminURL, "cloud_clicker_restore")
+					if _, err := deploymentbackup.RestorePostgresBackup(t.Context(), deploymentbackup.PostgresRestoreInput{
+						BackupPath: arm.path, ExpectedManifestSHA256: fmt.Sprintf("sha256:%x", sha256.Sum256(manifestBytes)),
+						IdentityFile: identityPath, TargetDatabaseURLFile: targetSecret,
+					}); err != nil {
+						t.Fatal(err)
+					}
+					target, err := save.OpenPostgres(t.Context(), targetURL)
+					if err != nil {
+						t.Fatal("restore database unavailable")
+					}
+					t.Cleanup(func() { target.Close() })
+					if !bytes.Equal(arm.rows, accountRestoreCredentialRows(t, target)) {
+						t.Fatal("restored six-family credential population differs from selected backup")
+					}
+					restoredClock := func() time.Time { return now.Add(lifetime.age) }
+					restored, _ := startAccountRestoreServer(t, target, root, restoredClock)
+					observeAccountRestoreCredentials(t, arm.name, target, restored, subject, bystander, arm.absent, lifetime.age)
+				})
 			}
-			target, err := save.OpenPostgres(t.Context(), targetURL)
-			if err != nil {
-				t.Fatal("restore database unavailable")
-			}
-			t.Cleanup(func() { target.Close() })
-			if !bytes.Equal(arm.rows, accountRestoreCredentialRows(t, target)) {
-				t.Fatal("restored six-family credential population differs from selected backup")
-			}
-			restored, _ := startAccountRestoreServer(t, target, root, clock)
-			observeAccountRestoreCredentials(t, arm.name, target, restored, subject, bystander, arm.absent)
 		})
 	}
-	t.Logf("RP-125 composed coordinate: epoch=%d constants_hash=%s migration=%d; fixture manifest, unchanged keys, frozen valid-token clock", seed.Seed.CurrentEpochID, seed.Hash, migration)
+	t.Logf("RP-125 composed coordinate: epoch=%d constants_hash=%s migration=%d; fixture manifest, unchanged keys, application clock offsets 0/16min/31days", seed.Seed.CurrentEpochID, seed.Hash, migration)
 }
 
 type accountRestorePlayer struct {
@@ -237,24 +245,38 @@ func accountRestoreProfile(t *testing.T, api *httptest.Server, token string) (in
 	return status, founder.ID
 }
 
-func observeAccountRestoreCredentials(t *testing.T, arm string, database *sql.DB, api *httptest.Server, subject, bystander accountRestorePlayer, absent bool) {
+func observeAccountRestoreCredentials(t *testing.T, arm string, database *sql.DB, api *httptest.Server, subject, bystander accountRestorePlayer, absent bool, age time.Duration) {
 	t.Helper()
-	if status, founder := accountRestoreProfile(t, api, bystander.bootstrap.Session.AccessToken); status != http.StatusOK || founder != bystander.founder {
+	bystanderToken := bystander.bootstrap.Session.AccessToken
+	if age > 0 {
+		// Original bystander tokens expire too. A fresh recovery login proves
+		// the restored composition is healthy at the advanced application time.
+		status, body := accountRestoreRequest(t, api, http.MethodPost, "/api/v1/session", "", fmt.Sprintf(`{"account_id":%q,"recovery_code":%q}`, bystander.bootstrap.Account.AccountID, bystander.bootstrap.Account.RecoveryCode))
+		var pair account.TokenPair
+		if status != http.StatusOK || json.Unmarshal(body, &pair) != nil || pair.AccessToken == "" || pair.RefreshToken == "" {
+			t.Fatalf("fresh composed bystander session failed: status=%d", status)
+		}
+		bystanderToken = pair.AccessToken
+	}
+	if status, founder := accountRestoreProfile(t, api, bystanderToken); status != http.StatusOK || founder != bystander.founder {
 		t.Fatal("composed bystander control is not healthy")
 	}
 	var count int
 	if err := database.QueryRowContext(t.Context(), "SELECT count(*) FROM accounts WHERE account_id=$1", subject.bootstrap.Account.AccountID).Scan(&count); err != nil || (absent && count != 0) || (!absent && count != 1) {
 		t.Fatal("composed source/restore account population is wrong")
 	}
-	// Replay first: rotation below consumes the original refresh token. A receipt
-	// alone is insufficient: its original credential must still reach the Founder.
+	// Replay first: rotation below consumes the original refresh token. With no
+	// clock advance its original access must reach the Founder; an aged exact
+	// receipt can legitimately contain expired access, checked separately below.
 	bootstrapStatus, retry := accountRestoreRequest(t, api, http.MethodPost, "/api/v1/bootstrap", "", fmt.Sprintf(`{"idempotency_key":%q}`, subject.key))
 	if bootstrapStatus == http.StatusCreated {
 		if absent || !bytes.Equal(retry, subject.raw) {
 			t.Fatal("restored bootstrap does not reproduce the original account receipt")
 		}
-		if status, founder := accountRestoreProfile(t, api, subject.bootstrap.Session.AccessToken); status != http.StatusOK || founder != subject.founder {
-			t.Fatal("replayed bootstrap credential cannot reach original Founder")
+		if age == 0 {
+			if status, founder := accountRestoreProfile(t, api, subject.bootstrap.Session.AccessToken); status != http.StatusOK || founder != subject.founder {
+				t.Fatal("replayed bootstrap credential cannot reach original Founder")
+			}
 		}
 	} else if bootstrapStatus != http.StatusConflict || string(retry) != "{\"category\":\"conflict\",\"detail\":\"bootstrap_expired\"}\n" {
 		t.Fatalf("invalid bootstrap retry observation: status=%d", bootstrapStatus)
@@ -263,11 +285,17 @@ func observeAccountRestoreCredentials(t *testing.T, arm string, database *sql.DB
 	if accessStatus != http.StatusOK && accessStatus != http.StatusUnauthorized {
 		t.Fatalf("invalid access observation: status=%d", accessStatus)
 	}
+	if age > 0 && accessStatus != http.StatusUnauthorized {
+		t.Fatal("expired original access token admitted")
+	}
 	if accessStatus == http.StatusOK && (absent || founder != subject.founder) {
 		t.Fatal("restored access reaches a different or absent Founder")
 	}
 	refreshStatus, refresh := accountRestoreRequest(t, api, http.MethodPost, "/api/v1/session/refresh", "", fmt.Sprintf(`{"refresh_token":%q}`, subject.bootstrap.Session.RefreshToken))
 	recoveryStatus, recovery := accountRestoreRequest(t, api, http.MethodPost, "/api/v1/session", "", fmt.Sprintf(`{"account_id":%q,"recovery_code":%q}`, subject.bootstrap.Account.AccountID, subject.bootstrap.Account.RecoveryCode))
+	if age >= 30*24*time.Hour && (refreshStatus != http.StatusUnauthorized || bootstrapStatus != http.StatusConflict) {
+		t.Fatal("expired original refresh token or bootstrap receipt admitted")
+	}
 	for _, result := range []struct {
 		status int
 		body   []byte
@@ -309,7 +337,7 @@ func observeAccountRestoreCredentials(t *testing.T, arm string, database *sql.DB
 	if err := database.QueryRowContext(t.Context(), "SELECT count(*) FROM accounts").Scan(&after); err != nil || after != wantAccounts {
 		t.Fatal("credential observations unexpectedly created an account")
 	}
-	t.Logf("RP-125 composed arm=%s account_rows=%d access=%d refresh=%d recovery=%d bootstrap_retry=%d bystander=200", arm, count, accessStatus, refreshStatus, recoveryStatus, bootstrapStatus)
+	t.Logf("RP-125 composed arm=%s age_minutes=%d account_rows=%d access=%d refresh=%d recovery=%d bootstrap_retry=%d bystander=200", arm, int64(age/time.Minute), count, accessStatus, refreshStatus, recoveryStatus, bootstrapStatus)
 }
 
 func accountRestoreCredentialRows(t *testing.T, database *sql.DB) []byte {
