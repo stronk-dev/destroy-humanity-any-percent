@@ -28,8 +28,9 @@ RP-606 remains open; complete `3a1b8737..ddda9f4c` technical evidence is
 independently approved with a fresh actual run, both consumers and a missing-event
 comparison refusal. The [public Company evidence draft](../../rfc/public-company-replay-evidence.md)
 now proposes an explicit projection/v2 transport, immutable private originals and
-retirement of the unsafe raw download. Technical review and owner adoption/body
-reconciliation remain required; no implementation is authorized by the draft.
+retirement of the unsafe raw download. Complete normative proposal `1dee7a81..48e5c81e` is independently technically
+approved after explicit registry/pin-retirement and compromised-salt holds. Owner
+adoption/body reconciliation remain required; the draft authorizes no implementation.
 
 **Current bounded repair, 2026-10-15 (RP-670):** menu command/Close handoff retains a
 newer focus choice even when its element disappears before the render tick. Six old-component

@@ -4967,3 +4967,20 @@ including permanent historical+active-pin checking and refusal of extra changes/
 reintroduced200. This is normative text only; corrected complete proposal needs
 independent re-review, then explicit owner adoption/body authority. No runtime,
 generated pin, public endpoint or privacy acceptance is changed here.
+
+## 2026-11-05 — Public Company evidence technical proposal approved
+
+APPROVED complete four-path `1dee7a81..48e5c81e`, including correction
+`60e4616c..48e5c81e`. Review by: fresh independent Codex
+`/root/public_company_evidence_spec_review`. Recorded by: Codex root.
+S1/S2 resolved in the body; current pinned three target rows/404 alternatives,
+final diff and all17 bound feasibility files independently checked. Prior cold
+unchanged compatibility check reused, not falsely rerun as proposed transition
+code. Root checked final review manifest SHA256
+`be90858c4909f4c96d432715875c1fcf8d9418732c89fe35bbecb1bbfb89c31f`.
+All handles terminal, inputs released; no SQL/tracked reviewer changes. This
+editorial status record supplies no new normative authority. Next: owner adoption
+of P2's explicit API security withdrawal and P6's matching author-body delegation,
+then implementation and the declared actual consumer/privacy/backfill proof.
+RP-606, general rights and full feature/release acceptance stay open. The current
+c5130acf local candidate/runtime is unchanged; no package rebuild is warranted.
