@@ -1177,3 +1177,33 @@ for the complete commit after184e1dfc, source/tests/version/docs/records togethe
 No async public wire, full AC1/platform acceptance, artifact relabeling, archival,
 push, deployment or full nine-tier1.0 claim. The approved aa5e16e8 local package
 remains historical kernel227; batch the UI and mode guards into a later package.
+
+
+## 2026-11-05 — RP-776 complete corrective range independently APPROVED
+
+Review by: fresh independent Codex `/root/minigame_mode_corrective_review`.
+Recorded by: Codex root, transcribing the actual reviewer verdict under Marco's
+corrective-code delegation. **APPROVED**, no actionable findings, all11 paths:
+`184e1dfcb1ab94ab4180979e7c248394e3468e1d` exclusive through
+`512024c7f88c3c1a30155864450c1e8d652a3573` inclusive.
+
+Independent old-source overlays reproduce all4 preparation mode/quota failures
+and the internal start creating1 forbidden session; all4 foreign-ID controls
+pass. Main production files stay untouched. Full corrected Minigame Linux-amd64/
+Postgres/race PASS5.745s; selected Production/Gameserver consumers PASS15.625s/
+42.452s, actual HTTP lifecycle/payout/recovery included, no skips/races. Five-
+package vet, native Kernel/formula-authority0.134/0.168s, formatting/range
+whitespace and all3 version mirrors pass. Complete source/tests/docs/records
+inspected. Reviewer inspects the root's known27 Clout and historical50a3a514
+red results without independently rerunning those full gates; no green inference.
+
+Review manifest `.cache/minigame-mode-corrective-review/review-results.json`,
+SHA256`923f44cdef03e39d528476f382ae1bec585e8569e3ea9db92acabc995ce97b30`.
+The legacy internal start has no current production caller; no public exposure
+is claimed. The actual resolution coordinator consumes PrepareResolutionTx.
+This closes the bounded RP-776 defect, not complete Platform AC1/original-feature
+acceptance, async public wire, hosted CI, native supported clean-host or1.0.
+SQL ownership returns after every reviewer process is terminal. Root verifies
+owned container607b17095db5 has zero mounts and tmpfs data, then removes only
+that service. Durable volumes, images, caches, networks and unrelated services
+are preserved. Final service inventory is checked empty before further SQL work.

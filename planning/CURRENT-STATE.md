@@ -1,19 +1,24 @@
 # Current repository state
 
+Current runtime is kernel0.3.228/migration87 after the independently approved
+Minigame mode-policy correction RP-776, complete184e1dfc..512024c7.
+[Owning evidence](minigame-platform-foundation/log.md) includes old-source failures
+and real SQL/race consumers; full Platform/CI/release gates remain open.
+
 **Latest integrated player proof,2026-11-05:** RP-774's next-Company frozen clock
 is corrected/independently approved `04642f4c..a12346b0`. Complete real-service
 supplement `8c887be1..64394095` has independent approval after fresh main journey
 execution: both actual clocks, public HTTP→TS current/history/refusal, recovery/
 crash controls and built-asset identity pass. Controlled main journey only, not
 all composed descendants/fullfeature/hosted/clean-host proof. The last validated
-aa5e16e8 package predates the later UI fix; do not relabel it. Age rendering/copy
+aa5e16e8 package predates the later UI and mode-policy fixes; do not relabel it. Age rendering/copy
 and full nine-tier construction remain; the new exact label question is unanswered.
 
 **Founder-age correction,2026-11-05:** complete44-path `c195c0ae..a12218ab`
 has independent corrective approval. New input13/ending4 freezes the committed
 Founder age and preserves all historical ending bytes. Both replay runtimes and
 actual Postgres store/curriculum/migration/worker/archive/board checks pass;
-age rendering, authored copy and full Prestige AC7 remain open. Runtime now uses
+age rendering, authored copy and full Prestige AC7 remain open. That checkpoint uses
 kernel0.3.227/migration87. Its matching75-file local candidate source`aa5e16e8`
 has complete independent artifact-evidence approval `aa5e16e8..e404cce4`, with
 fresh rebuild/image/inventory and delivered-Linux helper checks. Earlier

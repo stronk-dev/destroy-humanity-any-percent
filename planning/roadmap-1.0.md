@@ -12,7 +12,7 @@ fresh built-client main journey, both actual clocks, public HTTP→TypeScript
 current/history replay/refusals and existing recovery/crash controls pass. This
 is the main journey under controlled setup, not every composed descendant or
 full Garage/obituary/hosted/release acceptance. The exact `aa5e16e8` package
-below predates the later UI fix; include it in a future coherent artifact batch.
+below predates the later UI and mode-policy fixes; include them in a future coherent artifact batch.
 Founder-age label adoption is requested; no answer or authored content is inferred.
 
 **Founder-age data/artifact checkpoint (2026-11-05):** RP-773's missing immutable Founder age
@@ -21,7 +21,10 @@ Input13/ending4 freezes the actual committed age; historical outputs remain
 unchanged. Both runtimes and real Postgres ending/refusal/migration/worker/archive/
 board checks pass. The age display, authored label and full obituary/AC7 remain
 unfinished; this is a factual producer/decoder repair, not another completed tier.
-Runtime is now kernel0.3.227/migration87. Matching75-file local candidates at
+That checkpoint is kernel0.3.227/migration87. Current runtime is0.3.228 after
+RP-776's independently approved mode-policy guard (184e1dfc..512024c7);
+[the owning log](minigame-platform-foundation/log.md) retains SQL/race proof and
+unchanged full-feature/CI holds. Matching75-file local candidates at
 source`aa5e16e8` have complete independent artifact-evidence approval over
 `aa5e16e8..e404cce4`, including fresh six-binary/client/content rebuild and actual
 delivered-helper refusal checks. The earlier `c5130acf` package stays historical.
