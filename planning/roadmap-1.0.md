@@ -5,7 +5,26 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest bounded checkpoint (2026-11-05):** RP-767 membership drain cancellation
+**Latest bounded checkpoint (2026-11-05):** ordinary Exit rewards now reach the
+hint-purchase projector without delayed-delivery overspend (RP-772), independently
+approved `408517bf..1ccdb7a0`. Matching local candidate trees at source `c5130acf`,
+kernel0.3.226/epoch8/migration86, have complete independent artifact-evidence
+approval `c5130acf..21a889b7`; earlier b8042450 remains historical. This is still
+one local candidate, with no legitimate predecessor/native clean-host/R-006 or
+current hosted/release acceptance.
+
+Garden RP-606 is a confirmed actual verified-public-archive privacy failure,
+not just a source inference. The actual chain and complete Go/TS Company-only
+projection feasibility are independently approved. A [repair proposal](../rfc/public-company-replay-evidence.md)
+is technically approved over `1dee7a81..48e5c81e`; owner adoption of the v2/unsafe-v1
+withdrawal and body reconciliation is requested, not inferred. Private originals
+remain unchanged, and any genuinely previously compromised current salts need
+separate adopted resolution before privacy acceptance. This advances the measured
+blocker/repair route, not gameplay scope or a repaired public endpoint. Accounting,
+RP-770, the historical guard, rights, accessibility, complete Garage integration
+and all later tiers/endings remain. Full nine-tier1.0 goal stays active.
+
+**Earlier bounded checkpoint (2026-11-05):** RP-767 membership drain cancellation
 is independently approved with kernel `0.3.226` under the existing corrective/versioning
 rules. Full affected native/real-PG race and client/replay/type/build/vet checks pass;
 complete25-path215a98b3..71d8e15c is independently approved. The owning Transport log
@@ -23,7 +42,7 @@ Current real backup and Caddy release/rollback boundaries pass. Recovery flow/co
 and signed backup-metadata proposals are technically reviewed, with concrete owner
 adoption questions pending. [Owning logs and limits](CURRENT-STATE.md) distinguish
 these from full feature/clean-host/hosted proof. No new tier or release is complete.
-Latest exact-artifact checkpoint: source `b8042450`, kernel0.3.226, has two matching
+Earlier exact-artifact checkpoint: source `b8042450`, kernel0.3.226, has two matching
 75-file/mode local candidate trees, including the reviewed relay and reader changes.
 Complete four-path `b8042450..2527574d` is independently approved after fresh six-
 executable AND client rebuilds, actual image-payload checks, native/shipped-Linux
@@ -2141,7 +2160,7 @@ postponed by changing the release label.
 
 | Gate | State at checkpoint | Product exit from `design/07` | Main dependency / proof still needed |
 |---|---|---|---|
-| Phase-0 Playable Preview | **In construction; unreleased** | Honest T0–T1 click → generator → first Exit → next Company browser journey, with the bounded preview manifest. | Independently review Deployment Foundation's corrective range; retain the locally rebuilt `102face6` candidate and establish a reviewed floor-compliant predecessor/full pair proof (historical44a4a72 is reconstructed but fails the current safety floor, RP-514), then run R-006 on the exact clean-host artifact. Account rights, recovery, task accessibility and retention still need their own decisions/contracts and end-to-end proof. |
+| Phase-0 Playable Preview | **In construction; unreleased** | Honest T0–T1 click → generator → first Exit → next Company browser journey, with the bounded preview manifest. | Independently review Deployment Foundation's corrective range; retain the independently rebuilt `c5130acf` candidate and establish a reviewed floor-compliant predecessor/full pair proof (historical44a4a72 is reconstructed but fails the current safety floor, RP-514), then run R-006 on the exact clean-host artifact. Account rights, recovery, task accessibility and retention still need their own decisions/contracts and end-to-end proof. |
 | v0.1 The Garage | **Accepted feature RFCs implementing; release unproved** | T0–T2, first Exit/Reputation, Fiscal/Clout/shop, three named minigames, pet care, ambient presence/feed/counters, era UI and launch content. | Bounded real-service Reputation, PR, Garden and Tier2 candidate journeys now exist, not complete acceptance. Typer/Arcade public wire and host integration, numeric/clock/renewal repairs, natural pacing/relevance, adopted copy/content mint, world/feed surfaces and consolidated reviews remain. RP-132's Pet/API body conflict and the Phase-0 floor also apply. |
 | v0.2 Incorporation | **Design intent; blocked by upstream systems** | Factions, guild/exchange, Tier 3 and the first measured community milestone; Events Layers 1–2. | Rule and prove privacy-preserving milestone measurement before threshold selection; complete social/world/event dependencies and real content. |
 | v0.3 Hyperscale | **Design intent; blocked by upstream systems** | Tier 4, The Lane, clocks/shop, ranked board-game queue with fair bot backfill, Event Layer 3, GM/war log and speedrun surfaces. | Accepted combat/match, feed/world, leaderboard readers, operator and content contracts with real multiplayer/bot fallback proof. |

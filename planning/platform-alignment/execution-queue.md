@@ -28,6 +28,13 @@ combat, Tier3–8 and ending construction ahead. No new tier or release is compl
   its complete `c5130acf..21a889b7` artifact-evidence range is independently approved in the
   [Deployment plan](../deployment-foundation/plan.md). Earlier b8042450 evidence
   stays historical, not proof of the newer runtime.
+- **Garden public evidence privacy:** RP-606's actual verified-board archive leak
+  and two-runtime Company-only feasibility are independently approved. The
+  [repair draft](../../rfc/public-company-replay-evidence.md) is independently
+  technically approved `1dee7a81..48e5c81e`; explicit owner adoption of v2 evidence,
+  unsafe-v1 withdrawal and matching parent-body authority is requested. No runtime
+  fix, hidden-information acceptance or prior-exposure erasure is inferred.
+  The API/Garden owning plans/logs hold the next implementation and proof boundary.
 - **Accounting and its real consumers:** delegated CV3/AC6 wording is reconciled.
   Accounting/search technical proposals are reviewed but adoption remains pending.
   [Clout's plan/log](../clout-v1-and-pr-interns/plan.md) owns the actual operation/

@@ -5959,3 +5959,25 @@ hosted CI, rights, feature acceptance or release call. Continue other accepted
 work while actual adoption questions remain pending; do not repeat completed
 artifact/profiling populations without a changed boundary or unresolved concern.
 The full1.0 goal stays ACTIVE; no push, deployment, archival or inferred approval.
+
+## 2026-11-05 — Ordinary reward delivery fixed; Garden publication blocker grounded
+
+RP-772 complete408517bf..1ccdb7a0 independently approved: actual epoch8 Exit credit
+can buy a hint, with pending-delivery debit protection. Current matching75-file
+candidate sourcec5130acf/kernel0.3.226/epoch8/migration86 is independently approved
+in artifact-evidence scopec5130acf..21a889b7; [Deployment log](deployment-foundation/log.md)
+owns exact rebuild/scanner exclusions and limits. The old b804 candidate stays
+historical. No runtime change since c513 and no repeat rebuild for these records.
+
+Garden RP-606 now has independently reproduced actual HTTP/SQL worker/compaction/
+board/raw-download exposure, plus independently approved complete Go/TS Company
+projection feasibility. It is a privacy FAILURE with an engineering route, not a
+completed privacy criterion. [Repair proposal](../rfc/public-company-replay-evidence.md)
+complete1dee7a81..48e5c81e is independently technically approved after honest
+registry/pin retirement and prior-compromise holds. Owner adoption/body authority
+is requested; no endpoint or private-history change follows from technical review.
+Owning API/Garden logs record exact reviews/commands; unchanged timing profiles
+are not repeated to hide RP-770. Boards now name the current candidate and next
+privacy authority. No new tier or release is complete; all nine tiers/endings,
+accounting/guard/current CI, rights/accessibility and native/clean-host/predecessor
+proof remain. Goal stays active; no push, deployment, archival or release call.
