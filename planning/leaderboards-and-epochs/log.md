@@ -744,3 +744,30 @@ Docs/plan/ledger describe the limited observer repair and unresolved completion 
 All root handles terminal; designated independent review requested for the complete
 batch after95d28013. No feature acceptance, archival, CI/release proof or publication.
 Review by: Codex root (implementer checks only). Recorded by: Codex root.
+
+## 2026-11-05 — Bounded observer independently approved; RP-770 stays open
+
+APPROVED complete six-path `95d28013..6e6d108c43e531aa979a061d3e7763792b2ccb08`.
+Review by: fresh independent Codex `/root/first_hour_observer_corrective_review`.
+Recorded by: Codex root. Complete diff/C33/transactional archive/retry authority
+and source/log hashes inspected. Independently executed Linux-amd64/actual-PG
+observer race: all13 cases PASS6.26s (pkg7.453s); verified one-line original-query-
+context overlay FAILS worker/guard lock-held controls8.68s, caller cancellation
+passes. Normal real first-hour PASS44.56s (pkg44.794s): both archives, Founder
+replay, post-delete6boards/6markers/2queue/2archives/1140events; actual runtime
+Go1.26.10/linux-amd64/14CPUs/14GOMAXPROCS. Vet/format/diff pass. Root RED race138.17s
+is hash-verified/inspected, NOT independently repeated or superseded by normal.
+No findings; scoped test-only correction, no CI/feature/release approval.
+
+Ignored review-results.json/logs retain source and log hashes. Reviewer handles
+33071/44829/18619 terminal; explicit SQL release; tree clean6e6d. Root then verifies
+d27b0f4a56d0's cloud-clicker/save-test Compose identity and tmpfs and removes only
+that owned disposable PG. Two shared builders, unrelated fw containers, images,
+caches and raw evidence remain. Root/reader/reviewer handles all terminal. Routine
+editorial closeout updates review state only; no product/status promotion or push.
+
+Next bounded debugging step: rebase failure-preserving phase observation onto
+current6e6d source for this newly failed Linux-amd64/race population. Any extra
+observation is bounded and original failure remains unconditional; a passing
+instrumented run cannot satisfy the failed-context objective. No guard change
+from incomplete timings. Full nine-tier1.0 goal remains ACTIVE, not paused.

@@ -22,9 +22,12 @@ a justified replacement yet. Cancellation/worker-error/committed-verified-withou
 archive refusal is now implemented in the test observer; actual Postgres controls
 pass and restoring the old query context fails the lock-held worker/guard controls.
 The current Linux-amd64/Postgres race journey still fails run2 claimed/healthy at
-that original guard. Scoped observer repair awaits independent review; RP-770
-remains open for the separate completion/timing cause. Complete relevant evidence
-must justify any later containment change. CI's5min workflow floor, supported native Linux-amd64 and UI
+that original guard. Scoped observer repair is independently APPROVED for complete
+`95d28013..6e6d108c`; RP-770 remains open for the separate completion/timing cause.
+Next: rebase the failure-preserving phase diagnostic onto this current observer,
+then observe the failing Linux-amd64/race population once. Keep original failures
+fatal, bound any extra observation, and record if the failed-context objective is
+not reproduced. Complete relevant evidence must justify any later containment change. CI's5min workflow floor, supported native Linux-amd64 and UI
 reference-profile gates remain distinct and unchanged. The owning log holds exact
 runtime/image provenance, controls, review correction and limits.
 
