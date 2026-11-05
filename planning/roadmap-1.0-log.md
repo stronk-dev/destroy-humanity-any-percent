@@ -5938,3 +5938,24 @@ This advances package evidence, not another tier or full release gate. Accountin
 search adoption, historical guard/hosted CI, complete gameplay/content, rights,
 accessibility, predecessor/native/clean-host/R-006 and all nine tiers through
 Transcendence remain. Goal stays active; no push, deployment or release approval.
+
+## 2026-11-05 — Current candidate carries reviewed relay and replay-reader repairs
+
+Exact sourceb8042450/kernel0.3.226/epoch8 now has matching75-file/mode candidate
+packages including approved RP-769 relay and7c850359 replay-reader code, alongside
+RP-768/RP-767. Complete four-pathb8042450..2527574d receives independent corrective
+artifact-evidence APPROVAL: fresh6 executable/7 client rebuilds, actual image
+payload, native/shipped-Linux build/intact and9 semantic negatives,24 inventory
+normalizations and6 fresh identities. Original two fresh gameserver scans and
+2,568-file/image zero-finding scan are root evidence, inspected by the reviewer;
+unchanged upstream scans are explicitly reused. [Exact proof and limits](deployment-foundation/log.md).
+Current pointers/live Deployment coverage are reconciled; prior records stay historical.
+
+RP-770's original race failure remains open despite separately passing phase/CPU
+samples. No larger wait or speculative runtime-neutral optimization is activated.
+The candidate remains local0.1.0-preview.2; this improves release-floor evidence,
+not the nine-tier gameplay scope, a predecessor, native clean-host/R-006, current
+hosted CI, rights, feature acceptance or release call. Continue other accepted
+work while actual adoption questions remain pending; do not repeat completed
+artifact/profiling populations without a changed boundary or unresolved concern.
+The full1.0 goal stays ACTIVE; no push, deployment, archival or inferred approval.

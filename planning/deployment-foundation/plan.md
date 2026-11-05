@@ -80,9 +80,13 @@ inputs, with fresh manifest/config/platform checks and producer-normalization re
 Shipped Linux helper build/intact results are0; all9 semantic mutations return exact3.
 All4 original/fixture trees remain intact and work empty. Native record/package pass;
 source/image scan covers2,568 tracked files and reports zero findings. The
-[new retained record](release-builds/candidate-b8042450.json) awaits independent
-corrective artifact-evidence review of the complete range afterb8042450; no current
-R-006/rights/predecessor/native/current-CI/full-feature/release acceptance follows.
+[new retained record](release-builds/candidate-b8042450.json) has independent
+corrective artifact-evidence APPROVAL for complete `b8042450..2527574d`, including
+fresh six-executable/client rebuilds, actual image payload, native/shipped-Linux
+consumers,24 normalization comparisons and6 fresh identity checks. Original scans
+are inspected, not independently rerun. No current R-006/rights/predecessor/native/
+current-CI/full-feature/release acceptance follows. Retain this artifact while
+runtime bytes stay unchanged; do not rebuild it for editorial records.
 The approved28aefd29 record remains historical. Preserve RP-770's race failure and
 all outstanding adoption questions; no repeated question or inferred approval.
 The local preview label is unchanged; full nine-tier1.0 remains the objective.

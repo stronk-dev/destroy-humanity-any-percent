@@ -12274,3 +12274,35 @@ clean-host/R-006, full current CI, rights, legitimate predecessor, full-feature 
 release acceptance. RP-770 remains open. No pending-question repeat/adoption,
 push, deployment, archival or goal pause. Shared builders/caches preserved.
 Review by: Codex root (implementer/output first filter). Recorded by: Codex root.
+
+## 2026-11-05 — Current runtime artifact independently approved
+
+APPROVED, no findings, complete four-path base-exclusive/tip-inclusive range
+b80424502d9c92c2e5d5f5598a0e33be9bec2775..
+2527574db410293f9d2892aad4d4ea244ee0b330.
+Review by: fresh independent Codex `/root/current_runtime_artifact_evidence_review`.
+Recorded by: Codex root, transcribing the reviewer's executed verdict.
+
+Fresh independent root-Make rebuild matches all6 static executables AND7 client
+files against delivered package and BOTH retained snapshots. All75 hashes/modes,
+74 manifest bindings and actual image-layer binary/content payload agree.
+Native record/intact pass; shipped-Linux build/intact0 and all9 semantic cases
+exact3. Both raw/canonical chains complete24 independent strict normalizer
+comparisons; fresh6 root/selected registry/config/platform identities agree.
+Reviewer inspects/hash-verifies root's two fresh Syft and source/image scans,
+without claiming independent scanner execution. No fixture, guard or source
+change supplies the approval; exact source remainsb8042450.
+
+Proof .cache/current-runtime-artifact-review-b8042450/review-results.json. All
+reviewer handles terminal,11 owned containers absent, private fixture removed;
+shared caches/builders and unrelated work preserved. No tracked reviewer edits;
+clean2527574d before this editorial closeout. Current artifact pointers and the
+live Deployment coverage row are reconciled; original build/review logs remain
+append-only. No new software test for these status edits. Do not repeat this
+reconstruction while runtime bytes remain unchanged.
+
+This closes local corrective artifact-evidence review only. RP-770, accounting/
+search adoption, historical guard/current-hosted CI, rights, legitimate predecessor,
+native supervisor/clean-host/R-006, full features and release approval remain open.
+Full nine-tier1.0 goal ACTIVE; no question repeated, adoption inferred, push,
+deployment, archival or release call.

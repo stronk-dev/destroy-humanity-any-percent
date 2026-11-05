@@ -8,7 +8,7 @@ build and vet pass. Complete25-path215a98b3..71d8e15c is independently APPROVED;
 the
 [Transport log](websocket-transport-and-fanout/log.md) preserves old failures,
 shared-database interference and successful serial evidence. Epoch8 is unchanged.
-The independently reviewed `28aefd29` artifact below includes this correction and
+The independently reviewed `b8042450` artifact below includes this correction and
 RP-768. No new tier, hosted-CI, full-feature or release acceptance follows.
 
 **Bounded local checkpoint,2026-11-04:** actual gameserver stop→five-minute alert→
@@ -23,22 +23,23 @@ concrete adoption questions remain unanswered. These advance platform correctnes
 not another playable tier or supported-release claim. Whole-product classification
 below retains its audit baseline; no fresh full-product/hosted acceptance is inferred.
 
-**Exact local artifact follow-up,2026-11-05:** two independent source `28aefd29`
-candidate rebuilds match all75 files/modes (74 bound artifacts plus manifest),
-including reviewed RP-767/RP-768 at kernel0.3.226 and earlier Account/Guild,
-backup and attribution corrections. The
-[retained record](deployment-foundation/release-builds/candidate-28aefd29.json)
-and complete four-path evidence range `28aefd29..d3e52571` are independently
-approved after a fresh six-executable rebuild, native/shipped-Linux intact and
-nine-tampering consumers, registry reads and retained-inventory replay. Two fresh
-gameserver scans and the source/image secret scan pass. The six immutable upstream/
-rehearsal inventories per tree explicitly reuse prior scans with checksum-bound
-provenance; neither root nor reviewer claims new upstream scans. The reviewer
-inspects the original scan/secret-scan results rather than rerunning scanners.
-Earlier records remain historical. Actual native journal
-collection has separate approval at `927b26ed`. The Deployment log owns execution
-and local/platform limits. This is neither a legitimate candidate/previous pair
-nor current hosted, rights, native-supervisor, host-retention or clean-host acceptance.
+**Exact local artifact follow-up,2026-11-05:** current source `b8042450`
+includes approved relay cancellation (RP-769) and batched replay reads in addition
+to RP-767/RP-768 at kernel0.3.226/epoch8. Two candidate reconstructions match75
+files/modes and74 manifest-bound artifacts, with independently retained client
+rebuilds. The [retained record](deployment-foundation/release-builds/candidate-b8042450.json)
+and complete four-path `b8042450..2527574d` have independent corrective approval:
+fresh6 executables/7 client files, actual image payload, native/shipped-Linux
+record/intact and9 tampering controls,24 inventory-normalizer comparisons and6
+fresh registry/config/platform checks. Root's two actual gameserver scans and
+manifest-bound2,568-file/image secret scan pass; the reviewer inspects those
+results without rerunning scanners. Six unchanged upstream/rehearsal scans per
+tree are explicitly reused with checksum-bound provenance. Earlier records remain
+historical. Actual native journal collection has separate approval at `927b26ed`.
+The [Deployment log](deployment-foundation/log.md) owns exact execution and limits.
+This is one candidate, not a legitimate predecessor pair, native-host/clean-host/
+R-006, rights or current-hosted acceptance. RP-770's race failure remains open;
+the reviewed observer repair and passing measurements do not erase it.
 
 **Account archival correction,2026-11-04:** complete`2d7ebbfd..13a56c11` is
 independently approved. Real concurrent New Founder/import previously left two
@@ -48,7 +49,7 @@ Fresh old/current SQL, lock compatibility and full Account checks support it;
 root's broader server/Guild and race passes are separately attributed in the
 [Account log](account-and-session-bootstrap/log.md). Full Account/rights/player
 workflow acceptance remains open. Historical`df84ce1a` predates this correction;
-the independently reviewed `28aefd29` rebuild above contains it.
+the independently reviewed `b8042450` rebuild above contains it.
 
 **Guild deletion corrections,2026-11-04:** admission/deletion
 `0a9b0107..a61ade8e` and sweep/deletion`0ff2f614..78d75546` receive separate complete
@@ -58,7 +59,7 @@ Postgres/race suites pass both orders, exact refusals and preserved history; the
 actual composed Guild/HTTP/socket deletion check also passes. The [Guild log](archive/guild-model/log.md)
 distinguishes independent executions from inspected root checks and records cleanup.
 Those corrections used kernel0.3.225; current kernel `0.3.226` retains them, with
-epoch8 unchanged. The `28aefd29` candidate contains
+epoch8 unchanged. The `b8042450` candidate contains
 these runtime corrections; historical`df84ce1a` does not. No new playable tier or whole-feature/release
 acceptance follows; the27 Clout failures and historical version guard remain open.
 

@@ -227,8 +227,11 @@ rejects all nine semantic tampering fixtures with exact exit 3. Both original an
 private fixture trees retain their hashes/modes afterward. Native build-record and
 intact-package consumers also pass. The manifest-bound secret scan reports zero
 findings across 2,568 tracked files and the actual image archive. These are local
-construction/offline helper results; designated corrective artifact-evidence review
-of this new record is pending. The independently approved
+construction/offline helper results. Independent corrective artifact-evidence
+review approves complete `b8042450..2527574d`, including fresh six-executable and
+client rebuilds, actual image-payload checks, shipped-Linux controls and inventory/
+registry verification. The reviewer inspects the original scans rather than rerunning
+them. The independently approved
 [`28aefd29` record](../planning/deployment-foundation/release-builds/candidate-28aefd29.json)
 remains historical evidence. Both new trees are one candidate; neither is a legitimate
 predecessor. Accounting, history-guard/hosted CI, RP-770, rights, predecessor provenance
