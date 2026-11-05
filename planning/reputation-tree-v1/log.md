@@ -9993,3 +9993,18 @@ execution. Both handles terminal; no tracked edits/commits/mutations. Shared
 networkb407c60b has peer browser/Postgres attachments and is preserved.
 This closes RP-397's test-correction review only: original B7, R9 author body,
 manual AT, full/hosted CI, content mint, archival and release remain separate.
+
+## 2026-11-05 — RP-246 superseded by independently reviewed curriculum repair
+
+Read-only next-work triage finds RP-246 still calls branch/starter pairing an
+unexecuted question, although RP-579 later reproduces all three wrong-branch
+admissions among46 old failures and corrects the curriculum-only validator.
+Current `server/curriculum/catalog.go` and its retained wrong-kind regressions
+match that correction; generic ValidateStarter remains separate. The API log's
+2026-11-03 independent verdict covers the corrective portion of
+4c0685406ad3eadfaa3eabf1a0b18e4ca3193815..
+65ee6a8e72d56194ab22c200307b51f1ff2dfe18, excluding new C18 descriptors.
+Link the stale question to that existing repair; do not repeat its experiment,
+change code, attribute the correction to Reputation R4, or promote feature status.
+No new software run for this editorial reconciliation; original evidence and
+review attribution stay in API's owning log. Recorded by: Codex root.
