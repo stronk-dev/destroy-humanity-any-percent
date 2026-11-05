@@ -204,6 +204,15 @@ GOMAXPROCS. Use those fields and the actual image/host identities when comparing
 executions. These diagnostics do not establish the supported native Linux/amd64
 release or reference-profile gates.
 
+The first-hour replay observer keeps its five-second functional-test guard and
+applies it to SQL reads as well as polling. Worker failure interrupts an in-flight
+read; terminal queue failure or a committed verified row without its required
+verdict/archive fails immediately. Pending retries and version deferrals remain
+incomplete. Failure output retains the last observed queue fields and current
+worker health; no extra unbounded SQL diagnostic runs after expiry. This guard
+is not a product verification-latency SLO. RP-770's intermittent healthy-worker
+timeout remains open; scoped observer controls do not make the full lane green.
+
 The default SQL targets share a database within their Compose project, and several
 fixtures truncate accounts, catalogs and epochs. Run these targets serially across
 implementers and reviewers unless the project and database are explicitly isolated.

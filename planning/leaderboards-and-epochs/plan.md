@@ -18,10 +18,13 @@ Independent contract review traces the5s literal to test-only624d42c8, not an
 accepted verification SLO. T01-C33 still requires the natural worker's durable
 verdict/archive, Founder replay and post-delete board assertions. The current
 5s guard remains; neither a larger literal nor the remaining package timeout is
-a justified replacement yet. Next authorized work: cancellation/worker-error/
-committed-verified-without-archive refusal under the existing guard, with real
-Postgres negative controls. Complete relevant evidence must justify any later
-containment change. CI's5min workflow floor, supported native Linux-amd64 and UI
+a justified replacement yet. Cancellation/worker-error/committed-verified-without-
+archive refusal is now implemented in the test observer; actual Postgres controls
+pass and restoring the old query context fails the lock-held worker/guard controls.
+The current Linux-amd64/Postgres race journey still fails run2 claimed/healthy at
+that original guard. Scoped observer repair awaits independent review; RP-770
+remains open for the separate completion/timing cause. Complete relevant evidence
+must justify any later containment change. CI's5min workflow floor, supported native Linux-amd64 and UI
 reference-profile gates remain distinct and unchanged. The owning log holds exact
 runtime/image provenance, controls, review correction and limits.
 

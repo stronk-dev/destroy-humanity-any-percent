@@ -707,3 +707,40 @@ Ignored review-runtime-normal.log retains execution. No new race/broad-suite run
 latency/CI/feature/release approval. Handle33550 terminal; SQL ownership released.
 Tree unchanged by reviewer. RP-770 remains OPEN; continue the bounded observer
 cancellation/invariant repair under the unchanged guard, not a larger allowance.
+
+## 2026-11-05 — Bound first-hour observer SQL; retain the actual journey failure
+
+Routine test-only correction under T01-C33/RFC-0000 and the independent guard
+classification above. Extract the existing poller into a test helper returning
+its last observed queue fields. Its original5s (or earlier caller deadline) now
+cancels SQL as well as polling; a joined worker-failure listener interrupts blocked
+reads. Dead queue rows and committed verified rows lacking the existing required
+verdict/archive fail promptly. Pending retry/version-deferral errors remain
+incomplete, never reclassified as terminal. No direct verification, queue completion,
+extra post-expiry SQL, product bytes, kernel/epoch, policy, CI or guard increase.
+
+Actual-Postgres observer population2105 PASS7.12s: durable predicate; claimed/no
+producer; pending retry/deferral; archive alone; missing archive/wrong verdict;
+dead/poison; absent run; real exclusive-table-lock caller/worker/guard cancellation.
+Locks remain held at return. Initial fixture iteration41029 is RED because its pin
+omitted transactional genesis; corrected fixture commits pin+genesis atomically,
+without weakening DB constraints. Its already-executed blocked-SQL controls passed.
+
+Ignored compiler overlay restores ONLY the original caller context on the SQL read
+(new helper/refusal logic otherwise intact; NOT an exact-old whole revision).
+Linux-amd64/PG63134 fails worker-error and original-guard controls with the original
+exclusive lock held; caller cancellation passes. Corrected Linux-amd64/PG race10148
+runs the real composed first-hour and all observer controls: observer PASS6.38s,
+but first-hour RED138.17s, run2 claimed/attempt1/empty last_error/healthy and ready,
+archive absent at the unchanged5s. This reproduces OPEN RP-770, not a newly green
+CI lane. Do not repeat until green or substitute another architecture for that red.
+
+Native full gameserver race2666 PASS1.975s (DB prerequisite absent/skipped), selected
+vet PASS. Earlier native54849 was blocked at loopback bind by sandbox; permitted
+execution is distinct. One Docker sandbox denial and malformed Make-selector attempt
+execute no tests; corrected selector10148 is the red actual execution above.
+Raw controls/results/source hashes: .cache/first-hour-observer-95d28013/.
+Docs/plan/ledger describe the limited observer repair and unresolved completion cause.
+All root handles terminal; designated independent review requested for the complete
+batch after95d28013. No feature acceptance, archival, CI/release proof or publication.
+Review by: Codex root (implementer checks only). Recorded by: Codex root.

@@ -393,43 +393,85 @@ func assertFirstHourPublicBoardAfterAccountDeletion(t *testing.T, ctx context.Co
 
 func waitFirstHourRunVerifiedAndArchived(t *testing.T, ctx context.Context, db *sql.DB, server *Server, streamID string, runSeq int64) {
 	t.Helper()
-	deadline := time.Now().Add(5 * time.Second)
-	var status, verdict string
-	var archiveHash string
-	var terminalSeq int64
-	var attempts int
-	var lastError string
-	for time.Now().Before(deadline) {
-		err := db.QueryRowContext(ctx, `SELECT queue.status,COALESCE(queue.verdict,''),
+	observed, err := observeFirstHourVerification(ctx, db, server.Failures(), streamID, runSeq)
+	if err != nil {
+		t.Fatalf("run %d persisted verification: %v; status=%q verdict=%q archive=%q terminal_seq=%d attempts=%d last_error=%q jobs_healthy=%v ready=%v",
+			runSeq, err, observed.status, observed.verdict, observed.archiveHash, observed.terminalSeq,
+			observed.attempts, observed.lastError, server.jobsHealthy.Load(), server.ready.Load())
+	}
+}
+
+type firstHourVerificationObservation struct {
+	status, verdict, archiveHash, lastError string
+	terminalSeq                             int64
+	attempts                                int
+}
+
+// Observe the real worker, never perform verification on its behalf. Bound SQL
+// and polling by the original five-second guard (or an earlier caller deadline).
+// A committed verified row and its archive are atomic in ProcessNext; a missing
+// archive at that point cannot be repaired by waiting for the same transaction.
+func observeFirstHourVerification(ctx context.Context, db *sql.DB, failures <-chan error, streamID string, runSeq int64) (firstHourVerificationObservation, error) {
+	bounded, cancelBound := context.WithTimeout(ctx, 5*time.Second)
+	defer cancelBound()
+	waitCtx, cancel := context.WithCancelCause(bounded)
+	defer cancel(nil)
+	if failures != nil {
+		// A worker failure must cancel even an in-flight SQL lock wait. Join the
+		// listener on every return so it cannot consume a later observer's error.
+		done := make(chan struct{})
+		go func() {
+			defer close(done)
+			select {
+			case err := <-failures:
+				if err == nil {
+					err = errors.New("worker failure channel closed without an error")
+				}
+				cancel(fmt.Errorf("verification worker: %w", err))
+			case <-waitCtx.Done():
+			}
+		}()
+		defer func() { cancel(nil); <-done }()
+	}
+	ticker := time.NewTicker(20 * time.Millisecond)
+	defer ticker.Stop()
+	var observed firstHourVerificationObservation
+	for {
+		if err := context.Cause(waitCtx); err != nil {
+			return observed, err
+		}
+		var next firstHourVerificationObservation
+		err := db.QueryRowContext(waitCtx, `SELECT queue.status,COALESCE(queue.verdict,''),
 			COALESCE(archive.sha256,''),COALESCE(archive.terminal_seq,0),queue.attempts,COALESCE(queue.last_error,'')
 			FROM verification_queue queue LEFT JOIN run_log_archive archive
 			  ON archive.company_stream_id=queue.company_stream_id AND archive.run_seq=queue.run_seq
 			WHERE queue.company_stream_id=$1 AND queue.run_seq=$2`, streamID, runSeq).
-			Scan(&status, &verdict, &archiveHash, &terminalSeq, &attempts, &lastError)
-		if err == nil && status == "verified" && verdict == "verified" && strings.HasPrefix(archiveHash, "sha256:") && terminalSeq > 0 {
-			return
+			Scan(&next.status, &next.verdict, &next.archiveHash, &next.terminalSeq, &next.attempts, &next.lastError)
+		if cause := context.Cause(waitCtx); cause != nil {
+			return observed, cause
 		}
-		if err != nil && !errors.Is(err, sql.ErrNoRows) {
-			t.Fatal(err)
+		if err == nil {
+			observed = next
+			if observed.status == "verified" {
+				if observed.verdict != "verified" || !strings.HasPrefix(observed.archiveHash, "sha256:") || observed.terminalSeq <= 0 {
+					return observed, errors.New("committed verified row lacks the required verdict/archive")
+				}
+				return observed, nil
+			}
+			if observed.status == "dead" {
+				return observed, errors.New("verification entered dead-letter/poison state")
+			}
+		} else if !errors.Is(err, sql.ErrNoRows) {
+			return observed, fmt.Errorf("read verification: %w", err)
 		}
-		time.Sleep(20 * time.Millisecond)
+		// pending (including retry/version deferral), claimed and not-yet-enqueued
+		// remain incomplete. A last_error alone is not a terminal verdict.
+		select {
+		case <-waitCtx.Done():
+			return observed, context.Cause(waitCtx)
+		case <-ticker.C:
+		}
 	}
-	// The test wait guard and durable-success condition are unchanged. Only on
-	// failure, expose whether the worker rejected, deferred or is still busy;
-	// an inner archive join previously hid every one of those queue states.
-	var workerFailure error
-	select {
-	case workerFailure = <-server.Failures():
-	default:
-	}
-	var entries, archives int64
-	diagnosticErr := db.QueryRowContext(ctx, `SELECT
-		(SELECT count(*) FROM run_log WHERE company_stream_id=$1 AND run_seq=$2),
-		(SELECT count(*) FROM run_log_archive WHERE company_stream_id=$1 AND run_seq=$2)`, streamID, runSeq).
-		Scan(&entries, &archives)
-	t.Logf("verification deadline: attempts=%d last_error=%q jobs_healthy=%v ready=%v worker_failure=%v run_log_rows=%d archives=%d diagnostic_error=%v",
-		attempts, lastError, server.jobsHealthy.Load(), server.ready.Load(), workerFailure, entries, archives, diagnosticErr)
-	t.Fatalf("run %d persisted verification status=%q verdict=%q archive=%q terminal_seq=%d", runSeq, status, verdict, archiveHash, terminalSeq)
 }
 
 func composedFirstHourIntentID(index int) string {
