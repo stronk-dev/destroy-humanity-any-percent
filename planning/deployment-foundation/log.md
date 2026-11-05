@@ -12545,3 +12545,66 @@ no SQL used, clean21a889b7 before this editorial record. Source remainsc5130acf;
 no rebuild for documentation. This is local corrective artifact-evidence approval,
 not full feature/rights/hosted CI/predecessor/native/clean-host/R-006/release
 acceptance. No publication/deployment/archival, pending-question adoption or goal pause.
+
+## 2026-11-05 — Reviewed frozen-age runtime rebuilt into local candidates
+
+Accepted DP1/AC1/AC8 packaging at clean committed source
+`aa5e16e8e3e7ee5b0d31278378d19b3008ed4815`, SOURCE_DATE_EPOCH1793861549,
+created2026-11-05T06:52:29Z. Includes independently approved RP-773
+`c195c0ae..a12218ab`, kernel0.3.227 and appended migration00087, epoch8 unchanged.
+Prior c5130acf kernel226/migration86 packaging remains historical. The local
+0.1.0-preview.2 label is unchanged; no release, push or deployment is authorized.
+
+Frozen pnpm11.15.1 install passes; actual Go1.27.3 darwin/arm64, Node26.13.0,
+Engine28.4.0 and Compose2.39.4-desktop.1 match record. Existing builder inspect
+confirms pinned BuildKit0.24.0, preserved rather than recreated/pruned. Root Make
+build4913 and60006 separately reconstruct six static Linux-amd64 binaries,
+client/content/metadata. Preserve A's actual seven-client-file snapshot before
+B runs; both snapshots, six binaries,32 content files and two metadata files
+compare equal. Restore/verify each snapshot before its own bundle assembly.
+No source/test/metadata edits occur while these checks read their inputs.
+
+No-cache image builds37795/11094 both pass. Before scanning, hash every archive
+blob, verify the uncompressed layer diff-IDs separately from compressed blob
+hashes, inspect actual runtime user/entrypoint/source/version labels, and compare
+all33 image payload files to fresh binary/content bytes/modes/owners. Both match:
+config97a529277755b23bd320c808d76a305ad147fea3f4491f0d04e1ae6398102239,
+archivec34d4c591b810bd9ce16a1ee330241e1fd0db63951f7b9a0bd6dc5172b920436.
+Only after that passing identity check, fresh actual Syft4962/22468 scans each
+archive:41 packages, same normalized inventory772a6f14.... No invalid scan is
+included or relabelled in this reconstruction.
+
+Fresh registry31348 re-reads all6 unchanged upstream/rehearsal root/selected
+manifest/config/platform identities, including fresh Caddy config output, and
+matches every pinned Linux-amd64 identity. Each root explicitly reuses its own
+prior c513 raw/canonical inventory chain with checked SHA and original scan time;
+these are twelve reused inventories, NOT twelve new upstream scans. Normalizer
+24551 executes24 commands/12 equality checks; all7 normalized inventories match
+across roots. Two new gameserver scans above are fresh. Assemblies94772/25180
+match all75 files/modes and74 manifest bindings. Manifest
+f5ce06393fb27c41b01dbfbce30002df9e2ed0d37e230dd6c51f25d6eb271010
+names exactaa5e16e8 source/migration87/epoch8. All artifact paths/digests are
+independently recomputed in the local comparison, not merely counted.
+
+Fresh native helper19439 validates build record/intact package (exit0 each).
+Actual DELIVERED Linux helper62974 runs offline/read-only/no caps/new privileges,
+UID501:20 in existing593dc355... amd64 runner with its established AVX2-emulation
+accommodation. Record/intact return0; all9 semantic tampering populations return
+exact3/error_class=fixture_rejected. No timeout/guard/setup refusal is counted.
+All4 original/private75-file trees retain bytes/modes; native and Linux work empty;
+all11 named owned containers absent, shared builders/networks/caches preserved.
+These identical candidates are one artifact, not a legitimate predecessor pair.
+Manifest-bound source/image secret scan exits0,2592 tracked files/findings0,
+objective true/guard false. Emulated Linux helpers on this ARM64 Desktop host do
+not constitute supported native-host or R-006 proof.
+
+All root handles terminal and source remained clean/frozen until recording.
+Ignored evidence is in `.cache/release-current-aa5e16e8`, matching rebuild root
+and `release-linux-probes-aa5e16e8`; exact small candidate JSON is retained.
+Canonical deployment docs/plan and current execution routing are reconciled.
+Complete five-path record/docs batch afteraa5e16e8 needs fresh independent
+corrective artifact-evidence review. Review by: Codex root (implementer first
+filter). Recorded by: Codex root. No independent approval is self-supplied.
+RP-770, Clout/history guard/current hosted CI, privacy/rights/accessibility,
+native-profile adoption/construction, predecessor/clean-host/full-feature and
+release gates remain. No repeated owner question or goal pause.

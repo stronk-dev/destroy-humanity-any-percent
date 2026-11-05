@@ -68,13 +68,25 @@ reconcile parent bodies under the actual delegation and implement adopted
 contract dependencies with their full producer/native/clean-host proof. No
 product implementation or goal pause is claimed at this checkpoint.
 
-**Runtime follow-up,2026-11-05:** RP-773 complete `c195c0ae..a12218ab` is
-independently corrective-approved with kernel0.3.227/migration87. The artifact
-below remains the last validated package but predates this runtime. Its manifest,
-scans and approvals cannot be relabelled. Next coherent artifact refresh must
-build the reviewed new source; no release/hosted/clean-host status is promoted.
+**Current artifact first filter,2026-11-05:** source `aa5e16e8` includes the
+independently approved RP-773 correction, kernel0.3.227/migration87/epoch8.
+Two separately reconstructed75-file/mode trees match all74 manifest bindings,
+six binaries/seven client files/content/metadata and image archives. Actual image
+33-file payloads/digests/modes/owners match. Two fresh gameserver scans41packages;
+upstream inventories explicitly reuse each prior c513 raw/canonical chain with
+six fresh registry identities and24 normalizer commands/12 equality checks.
+Native and delivered-Linux intact/record pass; nine semantic mutations return
+exact3/fixture_rejected, four trees unchanged/work empty/11 containers absent.
+Source/image zero-finding scan covers2592 tracked files. Manifestf5ce0639...,
+image97a52927..., archivec34d4c59.... [New record](release-builds/candidate-aa5e16e8.json)
+and complete new record/docs range afteraa5e16e8 need independent corrective
+artifact-evidence review next. Raw evidence retained under ignored
+`.cache/release-current-aa5e16e8`, `release-rebuild-aa5e16e8` and
+`release-linux-probes-aa5e16e8`. No source edits during measurements. This does
+not close hosted/full-feature/privacy/rights/predecessor/native clean-host/R-006
+or release gates. Prior candidate below retains its exact historical verdict.
 
-**Last validated exact artifact, 2026-11-05:** source
+**Previous independently approved artifact, 2026-11-05:** source
 `c5130acf` includes independently approved RP-772 Exit-credit projection and
 migration00086, kernel0.3.226/epoch8 unchanged. Fresh current/rebuild roots
 `.cache/release-current-c5130acf` and `.cache/release-rebuild-c5130acf` retain

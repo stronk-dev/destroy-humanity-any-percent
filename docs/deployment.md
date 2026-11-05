@@ -213,33 +213,31 @@ batches and the exact clean-host R-006 rehearsal remain required before the proj
 can claim supported self-hosting.
 
 The latest retained local candidate build record is
-[`candidate-c5130acf.json`](../planning/deployment-foundation/release-builds/candidate-c5130acf.json).
-Exact source `c5130acf`, kernel `0.3.226`, includes the independently approved Exit-credit
-projection correction and migration 86. Two local builds match all six Linux-amd64 executables,
-seven client files, content, metadata and image archives. Both assembled bundles match all
-75 files and modes, with 74 manifest-bound artifacts. Actual image payloads match the fresh
-binary/content builds, including ownership and executable mode.
+[`candidate-aa5e16e8.json`](../planning/deployment-foundation/release-builds/candidate-aa5e16e8.json).
+Exact source `aa5e16e8`, kernel `0.3.227`, includes the independently approved frozen
+Founder-age correction and migration 87. Two separate local builds match all six Linux-amd64
+executables, seven client files, content, metadata and image archives. Both assembled bundles
+match all 75 files and modes, with 74 manifest-bound artifacts. Actual image payloads match the
+fresh binary/content builds, including ownership and executable mode; compressed blob and
+uncompressed layer digests both validate.
 
-Both gameserver archives receive fresh valid package scans (41 packages each). The six
-unchanged upstream/rehearsal inventories reuse checksum-bound prior raw scans, with fresh
-registry manifest/config/platform checks and normalization comparisons. Those upstream scans
-are reused evidence. An earlier gameserver scan with an unverified caller-supplied source ID
-is retained as invalid and excluded; the owning log records the failed check and correction.
+Both gameserver archives receive fresh package scans (41 packages each). Six unchanged
+upstream/rehearsal inventories per tree reuse checksum-bound prior raw scans, with six fresh
+registry manifest/config/platform checks and 24 normalizer executions/12 equality checks.
+Those upstream scans are reused evidence, not new scans. The actual shipped Linux helper
+accepts the build record/intact package and rejects all nine semantic tampering fixtures with
+exact exit 3. All four original/private trees retain their hashes/modes; native build-record
+and intact-package consumers pass too. The manifest-bound source/image secret scan reports
+zero findings across 2,592 tracked files and the actual image archive.
 
-The actual shipped Linux helper accepts the build record and intact package, and rejects all
-nine semantic tampering fixtures with exact exit 3. All original/private bundle trees retain
-their hashes/modes afterward. Native build-record and intact-package consumers pass too.
-The manifest-bound secret scan reports zero findings across 2,576 tracked files and the actual
-image archive. These are local construction/offline helper results. Fresh independent Codex
-review approves the complete five-path `c5130acf..21a889b7` record/docs batch, with its own
-binary/client rebuild, image payload checks, 28 normalizer comparisons, registry reads and
-native/shipped-Linux consumers. Root's scanners were inspected and hash-checked, not rerun
-by the reviewer. The independently
-approved [`b8042450` record](../planning/deployment-foundation/release-builds/candidate-b8042450.json)
-remains historical evidence and omits the new runtime correction. Both new trees are one
-candidate; neither is a legitimate predecessor. Accounting, history-guard/hosted CI, RP-770,
+These are local construction/offline helper results. The complete record/docs batch after
+`aa5e16e8` awaits fresh independent corrective artifact-evidence review. The independently
+approved [`c5130acf` record](../planning/deployment-foundation/release-builds/candidate-c5130acf.json)
+remains historical and predates kernel227/migration87. Earlier invalid scan provenance remains
+in its dated log, not attributed to this reconstruction. Both new trees are one candidate;
+neither is a legitimate predecessor. Accounting, history-guard/hosted CI, RP-770, privacy,
 rights, predecessor provenance and clean-host gates remain open. The proposed native supervisor
-still needs adoption and implementation before its conformance proof; the release call remains
+still needs adoption and implementation before conformance proof; the release call remains
 the owner's. This local preview label does not reduce the full nine-tier 1.0 objective.
 
 The bundled `deployment-rehearsal` command validates retained release-build records and final R-006

@@ -32,8 +32,9 @@ combat, Tier3–8 and ending construction ahead. No new tier or release is compl
   is independently approved: input13/ending4 carries the exact committed Founder
   age, with retained historical bytes and actual Go/TS/Postgres/archive/board
   checks. Full obituary/AC7 and owner-authored age rendering remain open. Current
-  kernel227/migration87 now postdates the validated `c5130acf` kernel226 candidate;
-  next artifact evidence must use the new source rather than relabel that package.
+  kernel227/migration87 is now rebuilt at source`aa5e16e8`: matching local
+  candidates and actual offline package checks pass first filter, with complete
+  new artifact-evidence review next. Prior `c5130acf` kernel226 remains historical.
 - **Garden public evidence privacy:** RP-606's actual verified-board archive leak
   and two-runtime Company-only feasibility are independently approved. The
   [repair draft](../../rfc/public-company-replay-evidence.md) is independently
@@ -60,8 +61,9 @@ combat, Tier3–8 and ending construction ahead. No new tier or release is compl
   a pending choice blocks its dependent new contract, not unrelated accepted work.
   Last validated local candidate source`c5130acf`/kernel0.3.226/epoch8 has independent artifact-
   evidence approval through21a889b7. Prior b8042450 approval stays historical.
-  It now predates the RP-773 runtime. Refresh after the coherent reviewed batch;
-  do not repeat unchanged profiling or relabel local packaging as hosted/native/clean-host proof.
+  New source`aa5e16e8` kernel227/migration87 package evidence is ready for independent
+  review in Deployment's owning plan. Do not repeat unchanged profiling or relabel
+  local packaging as hosted/native/clean-host proof.
   [Deployment's plan](../deployment-foundation/plan.md) owns actual native/host/
   predecessor/R-006 prerequisites. RP-770 and the historical guard/current CI
   failures remain visible; focused passes do not waive them or any1.0 criterion.
