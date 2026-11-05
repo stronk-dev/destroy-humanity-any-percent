@@ -9490,3 +9490,23 @@ already independently approved2026-11-04. Check diff/authority references; no
 software suite for this editorial status correction. Continue accepted artifact
 construction while the real adoption remains pending; full1.0 stays active.
 Review by: Codex root (editorial/source first filter). Recorded by: Codex root.
+
+## 2026-11-05 — Independent authority audit excludes two ineffective accounting shortcuts
+
+Review by: independent Codex `/root/accrual_corrective_authority_review`.
+Recorded by: Codex root. Read-only accepted-contract/caller/history inspection;
+no code, SQL, tests or historical27-failure rerun. R10 is NOT a blanket hold on
+ordinary accounting fixes. Here accepted CV3/AC6 preserve per-call policy while
+requiring an internal-operation distinction: original128 calls mutate ledger/
+cursor on every Evaluate, whereas live logged arms already evaluate once before
+hooks/actions. A live-only origin wrapper would not fix affected harness waits.
+The missing owner/lifetime/action/hook/allowance contract is independent of the
+search amendment. Removing bucket Q12 is not an authorized alternative: PC C5
+quantizes provision counts, but later Doctrine D7 and its designated archival
+review require the base-plus-bonus bucket primitive to preserve AccrueConstant.
+Parent D1's general wording cannot silently override that later accepted boundary.
+Keep both existing adoption requests pending, not repeated/inferred. No unused
+primitive, changed test/criterion, speculative numeric law or implementation.
+Next useful construction remains origin plus a real affected caller after its
+actual contract adoption; separately proven conformance defects remain ordinary
+RFC-0000 work. This audit avoids overstating either permission or completion.
