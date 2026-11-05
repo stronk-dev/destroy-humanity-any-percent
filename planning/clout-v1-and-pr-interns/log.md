@@ -9510,3 +9510,59 @@ primitive, changed test/criterion, speculative numeric law or implementation.
 Next useful construction remains origin plus a real affected caller after its
 actual contract adoption; separately proven conformance defects remain ordinary
 RFC-0000 work. This audit avoids overstating either permission or completion.
+
+## 2026-11-05 — Independent numeric proposal reviews require corrections
+
+Previous turn completes the Combat catalog proposal/review; it is progress, not
+an unchanged wait. Resume clean1059ea6d and inspect other accepted plans. Do not
+restart already-approved corrective scopes or call original construction accepted.
+Two old numeric proposals still have available independent technical review.
+
+**RP-663: CHANGES REQUIRED**, complete five-path range
+`1d1b244a82ff14fe141e95af632cbf79c404a265..801d2fee6b11837a9c26f28e25045b5d81d6dc44`.
+Review by: fresh independent Codex `/root/numeric_exhaustion_contract_review`.
+Recorded by: Codex root, transcribing its verdict. Draft includes negative-infinite
+exponent overflow but promises both runtimes refuse while only changing Go.
+Actual pinned client plus project helpers return canonical valid0 for admitted
+minimum-exponent.Pow(1e308) and exp(-1e309). Original documented pair instead
+returns invalid client diagnostics as stated. Value-only guards cannot recover
+lost provenance; an explicit operand-aware operation/caller contract is needed.
+
+Cold current24 lower-domain cases/int64 recovery/eight atomic ledger arms pass;
+private nonmutating Go overlay characterizes eight exhaustion/edge cases and
+normalization rescue/genuine zeros. Actual Node ten-case characterization retains
+eight invalid diagnostics plus both badzeros. Initial all-invalid assertion fails
+on that omitted population; corrected characterization retains the finding.
+Separate follow-up executes eight upper controls in both actual runtimes: five
+client canonical badzeros versus native +Inf; three proper signed-infinity
+controls refuse in both. All operands are admitted and powers finite. The reusable
+private Node script is `/tmp/cc-numeric-exhaustion-review-tvhderdx/characterize.mjs`;
+upper run selection is `upper`, unchanged lower population was not rerun. No
+runtime implementation, browser/SQL/Linux/fuzz claim, mutation, service or adoption.
+
+**RP-664: CHANGES REQUIRED**, complete proposal union
+`38cba707312bfab5733b5b70b050295ab611f19b..4ec755798b1237aadc18d66330a529e31bdfde06`
+and `ad40b0f007885204f09e8fafe09cfece27667535..52f713edc028abc24760b96bda86bb109bac0ffa`.
+Review by: fresh independent Codex `/root/exact_aggregation_contract_review`.
+Recorded by: Codex root, transcribing its verdict. Current direct helper inventory
+is13 Go/7 TS, but the TS catalog weight fold is an additional non-helper boundary.
+Go groups weights; TS adds in input order. Actual full-tier epoch5 mutations
+with1 plus six1e-15 terms ACCEPT in TS and REJECT in Go. [.5,.5] accepts and
+[.5,.4] refuses in both actual loaders. Catalog exception/dossier must identify
+that mismatch and separate any conformance repair from exact-sum activation.
+File this independently confirmed shared-loader defect as RP-779.
+
+Reviewer executes cold sparse identity/14edges/original pair and actual Go Pitch
+registry, focused Node sparse/Pitch3 pass/1 deselected; verifies report hashes
+and all300 unique rows:36 changed cash/state,264 identical, aggregates equal.
+Commons/drift/baseline source inspection and diff checks pass; no other finding,
+full-domain proof, SQL cutover, browser/workload rerun or acceptance. Initial
+invalid-canonical/missing-tier probe attempts earned no credit; corrected probes
+execute. No tracked edits or services. Both original negative verdicts stand.
+
+Next: repair RP-779 under accepted shared-catalog/server-authority conformance
+with old-failing actual-loader regressions, then correct/re-review the proposal
+compatibility claims. The broader RP-663 operation-aware contract remains a real
+normative design gap; no narrowing of its release hold or implementation is
+inferred. Existing27 partitions, historical guard and pending accounting/search
+adoptions remain. No publication, archival, code or numeric activation here.
