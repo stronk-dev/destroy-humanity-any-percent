@@ -9026,3 +9026,24 @@ self-approval/archival/publication. The exact aa5e16e8 package now predates this
 later UI fix; retain its approved provenance and batch a future coherent artifact
 refresh, not a full rebuild after every small screen edit. Full nine-tier1.0
 scope and active goal remain unchanged.
+
+## 2026-11-05 — Next-Company timer correction independently approved
+
+APPROVED complete six-path `04642f4c..a12346b0`.
+Review by: fresh independent Codex `/root/continuation_timer_corrective_review`
+under Marco's corrective-code delegation. Recorded by: Codex root. Independent
+full affected native Chromium/WebKit file passes218,10 explicit performance-only
+skips,17.80s; strict typecheck0errors/0warnings. All6 source/test/docs/records
+inspected, including exact old/current clock lifetime and frozen resample/refusal
+controls. Root's4 old failing native executions inspected, not independently rerun.
+No findings or source edits. No original-feature/fullAC7/hostedCI/release approval.
+
+Root verifies `.cache/continuation-timer-corrective-review/review-results.json`
+SHA256 `e9506608ee5aa321dc0b2f3cff0df8c1816f4dd42ab137a79195264765510c2a`.
+All handles terminal, tree clean, no SQL/temp probes/resources requiring cleanup.
+RP-774 is CLOSED. The accepted timers now retain terminal freeze and start a
+fresh next-Company display clock only after validated continuation. No gameplay,
+copy/schema/kernel change or full1.0 milestone follows. The aa5e16e8 package
+remains exact older artifact evidence; include this UI change in the next
+coherent artifact batch, not a per-edit rebuild. Continue accepted product work;
+full nine-tier1.0 goal remains active, no push/deploy/archival.

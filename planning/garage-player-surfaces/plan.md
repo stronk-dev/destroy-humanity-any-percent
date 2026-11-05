@@ -21,7 +21,9 @@ controls pass. The bounded accepted Game UI U1/GU-C4 correction instantiates a
 fresh clock only after exact Founder/run+1 validation and snapshot binding.
 New/adjacent native checks, strict types, full Node and client build pass;
 the complete affected file passes218 native checks (10 performance-only skips).
-Independent corrective review is next.
+Complete six-path `04642f4c..a12346b0` has fresh independent corrective APPROVAL,
+with actual full affected native218/10 explicit skips and strict types. RP-774
+is closed; this is not original feature or full obituary acceptance.
 No new clock/gameplay/copy/schema/kernel contract or full AC7 claim. The reviewed
 aa5e16e8 package remains source-exact but predates this later UI correction;
 batch future artifact refresh, not a75-file rebuild for every small screen edit.
