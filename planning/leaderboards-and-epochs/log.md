@@ -560,3 +560,35 @@ Also reconcile RP-040's stale docs absence claim to actual mounted public reader
 player UI/catalog/schema/rights gates remain. No publication/deployment, new tier,
 full-CI/clean-host/R-006/archival/release claim or goal pause; full nine-tier1.0 stays active.
 Review by: Codex root (implementer first filter). Recorded by: Codex root.
+
+## 2026-11-05 — Batched reader independently approved; RP-770 not closed
+
+APPROVED, no actionable findings, complete seven-path base-exclusive/tip-inclusive
+range8d8683090d09a3e2d1da3d88ce6bb9112d7b13b7..
+7c85035986efa4d119f2dc0853ee0f0ce902180a.
+Review by: fresh independent Codex /root/replay_event_batch_corrective_review.
+Recorded by: Codex root, transcribing the actual scoped verdict.
+
+Independent actual-PG/race verifier package passes in default/native-architecture
+container3.831s and declared Linux-amd64 container6.000s (22 reported passes).
+Old product bytes/original archive test plus sole digest log are independently
+verified; old fixture passes1.486s with the same683-byte SHA as the current reader.
+Current focused first-hour Linux-amd64 normal37.97s/race62.24s pass, including
+archives and post-delete board assertions. Selected native vet and whitespace
+pass. Owner/filter/order/empty/exact-number/prefix/catalog/iteration/context and
+unchanged archive/claim contracts independently inspected. No physical native-
+profile or matched speedup claim is inferred from these container observations.
+
+Reviewer inspects actual retained broad red/profile/phase evidence and executes
+container pprof; it does not relabel a focused pass as full timing repair. RP-770
+stays OPEN and full affected race remains RED. No feature/CI/archival/R-006/release
+gate closes. All reviewer handles terminal; tracked source clean/unchanged at7c850359;
+existing PG/builders/shared caches preserved; SQL ownership released.
+
+Next bounded diagnostic is prepared but not yet executed: source-pinned ignored
+phase-full-overlay.json adds phase timers plus, ONLY after the original5s failure,
+one additional5s observation window and unconditional original Fatal. A late
+completion can never pass. Read final queue/archive state before cleanup; absent
+successful completion marks the phase observation incomplete, not a higher allowed
+cost. This measurement adopts no budget or new behavior; the ordinary shipping
+test and production source remain unchanged. Full nine-tier1.0 stays active.

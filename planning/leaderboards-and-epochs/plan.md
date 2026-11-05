@@ -14,8 +14,9 @@ comparison pass; focused composed first-hour race passes its unchanged5s check.
 The full affected race run still fails that check (healthy claimed run2,363 live
 rows, no archive), so this is partial construction, not a completed timing repair.
 The owning log records diagnostics, profiling, invalid fixture attempts and all
-results. Complete seven-path range after8d868309 needs independent corrective
-review. Next: measure remaining replay/completion cost in the failing full-run
+results. Complete seven-path `8d868309..7c850359` is independently APPROVED for
+reader correctness/diagnostics, with fresh current normal/race journeys and
+old/new archive compatibility. RP-770 remains OPEN. Next: measure remaining replay/completion cost in the failing full-run
 context; no raised bound, skipped case, new kernel identity or full-CI claim.
 
 2026-10-15 RP-124: the existing real-Postgres archive test now preserves a populated
