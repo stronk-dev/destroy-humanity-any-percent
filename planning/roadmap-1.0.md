@@ -11,8 +11,11 @@ Input13/ending4 freezes the actual committed age; historical outputs remain
 unchanged. Both runtimes and real Postgres ending/refusal/migration/worker/archive/
 board checks pass. The age display, authored label and full obituary/AC7 remain
 unfinished; this is a factual producer/decoder repair, not another completed tier.
-Runtime is now kernel0.3.227/migration87. The last validated `c5130acf` local
-candidate below predates it and must not be presented as this runtime's artifact.
+Runtime is now kernel0.3.227/migration87. Matching75-file local candidates at
+source`aa5e16e8` have complete independent artifact-evidence approval over
+`aa5e16e8..e404cce4`, including fresh six-binary/client/content rebuild and actual
+delivered-helper refusal checks. The earlier `c5130acf` package stays historical.
+This still supplies no legitimate predecessor or native clean-host/R-006 proof.
 Current hosted CI/Clout, privacy, rights, accessibility, later-tier/endings and
 native clean-host/release obligations remain open. [Exact review and limits](prestige-and-exits/log.md).
 

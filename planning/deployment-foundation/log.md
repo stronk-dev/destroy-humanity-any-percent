@@ -12608,3 +12608,37 @@ filter). Recorded by: Codex root. No independent approval is self-supplied.
 RP-770, Clout/history guard/current hosted CI, privacy/rights/accessibility,
 native-profile adoption/construction, predecessor/clean-host/full-feature and
 release gates remain. No repeated owner question or goal pause.
+
+## 2026-11-05 — Frozen-age runtime artifact evidence independently approved
+
+APPROVED complete five-path `aa5e16e8..e404cce4`.
+Review by: fresh independent Codex `/root/frozen_age_artifact_review` under
+Marco's corrective-review delegation. Recorded by: Codex root. Exact source is
+stillaa5e16e8/kernel0.3.227/epoch8/migration87; this record adds no runtime.
+Reviewer independently rebuilds6 Linux binaries,7 client files,32 content and2
+metadata files through root Make/shared compiler caches; all match delivered
+artifacts. Actual two75-file/mode bundles/74 bindings,33 image payload files each,
+compressed blobs/uncompressed diff-IDs/owners/source/epoch/kernel/migration all
+match.28 raw/canonical inventory normalizations compare equal;6 fresh registry
+manifest/config/Linux-amd64 reads match the pinned identities. No finding.
+
+Fresh native helper record/intact return0; actual delivered Linux helper record/
+intact0 and all9 semantic fixtures exact3/fixture_rejected, guards never fire.
+Root's2 fresh Syft41-package scans and source/image2592-file/findings0 scan are
+independently inspected and source/binary/hash-bound, NOT independently rerun.
+No third image build is claimed: actual payloads match the independent rebuild.
+Upstream inventory scans remain explicitly reused with original provenance.
+
+Reviewer setup disclosure: first fixture copy collides with its own normalizer
+output directory named rebuild; exits1 before any helper run. Separate fixture
+subtree corrects setup, no product/assertion/timeout changed, no credit for that
+attempt. Root validates review manifest `.cache/frozen-age-artifact-review/review-results.json`
+SHA256 `15b15bd4f4cefb5aa83dc23c8526be427fa6b4bc61a8571bbfb3ea36a47d33be`.
+All handles terminal, original4 trees/client dist preserved byte/mode-exact,
+reviewer's own fixtures preserved/work empty/11 owned containers absent; no SQL,
+tracked reviewer edits or shared-builder/cache cleanup. Inputs released.
+Canonical docs/board/current pointers now name this exact approved artifact.
+Previous c513 record stays historical. No further rebuild for editorial records.
+This remains one local candidate, not a predecessor pair, supported native host,
+R-006, hostedCI/privacy/rights/accessibility/full-feature or release acceptance.
+All current holds and the full nine-tier1.0 goal remain; no push/deploy/archival.

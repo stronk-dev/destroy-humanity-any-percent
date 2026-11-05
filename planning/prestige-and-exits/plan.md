@@ -31,8 +31,10 @@ Production still has the known Clout partition failures. Complete44-path
 Postgres/archive/board/migration checks and disclosed nonblocking migration EOF
 whitespace. This closes the data defect, not full AC7. New player copy remains
 owner-authored; the age label and full obituary rendering remain open.
-The kernel227/migration87 runtime now postdates the kernel226 `c5130acf` local
-candidate; rebuild only after this coherent correction's independent review.
+The kernel227/migration87 runtime is now rebuilt at source`aa5e16e8`; its matching
+local candidates have complete independent artifact-evidence approval
+`aa5e16e8..e404cce4`. The kernel226 `c5130acf` package stays historical; no
+hosted/full-feature/native clean-host or release acceptance follows.
 
 **Closed correction,2026-11-05 (RP-772):** the old actual epoch8 curriculum
 producer saved75 earned Knowledge, but a real projector made the affordable50

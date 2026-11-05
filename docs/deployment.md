@@ -230,8 +230,12 @@ exact exit 3. All four original/private trees retain their hashes/modes; native 
 and intact-package consumers pass too. The manifest-bound source/image secret scan reports
 zero findings across 2,592 tracked files and the actual image archive.
 
-These are local construction/offline helper results. The complete record/docs batch after
-`aa5e16e8` awaits fresh independent corrective artifact-evidence review. The independently
+These are local construction/offline helper results. The complete five-path
+`aa5e16e8..e404cce4` record/docs batch has fresh independent corrective approval,
+including its own six-executable/client/content/metadata rebuild, actual image payload
+checks, 28 inventory-normalizer comparisons, six registry reads and native/delivered-Linux
+consumers. Root scanner outputs were independently inspected and hash-bound, not rerun.
+The independently
 approved [`c5130acf` record](../planning/deployment-foundation/release-builds/candidate-c5130acf.json)
 remains historical and predates kernel227/migration87. Earlier invalid scan provenance remains
 in its dated log, not attributed to this reconstruction. Both new trees are one candidate;

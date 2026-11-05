@@ -68,7 +68,7 @@ reconcile parent bodies under the actual delegation and implement adopted
 contract dependencies with their full producer/native/clean-host proof. No
 product implementation or goal pause is claimed at this checkpoint.
 
-**Current artifact first filter,2026-11-05:** source `aa5e16e8` includes the
+**Current independently approved artifact,2026-11-05:** source `aa5e16e8` includes the
 independently approved RP-773 correction, kernel0.3.227/migration87/epoch8.
 Two separately reconstructed75-file/mode trees match all74 manifest bindings,
 six binaries/seven client files/content/metadata and image archives. Actual image
@@ -79,8 +79,11 @@ Native and delivered-Linux intact/record pass; nine semantic mutations return
 exact3/fixture_rejected, four trees unchanged/work empty/11 containers absent.
 Source/image zero-finding scan covers2592 tracked files. Manifestf5ce0639...,
 image97a52927..., archivec34d4c59.... [New record](release-builds/candidate-aa5e16e8.json)
-and complete new record/docs range afteraa5e16e8 need independent corrective
-artifact-evidence review next. Raw evidence retained under ignored
+and complete five-path `aa5e16e8..e404cce4` have independent corrective artifact-
+evidence APPROVAL by fresh Codex `frozen_age_artifact_review`: own six-binary/client/
+content/metadata rebuild, actual image checks,28 normalizer comparisons,6 registry
+reads and native/delivered-Linux consumers. Root scanners independently bound and
+inspected, not rerun. Raw evidence retained under ignored
 `.cache/release-current-aa5e16e8`, `release-rebuild-aa5e16e8` and
 `release-linux-probes-aa5e16e8`. No source edits during measurements. This does
 not close hosted/full-feature/privacy/rights/predecessor/native clean-host/R-006
