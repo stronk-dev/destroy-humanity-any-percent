@@ -12642,3 +12642,62 @@ Previous c513 record stays historical. No further rebuild for editorial records.
 This remains one local candidate, not a predecessor pair, supported native host,
 R-006, hostedCI/privacy/rights/accessibility/full-feature or release acceptance.
 All current holds and the full nine-tier1.0 goal remain; no push/deploy/archival.
+
+
+## 2026-11-05 — Current reviewed runtime reconstructed into local candidates
+
+Accepted DP1/AC1/AC8 packaging, frozen clean source
+`a7d5a4a4972cc7cfbdd00f1c7770f3b958a4d670`, SOURCE_DATE_EPOCH1793868133,
+created2026-11-05T08:42:13Z. Includes reviewed RP-77404642f4c..a12346b0
+and RP-776184e1dfc..512024c7, kernel228/migration87/epoch8. Source delta
+sinceaa5e16e8 is those production/UI guards, version mirrors and tests/research;
+no balance, deployment runtime, schema or new World mechanic is introduced.
+Local0.1.0-preview.2 label stays unchanged; no publication/deployment.
+
+Toolchain preflight finds system pnpm12.16.1. Initial sandbox install58786
+fails pinned-manager cache writing, no build credit. Permitted frozen install
+60573 explicitly executes pnpm11.15.1 successfully; Node26.13.0/Go1.27.3
+and actual Engine28.4.0/Compose2.39.4-desktop.1 are recorded. Existing builder
+remains pinned BuildKit0.24.0; preserved, not recreated/pruned. Root Make61297/
+99287 then94132 separately build six staticLinux-amd64 binaries, seven client
+files,32content and2metadata files. A's real client output is snapshotted before
+B; both snapshots are restored/verified before their own assembly. Every byte
+and mode matches. Shared normal compilation caches are used; no clean-host claim.
+
+No-cache image builds44464/77502 pass. Actual archive blobs AND uncompressed
+layer diff-IDs,33 payload files/modes/owners, runtime UID/entrypoint/source/version
+labels match fresh builds. Both configfa3de094e2edb2cf994eea3502acf7fdb89e5a1e943e9896ccd11bc1e1b9c9e0,
+archive0d8bffb74d600bdca6868fd3f343e5aee2b461d6fbaf92073f4fcf51dec1b984.
+Only after identity passes,2 fresh Syft scans49388/3458 each find41packages,
+normalizedc1cc7825.... Six fresh registry25558 reads match immutable upstream/
+rehearsal root/selected/config/platform identities. Each root reuses its own prior
+aa5 raw/canonical inventory chain, checksum/original-scan-time bound. These12
+upstream inventories are REUSED, not new scans.24normalizer commands/12equality
+checks95803 and all7 cross-root inventories match.
+
+Assemblies53285/27714 match all75files/modes and74manifest bindings. Manifest
+4c1140f3ef5700e348f3193dcc6a69f3c4e91d3b7943dfc911196962ccff5adf binds
+exacta7d source, migration87/epoch8 and current bytes. Initial comparison assumed
+an absent manifest kernel_version key and aborts before any record; corrected
+source/mirror/fresh-build check confirms228 without inventing a manifest field.
+Native helper build33016/record pass;2 relative-path intact invocations are
+invalid_probe/exit2 and NOT acceptance. Actual required absolute-path invocation
+passes. No assertion, package or time bound changes to obtain that pass.
+
+Delivered-Linux helper10177 runs offline/read-only/cap-drop/no-new-privileges as
+UID501:20 in existing593dc355...amd64 runner with the recorded AVX2 emulation
+accommodation. Record/intact return0; all9 semantic mutations return exact3/
+fixture_rejected. No guard fires; all4 original/private75-file trees preserve
+bytes/modes, both work dirs empty and all11 task-named containers absent. Shared
+builders/caches/networks preserved; no SQL services started. Manifest-bound
+source/image scan30412 passes2606trackedfiles/findings0/objective true/guardfalse.
+
+All root processes terminal; source stayed clean/frozen throughout. Ignored raw
+records in release-current-a7d5a4a4/release-rebuild-a7d5a4a4/release-linux-probes-
+a7d5a4a4 under.cache; small candidate-a7d5a4a4.json retained. Complete5-path
+record/docs batch aftera7d needs fresh independent corrective artifact-evidence
+review. Review by: Codex root (implementer first filter). Recorded by: Codex root.
+Earlier exactaa5e16e8 approval remains historical, not relabelled. These identical
+builds are ONE candidate, not a legitimate predecessor pair or native supported
+host/R-006. Known Clout/history-guard/hostedCI, RP-770, privacy/rights/accessibility,
+fullfeature/later-tier/endings and release/owner adoption gates remain open.

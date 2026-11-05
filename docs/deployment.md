@@ -212,7 +212,13 @@ It intentionally describes a release *candidate*: designated approval of the imp
 batches and the exact clean-host R-006 rehearsal remain required before the project
 can claim supported self-hosting.
 
-The latest retained local candidate build record is
+A new current-source reconstruction at `a7d5a4a4`, kernel `0.3.228`, includes the
+reviewed continuation-clock and mode-policy corrections. Its [retained record](../planning/deployment-foundation/release-builds/candidate-a7d5a4a4.json)
+has matching two-build package/image results, source/image scans and offline
+helper checks; independent artifact-evidence review is pending. This is one local
+candidate, with all native-host/predecessor/full-feature/release gates still open.
+
+The preceding independently approved local candidate build record is
 [`candidate-aa5e16e8.json`](../planning/deployment-foundation/release-builds/candidate-aa5e16e8.json).
 Exact source `aa5e16e8`, kernel `0.3.227`, includes the independently approved frozen
 Founder-age correction and migration 87. Two separate local builds match all six Linux-amd64

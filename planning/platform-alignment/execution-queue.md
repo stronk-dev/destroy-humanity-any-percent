@@ -13,6 +13,11 @@ verdicts. The [whole-product overview](../CURRENT-STATE.md#whole-product-overvie
 still describes incomplete Garage/Tier2 integration with substantial world,
 combat, Tier3–8 and ending construction ahead. No new tier or release is complete.
 
+- **Current-source artifact, review pending:** local reconstruction at `a7d5a4a4`
+  now includes the reviewed continuation-clock/mode-policy fixes, kernel228/
+  migration87/epoch8. [Deployment's plan](../deployment-foundation/plan.md) owns
+  the matching builds, actual package/image checks and complete pending review.
+  Prior `aa5e16e8` approval stays historical; no native/clean-host/release claim.
 - **Completed evidence:** original HTTP and actual composed bootstrap/delete/
   restore instruments are independently approved. The lifetime supplement
   `0f3a5318..6df67ab2` is independently approved too: at31 days of application time,
@@ -32,7 +37,7 @@ combat, Tier3–8 and ending construction ahead. No new tier or release is compl
   is independently approved: input13/ending4 carries the exact committed Founder
   age, with retained historical bytes and actual Go/TS/Postgres/archive/board
   checks. Full obituary/AC7 and owner-authored age rendering remain open. Current
-  kernel227/migration87 is now rebuilt at source`aa5e16e8`: matching local
+  that kernel227/migration87 checkpoint is rebuilt at source`aa5e16e8`: matching local
   candidates and actual offline package checks have complete independent
   artifact-evidence APPROVAL `aa5e16e8..e404cce4`. Prior `c5130acf` stays historical.
 - **Garden public evidence privacy:** RP-606's actual verified-board archive leak

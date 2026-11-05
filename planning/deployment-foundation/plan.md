@@ -68,6 +68,19 @@ reconcile parent bodies under the actual delegation and implement adopted
 contract dependencies with their full producer/native/clean-host proof. No
 product implementation or goal pause is claimed at this checkpoint.
 
+**Current-source local reconstruction,2026-11-05 — review pending:** source
+`a7d5a4a4` includes independently approved RP-774 continuation clocks and RP-776
+mode-policy guards, kernel0.3.228/migration87/epoch8. Two separate client/six-binary/
+content/metadata builds and no-cache images match; assembled75-file/mode trees
+and74 bindings agree. Actual33-file image payloads,2 fresh gameserver inventories,
+6 fresh upstream identities/12 explicitly reused inventories/24 normalizations,
+native and actual delivered-Linux consumers pass; all9 semantic mutations return
+exact3/fixture_rejected. Source/image scan2606files/findings0. [Record](release-builds/candidate-a7d5a4a4.json)
+is a local candidate, not a predecessor/native-host/R-006 or release claim.
+Complete record/docs batch aftera7d5a4a4 needs independent artifact-evidence
+review. No additional construction, CI, privacy, rights or author/adoption gate
+is closed. The earlier approved artifact below remains historical and distinct.
+
 **Current independently approved artifact,2026-11-05:** source `aa5e16e8` includes the
 independently approved RP-773 correction, kernel0.3.227/migration87/epoch8.
 Two separately reconstructed75-file/mode trees match all74 manifest bindings,
