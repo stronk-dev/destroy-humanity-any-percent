@@ -23,9 +23,11 @@ combat, Tier3–8 and ending construction ahead. No new tier or release is compl
   pays for a hint through the real projector without delayed-delivery overspend.
   Complete `408517bf..1ccdb7a0` is independently approved; the
   [Prestige log](../prestige-and-exits/log.md) owns execution and limits. RP-771's
-  separate capacity choice and full Prestige acceptance remain open. Last validated
-  artifact b8042450 predates this runtime/migration correction; preserve its evidence
-  without treating it as a package of current runtime bytes.
+  separate capacity choice and full Prestige acceptance remain open. New local
+  candidate sourcec5130acf includes the runtime/migration correction;
+  its complete artifact-evidence review is pending in the
+  [Deployment plan](../deployment-foundation/plan.md). Earlier b8042450 evidence
+  stays historical, not proof of the newer runtime.
 - **Accounting and its real consumers:** delegated CV3/AC6 wording is reconciled.
   Accounting/search technical proposals are reviewed but adoption remains pending.
   [Clout's plan/log](../clout-v1-and-pr-interns/plan.md) owns the actual operation/
@@ -43,9 +45,9 @@ combat, Tier3–8 and ending construction ahead. No new tier or release is compl
   API descriptor/transport, tenant HTTP, recovery/renewal, authored body/copy,
   accessibility and native Deployment proposals keep their named adoption gates;
   a pending choice blocks its dependent new contract, not unrelated accepted work.
-  Last validated local artifact source`b8042450`/kernel0.3.226/epoch8 has independent
-  evidence approval; retain its historical packaging proof. Do not repeat
-  artifact/profiling populations or relabel them as hosted/native/clean-host proof.
+  Local candidate source`c5130acf`/kernel0.3.226/epoch8 is reconstructed; its
+  artifact-evidence review is pending. Prior b8042450 approval stays historical.
+  Do not repeat artifact/profiling populations or relabel them as hosted/native/clean-host proof.
   [Deployment's plan](../deployment-foundation/plan.md) owns actual native/host/
   predecessor/R-006 prerequisites. RP-770 and the historical guard/current CI
   failures remain visible; focused passes do not waive them or any1.0 criterion.

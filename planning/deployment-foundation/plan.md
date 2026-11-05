@@ -68,33 +68,29 @@ reconcile parent bodies under the actual delegation and implement adopted
 contract dependencies with their full producer/native/clean-host proof. No
 product implementation or goal pause is claimed at this checkpoint.
 
-**Last validated exact artifact, 2026-11-05:** fresh source
-`b8042450` includes approved RP-769 relay cancellation and7c850359 reader batching
-alongside RP-768/RP-767 at kernel0.3.226/epoch8. Separate roots
-`.cache/release-current-b8042450/bundle-a` and
-`.cache/release-rebuild-b8042450/bundle-b` match75 files/modes and74 bound artifacts.
-Both six-executable/content/image reconstructions and independently retained client
-builds pass; both actual gameserver scans report41 packages. The6 unchanged
-upstream/rehearsal inventories explicitly reuse checksum-bound prior raw/canonical
-inputs, with fresh manifest/config/platform checks and producer-normalization replay.
-Shipped Linux helper build/intact results are0; all9 semantic mutations return exact3.
-All4 original/fixture trees remain intact and work empty. Native record/package pass;
-source/image scan covers2,568 tracked files and reports zero findings. The
-[new retained record](release-builds/candidate-b8042450.json) has independent
-corrective artifact-evidence APPROVAL for complete `b8042450..2527574d`, including
-fresh six-executable/client rebuilds, actual image payload, native/shipped-Linux
-consumers,24 normalization comparisons and6 fresh identity checks. Original scans
-are inspected, not independently rerun. No current R-006/rights/predecessor/native/
-current-CI/full-feature/release acceptance follows. Retain this artifact while
-runtime bytes stay unchanged; do not rebuild it for editorial records.
-The later independently approved runtime correction `408517bf..1ccdb7a0`
-changes the Route projector and adds migration00086. This b8042450 artifact
-does not contain that correction; retain its evidence as historical packaging
-proof, not proof of the newer runtime. The next release candidate must include
-and verify the corrected binary/migration before any current-artifact claim.
-The approved28aefd29 record remains historical. Preserve RP-770's race failure and
-all outstanding adoption questions; no repeated question or inferred approval.
-The local preview label is unchanged; full nine-tier1.0 remains the objective.
+**Latest exact-artifact construction, 2026-11-05:** source
+`c5130acf` includes independently approved RP-772 Exit-credit projection and
+migration00086, kernel0.3.226/epoch8 unchanged. Fresh current/rebuild roots
+`.cache/release-current-c5130acf` and `.cache/release-rebuild-c5130acf` retain
+separate client/six-executable/content/metadata builds and matching no-cache images.
+All75 bundle files/modes and74 bindings agree; actual33-file image payloads match
+fresh binary/content ownership/modes. Manifestce953309..., image configbf04f1e8...,
+archive6d9e74b3.... Two fresh valid gameserver scans contain41 packages each;
+six unchanged upstream/rehearsal inventories explicitly reuse each prior b8042450
+raw/canonical chain with fresh6 registry/config/platform checks and24 normalizer
+executions/12 equality checks. An earlier scan used an unverified ID after a compressed-layer check
+failed; retain it as INVALID, excluded from both bundles and all valid scan counts.
+
+Native build/intact and actual shipped-Linux build/intact pass; all9 semantic
+mutations return exact3/fixture_rejected, with no guard exhaustion. Four75-file
+trees remain unchanged, work empty,11 containers absent; shared builders/caches
+preserved. Source/image scan at exactc5130acf covers2,576 tracked files, findings0.
+[New retained record](release-builds/candidate-c5130acf.json) and canonical docs/log
+await complete independent corrective artifact-evidence review; no self-approval.
+Prior b8042450 approval remains historical. No legitimate predecessor, rights,
+current hosted CI, supported native host, full feature, clean-host/R-006 or release
+approval follows. Pending owner adoption questions are unchanged, not repeated.
+The full nine-tier1.0 goal remains active.
 
 **Direct upstream-Compose proposal, 2026-11-04 (RP-759):** the current
 [tool companion](../../rfc/deployment-tool-artifact-inventory.md), native SP1/SP3/

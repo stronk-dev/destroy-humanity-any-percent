@@ -213,30 +213,31 @@ batches and the exact clean-host R-006 rehearsal remain required before the proj
 can claim supported self-hosting.
 
 The latest retained local candidate build record is
-[`candidate-b8042450.json`](../planning/deployment-foundation/release-builds/candidate-b8042450.json).
-Exact source `b8042450`, kernel `0.3.226`, includes the independently approved relay
-cancellation and batched replay-reader corrections in addition to RP-768/RP-767.
-Two local executable/content/image reconstructions and separately retained client
-rebuilds match all 75 files and modes. Both gameserver archives receive fresh package
-scans. The six unchanged upstream/rehearsal inventories reuse their prior raw scans,
-with fresh registry/config/platform checks and checksum-bound normalization; those
-upstream scans are reused evidence.
+[`candidate-c5130acf.json`](../planning/deployment-foundation/release-builds/candidate-c5130acf.json).
+Exact source `c5130acf`, kernel `0.3.226`, includes the independently approved Exit-credit
+projection correction and migration 86. Two local builds match all six Linux-amd64 executables,
+seven client files, content, metadata and image archives. Both assembled bundles match all
+75 files and modes, with 74 manifest-bound artifacts. Actual image payloads match the fresh
+binary/content builds, including ownership and executable mode.
 
-The actual shipped Linux helper accepts the build record and intact package, and
-rejects all nine semantic tampering fixtures with exact exit 3. Both original and
-private fixture trees retain their hashes/modes afterward. Native build-record and
-intact-package consumers also pass. The manifest-bound secret scan reports zero
-findings across 2,568 tracked files and the actual image archive. These are local
-construction/offline helper results. Independent corrective artifact-evidence
-review approves complete `b8042450..2527574d`, including fresh six-executable and
-client rebuilds, actual image-payload checks, shipped-Linux controls and inventory/
-registry verification. The reviewer inspects the original scans rather than rerunning
-them. The independently approved
-[`28aefd29` record](../planning/deployment-foundation/release-builds/candidate-28aefd29.json)
-remains historical evidence. Both new trees are one candidate; neither is a legitimate
-predecessor. Accounting, history-guard/hosted CI, RP-770, rights, predecessor provenance
-and clean-host gates remain open. The proposed native supervisor still needs adoption
-and implementation before its conformance proof; the release call remains the owner's.
+Both gameserver archives receive fresh valid package scans (41 packages each). The six
+unchanged upstream/rehearsal inventories reuse checksum-bound prior raw scans, with fresh
+registry manifest/config/platform checks and normalization comparisons. Those upstream scans
+are reused evidence. An earlier gameserver scan with an unverified caller-supplied source ID
+is retained as invalid and excluded; the owning log records the failed check and correction.
+
+The actual shipped Linux helper accepts the build record and intact package, and rejects all
+nine semantic tampering fixtures with exact exit 3. All original/private bundle trees retain
+their hashes/modes afterward. Native build-record and intact-package consumers pass too.
+The manifest-bound secret scan reports zero findings across 2,576 tracked files and the actual
+image archive. These are local construction/offline helper results; designated corrective
+artifact-evidence review is pending for this complete record/docs batch. The independently
+approved [`b8042450` record](../planning/deployment-foundation/release-builds/candidate-b8042450.json)
+remains historical evidence and omits the new runtime correction. Both new trees are one
+candidate; neither is a legitimate predecessor. Accounting, history-guard/hosted CI, RP-770,
+rights, predecessor provenance and clean-host gates remain open. The proposed native supervisor
+still needs adoption and implementation before its conformance proof; the release call remains
+the owner's. This local preview label does not reduce the full nine-tier 1.0 objective.
 
 The bundled `deployment-rehearsal` command validates retained release-build records and final R-006
 evidence. Its `run-plan` lane executes a reviewed, manifest-bound command plan directly—never via a

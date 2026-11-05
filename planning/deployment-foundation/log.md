@@ -12457,3 +12457,64 @@ adopted. Other lifetimes/rotation/Guild/browser/off-host/clean-host gates remain
 The live execution-queue header is reconciled to current routing; its October
 snapshot stays historical. No source/artifact rebuild, full-feature acceptance,
 push, deployment, archival, repeated question, inferred adoption or goal pause.
+
+## 2026-11-05 — Reviewed Exit-credit runtime reconstructed into local candidates
+
+Accepted DP1/AC1/AC8 packaging at clean committed source
+c5130acfcd52d07c9bb7b913bd9be5aff4b3e447, SOURCE_DATE_EPOCH1793853149,
+created2026-11-05T04:32:29Z. It includes independently approved RP-772 and
+migration00086; kernel0.3.226/epoch8 unchanged. Prior b8042450 packaging omits
+that runtime change. Keep its record/proof historical; no release/push/deployment.
+The existing local0.1.0-preview.2 label does not narrow the full nine-tier1.0 goal.
+
+Declared pnpm11.15.1 frozen install97441 passes; Go1.27.3 darwin/arm64 and
+Node26.13.0 observed. Root Make builds4223/5996 separately reconstruct six static
+Linux-amd64 executables, client/content/metadata in fresh current/rebuild-c5130acf
+roots. Capture A's seven client files BEFORE B build; both retained snapshots,
+all six binaries, content and metadata match. Restore/verify each actual client
+snapshot before its own assembly. No first-build output is silently overwritten.
+Pinned existing BuildKit0.24.0 builder retained, never pruned. Both no-cache image
+builds14785/54062 pass; image configbf04f1e89d33bcef75091b9b1ac3f5835d93d3fea91cf5b9f04e39cd31aa3a9f,
+archive6d9e74b36a0d133a7abbe86a8ee4eb7b709d936b91be3301107ec092e2284588.
+Actual33-file image payloads equal each fresh binary/content build including
+ownership/modes; compressed blob AND uncompressed diff-ID hashes are verified.
+
+Root's first payload precheck incorrectly compares compressed bytes with a
+raw-layer diff-ID and fails. Root then incorrectly starts scan6945 despite that
+failure, passing an unverified hard-coded source IDbd8052b2.... Syft/normalizer
+exits0 but that is INVALID provenance, not an image-identity proof. Retain raw,
+normalized output/log and invalid-scan.json separately; exclude them from both
+bundles and valid scan counts. Correct compressed/raw checks, read actual config
+bf04f1e8... from each archive, then fresh scans33834/3712 pass with41 packages each.
+As an actual consumer control, feed the quarantined inventory into otherwise
+unchanged assembly: Make2 at gameserver SPDX binding, partial output retained
+without a release manifest. No assertion or source change makes that refusal.
+
+All6 unchanged upstream/rehearsal root/selected manifest, config and Linux-amd64
+identities freshly verified61145. Each new root explicitly reuses its own prior
+b8042450 raw/canonical inventories with checked SHA chains and original scan times;
+these are NOT twelve new upstream scans. Make normalization44118 performs twelve
+raw normalizations plus twelve prior-canonical replays; all12 equality checks pass,
+and all7 normalized inventories match across roots. Two new gameserver scans are
+fresh. Assemblies12224/49315 match all75 files/modes and74 manifest bindings;
+manifestce953309d3c60d995a3f70268fbf619c2c538259a270dddac1287f0dc9112c63
+explicitly declares migration86 and exactc5130acf source.
+
+Fresh native helper9714 validates build record/intact package (87848). Actual
+DELIVERED Linux helper76829 runs offline/read-only/no caps/new privileges in the
+existing593dc355... amd64 runner with UID501:20 and its existing AVX2-emulation
+accommodation. Build record/intact return0; all9 semantic tampering populations
+return exact3/fixture_rejected, never guard/setup refusal. Four75-file original/
+private fixture trees stay hash/mode-identical; work empty,11 owned containers
+absent. Shared builders/caches/unrelated resources preserved. These two identical
+candidates are not a legitimate predecessor. Secret scan44236 binds exact source/
+manifest/image, reports2,576 tracked files/findings0/objective true/guard false.
+
+All root handles terminal; source frozen through execution. Raw inputs/results
+are ignored in current/rebuild-c5130acf and release-linux-probes-c5130acf roots;
+new small retained candidate JSON and canonical docs/plan/queue reconcile. Complete
+five-path batch afterc5130acf awaits independent corrective artifact-evidence
+review. Review by: Codex root (implementer/output first filter, not designated
+approval). Recorded by: Codex root. No native-profile adoption/construction,
+rights/predecessor/hosted/full-feature/clean-host/R-006 or release acceptance.
+RP-770 and other held owner decisions/CI failures remain; no goal pause.
