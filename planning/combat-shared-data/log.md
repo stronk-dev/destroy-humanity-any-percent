@@ -590,3 +590,23 @@ endpoints, clamping, monotonicity/bounds and both floor-discrimination controls.
 Maximum intermediate products fit int64. No other finding. No software suite
 for Markdown or runtime acceptance inferred; no tracked reviewer mutation,
 services, publication or adoption. Previous incorrect tip remains on record.
+
+## 2026-11-05 — Complete corrected care contract technically approved
+
+APPROVED, complete original-plus-correction five-path range
+`0dcf71fd1a65fc26871b15e32083c0797c26bdb0..50d750a06a2122821190c81955a1923ff0adc29d`.
+Review by: fresh independent Codex `/root/combat_care_contract_review` under
+Marco's technical-specification delegation. Recorded by: Codex root,
+transcribing its verdict. Full combined diff independently inspected; removed
+snapshot prescription is the only normative correction. No additional findings.
+All snapshot fields/inclusion/serialization and DU-C2–DU-C8 remain deferred.
+
+Reviewer recalculates six literal examples and checks explicit deferral again;
+its unchanged earlier12,040 table comparisons,102,010 fixture compositions,
+rounding controls, int64 bounds and actual Pet Care/source-report inspection
+remain applicable. Diff check passes; no software suite for Markdown. No
+product-path change, tracked reviewer edit or live workload. Technical approval
+is not owner adoption, implementation acceptance or child-engine authority.
+Next: request adoption of this concrete fixture-only table contract and exact
+body-reconciliation delegation, then implement only within actual authority.
+C2's catalog/effect/crit gap and full parent/player/release acceptance remain.

@@ -56,7 +56,9 @@ and limits. Adjacent construction and full parent acceptance remain separately o
      boundary and a test-only policy. Source inspection finds that the parent's
      50%→30% pair comes from a research **win-rate** column, not obedience or
      disobedience probabilities. No unruled endpoints may be inferred from it.
-     Technical review/adoption/body delegation remain before implementation;
+     Complete five-path0dcf71fd..50d750a0 has independent technical APPROVAL
+     after removing a prescription of deferred snapshot fields. Adoption/body
+     delegation remain before implementation;
      C2's effect/catalog/crit gaps and deferred child rulings stay separate.
 5. [ ] Add source lint and full parent acceptance/property coverage. Both Go and TypeScript
    division boundaries now execute locally; `TestRepositoryCombatDivisionBoundary` and its
