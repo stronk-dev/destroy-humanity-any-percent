@@ -12306,3 +12306,32 @@ search adoption, historical guard/current-hosted CI, rights, legitimate predeces
 native supervisor/clean-host/R-006, full features and release approval remain open.
 Full nine-tier1.0 goal ACTIVE; no question repeated, adoption inferred, push,
 deployment, archival or release call.
+
+## 2026-11-05 — HTTP credential restore instrument independently approved
+
+APPROVED, corrective test/research instrument only, full seven-path range
+42ce00f0d2d1d081fcd7acf6c3837111f84f7ee5..
+604f2a826b652a39f2fa6d96d7a3fae19f4af40a.
+Review by: fresh independent Codex `/root/backup_credential_observation_review`.
+Recorded by: Codex root, transcribing its independently executed verdict.
+
+At current source0bb8f381, unchanged original instrument passes the declared
+`make test-deployment-backup` cold (8526): ten integration functions, zero skips;
+HTTP observation2.55s. Deleted source has0 account rows and401 for original
+access/refresh/recovery; B_pre restore1/200/200/200; B_post0/401/401/401.
+Healthy bystander200 throughout; wrong credentials rejected; every successful
+credential reaches the original Founder. All five credential SQL populations
+match their selected backup before HTTP can mutate them. Native package34187
+and vet pass, with native DB/child-process skips explicitly excluded from DB
+credit. These are current-source corroboration, not execution of historical604f2a82;
+that original eight-function run remains separately attributed above.
+
+All seven original paths inspected; no earlier designated verdict covered them.
+No additional mutation needed beyond the meaningful retained negative controls.
+Reviewer leaves no tracked edits; all handles terminal, owned Compose containers
+and network absent, serial SQL/shared binary ownership released. Existing native
+retention-metadata research still reports2/2 protection failures despite package
+green. RP-125 remains open: constructor-only catalog/no-gameplay seam and frozen
+unchanged synthetic keys do not cover composed bootstrap/Guild, expiry/rotation,
+off-host operations or clean-host release. No D-009/D-015, feature acceptance,
+archival or release approval; next useful boundary is actual composed bootstrap.
