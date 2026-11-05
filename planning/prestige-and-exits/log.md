@@ -403,3 +403,16 @@ notes are not relabelled. Plan/audit/backlog now distinguish this explicit
 four-path corrective approval from the still-missing full foundational/archival
 union. RP-038 remains open. No code, balance, epoch, schema, feature status,
 archival, publication, deployment or goal status changes in this closeout.
+
+## 2026-11-05 — Original implementation review scope made concrete
+
+Prepare the owning plan's exact post-rewrite original construction/correction
+ranges and current acceptance-test map for item9. Original construction spans
+four commits/35 paths plus the16-path run-log integration; distinct mixed
+corrections and the freshly approved P5c/P2d range are not conflated. Later
+cross-feature descendants still require their own coverage union before archival.
+Commands/history/path counts and named test homes inspected; no software rerun
+for this editorial preparation and no approval inferred. Existing independent
+Codex delegation covers corrective/spec work, not original new-feature acceptance;
+the concrete request can use the existing designated party or an explicit owner
+extension. No process or acceptance criterion changes. Recorded by: Codex root.
