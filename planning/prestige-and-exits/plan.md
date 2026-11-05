@@ -20,9 +20,17 @@
 Go/TS replay pairs end at distinct Founder ages but emit identical `run_ended`
 events; the event-only screen cannot display the required correct Founder age.
 The owning log retains the cold failing requirement regression, actual UI decoder/
-term-consumer observation and exact manual probes. No SQL/browser or full AC7
-claim; independent evidence/technical repair-authority review is next. New player
-copy remains owner-authored; do not fill historical facts from mutable live state.
+term-consumer observation and exact manual probes. Independent evidence/authority
+review approves `f2a2c82f..c195c0ae` and confirms D3/AC7 authorizes the bounded
+versioned correction. Locally implemented next: input v13 / ending v4 freezes
+the exact committed age, old v2–v12 outputs remain unchanged, and the UI decoder
+preserves age without a live-state read. New/old Go/TS, real Postgres insertion/
+refusal/current curriculum, worker/archive and board checks pass; full native
+Production still has the known Clout partition failures. Complete corrective
+implementation review is next, not full AC7 acceptance. New player copy remains
+owner-authored; the age label and full obituary rendering remain open.
+The kernel227/migration87 runtime now postdates the kernel226 `c5130acf` local
+candidate; rebuild only after this coherent correction's independent review.
 
 **Closed correction,2026-11-05 (RP-772):** the old actual epoch8 curriculum
 producer saved75 earned Knowledge, but a real projector made the affordable50

@@ -1,6 +1,7 @@
 package production
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -70,6 +71,7 @@ func TestCurriculumAutomaticFailurePersistsAndReplaysIntegration(t *testing.T) {
 		founder.FiscalGeneratorLevels[row.GeneratorID] = 0
 	}
 	founder.Soul, founder.SoulExhaustedSourceIDs = 80, []string{}
+	founder.AgeMS = 3_600_000 // AC7: distinguish frozen career age from this run's attended time.
 	company := replayFixtureState(t, current.Economy, now.Add(-15*time.Minute))
 	company.WireVersion, company.Tier = 18, 1
 	company.GatesCrossed["gate.t0_to_t1"] = true
@@ -148,7 +150,7 @@ func TestCurriculumAutomaticFailurePersistsAndReplaysIntegration(t *testing.T) {
 		t.Fatalf("company=%+v revision=%+v err=%v", loadedCompany.State, loadedCompany.Revision, err)
 	}
 	loadedFounder, err := store.LoadLatest(ctx, founderRevision.StreamID)
-	if err != nil || loadedFounder.State.RouteKnowledgeBalance != 75 || len(loadedFounder.State.ExitHistory) != 1 {
+	if err != nil || loadedFounder.State.RouteKnowledgeBalance != 75 || loadedFounder.State.AgeMS != 4_500_000 || len(loadedFounder.State.ExitHistory) != 1 {
 		t.Fatalf("founder=%+v err=%v", loadedFounder.State, err)
 	}
 	var schema int
@@ -157,9 +159,10 @@ func TestCurriculumAutomaticFailurePersistsAndReplaysIntegration(t *testing.T) {
 		t.Fatal(err)
 	}
 	var ended struct {
-		Branch string `json:"branch"`
+		Branch       string `json:"branch"`
+		FounderAgeMS *int64 `json:"founder_age_ms"`
 	}
-	if err := json.Unmarshal(payload, &ended); err != nil || schema != 3 || ended.Branch != "burnout" {
+	if err := json.Unmarshal(payload, &ended); err != nil || schema != 4 || ended.Branch != "burnout" || ended.FounderAgeMS == nil || *ended.FounderAgeMS != loadedFounder.State.AgeMS {
 		t.Fatalf("run_ended schema=%d payload=%s err=%v", schema, payload, err)
 	}
 	if err := db.QueryRowContext(ctx, `SELECT replay_inputs FROM run_log WHERE company_stream_id=$1 AND run_seq=1`, companyRevision.StreamID).Scan(&replayInputs); err != nil {
@@ -170,7 +173,7 @@ func TestCurriculumAutomaticFailurePersistsAndReplaysIntegration(t *testing.T) {
 	if err == nil {
 		err = decodeReplayStrict(wire.Resolved, &terminal)
 	}
-	if err != nil || terminal.SelectedBranch == nil || *terminal.SelectedBranch != "burnout" || terminal.IntentKind != IntentPerformManualBatch {
+	if err != nil || wire.Version != 13 || terminal.SelectedBranch == nil || *terminal.SelectedBranch != "burnout" || terminal.IntentKind != IntentPerformManualBatch {
 		t.Fatalf("terminal=%+v err=%v", terminal, err)
 	}
 
@@ -241,6 +244,14 @@ func TestCurriculumAutomaticFailurePersistsAndReplaysIntegration(t *testing.T) {
 		(SELECT count(*) FROM route_hint_projection_events WHERE founder_id=$1)
 		FROM founder_route_state WHERE founder_id=$1`, founderID).Scan(&projected, &exitClaims, &hintClaims); err != nil || projected != 75-cost || exitClaims != 1 || hintClaims != 1 {
 		t.Fatalf("projection=%d exit_claims=%d hint_claims=%d err=%v", projected, exitClaims, hintClaims, err)
+	}
+	var storedAgain []byte
+	var endedCount int
+	if err := db.QueryRowContext(ctx, `SELECT payload FROM events WHERE stream_id=$1 AND kind='run_ended'`, companyRevision.StreamID).Scan(&storedAgain); err != nil || !bytes.Equal(storedAgain, payload) {
+		t.Fatalf("later Founder purchases changed frozen ended evidence: %v", err)
+	}
+	if err := db.QueryRowContext(ctx, `SELECT count(*) FROM events WHERE stream_id=$1 AND kind='run_ended'`, companyRevision.StreamID).Scan(&endedCount); err != nil || endedCount != 1 {
+		t.Fatalf("Exit retry duplicated ended evidence: count=%d err=%v", endedCount, err)
 	}
 }
 

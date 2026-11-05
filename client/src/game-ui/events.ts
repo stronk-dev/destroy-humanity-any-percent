@@ -21,6 +21,8 @@ export type RunEndedEvent = Readonly<{ cursor: number; kind: "run_ended"; occurr
   exit_type: string;
   faction: string | null;
   founder_id: string;
+  // Absent in retained run_ended v2/v3; never infer historical age from live state.
+  founder_age_ms?: number;
   gates_crossed: readonly string[];
   generators_purchased_total: number;
   ledger_fact_kinds: readonly string[];
@@ -146,12 +148,14 @@ export function decodeGameUIEvent(envelope: TransportEnvelope): GameUILifecycleE
   }
   if (kind !== "run_ended") return undefined;
   const branched = "branch" in payload || "starter_package" in payload;
-  exact(payload, ["assisted", "attended_ms", "ended_at_ms", "executed_routes", "exit_type", "faction", "founder_id", "gates_crossed", "generators_purchased_total", "ledger_fact_kinds", "lifetime_value", "payout", "pre_timer", "rta_ms", "run_id", "started_at_ms", "terminal_seq", "tier", ...(branched ? ["branch", "starter_package"] : [])], "run_ended");
+  const hasFounderAge = Object.hasOwn(payload, "founder_age_ms");
+  exact(payload, ["assisted", "attended_ms", "ended_at_ms", "executed_routes", "exit_type", "faction", "founder_id", "gates_crossed", "generators_purchased_total", "ledger_fact_kinds", "lifetime_value", "payout", "pre_timer", "rta_ms", "run_id", "started_at_ms", "terminal_seq", "tier", ...(hasFounderAge ? ["founder_age_ms"] : []), ...(branched ? ["branch", "starter_package"] : [])], "run_ended");
   const assisted = object(payload.assisted, "run_ended.assisted"); exact(assisted, ["advisor", "commons"], "run_ended.assisted");
   if (typeof assisted.advisor !== "boolean" || typeof assisted.commons !== "boolean" || typeof payload.pre_timer !== "boolean" ||
       payload.faction !== null && typeof payload.faction !== "string" || typeof payload.exit_type !== "string") throw new SyntaxError("invalid run-ended flags");
   const started = safe(payload.started_at_ms, 1), ended = safe(payload.ended_at_ms, started), rta = safe(payload.rta_ms);
   if (rta !== ended - started || typeof payload.lifetime_value !== "string" || parseCanonical(payload.lifetime_value).lt(0)) throw new SyntaxError("invalid run-ended timing");
+  const founderAge = hasFounderAge ? { founder_age_ms: safe(payload.founder_age_ms, safe(payload.attended_ms)) } : {};
   let branchFields: Pick<RunEndedEvent["payload"], "branch" | "starter_package"> = {};
   if (branched) {
     if (payload.branch !== "acquihire" && payload.branch !== "burnout" && payload.branch !== "pivot") throw new SyntaxError("invalid curriculum branch");
@@ -174,7 +178,7 @@ export function decodeGameUIEvent(envelope: TransportEnvelope): GameUILifecycleE
     executed_routes: sortedIDs(payload.executed_routes), exit_type: id(payload.exit_type), faction: payload.faction === null ? null : id(payload.faction),
     founder_id: uuidString(payload.founder_id), gates_crossed: sortedIDs(payload.gates_crossed), generators_purchased_total: safe(payload.generators_purchased_total),
     ledger_fact_kinds: sortedIDs(payload.ledger_fact_kinds), lifetime_value: payload.lifetime_value, payout: prestigeTerms(payload.payout),
-    pre_timer: payload.pre_timer, rta_ms: rta, run_id: runID(payload.run_id), started_at_ms: started, terminal_seq: safe(payload.terminal_seq, 1), tier: safe(payload.tier), ...branchFields,
+    pre_timer: payload.pre_timer, rta_ms: rta, run_id: runID(payload.run_id), started_at_ms: started, terminal_seq: safe(payload.terminal_seq, 1), tier: safe(payload.tier), ...branchFields, ...founderAge,
   } };
 }
 

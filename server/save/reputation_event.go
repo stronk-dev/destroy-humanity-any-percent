@@ -17,6 +17,12 @@ func validReputationPurchaseEventFields(data []byte) bool {
 // non-null fields. Check decoded token names before Go's struct decoder can
 // accept case aliases or discard duplicate keys.
 func validReputationEventFields(data []byte, keys ...string) bool {
+	return validRequiredEventFields(data, nil, keys...)
+}
+
+// Required exact-case token names with duplicate refusal; nullable exceptions
+// are named by the event owner, never inferred from Go zero values.
+func validRequiredEventFields(data []byte, nullable map[string]bool, keys ...string) bool {
 	decoder := json.NewDecoder(bytes.NewReader(data))
 	first, err := decoder.Token()
 	if err != nil || first != json.Delim('{') {
@@ -34,7 +40,7 @@ func validReputationEventFields(data []byte, keys ...string) bool {
 			return false
 		}
 		var raw json.RawMessage
-		if decoder.Decode(&raw) != nil || bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
+		if decoder.Decode(&raw) != nil || !nullable[key] && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
 			return false
 		}
 		seen[key] = true

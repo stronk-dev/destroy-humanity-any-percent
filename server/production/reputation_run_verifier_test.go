@@ -134,7 +134,7 @@ func buildReputationCompanyRun(t *testing.T) reputationCompanyRunFixture {
 				build.NextConstantsHash, build.NextActivePlay = bundle.ConstantsHash, spawnEvidence(spawn)
 				build.MinigameSessionActive = new(bool)
 			}
-			inputs, err := buildReplayInputs(build)
+			inputs, err := buildHistoricalReplayInputs(build)
 			if err != nil {
 				t.Fatal(err)
 			}

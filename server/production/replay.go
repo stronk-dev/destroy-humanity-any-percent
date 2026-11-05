@@ -867,7 +867,7 @@ func ApplyLoggedExit(company *save.State, canonicalPayload []byte, catalogs Cata
 	founderRevision := save.Revision{StreamID: "", OwnerID: wire.Command.FounderID, Number: resolved.FounderCarry.FounderRevision,
 		ConstantsHash: catalogs.ConstantsHash}
 	decision, err := finishExitResolved(request, founder, founderRevision, company, revision, now, exitType, terms, selectedBranch, prefix,
-		resolved.ExecutedRouteIDs, catalogs, *next, resolved.NextActivePlay)
+		resolved.ExecutedRouteIDs, catalogs, *next, resolved.NextActivePlay, wire.Version)
 	if err != nil {
 		return LoggedExitTransition{}, err
 	}
@@ -1625,7 +1625,7 @@ func boolMapFromSorted(values []string) map[string]bool {
 
 func parseReplayInputs(data []byte) (replayInputsWire, error) {
 	var wire replayInputsWire
-	if err := decodeReplayStrict(data, &wire); err != nil || (wire.Version != 2 && wire.Version != 3 && wire.Version != 4 && wire.Version != 5 && wire.Version != 6 && wire.Version != 7 && wire.Version != 8 && wire.Version != 9 && wire.Version != 10 && wire.Version != 11 && wire.Version != save.ReplayInputsVersion) ||
+	if err := decodeReplayStrict(data, &wire); err != nil || (wire.Version != 2 && wire.Version != 3 && wire.Version != 4 && wire.Version != 5 && wire.Version != 6 && wire.Version != 7 && wire.Version != 8 && wire.Version != 9 && wire.Version != 10 && wire.Version != 11 && wire.Version != 12 && wire.Version != save.ReplayInputsVersion) ||
 		(wire.EvaluationMode != ModeOnline && wire.EvaluationMode != ModeOffline) || wire.EvaluatedAtMS <= 0 {
 		return replayInputsWire{}, ErrInvalidReplayInputs
 	}

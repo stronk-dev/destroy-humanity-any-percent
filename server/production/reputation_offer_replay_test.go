@@ -53,7 +53,7 @@ func buildReputationOfferReplayCorpus(t *testing.T) reputationOfferReplayCorpus 
 			promiseOnly bool
 		}{{"payout-funded", good, false}, {"last-unaffordable", bad, false}, {"absent", nil, false}, {"empty", []string{}, false}, {"promise-floor", good, true}} {
 			name := offer.kind + "-" + arm.name
-			row := makeReputationPlanExitCase(t, name, bundle, bundle, 22, 0, arm.plan, now, func(company, founder *save.State) {
+			row := makeHistoricalReputationPlanExitCase(t, name, bundle, bundle, 22, 0, arm.plan, now, func(company, founder *save.State) {
 				company.Tier = 3
 				company.LifetimeValue = bundle.Prestige.ThresholdValue().Mul(decimal.New(8, 3))
 				if arm.promiseOnly {

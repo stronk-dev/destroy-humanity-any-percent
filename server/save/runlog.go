@@ -14,7 +14,8 @@ import (
 	"cloud-clicker/server/decimal"
 )
 
-const ReplayInputsVersion = 12
+// v13 adds the immutable post-Exit Founder age to run_ended v4.
+const ReplayInputsVersion = 13
 
 type ReplayCommand struct {
 	IntentID        string `json:"intent_id"`

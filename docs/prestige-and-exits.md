@@ -93,10 +93,18 @@ future Founder-to-Company event consumer rather than an ambient cross-scope read
 
 `save.Store.ApplyExitTransaction` locks Founder then Company, validates both expected revisions,
 and commits Founder revision `+1` plus Company terminal and new-run revisions `+2`. The idempotency
-record belongs to the Company stream. The `run_ended` event is self-contained for the obituary:
+record belongs to the Company stream. The `run_ended` event freezes the implemented terminal facts:
 run identity, exit type, server start/end times, RTA, Attended Time, payout, tier, lifetime value,
 ledger facts, revision-bounded executed routes, its pre-timer status, and separate Commons/Advisor
 assisted variables plus the nullable run faction.
+New replay-input v13 exits emit `run_ended` schema v4 with `founder_age_ms`: the exact
+post-Exit cumulative attended age of the Founder committed by that transaction. The store
+rejects a missing, malformed or state-mismatched age before writing either stream.
+The event-only UI decoder preserves this frozen value; it does not read a later live Founder.
+Retained replay-input v2–v12 exits reproduce their original schema-v2/v3 events unchanged,
+and their decoded age remains absent rather than becoming zero or an inferred value.
+The full obituary/template binding and its owner-authored age label remain unfinished (AC7);
+this field correction does not complete that screen.
 `run_started` is the next timer's `[BEGIN ATTEMPT]` fact.
 The terminal sequence is the Exit command's atomically committed per-run intent-log sequence, not a
 save revision or an eventually projected counter. Exit events also receive a database-authored

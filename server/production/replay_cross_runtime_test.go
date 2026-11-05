@@ -323,7 +323,7 @@ func makeCrossRuntimeFixture(t *testing.T) crossRuntimeFixture {
 		if err != nil {
 			t.Fatalf("%s offline catchup: %v", definition.name, err)
 		}
-		inputs, err := buildReplayInputs(build)
+		inputs, err := buildHistoricalReplayInputs(build)
 		if err != nil {
 			t.Fatalf("%s inputs: %v", definition.name, err)
 		}
@@ -519,7 +519,7 @@ func makeMinigameStartReplayFixture(t *testing.T, now time.Time) (string, map[st
 	carry := founderCarry(state)
 	carry.FounderRevision, carry.FounderConstantsHash = 1, catalogs.ConstantsHash
 	active := true
-	exitInputs, err := buildReplayInputs(replayBuild{Command: exitCommand, Mode: ModeOnline, Now: now,
+	exitInputs, err := buildHistoricalReplayInputs(replayBuild{Command: exitCommand, Mode: ModeOnline, Now: now,
 		IntentKind: exitRequest.Kind, RouteContextVersion: catalogs.Routes.ContextVersion(), FounderCarry: &carry,
 		Terminal: true, ExecutedRouteIDs: []string{}, SelectedExitType: "scripted_first",
 		SelectedTerms: json.RawMessage(`{}`), NextConstantsHash: catalogs.ConstantsHash,
@@ -616,7 +616,7 @@ func makeDoctrineReplayRunFixture(t *testing.T, now time.Time) crossRuntimeFullR
 			t.Fatalf("doctrine fixture expected revision=%d live=%d", request.ExpectedRevision, revision)
 		}
 		command := save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: "01986666-1a00-7000-8000-000000000001", FounderID: "01986666-2a00-7000-8000-000000000001", Revision: revision, RunSeq: 1, RunLogSeq: int64(index + 1)}
-		inputs, inputErr := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now.Add(definition.at), IntentKind: request.Kind, RouteContextVersion: catalogs.Routes.ContextVersion(), FounderCarry: &carry})
+		inputs, inputErr := buildHistoricalReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now.Add(definition.at), IntentKind: request.Kind, RouteContextVersion: catalogs.Routes.ContextVersion(), FounderCarry: &carry})
 		if inputErr != nil {
 			t.Fatal(inputErr)
 		}
@@ -735,7 +735,7 @@ func makeActivePlayReplayRunFixture(t *testing.T, now time.Time) crossRuntimeFul
 			}
 			build.ActivePlay.Claim = claim
 		}
-		inputs, inputErr := buildReplayInputs(build)
+		inputs, inputErr := buildHistoricalReplayInputs(build)
 		if inputErr != nil {
 			t.Fatalf("active fixture row %d inputs: %v", sequence, inputErr)
 		}
@@ -953,7 +953,7 @@ func makeActivePlayExitFixture(t *testing.T, now time.Time) crossRuntimeActiveEx
 	if err != nil {
 		t.Fatal(err)
 	}
-	inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind,
+	inputs, err := buildHistoricalReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind,
 		RouteContextVersion: catalogs.Routes.ContextVersion(), FounderCarry: &carry, Terminal: true, ExecutedRouteIDs: []string{}, SelectedExitType: "scripted_first",
 		SelectedTerms: json.RawMessage(`{}`), NextConstantsHash: catalogs.ConstantsHash, ActivePlay: &activeEvidence, NextActivePlay: spawnEvidence(nextSpawn)})
 	if err != nil {
@@ -1052,7 +1052,7 @@ func TestExitResetsComputeBurst(t *testing.T) {
 	founderRevision := save.Revision{StreamID: "01986666-2a00-7000-8000-000000000010", OwnerID: "01986666-2a00-7000-8000-000000000011", Number: 1, ConstantsHash: catalogs.ConstantsHash}
 	companyRevision := save.Revision{StreamID: "01986666-1a00-7000-8000-000000000010", OwnerID: founderRevision.OwnerID, Number: 1, ConstantsHash: catalogs.ConstantsHash}
 	decision, err := finishExitResolved(IntentRequest{IntentID: "01986666-0a12-7000-8000-000000000012"}, founder, founderRevision, activated, companyRevision,
-		startedAt.Add(time.Second), "collapse", prestigecore.Terms{}, nil, nil, []string{}, catalogs, catalogs, nil)
+		startedAt.Add(time.Second), "collapse", prestigecore.Terms{}, nil, nil, []string{}, catalogs, catalogs, nil, save.ReplayInputsVersion)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1102,7 +1102,7 @@ func makeMinigameResolutionReplayFixture(t *testing.T, now time.Time) (string, m
 		CompanyRevision: 2, FounderRevision: 2, RatingChange: rating, QualityChange: quality}
 	companyCommand := save.ReplayCommand{IntentID: "01986666-0900-7000-8000-000000000901", CompanyStreamID: attendance.CompanyStreamID,
 		FounderID: "01986666-3900-7000-8000-000000000901", Revision: 1, RunSeq: 1, RunLogSeq: 1}
-	companyInputs, _ := json.Marshal(replayInputsWire{Version: save.ReplayInputsVersion, Command: companyCommand, EvaluatedAtMS: now.UnixMilli(), EvaluationMode: ModeOnline, Resolved: mustJSON(companyResolved)})
+	companyInputs, _ := json.Marshal(replayInputsWire{Version: 12, Command: companyCommand, EvaluatedAtMS: now.UnixMilli(), EvaluationMode: ModeOnline, Resolved: mustJSON(companyResolved)})
 	company := replayFixtureState(t, catalogs.Economy, now)
 	company.WireVersion = 16
 	company.MeterBands = nil
@@ -1113,7 +1113,7 @@ func makeMinigameResolutionReplayFixture(t *testing.T, now time.Time) (string, m
 	company.MeterValues, company.MeterDecayRemainders, company.MeterInputRemainders = meterState.Values, meterState.DecayRemainders, meterState.InputRemainders
 	company.AchievementsEarnedRun = map[string]bool{}
 	companyPre := mustEncodeState(t, company)
-	companyTransition, err := applyCompanyMinigameResolution(company, payload, catalogs, replayInputsWire{Version: save.ReplayInputsVersion,
+	companyTransition, err := applyCompanyMinigameResolution(company, payload, catalogs, replayInputsWire{Version: 12,
 		Command: companyCommand, EvaluatedAtMS: now.UnixMilli(), EvaluationMode: ModeOnline, Resolved: mustJSON(companyResolved)})
 	if err != nil {
 		t.Fatal(err)
@@ -1170,6 +1170,10 @@ func makeSoulRecoveryReplayFixture(t *testing.T, now time.Time) (string, map[str
 		FounderAttendedStart: 0, FounderAttendedEnd: 5_000, SessionID: sessionID}
 	companyInputs, err := buildSoulSuppressionInputs(companyCommand, soulRecoveryResolveKind, suppression, nil, nil,
 		catalogs.Routes.ContextVersion(), nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	companyInputs, err = historicalReplayInputs(companyInputs)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1445,7 +1449,7 @@ func makeActiveFoundationExitFixture(t *testing.T, now time.Time) crossRuntimeAc
 	carry := replayFounderCarry{FounderRevision: 2, FounderConstantsHash: current.ConstantsHash, ReputationLevel: 1, Notoriety: 17, NetworkSlots: []save.NetworkSlot{}, LedgerFactKinds: []string{}, ExitHistoryCount: 1,
 		AchievementsEarnedLifetime: []string{definition.ID}, AchievementScoreLifetime: definition.ScoreGrant}
 	command := save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: "01986666-1600-7000-8000-000000000001", FounderID: "01986666-2600-7000-8000-000000000001", Revision: 1, RunSeq: 1, RunLogSeq: 1}
-	inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind, RouteContextVersion: current.Routes.ContextVersion(), FounderCarry: &carry, Terminal: true, ExecutedRouteIDs: []string{}, SelectedExitType: "acquisition", SelectedTerms: terms, NextConstantsHash: next.ConstantsHash})
+	inputs, err := buildHistoricalReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind, RouteContextVersion: current.Routes.ContextVersion(), FounderCarry: &carry, Terminal: true, ExecutedRouteIDs: []string{}, SelectedExitType: "acquisition", SelectedTerms: terms, NextConstantsHash: next.ConstantsHash})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1512,7 +1516,7 @@ func makeFirstContentExitFixture(t *testing.T, now time.Time) crossRuntimeActive
 	if err != nil || catchup == nil {
 		t.Fatalf("first-content Exit catchup=%+v err=%v", catchup, err)
 	}
-	inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind,
+	inputs, err := buildHistoricalReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind,
 		RouteContextVersion: catalogs.Routes.ContextVersion(), FounderCarry: &carry, Terminal: true, ExecutedRouteIDs: []string{},
 		SelectedExitType: "collapse", SelectedTerms: json.RawMessage(`{}`), NextConstantsHash: catalogs.ConstantsHash,
 		ActivePlay: &activeEvidence, NextActivePlay: spawnEvidence(nextSpawn), MinigameSessionActive: &minigameActive, OfflineCatchup: catchup})
@@ -1827,7 +1831,7 @@ func makeCurriculumExitFixtureForIntent(t *testing.T, now time.Time, crossGate b
 		t.Fatalf("curriculum fixture branch=%q err=%v", branch.Branch, err)
 	}
 	command := save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: "01986666-1d00-7000-8000-000000000001", FounderID: founderID, Revision: 1, RunSeq: 1, RunLogSeq: 1}
-	inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind,
+	inputs, err := buildHistoricalReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind,
 		RouteContextVersion: current.Routes.ContextVersion(), FounderCarry: &carry, Terminal: true, ExecutedRouteIDs: []string{},
 		SelectedExitType: "scripted_first", SelectedBranch: &branch.Branch, SelectedTerms: json.RawMessage(`{}`), NextConstantsHash: next.ConstantsHash,
 		ActivePlay: &activeEvidence, NextActivePlay: spawnEvidence(nextSpawn), MinigameSessionActive: &minigameActive})
@@ -1895,7 +1899,7 @@ func makeActiveFoundationReplayFixture(t *testing.T, now time.Time, gap time.Dur
 	if err != nil {
 		t.Fatal(err)
 	}
-	inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind,
+	inputs, err := buildHistoricalReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind,
 		RouteContextVersion: catalogs.Routes.ContextVersion(), FounderCarry: &carry, OfflineCatchup: catchup})
 	if err != nil {
 		t.Fatal(err)
@@ -1941,7 +1945,7 @@ func makeActiveFoundationBandReplayFixture(t *testing.T, now time.Time) crossRun
 	carry := replayFounderCarry{FounderRevision: 1, FounderConstantsHash: catalogs.ConstantsHash, NetworkSlots: []save.NetworkSlot{}, LedgerFactKinds: []string{}, ExitHistoryCount: 1,
 		AchievementsEarnedLifetime: []string{definition.ID}, AchievementScoreLifetime: definition.ScoreGrant}
 	command := save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: "01986666-1400-7000-8000-000000000003", FounderID: "01986666-2400-7000-8000-000000000003", Revision: 1, RunSeq: 1, RunLogSeq: 1}
-	inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind, RouteContextVersion: catalogs.Routes.ContextVersion(), FounderCarry: &carry})
+	inputs, err := buildHistoricalReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind, RouteContextVersion: catalogs.Routes.ContextVersion(), FounderCarry: &carry})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -2001,7 +2005,7 @@ func makeActiveFoundationBurnReplayFixture(t *testing.T, now time.Time) crossRun
 	}
 	carry := replayFounderCarry{FounderRevision: 1, FounderConstantsHash: catalogs.ConstantsHash, NetworkSlots: []save.NetworkSlot{}, LedgerFactKinds: []string{}, AchievementsEarnedLifetime: []string{}}
 	command := save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: "01986666-1400-7000-8000-000000000002", FounderID: "01986666-2400-7000-8000-000000000002", Revision: 1, RunSeq: 1, RunLogSeq: 1}
-	inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind, RouteContextVersion: catalogs.Routes.ContextVersion(), FounderCarry: &carry})
+	inputs, err := buildHistoricalReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind, RouteContextVersion: catalogs.Routes.ContextVersion(), FounderCarry: &carry})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -2040,7 +2044,7 @@ func makeRejectedExitFixture(t *testing.T, catalogs CatalogBundle, constantsHash
 		t.Fatal(err)
 	}
 	command := save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: "01987778-1000-7000-8000-000000000001", FounderID: founderID, Revision: 1, RunSeq: 1, RunLogSeq: 1}
-	inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now.Add(time.Second), IntentKind: request.Kind, RouteContextVersion: catalogs.Routes.ContextVersion()})
+	inputs, err := buildHistoricalReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now.Add(time.Second), IntentKind: request.Kind, RouteContextVersion: catalogs.Routes.ContextVersion()})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -2059,7 +2063,7 @@ func makeRejectedExitFixture(t *testing.T, catalogs CatalogBundle, constantsHash
 	}
 	command = save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: command.CompanyStreamID, FounderID: founderID, Revision: 1, RunSeq: 1, RunLogSeq: 2}
 	carry := replayFounderCarry{FounderRevision: 1, FounderConstantsHash: constantsHash, NetworkSlots: []save.NetworkSlot{}, LedgerFactKinds: []string{}}
-	inputs, err = buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now.Add(2 * time.Second), IntentKind: request.Kind,
+	inputs, err = buildHistoricalReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now.Add(2 * time.Second), IntentKind: request.Kind,
 		RouteContextVersion: catalogs.Routes.ContextVersion(), FounderCarry: &carry, Terminal: true, ExecutedRouteIDs: []string{},
 		SelectedExitType: "scripted_first", SelectedTerms: json.RawMessage(`{}`), NextConstantsHash: constantsHash,
 		GuildSettlementBatch: guild.SettlementBatch{GuildID: "01987778-3000-7000-8000-000000000001", BaseSeq: 0,
@@ -2081,7 +2085,7 @@ func makeRejectedExitFixture(t *testing.T, catalogs CatalogBundle, constantsHash
 		t.Fatal(err)
 	}
 	command = save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: command.CompanyStreamID, FounderID: founderID, Revision: 1, RunSeq: 1, RunLogSeq: 3}
-	inputs, err = buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now.Add(3 * time.Second), IntentKind: request.Kind, RouteContextVersion: catalogs.Routes.ContextVersion()})
+	inputs, err = buildHistoricalReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now.Add(3 * time.Second), IntentKind: request.Kind, RouteContextVersion: catalogs.Routes.ContextVersion()})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -2152,7 +2156,7 @@ func assertPerEntryNextCatalog(t *testing.T, catalogs CatalogBundle, constantsHa
 		command := save.ReplayCommand{IntentID: intentID, CompanyStreamID: "01987779-1000-7000-8000-000000000001",
 			FounderID: "01987779-2000-7000-8000-000000000001", Revision: 1, RunSeq: 1, RunLogSeq: int64(index + 1)}
 		carry := replayFounderCarry{FounderRevision: 1, FounderConstantsHash: constantsHash, NetworkSlots: []save.NetworkSlot{}, LedgerFactKinds: []string{}}
-		inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now.Add(time.Duration(index) * time.Second),
+		inputs, err := buildHistoricalReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now.Add(time.Duration(index) * time.Second),
 			IntentKind: request.Kind, RouteContextVersion: catalogs.Routes.ContextVersion(), FounderCarry: &carry, Terminal: true,
 			ExecutedRouteIDs: []string{}, SelectedExitType: "scripted_first", SelectedTerms: json.RawMessage(`{}`), NextConstantsHash: next.ConstantsHash})
 		if err != nil {
@@ -2273,7 +2277,7 @@ func makeFullRunFixture(t *testing.T, catalogs CatalogBundle, constantsHash stri
 		if state.CompactMember {
 			weight = int64Pointer(800_000)
 		}
-		inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: mode, Now: now, IntentKind: request.Kind, RouteContextVersion: catalogs.Routes.ContextVersion(), FounderCarry: carry, CommonsWeightPPM: weight})
+		inputs, err := buildHistoricalReplayInputs(replayBuild{Command: command, Mode: mode, Now: now, IntentKind: request.Kind, RouteContextVersion: catalogs.Routes.ContextVersion(), FounderCarry: carry, CommonsWeightPPM: weight})
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -2325,7 +2329,7 @@ func makeFullRunFixture(t *testing.T, catalogs CatalogBundle, constantsHash stri
 	}
 	command := save.ReplayCommand{IntentID: intentID, CompanyStreamID: "01987777-1000-7000-8000-000000000001", FounderID: founderID, Revision: revision, RunSeq: 1, RunLogSeq: 51}
 	carry := replayFounderCarry{FounderRevision: 1, FounderConstantsHash: constantsHash, NetworkSlots: []save.NetworkSlot{}, LedgerFactKinds: []string{}, ExitHistoryCount: 1}
-	inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind, RouteContextVersion: catalogs.Routes.ContextVersion(), FounderCarry: &carry, CommonsWeightPPM: int64Pointer(800_000), Terminal: true, ExecutedRouteIDs: []string{"route.ipo_sequence_break"}, SelectedExitType: "collapse", SelectedTerms: json.RawMessage(`{}`), NextConstantsHash: constantsHash})
+	inputs, err := buildHistoricalReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind, RouteContextVersion: catalogs.Routes.ContextVersion(), FounderCarry: &carry, CommonsWeightPPM: int64Pointer(800_000), Terminal: true, ExecutedRouteIDs: []string{"route.ipo_sequence_break"}, SelectedExitType: "collapse", SelectedTerms: json.RawMessage(`{}`), NextConstantsHash: constantsHash})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -2484,7 +2488,7 @@ func makeFallbackInvariantFixture(t *testing.T, source map[string][]byte, now ti
 		t.Fatal(err)
 	}
 	command := save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: "01986666-1000-7000-8000-000000000001", FounderID: "01986666-2000-7000-8000-000000000001", Revision: 1, RunSeq: 1, RunLogSeq: 1}
-	inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind, RouteContextVersion: catalogs.Routes.ContextVersion()})
+	inputs, err := buildHistoricalReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind, RouteContextVersion: catalogs.Routes.ContextVersion()})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -2565,7 +2569,7 @@ func makeFoundationFixtures(t *testing.T, source map[string][]byte, now time.Tim
 			t.Fatal(err)
 		}
 		command := save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: "01986666-1300-7000-8000-000000000001", FounderID: "01986666-2300-7000-8000-000000000001", Revision: 1, RunSeq: 1, RunLogSeq: int64(index + 1)}
-		inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now.Add(definition.advance), IntentKind: request.Kind, RouteContextVersion: catalogs.Routes.ContextVersion()})
+		inputs, err := buildHistoricalReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now.Add(definition.advance), IntentKind: request.Kind, RouteContextVersion: catalogs.Routes.ContextVersion()})
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -2600,7 +2604,7 @@ func makeTerminalFixtureCase(t *testing.T, catalogs CatalogBundle, constantsHash
 	}
 	command := save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: "01986666-1000-7000-8000-000000000001", FounderID: "01986666-2000-7000-8000-000000000001", Revision: 1, RunSeq: 1, RunLogSeq: 100}
 	carry := replayFounderCarry{FounderRevision: 1, FounderConstantsHash: constantsHash, NetworkSlots: []save.NetworkSlot{}, LedgerFactKinds: []string{}, ExitHistoryCount: 0}
-	inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind, RouteContextVersion: catalogs.Routes.ContextVersion(), FounderCarry: &carry, Terminal: true, ExecutedRouteIDs: []string{}, SelectedExitType: "scripted_first", SelectedTerms: json.RawMessage(`{}`), NextConstantsHash: constantsHash})
+	inputs, err := buildHistoricalReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind, RouteContextVersion: catalogs.Routes.ContextVersion(), FounderCarry: &carry, Terminal: true, ExecutedRouteIDs: []string{}, SelectedExitType: "scripted_first", SelectedTerms: json.RawMessage(`{}`), NextConstantsHash: constantsHash})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -2639,7 +2643,7 @@ func makeAcceptedOfferFixtureCase(t *testing.T, catalogs CatalogBundle, constant
 	}
 	command := save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: "01986666-1000-7000-8000-000000000001", FounderID: "01986666-2000-7000-8000-000000000001", Revision: 1, RunSeq: 1, RunLogSeq: 101}
 	carry := replayFounderCarry{FounderRevision: 2, FounderConstantsHash: constantsHash, ReputationLevel: 1, NetworkSlots: []save.NetworkSlot{}, LedgerFactKinds: []string{}, ExitHistoryCount: 1}
-	inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind, RouteContextVersion: catalogs.Routes.ContextVersion(), FounderCarry: &carry, Terminal: true, ExecutedRouteIDs: []string{}, SelectedExitType: "acquisition", SelectedTerms: terms, NextConstantsHash: constantsHash})
+	inputs, err := buildHistoricalReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind, RouteContextVersion: catalogs.Routes.ContextVersion(), FounderCarry: &carry, Terminal: true, ExecutedRouteIDs: []string{}, SelectedExitType: "acquisition", SelectedTerms: terms, NextConstantsHash: constantsHash})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -2680,7 +2684,7 @@ func makeScriptedGateFixtureCase(t *testing.T, catalogs CatalogBundle, constants
 	}
 	command := save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: "01986666-1000-7000-8000-000000000001", FounderID: "01986666-2000-7000-8000-000000000001", Revision: 1, RunSeq: 1, RunLogSeq: 102}
 	carry := replayFounderCarry{FounderRevision: 1, FounderConstantsHash: constantsHash, NetworkSlots: []save.NetworkSlot{}, LedgerFactKinds: []string{}, ExitHistoryCount: 0}
-	inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind, RouteContextVersion: catalogs.Routes.ContextVersion(), FounderCarry: &carry, Terminal: true, ExecutedRouteIDs: []string{}, SelectedExitType: "scripted_first", SelectedTerms: json.RawMessage(`{}`), NextConstantsHash: constantsHash})
+	inputs, err := buildHistoricalReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind, RouteContextVersion: catalogs.Routes.ContextVersion(), FounderCarry: &carry, Terminal: true, ExecutedRouteIDs: []string{}, SelectedExitType: "scripted_first", SelectedTerms: json.RawMessage(`{}`), NextConstantsHash: constantsHash})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -2812,4 +2816,24 @@ func offerFixtureFounder(t *testing.T, threshold int64) string {
 	}
 	t.Fatal("could not find deterministic offer-spawn founder")
 	return ""
+}
+
+// These constructors reproduce the committed v12 historical fixture. Downgrade
+// only the input discriminator BEFORE replay; never rewrite emitted outcomes.
+// New producer-format coverage calls buildReplayInputs directly.
+func buildHistoricalReplayInputs(build replayBuild) (json.RawMessage, error) {
+	data, err := buildReplayInputs(build)
+	if err != nil {
+		return nil, err
+	}
+	return historicalReplayInputs(data)
+}
+
+func historicalReplayInputs(data []byte) (json.RawMessage, error) {
+	var wire replayInputsWire
+	if err := json.Unmarshal(data, &wire); err != nil {
+		return nil, err
+	}
+	wire.Version = 12
+	return json.Marshal(wire)
 }

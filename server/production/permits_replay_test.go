@@ -67,7 +67,7 @@ func TestPermitsGateReplayCorpus(t *testing.T) {
 			}
 			command := save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: "01989999-1000-7000-8000-000000000001",
 				FounderID: "01989999-2000-7000-8000-000000000001", Revision: 1, RunSeq: 1, RunLogSeq: 1}
-			inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now,
+			inputs, err := buildHistoricalReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now,
 				IntentKind: request.Kind, RouteContextVersion: bundle.Routes.ContextVersion(),
 				FounderCarry: &replayFounderCarry{FounderRevision: 1, FounderConstantsHash: hash,
 					NetworkSlots: []save.NetworkSlot{}, LedgerFactKinds: []string{}, ExitHistoryCount: 0}})

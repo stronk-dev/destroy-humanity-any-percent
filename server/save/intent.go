@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"regexp"
+	"strings"
 	"time"
 
 	"cloud-clicker/server/decimal"
@@ -623,7 +624,7 @@ func validRunStartedReputation(raw json.RawMessage) bool {
 
 func validEventSchemaVersion(event EventWrite) bool {
 	if event.Kind == EventRunEnded {
-		return event.SchemaVersion == 2 || event.SchemaVersion == 3
+		return event.SchemaVersion == 2 || event.SchemaVersion == 3 || event.SchemaVersion == 4
 	}
 	if event.Kind == EventOpportunityClaimed || event.Kind == EventBuffStarted || event.Kind == EventRunStarted {
 		return event.SchemaVersion == 1 || event.SchemaVersion == 2
@@ -1219,11 +1220,29 @@ func validateEventPayload(event EventWrite) error {
 			payload.Faction != nil && !mechanicalIDPattern.MatchString(*payload.Faction) {
 			return fmt.Errorf("%w: invalid run_ended payload", ErrInvalidStream)
 		}
+		var raw map[string]json.RawMessage
+		if json.Unmarshal(event.Payload, &raw) != nil {
+			return ErrInvalidStream
+		}
+		_, hasAge := raw["founder_age_ms"]
+		for key := range raw {
+			if event.SchemaVersion != 4 && strings.EqualFold(key, "founder_age_ms") {
+				return fmt.Errorf("%w: Founder age requires run_ended v4", ErrInvalidStream)
+			}
+		}
+		if event.SchemaVersion == 4 {
+			if !validRunEndedAgeEventFields(event.Payload, payload.Branch != nil || payload.StarterPackage != nil) || !hasAge || payload.FounderAgeMS == nil || *payload.FounderAgeMS < payload.AttendedMS || *payload.FounderAgeMS > decimal.MaxExactInteger {
+				return fmt.Errorf("%w: invalid run_ended Founder age", ErrInvalidStream)
+			}
+		} else if hasAge {
+			return fmt.Errorf("%w: Founder age requires run_ended v4", ErrInvalidStream)
+		}
 		if value, err := decimal.ParseCanonical(payload.LifetimeValue); err != nil || value.Lt(decimal.Zero) {
 			return fmt.Errorf("%w: invalid run_ended lifetime value", ErrInvalidStream)
 		}
 		if event.SchemaVersion == 2 && (payload.Branch != nil || payload.StarterPackage != nil) ||
-			event.SchemaVersion == 3 && !validCurriculumStarter(payload.Branch, payload.StarterPackage) {
+			event.SchemaVersion == 3 && !validCurriculumStarter(payload.Branch, payload.StarterPackage) ||
+			event.SchemaVersion == 4 && (payload.Branch != nil || payload.StarterPackage != nil) && !validCurriculumStarter(payload.Branch, payload.StarterPackage) {
 			return fmt.Errorf("%w: invalid run_ended curriculum payload", ErrInvalidStream)
 		}
 	case EventRunStarted:
@@ -1439,6 +1458,7 @@ type eventAssisted struct {
 }
 
 type eventRunEnded struct {
+	FounderAgeMS             *int64             `json:"founder_age_ms,omitempty"`
 	FounderID                string             `json:"founder_id"`
 	RunID                    routeRunID         `json:"run_id"`
 	ExitType                 string             `json:"exit_type"`

@@ -677,3 +677,110 @@ a versioned factual event/decoder correction without new gameplay/copy decisions
 do not create an unnecessary RFC or infer wire/copy authority from this failure.
 Full AC7 and original feature acceptance stay open alongside RP-771; RP-772 stays
 closed. No archival, publication or goal pause.
+
+## 2026-11-05 — RP-773 independent evidence/authority verdict
+
+Review by: fresh independent Codex sub-agent
+`/root/run_end_age_evidence_authority_review`. Recorded by: Codex root.
+**APPROVED**, complete five-path range `f2a2c82f..c195c0ae`, technical
+evidence only under Marco's technical-review delegation. The reviewer cold-ran
+the retained old Go regression: Make2/package1, solely its final information-loss
+assertion (package0.228s). Actual TypeScript replay, complete Go-event equality,
+current transport/UI decoder and terminal-row observations pass; the post-Exit
+ages3601000/7201000 still yield identical old ending payloads. Vet/diff checks
+pass. Original evidence files restored byte-exact, temporary Go probe removed,
+all handles terminal; no SQL run was represented as part of this review.
+
+Independent evidence `.cache/run-end-age-review/review-results.json` SHA256
+`cea53cf5f9349a4961732e7937d229b5217a854f21b49e64f756716bf9181112`.
+Separate authority audit confirms accepted Prestige D3/AC7 and RFC-0000 authorize
+a bounded versioned factual producer/decoder correction, without a new mechanic
+or owner decision. Preserve input2–12/event2/3 bytes; declare new activation,
+append migration, bump kernel honestly, test actual SQL and both runtimes. The
+transport wrapper lacks event schema_version, so its decoder must distinguish
+exact old/new payload shapes. Absent legacy age must remain absent. This verdict
+does not approve the following implementation, authored age copy, original feature
+acceptance, the public Company profile or full AC7.
+
+## 2026-11-05 — freeze committed Founder age in versioned ending evidence
+
+Authority: accepted Prestige D3/AC7/design11§3; bounded correction per RFC-0000,
+as independently confirmed above. New replay-input13 emits `run_ended`4 with
+required exact post-Exit `founder_age_ms`; Go and TypeScript take it from the
+already advanced Founder, without changing accrual, rewards, state or receipts.
+Kernel0.3.227 signals the changed replay/event bytes. Migration00087 appends the
+event4 SQL allowance; store validation refuses missing/null/noncanonical/duplicate
+age and binds a valid-looking value to the actual Founder state before writes.
+The existing projector understands4 and retains2/3. The actual event-only UI
+decoder copies the optional frozen fact; old events stay age-absent. No player
+text or age rendering is invented; full obituary/template AC7 remains open.
+
+Five new shared `run-ended-age-v1.json` cases cover two distinct Founder ages,
+current curriculum branching, and retained v12 ordinary/branch events. Both
+runtimes assert full event equality and unchanged old/new Founder/Company/receipt
+results; old branch bytes compare to the already committed historical fixture.
+Historical fixture constructors choose v12 *before replay*, never rewrite emitted
+outcomes. Existing historical replay corpora remain byte-unchanged. Current
+source-bound research observers were actually re-executed: six reports now carry
+input13/event4+age and current source hashes, retaining their prior negative/
+NOT_PROVEN conclusions. The save-migration corpus changes only its derived
+activation-report source SHA. A strict comparison normalizes only the declared
+format/age changes and source metadata: every other measured value/state equals
+the committed reports. First comparison correctly refused stale exit.go hashes
+after the final store guard; final re-observation and comparison pass (262 input
+discriminators,24 ending representations including encoded strings,19 hashes).
+
+Executed first-filter evidence, all cold Go checks use root Make's `-count=1`:
+
+- New Go producer/store/projector five-case populations pass; retained full
+  cross-runtime fixture regenerates byte-identically, other affected corpus
+  checks pass. Six Axis research observers execute and match their refreshed
+  reports without update flags at final verification.
+- Full native Save/Prestige/Leaderboard pass. Full Production is **RED**,42.293s,
+  solely the existing `TestAxisAccrualPartitionProperty` parent/27 Clout cases;
+  no ceiling or acceptance threshold changes. This is not full CI green.
+- Client affected replay/Prestige/UI population:654 tests/11 files pass. Final
+  decoder/new-vector population:107 tests/two files pass, including zero/exact
+  maximum boundaries, malformed ages and mutation of the source event object.
+  Strict typecheck, client build, affected Go vet and API generation check pass.
+- Real Postgres current-epoch curriculum test passes0.795s: prior Founder age
+  3600000 becomes4500000, the immutable event stores exactly4500000/schema4,
+  inputs13, and delayed/retried existing reward/hint work cannot rewrite it.
+- Actual Prestige eligible/elective/scripted SQL population passes1.422s; actual
+  GameServer worker/archive/board population passes2.511s, including stored raw
+  public HTTP bytes, Go re-verification and receipt corruption refusal. Its optional
+  TypeScript HTTP-download seam was not requested; separate shared TS replay is
+  not misrepresented as that composed-browser seam.
+- New atomic store population passes0.415s. Positive v4 reaches actual SQL event
+  insertion then fault-rolls back; missing/null/wrong-state-age/duplicate cases
+  refuse with both heads/events unchanged. Initial positive fixture incorrectly
+  used age0 despite one-hour attended state and failed; corrected fixture Founder
+  and expected age3600000, not the product guard. That initial combined SQL run
+  stays RED; other package passes above remain specifically attributed.
+- `make validate-migrations` executes actual Save Integration/Migration population
+  against Postgres16,1.994s PASS. Initial un-escalated attempt hit Docker socket
+  permission denial before SQL; no test credit. Checks then ran serially on the
+  declared service. Docker's cached Go1.26/Postgres16 images run amd64 emulated on
+  this ARM64 host, not a native supported-release host rehearsal.
+
+Reproduce the new unit/vector and historical regression selection:
+
+```sh
+make test-go GO_PACKAGES='./production ./save ./leaderboard' GO_TEST_FLAGS="-run 'Test(RunEndedFounderAge|TerminalFounderAge|ApplyLoggedCrossRuntime|Axis(ActivationReplayResearch|ExternalReplayCompatibilityResearch|LoggedPolicyReplayResearch|OriginDeferredTemporalContextResearch|ActionBuffModeReplayResearch|TerminalReplayResearch))' -v"
+make test-save-integration SAVE_TEST_PACKAGES='./save ./production ./gameserver' SAVE_TEST_FLAGS="-run 'Test(ApplyExitTransactionAtomicFaultsAndReplayIntegration|PrestigeWindDownAndScriptedExitIntegration|PrestigeWindDownEligibleStateMatrixIntegration|CurriculumAutomaticFailurePersistsAndReplaysIntegration|ComposedGameserverExitVerificationAndBoardIntegration)' -v"
+make validate-migrations
+make vet GO_PACKAGES='./save ./production ./leaderboard ./gameserver ./transport ./prestige'
+make typecheck
+```
+
+Raw local logs plus research-change comparison are retained under ignored
+`.cache/run-end-age-observation/`. Early instrument-only failures included a Go
+wire-tag/setup mismatch, canonical-command fixture mismatch and misplaced custom
+generation flag; corrected before final executed credit, with no weakened oracle.
+Review by: Codex root (implementer first filter). Recorded by: Codex root.
+Complete corrective range after `c195c0ae` requires fresh independent review before
+closing this data defect; this record supplies no implementer approval. RP-771,
+age display/owner copy, original feature acceptance and full AC7 stay open.
+The public Company evidence draft's reviewed2–12 support does not silently gain13.
+The reviewed kernel226/migration86 `c5130acf` candidate now predates this runtime;
+rebuild after coherent review, never relabel it as227. No push/deploy/archival.

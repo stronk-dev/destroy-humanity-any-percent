@@ -1,0 +1,1130 @@
+{
+  "version": 1,
+  "constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6",
+  "artifact_source": "apply-logged-v1.json:first_content_exit",
+  "cases": [
+    {
+      "name": "one-hour-Founder",
+      "pre_state": {
+        "achievement_score_lifetime": 0,
+        "achievement_score_run": 0,
+        "achievements_earned_lifetime": [],
+        "achievements_earned_run": [],
+        "active_buffs": [],
+        "advisor_mode": false,
+        "age_ms": 0,
+        "balances": {
+          "company.cash": "0",
+          "company.permits": "0"
+        },
+        "clout_lifetime": 0,
+        "collapsed_offline_ms": 0,
+        "compact_member": false,
+        "compact_solidarity_ppm": 0,
+        "compact_solidarity_samples": [],
+        "compact_tithe_ppm": 0,
+        "compute_burst_remaining_ms": 0,
+        "compute_credit_ms": 0,
+        "consumed_stock_units": 0,
+        "doctrines_by_transition": {},
+        "evaluated_through": "2026-11-05T11:59:59Z",
+        "exit_history": [],
+        "faction_id": null,
+        "gates_crossed": {
+          "gate.t0_to_t1": true
+        },
+        "generators": {
+          "generator.answering_machine": 0,
+          "generator.beige_tower": 0,
+          "generator.beige_tower_v2": 0,
+          "generator.crt_wall": 0,
+          "generator.dot_matrix_queue": 0,
+          "generator.first_hire": 0,
+          "generator.garage_rack": 0,
+          "generator.legal_dept": 0,
+          "generator.nephew_intern": 0
+        },
+        "generators_provisioned": {
+          "generator.answering_machine": 0,
+          "generator.beige_tower": 0,
+          "generator.beige_tower_v2": 0,
+          "generator.crt_wall": 0,
+          "generator.dot_matrix_queue": 0,
+          "generator.first_hire": 0,
+          "generator.garage_rack": 0,
+          "generator.legal_dept": 0,
+          "generator.nephew_intern": 0
+        },
+        "generators_purchased_total": 0,
+        "guild_boundary_guild_id": null,
+        "guild_boundary_seq": 0,
+        "guild_consumed_window_units": 0,
+        "guild_tithe_carry_ppm": 0,
+        "hints_unlocked": [],
+        "incorporated_at_ms": null,
+        "ledger_fact_kinds": [],
+        "lifetime_value": "0",
+        "manual_token_milli": 50000,
+        "manual_token_refilled_at": "2026-11-05T11:59:00Z",
+        "meter_decay_remainders": {
+          "doom.probability": 0,
+          "trust.employees.grievance": 0,
+          "trust.employees.standing": 0,
+          "trust.investors.grievance": 0,
+          "trust.investors.standing": 0,
+          "trust.press.grievance": 0,
+          "trust.press.standing": 0,
+          "trust.regulators.grievance": 0,
+          "trust.regulators.standing": 0,
+          "trust.users.grievance": 0,
+          "trust.users.standing": 0
+        },
+        "meter_input_remainders": {
+          "trust.users.standing:0": 0
+        },
+        "meter_values": {
+          "doom.probability": 50,
+          "trust.employees.grievance": 0,
+          "trust.employees.standing": 90,
+          "trust.investors.grievance": 0,
+          "trust.investors.standing": 90,
+          "trust.press.grievance": 0,
+          "trust.press.standing": 90,
+          "trust.regulators.grievance": 0,
+          "trust.regulators.standing": 90,
+          "trust.users.grievance": 0,
+          "trust.users.standing": 90
+        },
+        "network_slots": [],
+        "next_opportunity_attended_ms": 4891,
+        "notoriety": 0,
+        "offer_state": null,
+        "offline_spans": [],
+        "opportunity_spawn_seq": 0,
+        "pending_opportunity": null,
+        "provision_remainders_ppm": {
+          "generator.beige_tower": 0
+        },
+        "region_traits": [],
+        "reputation_level": 0,
+        "reputation_unlock_ppm": 0,
+        "route_knowledge_balance": 0,
+        "run_pre_timer": false,
+        "run_seq": 2,
+        "run_started_at_ms": 1793879999000,
+        "soul": 0,
+        "stock_progress_ms": 0,
+        "stock_rate_remainder_ppm": 0,
+        "stock_units": 0,
+        "structure_id": "",
+        "tier": 1,
+        "upgrades_owned": []
+      },
+      "canonical_payload": {
+        "expected_founder_revision": 1,
+        "expected_revision": 1,
+        "kind": "wind_down"
+      },
+      "replay_inputs": {
+        "v": 13,
+        "command": {
+          "intent_id": "01986666-8d01-7000-8000-000000000001",
+          "company_stream_id": "01986666-8e00-7000-8000-000000000001",
+          "founder_id": "01986666-8d00-7000-8000-000000000001",
+          "revision": 1,
+          "run_seq": 2,
+          "run_log_seq": 1
+        },
+        "evaluated_at_ms": 1793880000000,
+        "evaluation_mode": "online",
+        "resolved": {
+          "kind": "exit",
+          "intent_kind": "wind_down",
+          "accrual": {
+            "contributions": [],
+            "commons_weight_ppm": null,
+            "guild_settlement_batch": {
+              "guild_id": "",
+              "base_seq": 0,
+              "settlements": []
+            },
+            "route_context_version": 1
+          },
+          "founder_carry": {
+            "founder_revision": 1,
+            "founder_constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6",
+            "reputation_level": 0,
+            "route_knowledge_balance": 0,
+            "age_ms": 3600000,
+            "notoriety": 0,
+            "advisor_mode": false,
+            "network_slots": [],
+            "ledger_fact_kinds": [],
+            "exit_history_count": 1,
+            "achievements_earned_lifetime": [],
+            "achievement_score_lifetime": 0,
+            "founder_extensions": {
+              "minigame_ratings": {
+                "pitch": {
+                  "elo": 1000,
+                  "season_member": "s1",
+                  "games_counted": 0
+                }
+              },
+              "minigame_offline_quality": {
+                "pitch": {
+                  "grade_ppm": 200000,
+                  "last_founder_attended_ms": 0,
+                  "decay_remainder_ppm": 0
+                }
+              },
+              "pets": {},
+              "fiscal_credit": 0,
+              "fiscal_period_opened_wall_ms": 1793880000000,
+              "fiscal_period_seq": 0,
+              "fiscal_generator_levels": {
+                "generator.beige_tower": 0
+              },
+              "fiscal_unlocks": [],
+              "soul": 100,
+              "soul_exhausted_source_ids": [],
+              "minigame_session_seq": 0
+            }
+          },
+          "executed_route_ids": [],
+          "selected_exit_type": "collapse",
+          "selected_terms": {},
+          "next_constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6",
+          "active_play": {
+            "attended_now_ms": 1000,
+            "before_sequence": 0,
+            "before_next_opportunity_attended_ms": 4891,
+            "after_sequence": 0,
+            "after_next_opportunity_attended_ms": 4891,
+            "expired_buffs": [],
+            "missed_opportunity_id": null,
+            "spawned": null,
+            "claim": null
+          },
+          "next_active_play": {
+            "sequence": 0,
+            "sampled_interval_ms": 2049,
+            "effect_draw": "0",
+            "generator_draw": "0",
+            "effect_row_id": "active.building",
+            "selected_generator_id": "generator.beige_tower",
+            "opportunity_id": "00000000-0801-7ef8-9b6e-7f67d59e3e8c",
+            "spawned_attended_ms": 2049,
+            "expires_attended_ms": 6549
+          },
+          "minigame_session_active": false
+        }
+      },
+      "expected_founder_age_ms": 3601000,
+      "expected_schema_version": 4,
+      "ended_event_json": "{\"intent_id\":\"01986666-8d01-7000-8000-000000000001\",\"kind\":\"run_ended\",\"payload\":{\"assisted\":{\"advisor\":false,\"commons\":false},\"attended_ms\":1000,\"ended_at_ms\":1793880000000,\"executed_routes\":[],\"exit_type\":\"collapse\",\"faction\":null,\"founder_age_ms\":3601000,\"founder_id\":\"01986666-8d00-7000-8000-000000000001\",\"gates_crossed\":[\"gate.t0_to_t1\"],\"generators_purchased_total\":0,\"ledger_fact_kinds\":[],\"lifetime_value\":\"0\",\"payout\":{\"clout_reach_note\":\"clout.reach.preserved\",\"network_slot_unlocks\":[],\"reputation_delta\":0,\"route_knowledge\":25},\"pre_timer\":false,\"rta_ms\":1000,\"run_id\":{\"company_stream_id\":\"01986666-8e00-7000-8000-000000000001\",\"run_seq\":2},\"started_at_ms\":1793879999000,\"terminal_seq\":1,\"tier\":1},\"schema_version\":4}"
+    },
+    {
+      "name": "retained-v12-unbranched",
+      "pre_state": {
+        "achievement_score_lifetime": 0,
+        "achievement_score_run": 0,
+        "achievements_earned_lifetime": [],
+        "achievements_earned_run": [],
+        "active_buffs": [],
+        "advisor_mode": false,
+        "age_ms": 0,
+        "balances": {
+          "company.cash": "0",
+          "company.permits": "0"
+        },
+        "clout_lifetime": 0,
+        "collapsed_offline_ms": 0,
+        "compact_member": false,
+        "compact_solidarity_ppm": 0,
+        "compact_solidarity_samples": [],
+        "compact_tithe_ppm": 0,
+        "compute_burst_remaining_ms": 0,
+        "compute_credit_ms": 0,
+        "consumed_stock_units": 0,
+        "doctrines_by_transition": {},
+        "evaluated_through": "2026-11-05T11:59:59Z",
+        "exit_history": [],
+        "faction_id": null,
+        "gates_crossed": {
+          "gate.t0_to_t1": true
+        },
+        "generators": {
+          "generator.answering_machine": 0,
+          "generator.beige_tower": 0,
+          "generator.beige_tower_v2": 0,
+          "generator.crt_wall": 0,
+          "generator.dot_matrix_queue": 0,
+          "generator.first_hire": 0,
+          "generator.garage_rack": 0,
+          "generator.legal_dept": 0,
+          "generator.nephew_intern": 0
+        },
+        "generators_provisioned": {
+          "generator.answering_machine": 0,
+          "generator.beige_tower": 0,
+          "generator.beige_tower_v2": 0,
+          "generator.crt_wall": 0,
+          "generator.dot_matrix_queue": 0,
+          "generator.first_hire": 0,
+          "generator.garage_rack": 0,
+          "generator.legal_dept": 0,
+          "generator.nephew_intern": 0
+        },
+        "generators_purchased_total": 0,
+        "guild_boundary_guild_id": null,
+        "guild_boundary_seq": 0,
+        "guild_consumed_window_units": 0,
+        "guild_tithe_carry_ppm": 0,
+        "hints_unlocked": [],
+        "incorporated_at_ms": null,
+        "ledger_fact_kinds": [],
+        "lifetime_value": "0",
+        "manual_token_milli": 50000,
+        "manual_token_refilled_at": "2026-11-05T11:59:00Z",
+        "meter_decay_remainders": {
+          "doom.probability": 0,
+          "trust.employees.grievance": 0,
+          "trust.employees.standing": 0,
+          "trust.investors.grievance": 0,
+          "trust.investors.standing": 0,
+          "trust.press.grievance": 0,
+          "trust.press.standing": 0,
+          "trust.regulators.grievance": 0,
+          "trust.regulators.standing": 0,
+          "trust.users.grievance": 0,
+          "trust.users.standing": 0
+        },
+        "meter_input_remainders": {
+          "trust.users.standing:0": 0
+        },
+        "meter_values": {
+          "doom.probability": 50,
+          "trust.employees.grievance": 0,
+          "trust.employees.standing": 90,
+          "trust.investors.grievance": 0,
+          "trust.investors.standing": 90,
+          "trust.press.grievance": 0,
+          "trust.press.standing": 90,
+          "trust.regulators.grievance": 0,
+          "trust.regulators.standing": 90,
+          "trust.users.grievance": 0,
+          "trust.users.standing": 90
+        },
+        "network_slots": [],
+        "next_opportunity_attended_ms": 4891,
+        "notoriety": 0,
+        "offer_state": null,
+        "offline_spans": [],
+        "opportunity_spawn_seq": 0,
+        "pending_opportunity": null,
+        "provision_remainders_ppm": {
+          "generator.beige_tower": 0
+        },
+        "region_traits": [],
+        "reputation_level": 0,
+        "reputation_unlock_ppm": 0,
+        "route_knowledge_balance": 0,
+        "run_pre_timer": false,
+        "run_seq": 2,
+        "run_started_at_ms": 1793879999000,
+        "soul": 0,
+        "stock_progress_ms": 0,
+        "stock_rate_remainder_ppm": 0,
+        "stock_units": 0,
+        "structure_id": "",
+        "tier": 1,
+        "upgrades_owned": []
+      },
+      "canonical_payload": {
+        "expected_founder_revision": 1,
+        "expected_revision": 1,
+        "kind": "wind_down"
+      },
+      "replay_inputs": {
+        "v": 12,
+        "command": {
+          "intent_id": "01986666-8d01-7000-8000-000000000001",
+          "company_stream_id": "01986666-8e00-7000-8000-000000000001",
+          "founder_id": "01986666-8d00-7000-8000-000000000001",
+          "revision": 1,
+          "run_seq": 2,
+          "run_log_seq": 1
+        },
+        "evaluated_at_ms": 1793880000000,
+        "evaluation_mode": "online",
+        "resolved": {
+          "kind": "exit",
+          "intent_kind": "wind_down",
+          "accrual": {
+            "contributions": [],
+            "commons_weight_ppm": null,
+            "guild_settlement_batch": {
+              "guild_id": "",
+              "base_seq": 0,
+              "settlements": []
+            },
+            "route_context_version": 1
+          },
+          "founder_carry": {
+            "founder_revision": 1,
+            "founder_constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6",
+            "reputation_level": 0,
+            "route_knowledge_balance": 0,
+            "age_ms": 3600000,
+            "notoriety": 0,
+            "advisor_mode": false,
+            "network_slots": [],
+            "ledger_fact_kinds": [],
+            "exit_history_count": 1,
+            "achievements_earned_lifetime": [],
+            "achievement_score_lifetime": 0,
+            "founder_extensions": {
+              "minigame_ratings": {
+                "pitch": {
+                  "elo": 1000,
+                  "season_member": "s1",
+                  "games_counted": 0
+                }
+              },
+              "minigame_offline_quality": {
+                "pitch": {
+                  "grade_ppm": 200000,
+                  "last_founder_attended_ms": 0,
+                  "decay_remainder_ppm": 0
+                }
+              },
+              "pets": {},
+              "fiscal_credit": 0,
+              "fiscal_period_opened_wall_ms": 1793880000000,
+              "fiscal_period_seq": 0,
+              "fiscal_generator_levels": {
+                "generator.beige_tower": 0
+              },
+              "fiscal_unlocks": [],
+              "soul": 100,
+              "soul_exhausted_source_ids": [],
+              "minigame_session_seq": 0
+            }
+          },
+          "executed_route_ids": [],
+          "selected_exit_type": "collapse",
+          "selected_terms": {},
+          "next_constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6",
+          "active_play": {
+            "attended_now_ms": 1000,
+            "before_sequence": 0,
+            "before_next_opportunity_attended_ms": 4891,
+            "after_sequence": 0,
+            "after_next_opportunity_attended_ms": 4891,
+            "expired_buffs": [],
+            "missed_opportunity_id": null,
+            "spawned": null,
+            "claim": null
+          },
+          "next_active_play": {
+            "sequence": 0,
+            "sampled_interval_ms": 2049,
+            "effect_draw": "0",
+            "generator_draw": "0",
+            "effect_row_id": "active.building",
+            "selected_generator_id": "generator.beige_tower",
+            "opportunity_id": "00000000-0801-7ef8-9b6e-7f67d59e3e8c",
+            "spawned_attended_ms": 2049,
+            "expires_attended_ms": 6549
+          },
+          "minigame_session_active": false
+        }
+      },
+      "expected_founder_age_ms": 3601000,
+      "expected_schema_version": 2,
+      "ended_event_json": "{\"intent_id\":\"01986666-8d01-7000-8000-000000000001\",\"kind\":\"run_ended\",\"payload\":{\"assisted\":{\"advisor\":false,\"commons\":false},\"attended_ms\":1000,\"ended_at_ms\":1793880000000,\"executed_routes\":[],\"exit_type\":\"collapse\",\"faction\":null,\"founder_id\":\"01986666-8d00-7000-8000-000000000001\",\"gates_crossed\":[\"gate.t0_to_t1\"],\"generators_purchased_total\":0,\"ledger_fact_kinds\":[],\"lifetime_value\":\"0\",\"payout\":{\"clout_reach_note\":\"clout.reach.preserved\",\"network_slot_unlocks\":[],\"reputation_delta\":0,\"route_knowledge\":25},\"pre_timer\":false,\"rta_ms\":1000,\"run_id\":{\"company_stream_id\":\"01986666-8e00-7000-8000-000000000001\",\"run_seq\":2},\"started_at_ms\":1793879999000,\"terminal_seq\":1,\"tier\":1},\"schema_version\":2}"
+    },
+    {
+      "name": "two-hour-Founder",
+      "pre_state": {
+        "achievement_score_lifetime": 0,
+        "achievement_score_run": 0,
+        "achievements_earned_lifetime": [],
+        "achievements_earned_run": [],
+        "active_buffs": [],
+        "advisor_mode": false,
+        "age_ms": 0,
+        "balances": {
+          "company.cash": "0",
+          "company.permits": "0"
+        },
+        "clout_lifetime": 0,
+        "collapsed_offline_ms": 0,
+        "compact_member": false,
+        "compact_solidarity_ppm": 0,
+        "compact_solidarity_samples": [],
+        "compact_tithe_ppm": 0,
+        "compute_burst_remaining_ms": 0,
+        "compute_credit_ms": 0,
+        "consumed_stock_units": 0,
+        "doctrines_by_transition": {},
+        "evaluated_through": "2026-11-05T11:59:59Z",
+        "exit_history": [],
+        "faction_id": null,
+        "gates_crossed": {
+          "gate.t0_to_t1": true
+        },
+        "generators": {
+          "generator.answering_machine": 0,
+          "generator.beige_tower": 0,
+          "generator.beige_tower_v2": 0,
+          "generator.crt_wall": 0,
+          "generator.dot_matrix_queue": 0,
+          "generator.first_hire": 0,
+          "generator.garage_rack": 0,
+          "generator.legal_dept": 0,
+          "generator.nephew_intern": 0
+        },
+        "generators_provisioned": {
+          "generator.answering_machine": 0,
+          "generator.beige_tower": 0,
+          "generator.beige_tower_v2": 0,
+          "generator.crt_wall": 0,
+          "generator.dot_matrix_queue": 0,
+          "generator.first_hire": 0,
+          "generator.garage_rack": 0,
+          "generator.legal_dept": 0,
+          "generator.nephew_intern": 0
+        },
+        "generators_purchased_total": 0,
+        "guild_boundary_guild_id": null,
+        "guild_boundary_seq": 0,
+        "guild_consumed_window_units": 0,
+        "guild_tithe_carry_ppm": 0,
+        "hints_unlocked": [],
+        "incorporated_at_ms": null,
+        "ledger_fact_kinds": [],
+        "lifetime_value": "0",
+        "manual_token_milli": 50000,
+        "manual_token_refilled_at": "2026-11-05T11:59:00Z",
+        "meter_decay_remainders": {
+          "doom.probability": 0,
+          "trust.employees.grievance": 0,
+          "trust.employees.standing": 0,
+          "trust.investors.grievance": 0,
+          "trust.investors.standing": 0,
+          "trust.press.grievance": 0,
+          "trust.press.standing": 0,
+          "trust.regulators.grievance": 0,
+          "trust.regulators.standing": 0,
+          "trust.users.grievance": 0,
+          "trust.users.standing": 0
+        },
+        "meter_input_remainders": {
+          "trust.users.standing:0": 0
+        },
+        "meter_values": {
+          "doom.probability": 50,
+          "trust.employees.grievance": 0,
+          "trust.employees.standing": 90,
+          "trust.investors.grievance": 0,
+          "trust.investors.standing": 90,
+          "trust.press.grievance": 0,
+          "trust.press.standing": 90,
+          "trust.regulators.grievance": 0,
+          "trust.regulators.standing": 90,
+          "trust.users.grievance": 0,
+          "trust.users.standing": 90
+        },
+        "network_slots": [],
+        "next_opportunity_attended_ms": 4891,
+        "notoriety": 0,
+        "offer_state": null,
+        "offline_spans": [],
+        "opportunity_spawn_seq": 0,
+        "pending_opportunity": null,
+        "provision_remainders_ppm": {
+          "generator.beige_tower": 0
+        },
+        "region_traits": [],
+        "reputation_level": 0,
+        "reputation_unlock_ppm": 0,
+        "route_knowledge_balance": 0,
+        "run_pre_timer": false,
+        "run_seq": 2,
+        "run_started_at_ms": 1793879999000,
+        "soul": 0,
+        "stock_progress_ms": 0,
+        "stock_rate_remainder_ppm": 0,
+        "stock_units": 0,
+        "structure_id": "",
+        "tier": 1,
+        "upgrades_owned": []
+      },
+      "canonical_payload": {
+        "expected_founder_revision": 1,
+        "expected_revision": 1,
+        "kind": "wind_down"
+      },
+      "replay_inputs": {
+        "v": 13,
+        "command": {
+          "intent_id": "01986666-8d01-7000-8000-000000000001",
+          "company_stream_id": "01986666-8e00-7000-8000-000000000001",
+          "founder_id": "01986666-8d00-7000-8000-000000000001",
+          "revision": 1,
+          "run_seq": 2,
+          "run_log_seq": 1
+        },
+        "evaluated_at_ms": 1793880000000,
+        "evaluation_mode": "online",
+        "resolved": {
+          "kind": "exit",
+          "intent_kind": "wind_down",
+          "accrual": {
+            "contributions": [],
+            "commons_weight_ppm": null,
+            "guild_settlement_batch": {
+              "guild_id": "",
+              "base_seq": 0,
+              "settlements": []
+            },
+            "route_context_version": 1
+          },
+          "founder_carry": {
+            "founder_revision": 1,
+            "founder_constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6",
+            "reputation_level": 0,
+            "route_knowledge_balance": 0,
+            "age_ms": 7200000,
+            "notoriety": 0,
+            "advisor_mode": false,
+            "network_slots": [],
+            "ledger_fact_kinds": [],
+            "exit_history_count": 1,
+            "achievements_earned_lifetime": [],
+            "achievement_score_lifetime": 0,
+            "founder_extensions": {
+              "minigame_ratings": {
+                "pitch": {
+                  "elo": 1000,
+                  "season_member": "s1",
+                  "games_counted": 0
+                }
+              },
+              "minigame_offline_quality": {
+                "pitch": {
+                  "grade_ppm": 200000,
+                  "last_founder_attended_ms": 0,
+                  "decay_remainder_ppm": 0
+                }
+              },
+              "pets": {},
+              "fiscal_credit": 0,
+              "fiscal_period_opened_wall_ms": 1793880000000,
+              "fiscal_period_seq": 0,
+              "fiscal_generator_levels": {
+                "generator.beige_tower": 0
+              },
+              "fiscal_unlocks": [],
+              "soul": 100,
+              "soul_exhausted_source_ids": [],
+              "minigame_session_seq": 0
+            }
+          },
+          "executed_route_ids": [],
+          "selected_exit_type": "collapse",
+          "selected_terms": {},
+          "next_constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6",
+          "active_play": {
+            "attended_now_ms": 1000,
+            "before_sequence": 0,
+            "before_next_opportunity_attended_ms": 4891,
+            "after_sequence": 0,
+            "after_next_opportunity_attended_ms": 4891,
+            "expired_buffs": [],
+            "missed_opportunity_id": null,
+            "spawned": null,
+            "claim": null
+          },
+          "next_active_play": {
+            "sequence": 0,
+            "sampled_interval_ms": 2049,
+            "effect_draw": "0",
+            "generator_draw": "0",
+            "effect_row_id": "active.building",
+            "selected_generator_id": "generator.beige_tower",
+            "opportunity_id": "00000000-0801-7ef8-9b6e-7f67d59e3e8c",
+            "spawned_attended_ms": 2049,
+            "expires_attended_ms": 6549
+          },
+          "minigame_session_active": false
+        }
+      },
+      "expected_founder_age_ms": 7201000,
+      "expected_schema_version": 4,
+      "ended_event_json": "{\"intent_id\":\"01986666-8d01-7000-8000-000000000001\",\"kind\":\"run_ended\",\"payload\":{\"assisted\":{\"advisor\":false,\"commons\":false},\"attended_ms\":1000,\"ended_at_ms\":1793880000000,\"executed_routes\":[],\"exit_type\":\"collapse\",\"faction\":null,\"founder_age_ms\":7201000,\"founder_id\":\"01986666-8d00-7000-8000-000000000001\",\"gates_crossed\":[\"gate.t0_to_t1\"],\"generators_purchased_total\":0,\"ledger_fact_kinds\":[],\"lifetime_value\":\"0\",\"payout\":{\"clout_reach_note\":\"clout.reach.preserved\",\"network_slot_unlocks\":[],\"reputation_delta\":0,\"route_knowledge\":25},\"pre_timer\":false,\"rta_ms\":1000,\"run_id\":{\"company_stream_id\":\"01986666-8e00-7000-8000-000000000001\",\"run_seq\":2},\"started_at_ms\":1793879999000,\"terminal_seq\":1,\"tier\":1},\"schema_version\":4}"
+    },
+    {
+      "name": "v13-curriculum-branch",
+      "pre_state": {
+        "achievement_score_lifetime": 0,
+        "achievement_score_run": 0,
+        "achievements_earned_lifetime": [],
+        "achievements_earned_run": [],
+        "active_buffs": [],
+        "advisor_mode": false,
+        "age_ms": 0,
+        "balances": {
+          "company.cash": "0",
+          "company.permits": "0"
+        },
+        "clout_lifetime": 0,
+        "collapsed_offline_ms": 0,
+        "compact_member": false,
+        "compact_solidarity_ppm": 0,
+        "compact_solidarity_samples": [],
+        "compact_tithe_ppm": 0,
+        "compute_burst_remaining_ms": 0,
+        "compute_credit_ms": 0,
+        "consumed_stock_units": 0,
+        "doctrines_by_transition": {},
+        "evaluated_through": "2026-08-01T08:00:00Z",
+        "exit_history": [],
+        "faction_id": null,
+        "gates_crossed": {
+          "gate.t0_to_t1": true
+        },
+        "generators": {
+          "generator.answering_machine": 0,
+          "generator.beige_tower": 0,
+          "generator.beige_tower_v2": 0,
+          "generator.crt_wall": 0,
+          "generator.dot_matrix_queue": 0,
+          "generator.first_hire": 0,
+          "generator.garage_rack": 0,
+          "generator.legal_dept": 0,
+          "generator.nephew_intern": 0
+        },
+        "generators_provisioned": {
+          "generator.answering_machine": 0,
+          "generator.beige_tower": 0,
+          "generator.beige_tower_v2": 0,
+          "generator.crt_wall": 0,
+          "generator.dot_matrix_queue": 0,
+          "generator.first_hire": 0,
+          "generator.garage_rack": 0,
+          "generator.legal_dept": 0,
+          "generator.nephew_intern": 0
+        },
+        "generators_purchased_total": 0,
+        "guild_boundary_guild_id": null,
+        "guild_boundary_seq": 0,
+        "guild_consumed_window_units": 0,
+        "guild_tithe_carry_ppm": 0,
+        "hints_unlocked": [],
+        "incorporated_at_ms": null,
+        "ledger_fact_kinds": [],
+        "lifetime_value": "0",
+        "manual_token_milli": 50000,
+        "manual_token_refilled_at": "2026-08-01T08:00:00Z",
+        "meter_decay_remainders": {
+          "doom.probability": 0,
+          "trust.employees.grievance": 0,
+          "trust.employees.standing": 0,
+          "trust.investors.grievance": 0,
+          "trust.investors.standing": 0,
+          "trust.press.grievance": 0,
+          "trust.press.standing": 0,
+          "trust.regulators.grievance": 0,
+          "trust.regulators.standing": 0,
+          "trust.users.grievance": 0,
+          "trust.users.standing": 0
+        },
+        "meter_input_remainders": {
+          "trust.users.standing:0": 0
+        },
+        "meter_values": {
+          "doom.probability": 50,
+          "trust.employees.grievance": 0,
+          "trust.employees.standing": 90,
+          "trust.investors.grievance": 0,
+          "trust.investors.standing": 90,
+          "trust.press.grievance": 0,
+          "trust.press.standing": 90,
+          "trust.regulators.grievance": 0,
+          "trust.regulators.standing": 90,
+          "trust.users.grievance": 0,
+          "trust.users.standing": 90
+        },
+        "network_slots": [],
+        "next_opportunity_attended_ms": 0,
+        "notoriety": 0,
+        "offer_state": null,
+        "offline_spans": [],
+        "opportunity_spawn_seq": 107,
+        "pending_opportunity": {
+          "opportunity_id": "0000000d-aa9a-7905-b0f3-b6e2e48cac01",
+          "spawned_attended_ms": 895642,
+          "expires_attended_ms": 900142,
+          "effect_row_id": "active.click",
+          "selected_generator_id": null
+        },
+        "provision_remainders_ppm": {
+          "generator.beige_tower": 0
+        },
+        "region_traits": [],
+        "reputation_level": 0,
+        "reputation_unlock_ppm": 0,
+        "route_knowledge_balance": 0,
+        "run_pre_timer": false,
+        "run_seq": 1,
+        "run_started_at_ms": 1785570300000,
+        "soul": 0,
+        "stock_progress_ms": 0,
+        "stock_rate_remainder_ppm": 0,
+        "stock_units": 0,
+        "structure_id": "",
+        "tier": 1,
+        "upgrades_owned": []
+      },
+      "canonical_payload": {
+        "action_id": "manual.click",
+        "count": 1,
+        "expected_revision": 1,
+        "kind": "perform_manual_batch",
+        "window_ms": 1
+      },
+      "replay_inputs": {
+        "v": 13,
+        "command": {
+          "intent_id": "01986666-0d00-7000-8000-000000000001",
+          "company_stream_id": "01986666-1d00-7000-8000-000000000001",
+          "founder_id": "01986666-2d00-7000-8000-000000000001",
+          "revision": 1,
+          "run_seq": 1,
+          "run_log_seq": 1
+        },
+        "evaluated_at_ms": 1785571200000,
+        "evaluation_mode": "online",
+        "resolved": {
+          "kind": "exit",
+          "intent_kind": "perform_manual_batch",
+          "accrual": {
+            "contributions": [],
+            "commons_weight_ppm": null,
+            "guild_settlement_batch": {
+              "guild_id": "",
+              "base_seq": 0,
+              "settlements": []
+            },
+            "route_context_version": 1
+          },
+          "founder_carry": {
+            "founder_revision": 1,
+            "founder_constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6",
+            "reputation_level": 0,
+            "route_knowledge_balance": 0,
+            "age_ms": 0,
+            "notoriety": 0,
+            "advisor_mode": false,
+            "network_slots": [],
+            "ledger_fact_kinds": [],
+            "exit_history_count": 0,
+            "achievements_earned_lifetime": [],
+            "achievement_score_lifetime": 0,
+            "founder_extensions": {
+              "minigame_ratings": {
+                "pitch": {
+                  "elo": 1000,
+                  "season_member": "s1",
+                  "games_counted": 0
+                }
+              },
+              "minigame_offline_quality": {
+                "pitch": {
+                  "grade_ppm": 200000,
+                  "last_founder_attended_ms": 0,
+                  "decay_remainder_ppm": 0
+                }
+              },
+              "pets": {},
+              "fiscal_credit": 0,
+              "fiscal_period_opened_wall_ms": 1785571200000,
+              "fiscal_period_seq": 0,
+              "fiscal_generator_levels": {
+                "generator.beige_tower": 0
+              },
+              "fiscal_unlocks": [],
+              "soul": 80,
+              "soul_exhausted_source_ids": [],
+              "minigame_session_seq": 0
+            }
+          },
+          "executed_route_ids": [],
+          "selected_exit_type": "scripted_first",
+          "selected_branch": "burnout",
+          "selected_terms": {},
+          "next_constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6",
+          "active_play": {
+            "attended_now_ms": 900000,
+            "before_sequence": 107,
+            "before_next_opportunity_attended_ms": 0,
+            "after_sequence": 107,
+            "after_next_opportunity_attended_ms": 0,
+            "expired_buffs": [],
+            "missed_opportunity_id": null,
+            "spawned": null,
+            "claim": null
+          },
+          "next_active_play": {
+            "sequence": 0,
+            "sampled_interval_ms": 4850,
+            "effect_draw": "7",
+            "generator_draw": null,
+            "effect_row_id": "active.production",
+            "selected_generator_id": null,
+            "opportunity_id": "00000000-12f2-740f-93e4-19985c7c7be2",
+            "spawned_attended_ms": 4850,
+            "expires_attended_ms": 9350
+          },
+          "minigame_session_active": false
+        }
+      },
+      "expected_founder_age_ms": 900000,
+      "expected_schema_version": 4,
+      "ended_event_json": "{\"intent_id\":\"01986666-0d00-7000-8000-000000000001\",\"kind\":\"run_ended\",\"payload\":{\"assisted\":{\"advisor\":false,\"commons\":false},\"attended_ms\":900000,\"branch\":\"burnout\",\"ended_at_ms\":1785571200000,\"executed_routes\":[],\"exit_type\":\"scripted_first\",\"faction\":null,\"founder_age_ms\":900000,\"founder_id\":\"01986666-2d00-7000-8000-000000000001\",\"gates_crossed\":[\"gate.t0_to_t1\"],\"generators_purchased_total\":0,\"ledger_fact_kinds\":[],\"lifetime_value\":\"0\",\"payout\":{\"clout_reach_note\":\"clout.reach.preserved\",\"network_slot_unlocks\":[],\"reputation_delta\":0,\"route_knowledge\":75},\"pre_timer\":false,\"rta_ms\":900000,\"run_id\":{\"company_stream_id\":\"01986666-1d00-7000-8000-000000000001\",\"run_seq\":1},\"started_at_ms\":1785570300000,\"starter_package\":{\"count\":10,\"generator_id\":\"generator.beige_tower\",\"kind\":\"generated_generators\"},\"terminal_seq\":1,\"tier\":1},\"schema_version\":4}"
+    },
+    {
+      "name": "retained-v12-curriculum",
+      "pre_state": {
+        "achievement_score_lifetime": 0,
+        "achievement_score_run": 0,
+        "achievements_earned_lifetime": [],
+        "achievements_earned_run": [],
+        "active_buffs": [],
+        "advisor_mode": false,
+        "age_ms": 0,
+        "balances": {
+          "company.cash": "0",
+          "company.permits": "0"
+        },
+        "clout_lifetime": 0,
+        "collapsed_offline_ms": 0,
+        "compact_member": false,
+        "compact_solidarity_ppm": 0,
+        "compact_solidarity_samples": [],
+        "compact_tithe_ppm": 0,
+        "compute_burst_remaining_ms": 0,
+        "compute_credit_ms": 0,
+        "consumed_stock_units": 0,
+        "doctrines_by_transition": {},
+        "evaluated_through": "2026-08-01T08:00:00Z",
+        "exit_history": [],
+        "faction_id": null,
+        "gates_crossed": {
+          "gate.t0_to_t1": true
+        },
+        "generators": {
+          "generator.answering_machine": 0,
+          "generator.beige_tower": 0,
+          "generator.beige_tower_v2": 0,
+          "generator.crt_wall": 0,
+          "generator.dot_matrix_queue": 0,
+          "generator.first_hire": 0,
+          "generator.garage_rack": 0,
+          "generator.legal_dept": 0,
+          "generator.nephew_intern": 0
+        },
+        "generators_provisioned": {
+          "generator.answering_machine": 0,
+          "generator.beige_tower": 0,
+          "generator.beige_tower_v2": 0,
+          "generator.crt_wall": 0,
+          "generator.dot_matrix_queue": 0,
+          "generator.first_hire": 0,
+          "generator.garage_rack": 0,
+          "generator.legal_dept": 0,
+          "generator.nephew_intern": 0
+        },
+        "generators_purchased_total": 0,
+        "guild_boundary_guild_id": null,
+        "guild_boundary_seq": 0,
+        "guild_consumed_window_units": 0,
+        "guild_tithe_carry_ppm": 0,
+        "hints_unlocked": [],
+        "incorporated_at_ms": null,
+        "ledger_fact_kinds": [],
+        "lifetime_value": "0",
+        "manual_token_milli": 50000,
+        "manual_token_refilled_at": "2026-08-01T08:00:00Z",
+        "meter_decay_remainders": {
+          "doom.probability": 0,
+          "trust.employees.grievance": 0,
+          "trust.employees.standing": 0,
+          "trust.investors.grievance": 0,
+          "trust.investors.standing": 0,
+          "trust.press.grievance": 0,
+          "trust.press.standing": 0,
+          "trust.regulators.grievance": 0,
+          "trust.regulators.standing": 0,
+          "trust.users.grievance": 0,
+          "trust.users.standing": 0
+        },
+        "meter_input_remainders": {
+          "trust.users.standing:0": 0
+        },
+        "meter_values": {
+          "doom.probability": 50,
+          "trust.employees.grievance": 0,
+          "trust.employees.standing": 90,
+          "trust.investors.grievance": 0,
+          "trust.investors.standing": 90,
+          "trust.press.grievance": 0,
+          "trust.press.standing": 90,
+          "trust.regulators.grievance": 0,
+          "trust.regulators.standing": 90,
+          "trust.users.grievance": 0,
+          "trust.users.standing": 90
+        },
+        "network_slots": [],
+        "next_opportunity_attended_ms": 0,
+        "notoriety": 0,
+        "offer_state": null,
+        "offline_spans": [],
+        "opportunity_spawn_seq": 107,
+        "pending_opportunity": {
+          "opportunity_id": "0000000d-aa9a-7905-b0f3-b6e2e48cac01",
+          "spawned_attended_ms": 895642,
+          "expires_attended_ms": 900142,
+          "effect_row_id": "active.click",
+          "selected_generator_id": null
+        },
+        "provision_remainders_ppm": {
+          "generator.beige_tower": 0
+        },
+        "region_traits": [],
+        "reputation_level": 0,
+        "reputation_unlock_ppm": 0,
+        "route_knowledge_balance": 0,
+        "run_pre_timer": false,
+        "run_seq": 1,
+        "run_started_at_ms": 1785570300000,
+        "soul": 0,
+        "stock_progress_ms": 0,
+        "stock_rate_remainder_ppm": 0,
+        "stock_units": 0,
+        "structure_id": "",
+        "tier": 1,
+        "upgrades_owned": []
+      },
+      "canonical_payload": {
+        "action_id": "manual.click",
+        "count": 1,
+        "expected_revision": 1,
+        "kind": "perform_manual_batch",
+        "window_ms": 1
+      },
+      "replay_inputs": {
+        "v": 12,
+        "command": {
+          "intent_id": "01986666-0d00-7000-8000-000000000001",
+          "company_stream_id": "01986666-1d00-7000-8000-000000000001",
+          "founder_id": "01986666-2d00-7000-8000-000000000001",
+          "revision": 1,
+          "run_seq": 1,
+          "run_log_seq": 1
+        },
+        "evaluated_at_ms": 1785571200000,
+        "evaluation_mode": "online",
+        "resolved": {
+          "kind": "exit",
+          "intent_kind": "perform_manual_batch",
+          "accrual": {
+            "contributions": [],
+            "commons_weight_ppm": null,
+            "guild_settlement_batch": {
+              "guild_id": "",
+              "base_seq": 0,
+              "settlements": []
+            },
+            "route_context_version": 1
+          },
+          "founder_carry": {
+            "founder_revision": 1,
+            "founder_constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6",
+            "reputation_level": 0,
+            "route_knowledge_balance": 0,
+            "age_ms": 0,
+            "notoriety": 0,
+            "advisor_mode": false,
+            "network_slots": [],
+            "ledger_fact_kinds": [],
+            "exit_history_count": 0,
+            "achievements_earned_lifetime": [],
+            "achievement_score_lifetime": 0,
+            "founder_extensions": {
+              "minigame_ratings": {
+                "pitch": {
+                  "elo": 1000,
+                  "season_member": "s1",
+                  "games_counted": 0
+                }
+              },
+              "minigame_offline_quality": {
+                "pitch": {
+                  "grade_ppm": 200000,
+                  "last_founder_attended_ms": 0,
+                  "decay_remainder_ppm": 0
+                }
+              },
+              "pets": {},
+              "fiscal_credit": 0,
+              "fiscal_period_opened_wall_ms": 1785571200000,
+              "fiscal_period_seq": 0,
+              "fiscal_generator_levels": {
+                "generator.beige_tower": 0
+              },
+              "fiscal_unlocks": [],
+              "soul": 80,
+              "soul_exhausted_source_ids": [],
+              "minigame_session_seq": 0
+            }
+          },
+          "executed_route_ids": [],
+          "selected_exit_type": "scripted_first",
+          "selected_branch": "burnout",
+          "selected_terms": {},
+          "next_constants_hash": "sha256:baa890501b2864d14cc0238d633a562cb8c6fca406190487831e0c447af128f6",
+          "active_play": {
+            "attended_now_ms": 900000,
+            "before_sequence": 107,
+            "before_next_opportunity_attended_ms": 0,
+            "after_sequence": 107,
+            "after_next_opportunity_attended_ms": 0,
+            "expired_buffs": [],
+            "missed_opportunity_id": null,
+            "spawned": null,
+            "claim": null
+          },
+          "next_active_play": {
+            "sequence": 0,
+            "sampled_interval_ms": 4850,
+            "effect_draw": "7",
+            "generator_draw": null,
+            "effect_row_id": "active.production",
+            "selected_generator_id": null,
+            "opportunity_id": "00000000-12f2-740f-93e4-19985c7c7be2",
+            "spawned_attended_ms": 4850,
+            "expires_attended_ms": 9350
+          },
+          "minigame_session_active": false
+        }
+      },
+      "expected_founder_age_ms": 900000,
+      "expected_schema_version": 3,
+      "ended_event_json": "{\"intent_id\":\"01986666-0d00-7000-8000-000000000001\",\"kind\":\"run_ended\",\"payload\":{\"assisted\":{\"advisor\":false,\"commons\":false},\"attended_ms\":900000,\"branch\":\"burnout\",\"ended_at_ms\":1785571200000,\"executed_routes\":[],\"exit_type\":\"scripted_first\",\"faction\":null,\"founder_id\":\"01986666-2d00-7000-8000-000000000001\",\"gates_crossed\":[\"gate.t0_to_t1\"],\"generators_purchased_total\":0,\"ledger_fact_kinds\":[],\"lifetime_value\":\"0\",\"payout\":{\"clout_reach_note\":\"clout.reach.preserved\",\"network_slot_unlocks\":[],\"reputation_delta\":0,\"route_knowledge\":75},\"pre_timer\":false,\"rta_ms\":900000,\"run_id\":{\"company_stream_id\":\"01986666-1d00-7000-8000-000000000001\",\"run_seq\":1},\"started_at_ms\":1785570300000,\"starter_package\":{\"count\":10,\"generator_id\":\"generator.beige_tower\",\"kind\":\"generated_generators\"},\"terminal_seq\":1,\"tier\":1},\"schema_version\":3}"
+    }
+  ]
+}

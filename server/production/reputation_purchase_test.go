@@ -235,13 +235,13 @@ func buildReputationCorpus(t *testing.T) reputationCorpus {
 	live2 := activeContentBundle(t)
 	tree2 := reputationContentBundle(t)
 	exitCases := []reputationExitCase{
-		makeReputationPlanExitCase(t, "plan-applies-with-in-plan-prerequisite", tree2, tree2, 22, 6,
+		makeHistoricalReputationPlanExitCase(t, "plan-applies-with-in-plan-prerequisite", tree2, tree2, 22, 6,
 			[]string{"reputation.starter.cash_small", "reputation.starter.generated_beige_tower", "reputation.unlock.p05"}, now),
-		makeReputationPlanExitCase(t, "plan-unaffordable-rejects-whole-exit", tree2, tree2, 22, 6,
+		makeHistoricalReputationPlanExitCase(t, "plan-unaffordable-rejects-whole-exit", tree2, tree2, 22, 6,
 			[]string{"reputation.unlock.p05", "reputation.starter.cash_small", "reputation.starter.generated_beige_tower", "reputation.unlock.p25"}, now),
-		makeReputationPlanExitCase(t, "plan-rejected-without-next-tree", live2, live2, 21, 6, []string{"reputation.unlock.p05"}, now),
-		makeReputationPlanExitCase(t, "exit-activates-founder-v22", live2, tree2, 21, 4, nil, now),
-		makeReputationPlanExitCase(t, "activating-exit-applies-plan", live2, tree2, 21, 4, []string{"reputation.unlock.p05"}, now),
+		makeHistoricalReputationPlanExitCase(t, "plan-rejected-without-next-tree", live2, live2, 21, 6, []string{"reputation.unlock.p05"}, now),
+		makeHistoricalReputationPlanExitCase(t, "exit-activates-founder-v22", live2, tree2, 21, 4, nil, now),
+		makeHistoricalReputationPlanExitCase(t, "activating-exit-applies-plan", live2, tree2, 21, 4, []string{"reputation.unlock.p05"}, now),
 	}
 	return reputationCorpus{Version: 1, Exit: makeReputationExitFixture(t, now), ExitCases: exitCases, Bundles: map[string]reputationCorpusBundle{
 		"tree": {ConstantsHash: tree.ConstantsHash, Artifacts: stringArtifacts(tree.Artifacts)},
@@ -548,7 +548,7 @@ func makeReputationExitFixture(t *testing.T, now time.Time) crossRuntimeActiveEx
 		t.Fatalf("reputation exit branch=%q err=%v", branch.Branch, err)
 	}
 	command := save.ReplayCommand{IntentID: request.IntentID, CompanyStreamID: "01986666-6e00-7000-8000-000000000001", FounderID: founderID, Revision: 1, RunSeq: 1, RunLogSeq: 1}
-	inputs, err := buildReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind,
+	inputs, err := buildHistoricalReplayInputs(replayBuild{Command: command, Mode: ModeOnline, Now: now, IntentKind: request.Kind,
 		RouteContextVersion: current.Routes.ContextVersion(), FounderCarry: &carry, Terminal: true, ExecutedRouteIDs: []string{},
 		SelectedExitType: "scripted_first", SelectedBranch: &branch.Branch, SelectedTerms: json.RawMessage(`{}`), NextConstantsHash: next.ConstantsHash,
 		ActivePlay: &activeEvidence, NextActivePlay: spawnEvidence(nextSpawn), MinigameSessionActive: &minigameActive})
@@ -588,6 +588,15 @@ func replayFixtureStateFromEncoded(t *testing.T, catalogs CatalogBundle, encoded
 // through the Company-log Exit and matching Founder audit arm. Optional setup
 // changes only the test population; existing Reputation fixtures stay identical.
 func makeReputationPlanExitCase(t *testing.T, name string, current, next CatalogBundle, founderVersion int, level int64, plan []string, now time.Time, configure ...func(*save.State, *save.State)) reputationExitCase {
+	return makeReputationExitCaseForVersion(t, save.ReplayInputsVersion, name, current, next, founderVersion, level, plan, now, configure...)
+}
+
+// The existing shared corpus keeps its original v12 inputs/output bytes.
+func makeHistoricalReputationPlanExitCase(t *testing.T, name string, current, next CatalogBundle, founderVersion int, level int64, plan []string, now time.Time, configure ...func(*save.State, *save.State)) reputationExitCase {
+	return makeReputationExitCaseForVersion(t, 12, name, current, next, founderVersion, level, plan, now, configure...)
+}
+
+func makeReputationExitCaseForVersion(t *testing.T, replayVersion int, name string, current, next CatalogBundle, founderVersion int, level int64, plan []string, now time.Time, configure ...func(*save.State, *save.State)) reputationExitCase {
 	t.Helper()
 	if current.ConstantsHash != next.ConstantsHash {
 		copied := next
@@ -645,6 +654,14 @@ func makeReputationPlanExitCase(t *testing.T, name string, current, next Catalog
 		ActivePlay: &activeEvidence, NextActivePlay: spawnEvidence(nextSpawn), MinigameSessionActive: &minigameActive})
 	if err != nil {
 		t.Fatal(err)
+	}
+	if replayVersion == 12 {
+		inputs, err = historicalReplayInputs(inputs)
+		if err != nil {
+			t.Fatal(err)
+		}
+	} else if replayVersion != save.ReplayInputsVersion {
+		t.Fatal("unsupported fixture input version")
 	}
 	probe := replayFixtureStateFromEncoded(t, current, preState)
 	transition, err := ApplyLoggedExit(probe, request.CanonicalPayload, current, inputs)

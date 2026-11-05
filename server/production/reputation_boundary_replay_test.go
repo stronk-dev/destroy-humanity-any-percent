@@ -70,7 +70,7 @@ func buildReputationBoundaryReplayCorpus(t *testing.T) reputationBoundaryReplayC
 			}
 			name := command + "-" + profile.name
 			var founderPre json.RawMessage
-			source := makeReputationPlanExitCase(t, name, current, next, version, 6, profile.plan, now, func(company, founder *save.State) {
+			source := makeHistoricalReputationPlanExitCase(t, name, current, next, version, 6, profile.plan, now, func(company, founder *save.State) {
 				company.Tier, company.LifetimeValue = 3, decimal.Zero
 				if profile.name == "owned-prefix" {
 					founder.ReputationSpent, founder.ReputationUnlockPPM, founder.ReputationNodesOwned = 1, 50000, []string{good[0]}

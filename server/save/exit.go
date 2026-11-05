@@ -260,6 +260,9 @@ func (s *Store) applyExitTransaction(
 	if err := validateExitDecision(decision, intentID); err != nil {
 		return IntentResult{}, err
 	}
+	if err := validateExitFounderAge(decision, founder); err != nil {
+		return IntentResult{}, err
+	}
 	decision.Receipt, err = normalizeJSON(decision.Receipt)
 	if err != nil {
 		return IntentResult{}, err

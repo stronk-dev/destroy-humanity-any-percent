@@ -230,7 +230,7 @@ func buildGardenCorpus(t *testing.T) gardenCorpus {
 	runner.creditHarvest = false
 
 	cases := append(append([]reputationCorpusCase{}, inactive.cases...), runner.cases...)
-	exitCases := []reputationExitCase{makeReputationPlanExitCase(t, "exit-activates-founder-v25", shop, grown, 24, 4, nil, now)}
+	exitCases := []reputationExitCase{makeHistoricalReputationPlanExitCase(t, "exit-activates-founder-v25", shop, grown, 24, 4, nil, now)}
 	return gardenCorpus{Version: 1, Cases: cases, ExitCases: exitCases, CompanyCases: buildGardenCompanyCases(t, grown, now), Bundles: map[string]reputationCorpusBundle{
 		"shop":  {ConstantsHash: shop.ConstantsHash, Artifacts: stringArtifacts(shop.Artifacts)},
 		"grown": {ConstantsHash: grown.ConstantsHash, Artifacts: stringArtifacts(grown.Artifacts)},
@@ -376,7 +376,7 @@ func buildGardenCompanyCases(t *testing.T, grown CatalogBundle, now time.Time) [
 			SelectedUnits: selected, Faucet: faucet, Credited: creditedDelta, ForfeitedUnits: forfeited, CapReasonKey: reason, FaucetApplied: selected > 0,
 			FounderLog:      minigameLogCoordinate{StreamID: "01986666-5d00-4000-8000-000000000001", Revision: 7, Sequence: 6},
 			CompanyRevision: 2, FounderRevision: 7}
-		inputs, err := json.Marshal(replayInputsWire{Version: save.ReplayInputsVersion, Command: command, EvaluatedAtMS: now.UnixMilli(), EvaluationMode: ModeOnline, Resolved: mustJSON(resolved)})
+		inputs, err := json.Marshal(replayInputsWire{Version: 12, Command: command, EvaluatedAtMS: now.UnixMilli(), EvaluationMode: ModeOnline, Resolved: mustJSON(resolved)})
 		if err != nil {
 			t.Fatal(err)
 		}

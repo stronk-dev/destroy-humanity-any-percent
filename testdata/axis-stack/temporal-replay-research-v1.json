@@ -5,14 +5,14 @@
     "balance/opportunities/t0-t1.json": "d2aab242f2e5b9a73c11b32981fdb3971b4cbf6d96df3fbf0277abfc1ebc7974",
     "balance/testdata/axis-stack/economy-v5-fixture.json": "f8c67aed784ceaae1335bb40c0e0487cc0d9b78a50b9e63a73569270df7511d7",
     "client/src/economy.ts": "433377eb916a70f55c4b72a67a33c588e96b0bfd86ac62baf1423b031a9fa318",
-    "client/src/replay.ts": "380147f1675aab4a6125d818fccfaa59902b03cb31cd7242135c8d91f51b467a",
+    "client/src/replay.ts": "9a6fdb45d85bf4e41cd504b18066b968781e7af659d825cddabd539da42d0bd5",
     "client/test/axis-temporal-replay.test.ts": "4672ff29c7c4ace6734ced5defbeac22170bb7a1334b7c466e6cc61fa5626df9",
     "server/production/active_play.go": "7816254d00da1ff642fae5ef763ac9109761017cb8bd8b7640575eea2964634b",
     "server/production/axis_origin_projection_test.go": "5161fec79f57d63bb5609c25c268847db0f026ab05cc43ec1d1050ad185d6a75",
     "server/production/axis_stack_test.go": "a014c6046ce356a2927c1d3d58ad3eaa518252b78724543ec19176588be26e0c",
     "server/production/axis_timing_test.go": "0fa4ffc7eff37646c77edc0bfee12165bd32067bf5c9198391dfd7d875ed9435",
     "server/production/engine.go": "b872d4746779a097f68f88475cef66214a2a7f8970817298f788ffad515ae875",
-    "server/production/replay.go": "7a18270952d33c4f441a0bcb45e0b95b5024c55081666b2a447dd12ce22e9f37",
+    "server/production/replay.go": "7074ecabc2be1bcf8c1dac71a566081e1090e28fa204a8771e70dddb0cd8f23e",
     "server/save/state.go": "a78c38276ad92c0dcfda414f16286a04f493fc837b22a12ae2fda8ae537d80d4"
   },
   "bundle": {
@@ -59,7 +59,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 12,
+          "v": 13,
           "command": {
             "intent_id": "01986666-0901-7000-8000-000000000902",
             "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -172,7 +172,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 12,
+          "v": 13,
           "command": {
             "intent_id": "01986666-0901-7000-8000-000000000902",
             "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -289,7 +289,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 12,
+          "v": 13,
           "command": {
             "intent_id": "01986666-0901-7000-8000-000000000902",
             "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -406,7 +406,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 12,
+          "v": 13,
           "command": {
             "intent_id": "01986666-0901-7000-8000-000000000902",
             "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -523,7 +523,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 12,
+          "v": 13,
           "command": {
             "intent_id": "01986666-0901-7000-8000-000000000902",
             "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -640,7 +640,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 12,
+          "v": 13,
           "command": {
             "intent_id": "01986666-0901-7000-8000-000000000902",
             "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -757,7 +757,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 12,
+          "v": 13,
           "command": {
             "intent_id": "01986666-0901-7000-8000-000000000902",
             "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -870,7 +870,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 12,
+          "v": 13,
           "command": {
             "intent_id": "01986666-0901-7000-8000-000000000902",
             "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -983,7 +983,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 12,
+          "v": 13,
           "command": {
             "intent_id": "01986666-0901-7000-8000-000000000902",
             "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -1100,7 +1100,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 12,
+          "v": 13,
           "command": {
             "intent_id": "01986666-0901-7000-8000-000000000902",
             "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -1217,7 +1217,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 12,
+          "v": 13,
           "command": {
             "intent_id": "01986666-0901-7000-8000-000000000902",
             "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -1334,7 +1334,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 12,
+          "v": 13,
           "command": {
             "intent_id": "01986666-0901-7000-8000-000000000902",
             "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -1451,7 +1451,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 12,
+          "v": 13,
           "command": {
             "intent_id": "01986666-0901-7000-8000-000000000902",
             "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -1568,7 +1568,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 12,
+          "v": 13,
           "command": {
             "intent_id": "01986666-0901-7000-8000-000000000902",
             "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -1681,7 +1681,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 12,
+          "v": 13,
           "command": {
             "intent_id": "01986666-0901-7000-8000-000000000902",
             "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -1794,7 +1794,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 12,
+          "v": 13,
           "command": {
             "intent_id": "01986666-0901-7000-8000-000000000902",
             "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -1907,7 +1907,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 12,
+          "v": 13,
           "command": {
             "intent_id": "01986666-0901-7000-8000-000000000902",
             "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -2020,7 +2020,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 12,
+          "v": 13,
           "command": {
             "intent_id": "01986666-0901-7000-8000-000000000902",
             "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -2133,7 +2133,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 12,
+          "v": 13,
           "command": {
             "intent_id": "01986666-0901-7000-8000-000000000902",
             "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -2250,7 +2250,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 12,
+          "v": 13,
           "command": {
             "intent_id": "01986666-0901-7000-8000-000000000902",
             "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -2367,7 +2367,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 12,
+          "v": 13,
           "command": {
             "intent_id": "01986666-0901-7000-8000-000000000902",
             "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -2480,7 +2480,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 12,
+          "v": 13,
           "command": {
             "intent_id": "01986666-0901-7000-8000-000000000902",
             "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -2593,7 +2593,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 12,
+          "v": 13,
           "command": {
             "intent_id": "01986666-0901-7000-8000-000000000902",
             "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -2706,7 +2706,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 12,
+          "v": 13,
           "command": {
             "intent_id": "01986666-0901-7000-8000-000000000902",
             "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -2819,7 +2819,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 12,
+          "v": 13,
           "command": {
             "intent_id": "01986666-0901-7000-8000-000000000902",
             "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -2932,7 +2932,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 12,
+          "v": 13,
           "command": {
             "intent_id": "01986666-0901-7000-8000-000000000902",
             "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -3049,7 +3049,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 12,
+          "v": 13,
           "command": {
             "intent_id": "01986666-0901-7000-8000-000000000902",
             "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -3166,7 +3166,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 12,
+          "v": 13,
           "command": {
             "intent_id": "01986666-0901-7000-8000-000000000902",
             "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -3279,7 +3279,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 12,
+          "v": 13,
           "command": {
             "intent_id": "01986666-0901-7000-8000-000000000902",
             "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -3392,7 +3392,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 12,
+          "v": 13,
           "command": {
             "intent_id": "01986666-0901-7000-8000-000000000902",
             "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -3509,7 +3509,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 12,
+          "v": 13,
           "command": {
             "intent_id": "01986666-0901-7000-8000-000000000902",
             "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -3626,7 +3626,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 12,
+          "v": 13,
           "command": {
             "intent_id": "01986666-0901-7000-8000-000000000902",
             "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -3743,7 +3743,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 12,
+          "v": 13,
           "command": {
             "intent_id": "01986666-0901-7000-8000-000000000902",
             "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -3863,7 +3863,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 12,
+          "v": 13,
           "command": {
             "intent_id": "01986666-0901-7000-8000-000000000902",
             "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -3983,7 +3983,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 12,
+          "v": 13,
           "command": {
             "intent_id": "01986666-0901-7000-8000-000000000902",
             "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -4096,7 +4096,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 12,
+          "v": 13,
           "command": {
             "intent_id": "01986666-0901-7000-8000-000000000902",
             "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -4209,7 +4209,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 12,
+          "v": 13,
           "command": {
             "intent_id": "01986666-0901-7000-8000-000000000902",
             "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -4326,7 +4326,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 12,
+          "v": 13,
           "command": {
             "intent_id": "01986666-0901-7000-8000-000000000902",
             "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -4443,7 +4443,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 12,
+          "v": 13,
           "command": {
             "intent_id": "01986666-0901-7000-8000-000000000902",
             "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -4560,7 +4560,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 12,
+          "v": 13,
           "command": {
             "intent_id": "01986666-0901-7000-8000-000000000902",
             "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -4680,7 +4680,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 12,
+          "v": 13,
           "command": {
             "intent_id": "01986666-0901-7000-8000-000000000902",
             "company_stream_id": "01986666-1000-7000-8000-000000000001",
@@ -4800,7 +4800,7 @@
           "window_ms": 1000
         },
         "replay_inputs": {
-          "v": 12,
+          "v": 13,
           "command": {
             "intent_id": "01986666-0901-7000-8000-000000000902",
             "company_stream_id": "01986666-1000-7000-8000-000000000001",

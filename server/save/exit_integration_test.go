@@ -9,6 +9,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strings"
 	"testing"
 	"time"
 
@@ -120,6 +121,76 @@ func TestApplyExitTransactionAtomicFaultsAndReplayIntegration(t *testing.T) {
 			}
 			assertLatestRevision(t, ctx, store, founderRevision.StreamID, 1)
 			assertLatestRevision(t, ctx, store, companyRevision.StreamID, 1)
+		})
+	}
+	// v4 must pass both payload admission and equality with the committed
+	// Founder state. The valid control reaches actual SQL insertion, then rolls
+	// back on the existing fault seam; every bad arm leaves both heads intact.
+	for index, mode := range []string{"valid-rollback", "missing", "null", "wrong-state-age", "duplicate"} {
+		t.Run("run-end-age/"+mode, func(t *testing.T) {
+			id := fmt.Sprintf("01985555-00b0-7000-8000-%012d", index+1)
+			base := loggedExitTestMutation(t, ownerID, companyRevision.StreamID, id, hash, now)
+			mutation := func(founder *State, fr Revision, company *State, cr Revision, command ReplayCommand, fc FounderReplayCommand) (ExitDecision, json.RawMessage, error) {
+				decision, inputs, err := base(founder, fr, company, cr, command, fc)
+				if err != nil {
+					return decision, inputs, err
+				}
+				founder.AgeMS = 3_600_000 // this store fixture has one attended hour
+				for i := range decision.CompanyEndedEvents {
+					event := &decision.CompanyEndedEvents[i]
+					if event.Kind != EventRunEnded {
+						continue
+					}
+					var fields map[string]json.RawMessage
+					if err := json.Unmarshal(event.Payload, &fields); err != nil {
+						return ExitDecision{}, nil, err
+					}
+					fields["pre_timer"] = json.RawMessage(`false`)
+					fields["faction"] = json.RawMessage(`null`)
+					fields["founder_age_ms"] = json.RawMessage(`3600000`)
+					switch mode {
+					case "missing":
+						delete(fields, "founder_age_ms")
+					case "null":
+						fields["founder_age_ms"] = json.RawMessage(`null`)
+					case "wrong-state-age":
+						fields["founder_age_ms"] = json.RawMessage(`3600001`)
+					}
+					event.Payload, err = json.Marshal(fields)
+					if err != nil {
+						return ExitDecision{}, nil, err
+					}
+					if mode == "duplicate" {
+						event.Payload = append(event.Payload[:len(event.Payload)-1], []byte(`,"founder_age_ms":3600000}`)...)
+					}
+					event.SchemaVersion = 4
+				}
+				return decision, inputs, nil
+			}
+			rollback := errors.New("valid v4 reached SQL insertion")
+			fault := func(step string) error {
+				if mode == "valid-rollback" && step == "company_ended_events" {
+					return rollback
+				}
+				return nil
+			}
+			_, err := store.ApplyExitTransactionLogged(ctx, companyRevision.StreamID, 1, 1, id, loggedHash, loggedPayload, mutation, fault)
+			if mode == "valid-rollback" {
+				if !errors.Is(err, rollback) {
+					t.Fatalf("valid v4 did not reach SQL: %v", err)
+				}
+			} else if !errors.Is(err, ErrInvalidStream) {
+				t.Fatalf("bad v4 committed or failed elsewhere: %v", err)
+			}
+			if mode == "wrong-state-age" && !strings.Contains(err.Error(), "does not match committed state") {
+				t.Fatalf("mismatch did not reach the source-binding guard: %v", err)
+			}
+			assertLatestRevision(t, ctx, store, founderRevision.StreamID, 1)
+			assertLatestRevision(t, ctx, store, companyRevision.StreamID, 1)
+			var rows int
+			if err := db.QueryRowContext(ctx, `SELECT count(*) FROM events WHERE intent_id=$1`, id).Scan(&rows); err != nil || rows != 0 {
+				t.Fatalf("partial v4 events=%d err=%v", rows, err)
+			}
 		})
 	}
 	for index, failStep := range []string{"founder_genesis", "run_epoch", "run_genesis", "run_log", "founder_log"} {

@@ -227,6 +227,14 @@ history remains append-only. The origin revision number and constants hash remai
 identity; retention does not promise that the corresponding historical snapshot is still
 queryable.
 
+Migration 00087 admits `run_ended` schema v4, whose required `founder_age_ms` is an
+exact integer between the run's attended duration and the shared exact-integer maximum.
+The new top-level payload arm rejects missing, null, duplicate and noncanonical field names.
+`ApplyExitTransaction` also binds that age to the resulting Founder state before any writes;
+valid-looking but different ages cannot commit. Legacy v2/v3 events reject the new field,
+and their replay encoding remains unchanged. The Down migration restores the old constraint
+and refuses while v4 rows remain; it does not delete or rewrite historical events.
+
 The routes migration expands the closed event-kind constraint and adds idempotent projection
 tables for per-event execution, founder career counts, the cached Route Knowledge balance, hint
 debits, and the public Registry's first-executor/name state. Projection rows are rebuildable; the

@@ -236,10 +236,10 @@ func (s *Service) finishExit(request IntentRequest, founder *save.State, founder
 		}
 		nextActive = spawnEvidence(spawn)
 	}
-	return finishExitResolved(request, founder, founderRevision, company, companyRevision, now, exitType, terms, nil, endedPrefix, executedRoutes, current, next, nextActive)
+	return finishExitResolved(request, founder, founderRevision, company, companyRevision, now, exitType, terms, nil, endedPrefix, executedRoutes, current, next, nextActive, save.ReplayInputsVersion)
 }
 
-func finishExitResolved(request IntentRequest, founder *save.State, founderRevision save.Revision, company *save.State, companyRevision save.Revision, now time.Time, exitType string, terms prestigecore.Terms, branch *curriculum.Branch, endedPrefix []save.EventWrite, executedRoutes []string, currentBundle, nextBundle CatalogBundle, nextActive *activePlaySpawnEvidence) (save.ExitDecision, error) {
+func finishExitResolved(request IntentRequest, founder *save.State, founderRevision save.Revision, company *save.State, companyRevision save.Revision, now time.Time, exitType string, terms prestigecore.Terms, branch *curriculum.Branch, endedPrefix []save.EventWrite, executedRoutes []string, currentBundle, nextBundle CatalogBundle, nextActive *activePlaySpawnEvidence, replayVersion int) (save.ExitDecision, error) {
 	now = save.CanonicalServerTime(now)
 	attended, err := prestigecore.AttendedMS(company, now)
 	if err != nil {
@@ -329,6 +329,10 @@ func finishExitResolved(request IntentRequest, founder *save.State, founderRevis
 		endedSchema = 3
 		endedPayloadMap["branch"] = branch.Branch
 		endedPayloadMap["starter_package"] = branch.StarterPackage
+	}
+	if replayVersion >= 13 {
+		endedSchema = 4
+		endedPayloadMap["founder_age_ms"] = founder.AgeMS
 	}
 	endedPayload, _ := json.Marshal(endedPayloadMap)
 	startedPayloadMap := map[string]any{"founder_id": companyRevision.OwnerID, "run_id": map[string]any{"company_stream_id": companyRevision.StreamID, "run_seq": newCompany.RunSeq}, "started_at_ms": now.UnixMilli(), "assisted": map[string]bool{"commons": false, "advisor": founder.AdvisorMode}}

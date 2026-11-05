@@ -7,7 +7,27 @@ core `events` table's registry and selected high-linkage payload families. It
 does **not** classify all event keys, `guild_events`, receipts or every historic
 encoder, and is not an adopted export/deletion policy.
 
-## Current source/native refresh — 2026-10-14 at 089849ad
+## Bounded Founder-age supplement — 2026-11-05 (RP-773)
+
+The Prestige D3/AC7 correction adds required `founder_age_ms` to `run_ended` v4,
+activated by replay-input v13. It freezes the post-Exit cumulative attended age
+already retained in Founder state/replay inputs. This is an additional copy in
+the existing event family, not a new event kind or SQL column. The identified
+Company/Founder/run links remain; age is not anonymous merely because it is a
+duration. The existing transport trigger copies the full event payload into
+the outbox, and a verified run archive retains its command-associated events.
+
+Actual current-epoch Postgres ending, worker/archive and board checks execute
+with v4; store tests refuse missing/null/duplicate/state-mismatched age and
+prove the valid arm reaches event insertion. This supplement does not refresh
+the whole historical census below or execute deletion/restore for this field.
+No export, retention, privacy, public-profile or legal policy is adopted here.
+Legacy v2/v3 events remain unchanged and do not acquire inferred ages. The
+proposed public Company evidence profile's reviewed v2–v12 support does not
+implicitly extend to input v13. Exact implementation checks and limitations
+are in the [Prestige log](../prestige-and-exits/log.md).
+
+## Historical source/native refresh — 2026-10-14 at 089849ad
 
 The original 48-kind census below is historical, not today's complete registry.
 Ordered Up migrations through `00084_cosmetic_event_payload_keys.sql` leave the same

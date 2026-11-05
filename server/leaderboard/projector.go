@@ -10,8 +10,10 @@ import (
 	"io"
 	"sort"
 	"strconv"
+	"strings"
 	"time"
 
+	"cloud-clicker/server/decimal"
 	"cloud-clicker/server/routes"
 )
 
@@ -20,6 +22,7 @@ type QueueProjector struct{}
 func NewQueueProjector() *QueueProjector { return &QueueProjector{} }
 
 type terminalRun struct {
+	FounderAgeMS             *int64          `json:"founder_age_ms,omitempty"`
 	FounderID                string          `json:"founder_id"`
 	RunID                    terminalRunID   `json:"run_id"`
 	ExitType                 string          `json:"exit_type"`
@@ -237,8 +240,7 @@ func loadTerminalRun(ctx context.Context, tx *sql.Tx, streamID string, runSeq in
 	if decodeProjectorStrict([]byte(payload), &terminal) != nil {
 		return terminalRun{}, "", time.Time{}, fmt.Errorf("%w: invalid run_ended", ErrInvalidEpoch)
 	}
-	validSchema := schema == 2 && terminal.Branch == nil && len(terminal.StarterPackage) == 0 ||
-		schema == 3 && terminal.Branch != nil && mechanicalPattern.MatchString(*terminal.Branch) && jsonObjectBytes(terminal.StarterPackage)
+	validSchema := validTerminalEventSchema(schema, []byte(payload), terminal)
 	if !validSchema || terminal.RunID.CompanyStreamID != streamID || terminal.RunID.RunSeq != runSeq ||
 		terminal.FounderID == "" || terminal.TerminalSeq < 1 || terminal.RTAMS < 0 || terminal.AttendedMS < 0 || terminal.AttendedMS > terminal.RTAMS ||
 		!sortedUniqueMechanical(terminal.LedgerFactKinds) || !sortedUniqueMechanical(terminal.ExecutedRoutes) || terminal.GatesCrossed == nil ||
@@ -322,4 +324,27 @@ func decodeProjectorStrict(data []byte, target any) error {
 		return ErrInvalidEpoch
 	}
 	return nil
+}
+
+// New ending facts cannot silently change the retained v2/v3 grammar.
+func validTerminalEventSchema(schema int, payload []byte, terminal terminalRun) bool {
+	unbranched := terminal.Branch == nil && len(terminal.StarterPackage) == 0
+	branched := terminal.Branch != nil && mechanicalPattern.MatchString(*terminal.Branch) && jsonObjectBytes(terminal.StarterPackage)
+	var fields map[string]json.RawMessage
+	if json.Unmarshal(payload, &fields) != nil {
+		return false
+	}
+	hasAge := false
+	for key := range fields {
+		if strings.EqualFold(key, "founder_age_ms") {
+			if key != "founder_age_ms" || schema != 4 {
+				return false
+			}
+			hasAge = true
+		}
+	}
+	if schema == 4 {
+		return hasAge && (unbranched || branched) && terminal.FounderAgeMS != nil && *terminal.FounderAgeMS >= terminal.AttendedMS && *terminal.FounderAgeMS <= decimal.MaxExactInteger
+	}
+	return schema == 2 && unbranched || schema == 3 && branched
 }

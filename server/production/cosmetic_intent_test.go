@@ -274,7 +274,7 @@ func buildCosmeticCorpus(t *testing.T) cosmeticCorpus {
 
 	cases := append(append(append([]reputationCorpusCase{}, inactive.cases...), runner.cases...), pairRunner.cases...)
 	cases = append(cases, multiRunner.cases...)
-	exitCases := []reputationExitCase{makeReputationPlanExitCase(t, "exit-activates-founder-v24", species, shop, 23, 4, nil, now)}
+	exitCases := []reputationExitCase{makeHistoricalReputationPlanExitCase(t, "exit-activates-founder-v24", species, shop, 23, 4, nil, now)}
 	for _, kind := range []string{IntentWindDown, IntentAcceptExitOffer} {
 		exitCases = append(exitCases, makeCosmeticExitCarryCase(t, kind, shop, now))
 	}
@@ -292,7 +292,7 @@ func makeCosmeticExitCarryCase(t *testing.T, kind string, shop CatalogBundle, no
 	if kind == IntentAcceptExitOffer {
 		name = "exit-accept-offer-preserves-owned-equipped"
 	}
-	exitCase := makeReputationPlanExitCase(t, name, shop, shop, 24, 4, nil, now, func(company, founder *save.State) {
+	exitCase := makeHistoricalReputationPlanExitCase(t, name, shop, shop, 24, 4, nil, now, func(company, founder *save.State) {
 		seedCosmeticExitWearer(t, shop, founder, now)
 		if kind == IntentAcceptExitOffer {
 			seedCosmeticExitOffer(company, now)

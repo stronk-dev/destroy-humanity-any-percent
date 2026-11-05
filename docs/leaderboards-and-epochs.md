@@ -139,7 +139,7 @@ route-gate drift, and any Phase-0 category shape other than Any%, 100%, Ethical%
 Valuation. The Phase-0 completion set is empty, so 100% is explicitly all gates. Ethical% rejects
 exact or prefix-matched facts in the registered `darkpattern.*` and `externality.*` namespaces;
 neither namespace has a Phase-0 producer yet, so every otherwise eligible Phase-0 run qualifies.
-The queue-owned projector reads the sole schema-v2 `run_ended`, checks its terminal sequence against
+The queue-owned projector reads schema-v2/v3/v4 `run_ended`, checks its terminal sequence against
 the immutable log, derives Faction, Glitched, and any-point Commons membership from run-scoped
 events, and takes Advisor from the terminal assisted record. Both join→Exit and
 join→leave→Exit are therefore structurally Assisted, while a never-joined run remains Solo. The
@@ -169,6 +169,14 @@ form, so direct projection/storage callers cannot insert an identity that the ve
 resolve.
 
 ## Replay-input boundary
+
+Replay-input v13 activates `run_ended` schema v4 with the exact committed post-Exit Founder
+age. Both Go and TypeScript retain the original ending-event bytes for inputs v2–v12;
+old archives are not regenerated. The projector requires a valid age for v4 and refuses
+the field on retained v2/v3 events. The independently reviewed public Company evidence
+draft currently stops at input v12: v13 requires its own reviewed compatibility amendment
+before that proposed public profile can publish it. This correction does not adopt that
+profile or resolve its existing Garden privacy hold.
 
 The live run log now separates the three replay facts: canonical payload is what the player said,
 `replay_inputs` is what the server resolved, and receipt/events are what happened. New Company log

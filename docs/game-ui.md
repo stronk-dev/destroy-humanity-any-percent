@@ -51,6 +51,12 @@ or replay internals; `client/src/game-ui/runtime.ts` owns HTTP, WebSocket, and e
   controls. This does not buffer clicks, retry a command or change terminal semantics.
 - Run End: a payload-isolated component that accepts only the decoded `run_ended` event; its parent
   owns the exact-next-Company continuation control.
+  Its decoder now accepts the exact new schema-v4 payload shape with frozen `founder_age_ms`,
+  validates its exact-integer bound and minimum attended duration, and copies the value into
+  the decoded event. Transport envelopes do not carry event schema versions, so the reader
+  distinguishes the exact old/new payload shapes. Legacy events retain an absent age; no live
+  state or zero backfill is used. Rendering the Founder age and full obituary remains open
+  under Prestige AC7; this decoder change adds no player-facing copy.
   Reputation R9's available-balance and next-route display is **not implemented**:
   its post-Exit balance source must be reconciled with GU-C3's payload-only boundary.
   The runtime now decodes the existing `run_started` v1/v2 payload, preserving
