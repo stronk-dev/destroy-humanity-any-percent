@@ -1119,3 +1119,61 @@ Parent cleanup: inspect confirms only owned container133194a1fb8f, zero mounts/
 volumes and tmpfs database; scoped `rm -sf postgres` removes it. Final Compose
 inventory empty. Disposable test rows are unrecoverable; durable data, caches,
 images, networks and unrelated containers are untouched.
+
+
+## 2026-11-05 — RP-776: enforce definition-mode policy before start/quota
+
+Outcome: accepted C37 makes the pinned definition, including its modes, authoritative.
+Internal `StartMinigameSession` checked engine identity but not mode membership;
+`PrepareResolutionTx` bound ID/engine/version but omitted the persisted mode.
+The two guards now refuse that mismatch. Preparation reuses its existing locked
+session load before the faucet write; no additional query, DTO, public request,
+formula, payout conversion, balance policy or migration is introduced. Genuine
+kernel227→228 in all three mirrors records the narrowed acceptance set. Public
+V1 remains Solo and already rejects the diagnostic async-only policy.
+
+Old runtime is unchanged184e1dfc with the new regressions. Actual declared
+Postgres54674 reproduces all four mode failures: Solo/Async × empty/existing
+window return nil and create quota1 or advance4→5. The four original foreign-ID
+controls pass. Production initially fails compilation because my test used a
+nonexistent Revision.State field; this is no execution credit. Corrected test
+setup then runs3921: internal Solo Pitch start under the actual pinned async-only
+policy returns nil and leaves one session, while public start correctly refuses.
+Save comparisons and complete session/receipt counts remain in the regression.
+
+Correction/controls76808: Minigame8 leaves PASS1.476s; all8 existing Production
+start/admission populations PASS2.241s on real Postgres, no skips. Refused preparation
+compares all window JSON including timestamps, rolls back and retains the exact
+certified claim. The same certification then commits with its allowed policy,
+including existing quota4→5/carry250000 without duplicate credit. The internal
+refusal compares both complete saves and proves zero session/create-receipt rows.
+The platform policy test is not a complete Company/Founder payout coordinator;
+the supplied definition does not independently authenticate same-ID policy bytes.
+
+Finished verification by: Codex implementer. Recorded by: Codex.
+
+- Linux-amd64/Postgres/race9968, cold `Minigame|Pitch|Typer|Arcade` selector:
+  Minigame3.092s, Production16.987s, Gameserver46.595s PASS, no skips/race
+  reports. Includes both-mode atomic resolution/faults/retry and actual public
+  HTTP Pitch lifecycle, source mutation, recovery and deletion consumers.
+- Full actual-Postgres Minigame package52102 PASS3.848s, no skips. Native
+  Minigame/Kernel/formula-generator PASS0.231/0.162/0.257s. Native full
+  Production remains RED on the known27 Clout partition cases42.353s; not
+  hidden behind the selected SQL pass. Native Gameserver initially cannot bind
+  loopback under sandbox30272; permitted rerun99066 PASS0.288s.
+- Five-package vet59382 PASS; formula/API generation32480 PASS byte-unchanged.
+  The existing formula authority excludes these service guards. Kernel9179
+  checkout/adversarial controls pass; full guard still RED on historical
+  `50a3a514`, not this working-tree bump. No historical exception or rewrite.
+- Formatting and new-range whitespace checks pass. No runtime/test inputs changed
+  during the terminal evidence runs. Existing CI server core includes these
+  packages with Postgres; this is selected local Linux evidence, not new hosted
+  CI, a full push aggregate, a native supported deployment host or release proof.
+
+Raw output is local ignored evidence: `.cache/minigame-mode-{native,
+ native-gameserver,linux-sql,kernel-guard,full-sql}.log`. Owning tests and commands
+above reproduce the boundary. Designated independent corrective review is pending
+for the complete commit after184e1dfc, source/tests/version/docs/records together.
+No async public wire, full AC1/platform acceptance, artifact relabeling, archival,
+push, deployment or full nine-tier1.0 claim. The approved aa5e16e8 local package
+remains historical kernel227; batch the UI and mode guards into a later package.

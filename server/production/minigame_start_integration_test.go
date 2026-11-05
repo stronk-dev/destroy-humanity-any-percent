@@ -289,6 +289,19 @@ func testStartMinigameAPISession(t *testing.T, modes []minigame.Mode, gate strin
 		if !errors.Is(err, admissionErr) || gate != "founder_source_empty" && !errors.Is(err, ErrInvalidIntent) {
 			t.Fatalf("ineligible solo start: err=%v want=%v", err, admissionErr)
 		}
+		// The internal entry point must honor the same pinned mode policy even
+		// when the registered engine itself supports the requested mode.
+		if len(modes) == 1 && modes[0] == minigame.ModeAsyncSnapshot {
+			_, err = production.StartMinigameSession(ctx, platform, minigame.StartRequest{
+				SessionID: "01986666-ca01-7000-8000-000000000011", FounderID: founderID,
+				CompanyStreamID: companyRevision.StreamID, RunSeq: company.RunSeq,
+				MinigameID: "pitch", EngineRef: pitch.EngineRef, EngineVersion: pitch.EngineVersion, ConstantsHash: bundle.ConstantsHash,
+				ScalingInputs: map[string]int64{pitch.ScalingDestination: 1}, Seed: "2", Mode: minigame.ModeSolo,
+			}, now)
+			if !errors.Is(err, ErrInvalidIntent) {
+				t.Errorf("internal start admitted mode outside pinned policy: %v", err)
+			}
+		}
 		afterFounder, err := store.LoadLatest(ctx, founderRevision.StreamID)
 		if err != nil || !reflect.DeepEqual(afterFounder, beforeFounder) {
 			t.Fatalf("admission refusal changed Founder: %v", err)

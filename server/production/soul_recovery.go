@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"slices"
 	"time"
 
 	"cloud-clicker/server/economy"
@@ -88,7 +89,8 @@ func (s *Service) StartMinigameSession(ctx context.Context, platform *minigame.S
 		return minigame.Session{}, ErrInvalidIntent
 	}
 	definition, ok := bundle.Minigames.Definition(request.MinigameID)
-	if !ok || definition.EngineRef != request.EngineRef || definition.EngineVersion != request.EngineVersion {
+	if !ok || definition.EngineRef != request.EngineRef || definition.EngineVersion != request.EngineVersion ||
+		!slices.Contains(definition.Modes, request.Mode) {
 		return minigame.Session{}, ErrInvalidIntent
 	}
 	if definition.Unlock.Kind == "fiscal_unlock" {

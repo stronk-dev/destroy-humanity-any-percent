@@ -525,6 +525,13 @@ minigame ID, engine reference and engine version to the certified session identi
 engine does not authorize charging another minigame's window. A mismatch returns
 `ErrInvalidSession` without changing any window or releasing the valid claim; the original
 certification remains usable with its own definition. Kernel0.3.209 records this binding repair.
+Preparation also requires the persisted session's mode to belong to that definition's `modes`
+before consuming quota. The internal production start gate checks the requested mode against
+its pinned definition as well as the engine identity; an engine supporting a mode does not
+make that mode eligible for every minigame using it. A disallowed start returns `ErrInvalidIntent`
+without creating a session; a disallowed resolution returns `ErrInvalidSession` without changing
+quota or the retained certification. Kernel0.3.228 records these mode-policy checks. Public V1
+start remains server-selected `solo`; no request/response or payout arithmetic changes.
 The composition coordinator remains responsible for selecting that definition from the session's
 pinned catalog; this identity check does not authenticate arbitrary same-ID policy replacements.
 

@@ -11,6 +11,13 @@ import (
 )
 
 func TestMinigameResolutionPolicyIdentityIntegration(t *testing.T) {
+	for _, mismatch := range []string{"minigame_id", "mode"} {
+		t.Run(mismatch, func(t *testing.T) { testMinigameResolutionPolicyIdentityIntegration(t, mismatch) })
+	}
+}
+
+func testMinigameResolutionPolicyIdentityIntegration(t *testing.T, mismatch string) {
+	t.Helper()
 	for _, mode := range []Mode{ModeSolo, ModeAsyncSnapshot} {
 		for _, existingWindow := range []bool{false, true} {
 			name := string(mode) + "/empty_window"
@@ -62,7 +69,15 @@ func TestMinigameResolutionPolicyIdentityIntegration(t *testing.T) {
 					t.Fatal(err)
 				}
 				wrong := definition
-				wrong.MinigameID = "fixture.other"
+				switch mismatch {
+				case "minigame_id":
+					wrong.MinigameID = "fixture.other"
+				case "mode":
+					wrong.Modes = []Mode{ModeSolo}
+					if mode == ModeSolo {
+						wrong.Modes = []Mode{ModeAsyncSnapshot}
+					}
+				}
 				if existingWindow {
 					if _, err := db.ExecContext(ctx, `INSERT INTO minigame_faucet_window
 						(founder_id,minigame_id,attended_day,quota_used,conversion_remainder_ppm)
@@ -89,7 +104,7 @@ func TestMinigameResolutionPolicyIdentityIntegration(t *testing.T) {
 				_, wrongErr := service.PrepareResolutionTx(ctx, tx, terminal.Resolution, wrong, 0)
 				after := windows()
 				if !errors.Is(wrongErr, ErrInvalidSession) || !bytes.Equal(before, after) {
-					t.Errorf("foreign policy must fail before quota mutation: err=%v before=%s after=%s", wrongErr, before, after)
+					t.Errorf("incompatible policy must fail before quota mutation: err=%v before=%s after=%s", wrongErr, before, after)
 				}
 				if err := tx.Rollback(); err != nil {
 					t.Fatal(err)
@@ -107,9 +122,13 @@ func TestMinigameResolutionPolicyIdentityIntegration(t *testing.T) {
 					t.Fatal(err)
 				}
 				defer correctTx.Rollback()
+				wantQuotaBefore, wantRemainder := int64(0), int64(0)
+				if existingWindow && mismatch == "mode" {
+					wantQuotaBefore, wantRemainder = 4, 250_000
+				}
 				prepared, err := service.PrepareResolutionTx(ctx, correctTx, terminal.Resolution, definition, 0)
-				if err != nil || prepared.Faucet.QuotaBefore != 0 || prepared.Faucet.QuotaAfter != 1 ||
-					prepared.Faucet.CreditedUnits != 1 || prepared.Faucet.RemainderAfterPPM != 0 {
+				if err != nil || prepared.Faucet.QuotaBefore != wantQuotaBefore || prepared.Faucet.QuotaAfter != wantQuotaBefore+1 ||
+					prepared.Faucet.CreditedUnits != 1 || prepared.Faucet.RemainderAfterPPM != wantRemainder {
 					t.Fatalf("own policy/certification failed: application=%+v err=%v", prepared.Faucet, err)
 				}
 				if _, err := service.FinalizeResolutionTx(ctx, correctTx, terminal.Resolution,
@@ -127,7 +146,7 @@ func TestMinigameResolutionPolicyIdentityIntegration(t *testing.T) {
 				var quota, remainder int64
 				if err := db.QueryRowContext(ctx, `SELECT quota_used,conversion_remainder_ppm
 					FROM minigame_faucet_window WHERE founder_id=$1 AND minigame_id=$2 AND attended_day=0`,
-					testFounderID, definition.MinigameID).Scan(&quota, &remainder); err != nil || quota != 1 || remainder != 0 {
+					testFounderID, definition.MinigameID).Scan(&quota, &remainder); err != nil || quota != wantQuotaBefore+1 || remainder != wantRemainder {
 					t.Fatalf("own policy quota=%d remainder=%d err=%v", quota, remainder, err)
 				}
 			})

@@ -2,6 +2,14 @@
 
 RFC: `rfc/minigame-platform-foundation.md`
 
+2026-11-05 RP-776 correction: enforce the pinned definition's allowed modes at
+internal production start and bind payout preparation to the persisted session mode
+before quota mutation. Existing SQL regressions cover both modes, empty/existing
+windows, unchanged claims and same-certification successful settlement; extend the
+existing public-start refusal row to exercise the internal path. This is C37
+conformance, not an async public wire, source-resolution completion or full AC1.
+The owning log records old-source failures, finished checks and corrective review.
+
 2026-11-02 supplement: extend the existing actual-Postgres start population with a
 controlled funded Founder, then spend Route Knowledge through the real hint transition
 and projector during Pitch. Verify frozen scaling through nonterminal platform

@@ -6,6 +6,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
+	"slices"
 	"strconv"
 )
 
@@ -319,16 +320,19 @@ func (service *Service) PrepareResolutionTx(ctx context.Context, tx *sql.Tx, res
 	if err := service.validateReplayTx(ctx, tx, resolution); err != nil {
 		return PreparedResolution{}, err
 	}
+	session, _, err := loadClaimedReplay(ctx, tx, resolution.identity)
+	if err != nil {
+		return PreparedResolution{}, err
+	}
+	if !slices.Contains(definition.Modes, session.Mode) {
+		return PreparedResolution{}, ErrInvalidSession
+	}
 	score, err := SelectPayoutScore(resolution.result, definition.Payout)
 	if err != nil {
 		return PreparedResolution{}, err
 	}
 	faucet, err := applyFaucetWindowTx(ctx, tx, resolution.identity.founderID, definition.MinigameID,
 		founderAttendedMS, definition.Payout, score, definition.Fallback.RateReductionPPM)
-	if err != nil {
-		return PreparedResolution{}, err
-	}
-	session, _, err := loadClaimedReplay(ctx, tx, resolution.identity)
 	if err != nil {
 		return PreparedResolution{}, err
 	}
