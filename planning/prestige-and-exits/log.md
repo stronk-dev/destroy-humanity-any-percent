@@ -583,3 +583,38 @@ is digest-checked by root. All handles terminal; owned tmpfs PG removed, shared
 network/caches preserved, SQL released. Go/PG images are Linux-amd64 under ARM64
 Desktop emulation, not supported native-host/R-006 proof. RP-038/RP-771/RP-770,
 Clout and current hosted/release gates stay open; no goal pause or publication.
+
+## 2026-11-05 — Hash-pinned attendance correction independently approved
+
+APPROVED bounded corrective/technical scope, all16 paths of
+`498f8ae51fda9d0e71470ac3ce3c2da6f98f55a1..e5ad0bacd056dce983376a5b7d97256877a13f1e`.
+Review by: fresh independent Codex `/root/prestige_policy_pin_corrective_review`.
+Recorded by: Codex root, transcribing its independently executed verdict.
+Accepted P6c/FB1 authority inspected. Legacy81251 maps toe5ad in the retained
+rewrite map; archived Faction remediation prose remains anonymous, not relabelled.
+Original diff inspected; execution uses current21a889b7/runtimec5130acf, not
+historicale5ad. Full native Go Prestige/Faction, focused Production and affected
+vet pass. Client207 tests in the TWO actually matched Prestige/replay files pass;
+requested faction.test.ts is absent and gets no coverage credit.
+
+Private5s/20s hash controls pass for both hooks, stock/remainder/offline spans and
+missing-policy refusal; constant5000 override fails both20s rows (Make2).
+Real-PG intent/lifecycle count1 pass0.765/0.705s, no skips. Private persisted-pin
+SQL positive first fails because its legacy epoch5 fixture omits the required
+gate argument: retain66017 as INVALID instrument setup. Correct only that input
+to the actual registered gate; old/new real-artifact/run-pin control57720 passes
+0.332s. A private one-line current-hash override28668 fails0.336s/Make2 precisely:
+old5s run borrows current20s policy and triggers the Exit incorrectly. This
+exercises the service lookup, not just isolated hooks. No main mutation, product
+retune, guard increase or assertion weakening; this is not epoch8/browser/natural
+pacing evidence. Original endpoints both kernel0.1.0 despite watched changes:
+historical identity/guard debt remains, not retrospectively approved.
+
+Evidence `.cache/prestige-policy-pin-review/evidence.json`
+SHA58414b15ba1c0720d72de6d4bcda12fccac25bbd840e19b6f57cebd931f0e1b3
+is digest-checked by root. All handles terminal, new owned tmpfs PG removed,
+shared network/cache/unrelated resources preserved, SQL released; Go/PG images
+Linux-amd64 under ARM64 Desktop emulation, not supported native-host proof.
+No adjacent/original-feature/archival approval. RP-038/RP-771/RP-770,27 Clout
+failures, historical guard and full nine-tier1.0/release gates remain open.
+No code/runtime/schema/epoch/owner decision or goal status change in this record.

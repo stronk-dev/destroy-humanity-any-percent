@@ -25,7 +25,7 @@ combat, Tier3–8 and ending construction ahead. No new tier or release is compl
   [Prestige log](../prestige-and-exits/log.md) owns execution and limits. RP-771's
   separate capacity choice and full Prestige acceptance remain open. New local
   candidate sourcec5130acf includes the runtime/migration correction;
-  its complete artifact-evidence review is pending in the
+  its complete `c5130acf..21a889b7` artifact-evidence range is independently approved in the
   [Deployment plan](../deployment-foundation/plan.md). Earlier b8042450 evidence
   stays historical, not proof of the newer runtime.
 - **Accounting and its real consumers:** delegated CV3/AC6 wording is reconciled.
@@ -45,8 +45,8 @@ combat, Tier3–8 and ending construction ahead. No new tier or release is compl
   API descriptor/transport, tenant HTTP, recovery/renewal, authored body/copy,
   accessibility and native Deployment proposals keep their named adoption gates;
   a pending choice blocks its dependent new contract, not unrelated accepted work.
-  Local candidate source`c5130acf`/kernel0.3.226/epoch8 is reconstructed; its
-  artifact-evidence review is pending. Prior b8042450 approval stays historical.
+  Local candidate source`c5130acf`/kernel0.3.226/epoch8 has independent artifact-
+  evidence approval through21a889b7. Prior b8042450 approval stays historical.
   Do not repeat artifact/profiling populations or relabel them as hosted/native/clean-host proof.
   [Deployment's plan](../deployment-foundation/plan.md) owns actual native/host/
   predecessor/R-006 prerequisites. RP-770 and the historical guard/current CI

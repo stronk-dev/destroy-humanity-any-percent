@@ -68,7 +68,7 @@ reconcile parent bodies under the actual delegation and implement adopted
 contract dependencies with their full producer/native/clean-host proof. No
 product implementation or goal pause is claimed at this checkpoint.
 
-**Latest exact-artifact construction, 2026-11-05:** source
+**Last validated exact artifact, 2026-11-05:** source
 `c5130acf` includes independently approved RP-772 Exit-credit projection and
 migration00086, kernel0.3.226/epoch8 unchanged. Fresh current/rebuild roots
 `.cache/release-current-c5130acf` and `.cache/release-rebuild-c5130acf` retain
@@ -85,8 +85,14 @@ Native build/intact and actual shipped-Linux build/intact pass; all9 semantic
 mutations return exact3/fixture_rejected, with no guard exhaustion. Four75-file
 trees remain unchanged, work empty,11 containers absent; shared builders/caches
 preserved. Source/image scan at exactc5130acf covers2,576 tracked files, findings0.
-[New retained record](release-builds/candidate-c5130acf.json) and canonical docs/log
-await complete independent corrective artifact-evidence review; no self-approval.
+[New retained record](release-builds/candidate-c5130acf.json) and complete five-path
+`c5130acf..21a889b7` batch are independently APPROVED by fresh Codex
+`exit_credit_artifact_review`. Its own six-executable/client rebuild, actual image
+payload,28 normalizer comparisons,6 registry reads, native/shipped-Linux consumers
+and invalid-inventory assembly control pass. Scanners are hash-inspected, not
+independently rerun. The owning log holds exact provenance/digest and exclusions.
+Do not rebuild for editorial closeout; batch future runtime changes before the
+next necessary artifact proof.
 Prior b8042450 approval remains historical. No legitimate predecessor, rights,
 current hosted CI, supported native host, full feature, clean-host/R-006 or release
 approval follows. Pending owner adoption questions are unchanged, not repeated.

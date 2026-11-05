@@ -230,8 +230,11 @@ The actual shipped Linux helper accepts the build record and intact package, and
 nine semantic tampering fixtures with exact exit 3. All original/private bundle trees retain
 their hashes/modes afterward. Native build-record and intact-package consumers pass too.
 The manifest-bound secret scan reports zero findings across 2,576 tracked files and the actual
-image archive. These are local construction/offline helper results; designated corrective
-artifact-evidence review is pending for this complete record/docs batch. The independently
+image archive. These are local construction/offline helper results. Fresh independent Codex
+review approves the complete five-path `c5130acf..21a889b7` record/docs batch, with its own
+binary/client rebuild, image payload checks, 28 normalizer comparisons, registry reads and
+native/shipped-Linux consumers. Root's scanners were inspected and hash-checked, not rerun
+by the reviewer. The independently
 approved [`b8042450` record](../planning/deployment-foundation/release-builds/candidate-b8042450.json)
 remains historical evidence and omits the new runtime correction. Both new trees are one
 candidate; neither is a legitimate predecessor. Accounting, history-guard/hosted CI, RP-770,

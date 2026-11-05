@@ -12518,3 +12518,30 @@ review. Review by: Codex root (implementer/output first filter, not designated
 approval). Recorded by: Codex root. No native-profile adoption/construction,
 rights/predecessor/hosted/full-feature/clean-host/R-006 or release acceptance.
 RP-770 and other held owner decisions/CI failures remain; no goal pause.
+
+## 2026-11-05 — Current Exit-credit runtime artifact evidence independently approved
+
+APPROVED complete five-path range
+c5130acfcd52d07c9bb7b913bd9be5aff4b3e447..21a889b726b5a0e46b001b8dcaf9c0714c6bd3d9.
+Review by: fresh independent Codex `/root/exit_credit_artifact_review`.
+Recorded by: Codex root, transcribing the independently executed verdict.
+Own six-executable/seven-client rebuild matches both snapshots/bundles; all75
+hashes/modes,74 bindings, migration86/source/epoch/config/archive and both actual
+33-file image payloads/owners/modes agree. Own28 strict normalizer comparisons,
+6 fresh immutable registry/config/platform reads, native record/intact and actual
+shipped-Linux record/intact pass. All9 semantic cases return exact3, never guard/
+setup refusal. Own valid assembly matches; quarantined invalid inventory fails
+at gameserver SPDX binding before a manifest. Root's two valid41-package scans
+and exact-source/image zero-findings scan are hash-inspected, NOT independently
+rerun; the invalid unverified-ID scan stays excluded. Unsupported builder --format
+returns125/setup only; actual builder-container Config.Image read verifies the
+pin. Do not turn that setup error into an artifact/test finding or passing proof.
+
+Evidence `.cache/exit-credit-artifact-review/review-results.json`
+SHA64c7ed27ce87c915f0d9022f5e05389f7bd5b9e67435acf95f5e462fac9ba4c0
+is digest-checked by root. All handles terminal,11 owned containers absent,
+private reviewer fixtures removed; original evidence/shared resources preserved,
+no SQL used, clean21a889b7 before this editorial record. Source remainsc5130acf;
+no rebuild for documentation. This is local corrective artifact-evidence approval,
+not full feature/rights/hosted CI/predecessor/native/clean-host/R-006/release
+acceptance. No publication/deployment/archival, pending-question adoption or goal pause.
