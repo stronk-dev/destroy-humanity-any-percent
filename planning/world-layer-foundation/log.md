@@ -79,3 +79,36 @@ Whole feature/later tiers and1.0 remain open. Independent technical/evidence
 review is pending for the complete batch after2cc892d0; no implementation or
 archival authority follows from this research. All root checks are terminal;
 the temporary declared SQL service stays available for the independent reviewer.
+
+
+## 2026-11-05 — RP-777 complete evidence range independently APPROVED
+
+Review by: fresh independent Codex `/root/world_producer_evidence_review`.
+Recorded by: Codex root, transcribing the actual technical/evidence verdict
+under Marco's delegation. **APPROVED**, no blocking findings, all8 paths:
+`2cc892d0faf60e0f40ee4133cb83c728fbdca910` exclusive through
+`6f1c184a54005f160d94eff616143a0b3d261bdb` inclusive.
+
+Independent Linux-amd64/Postgres/race runs all7 actual arms PASS1.617s, no
+skips/races, retaining byte-identical0655eadf…fc6 and all8 exact source hashes.
+A test-only source overlay changing the first passive expectation1→9 fails that
+case and the outer incomplete-population guard; other6 cases execute and no
+partial artifact exists. Selecting existing output fails before DB work and
+preserves its hash. Production vet, formatting/full-range whitespace pass.
+Reviewer queries verify both injected trigger/function counts0 and clean tree.
+
+One nonblocking editorial finding is corrected here: the plan combined missing
+DB and missing output selection into a skip. Actual unselected study skips;
+selected-without-DB is fatal. The latter guard is source-inspected, not a
+separately executed population. No criterion, runtime or instrument is changed
+by this wording repair. Review manifest
+`.cache/world-producer-evidence-review/review-results.json`, SHA256
+c8b630b197a7d26c9bcf4978c0dabf9cc3f6c0c20de68002088f3e27ef2263d3.
+
+Qualification, raw/credited semantics, time/population/faction binding and actual
+producer/reducer/replay ownership remain OPEN before World adoption/construction.
+No shipped World defect, new feature acceptance, hosted CI, native clean-host or
+full nine-tier1.0 proof follows. All reviewer sessions are terminal and SQL
+ownership returns. Root verifies containerd2f39e9ee7b1 has no durable mounts,
+only tmpfs data, removes solely that task-owned service and checks the final
+Compose inventory empty. Images, caches, networks and unrelated resources remain.

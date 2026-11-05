@@ -27,8 +27,9 @@ purchase net-10.4; same-time manual passive0 vs positive1; online manual passive
 vs net2. At cash1000, passive1 can coexist with ProgressDeltaPPM0. Rejection may
 have a durable log/receipt without a new save; SQL failure must have neither new
 revision nor any intent/event/log/outbox write. Retry must retain exact receipt
-and all database counts. Missing DB/output selection is an explicit skip, never
-credited as execution. Assertions/controls failing invalidate the observation.
+and all database counts. An unselected study is an explicit skip, never credited
+as execution; a selected study without Postgres must fail. Assertions/controls
+failing invalidate the observation.
 
 Exit: retain small source-bound results and the source trace, distinguish what
 existing records prove from missing producer semantics. This may require a
