@@ -9047,3 +9047,33 @@ copy/schema/kernel change or full1.0 milestone follows. The aa5e16e8 package
 remains exact older artifact evidence; include this UI change in the next
 coherent artifact batch, not a per-edit rebuild. Continue accepted product work;
 full nine-tier1.0 goal remains active, no push/deploy/archival.
+
+## 2026-11-05 — Bind continuation timing to the real main player journey
+
+Accepted Game UI U1/GU-C4/GU-C25–28: add DOM-only clock progress checks after
+both real Continue controls. Missing/malformed/out-of-range timer refuses; the
+existing30s guard stays. No new gameplay request, clock endpoint or product code.
+RP-774's4 old native failures supply regression discrimination; this joins the
+property to real integration, not a new full-feature acceptance claim.
+
+Root starts declared compose.game-ui-test Postgres, then runs
+`node client/tools/test-game-ui-composed.mjs` (47128,exit0). Fresh built client,
+actual service/WebSocket/SQL: refresh8/8, all10 named persisted parents, public
+SDK HTTP→TS current/history replay and receipt/event/gap/constants refusal,
+stored Guild→TS controls pass. Real scripted/ordinary next clocks both0s→1s;
+existing Fiscal/opportunity/Pitch/Recovery, lost reply and actual SIGKILL/restart
+controls and production HTML/JS/CSS/Worker identity pass. Transient connection
+errors during the declared faults remain in the raw log, not erased. This is
+MAIN only, not all Cosmetic/N5/Garden/Tier2 descendants, natural pacing, release
+artifact/host/CI or full obituary/privacy acceptance. RP-606 remains open.
+
+After root's pass, add final after>before assertion before logging PASS. Syntax/
+diff pass; that final line was NOT executed by the earlier root run. Independent
+review must execute the exact final revision. Raw log/result binding retained
+under `.cache/run-end-live-integration/`. All handles terminal; server/browser
+cleaned, task-owned disposable PG retained for sole serial reviewer lease.
+Complete four-path range after8c887be1 needs independent corrective evidence
+review. Review by: Codex root (implementer first filter). Recorded by: Codex root.
+RP-774's prior code approval remains04642f4c..a12346b0; no implicit expansion.
+No runtime/kernel/wire/copy/balance/CI/deadline/package change or feature/push/
+deploy/archival claim. Full nine-tier1.0 goal stays active.

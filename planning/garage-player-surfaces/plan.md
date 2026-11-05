@@ -28,6 +28,16 @@ No new clock/gameplay/copy/schema/kernel contract or full AC7 claim. The reviewe
 aa5e16e8 package remains source-exact but predates this later UI correction;
 batch future artifact refresh, not a75-file rebuild for every small screen edit.
 
+Current integration supplement: the main real-service driver now checks actual
+clock progress after both scripted and ordinary Continue controls. A complete
+main journey passes on fresh built client/gameserver, real WebSocket and declared
+Postgres, including input13 public HTTP→TypeScript replay, existing refusal,
+Guild, Fiscal, opportunity, Pitch and Recovery/process-loss populations. This is
+the main driver, not all descendant lanes of make test-game-ui-composed. A final
+post-wait assertion is added after that observation; final independent review
+must execute that exact revision before integration evidence is accepted. No
+runtime change, whole-feature/AC7, natural pacing or hostedCI promotion.
+
 1. Manual observer/timer/capture/portable-fixture union RP-372/712/713 is
    independently approved at0a185c06. Both negative verdicts remain; no repeat
    of its single valid-but-lossy/limited native observation. RP-368's existing

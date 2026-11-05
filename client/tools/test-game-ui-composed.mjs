@@ -188,6 +188,25 @@ let vite;
 let clientPreview;
 let browser;
 
+// DOM-only observation: no new gameplay request, test clock or fixture endpoint.
+// With no prior value, return seconds; with one, wait for actual clock progress.
+function observeRunTimer(previous) {
+  const title = document.querySelector(".cc-titlebar")?.textContent ?? "";
+  const match = title.match(/\bTimer: (\d+):([0-5]\d):([0-5]\d) — PB:/u);
+  if (!match) throw new Error("composed run title has no valid displayed timer");
+  const seconds = Number(match[1]) * 3600 + Number(match[2]) * 60 + Number(match[3]);
+  if (!Number.isSafeInteger(seconds)) throw new Error("composed displayed timer is outside its integer range");
+  return previous === null ? seconds : seconds > previous;
+}
+
+async function witnessContinuedTimer(page, ending) {
+  const before = await page.evaluate(observeRunTimer, null);
+  await page.waitForFunction(observeRunTimer, before, { timeout: 30_000 });
+  const after = await page.evaluate(observeRunTimer, null);
+  if (after <= before) throw new Error(`composed ${ending} next-Company clock did not advance`);
+  console.log(`composed ${ending} next-Company clock advances: ${before}s → ${after}s: PASS`);
+}
+
 async function waitForReady() {
   const deadline = Date.now() + 60_000;
   while (Date.now() < deadline) {
@@ -1342,6 +1361,7 @@ try {
   await page.getByText("Your First Company Failed", { exact: true }).waitFor({ state: "visible", timeout: 30_000 });
   await page.getByRole("button", { name: "Start the Next Company", exact: true }).click();
   await page.locator('main[data-surface="desk"]').waitFor({ state: "visible", timeout: 30_000 });
+  await witnessContinuedTimer(page, "scripted");
 
   requestPhase = "second terminal/next run";
   seedGateRequirement(liveSnapshot.body.run.founder_id);
@@ -1369,6 +1389,7 @@ try {
   await page.getByText("The Company Has Exited", { exact: true }).waitFor({ state: "visible", timeout: 30_000 });
   await page.getByRole("button", { name: "Start the Next Company", exact: true }).click();
   await page.locator('main[data-surface="desk"]').waitFor({ state: "visible", timeout: 30_000 });
+  await witnessContinuedTimer(page, "ordinary");
   // MA AC5: The Pitch through the Game UI against the composed server. The
   // The Fiscal prerequisite and Pitch play both originate in rendered player
   // controls; the composed epoch pins minigame.pitch at 3 credit.

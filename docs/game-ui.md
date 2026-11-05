@@ -620,6 +620,9 @@ remains frozen through Run End resampling and unsuccessful continuation reads;
 it is never reused as the next Company's running clock. This changes display
 state only: recorded server times, local PBs, authoritative gameplay and copy
 are unchanged.
+The main built-client/service witness also observes that displayed clock advance
+after both scripted and ordinary continuations. Its DOM-only checks add no
+gameplay requests or test-clock endpoint; they use the existing journey guard.
 
 The successor check matches both the terminal Founder and exactly `run_seq+1`
 before binding any values or changing subscriptions (RP-345). A mismatched or
