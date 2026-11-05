@@ -4984,3 +4984,23 @@ of P2's explicit API security withdrawal and P6's matching author-body delegatio
 then implementation and the declared actual consumer/privacy/backfill proof.
 RP-606, general rights and full feature/release acceptance stay open. The current
 c5130acf local candidate/runtime is unchanged; no package rebuild is warranted.
+
+## 2026-11-05 — Public Company proposal follows the defined input13 boundary
+
+Prestige's complete correction `c195c0ae..a12218ab` is independently approved;
+Company input13 now emits ending4 with frozen Founder age. The original reviewed
+public profile stopped12 and would therefore refuse the new runtime's histories.
+Propose an explicit closed13 amendment: use the identical Garden-only salt omission/
+local-null adapter on12/13, retain ending4's exact age and every other admitted
+fact, preserve absent legacy age and all existing refusal/private-history rules.
+Add mandatory joined Garden-bearing input13 ordinary/terminal evidence through
+actual Postgres worker/HTTP/both runtimes. Prior12 feasibility and new age vectors
+without Garden do not prove that joined population. No runtime/generator/accepted
+parent-body change; no new salt/private-history disposition or published profile.
+First filter: inspect actual version13 producer/strict parser/consumer correction
+and prior profile boundaries; editorial diff check. Complete new normative delta
+after2e0814f7 needs independent technical review. Original proposal review and the
+already-pending owner question are not silently expanded to this amendment.
+Owner adoption remains required with the actual final scope; do not duplicate the
+existing question or treat a preselection as permission. No software-suite pass
+is claimed for a draft, no RP-606 closure, full-feature/release or goal pause.

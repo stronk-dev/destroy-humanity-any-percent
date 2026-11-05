@@ -1,6 +1,6 @@
 # RFC: Public Company Replay Evidence
 
-- **Status:** draft — independently technically approved 2026-11-05; owner adoption/body authority pending; not implementation authority.
+- **Status:** draft — original proposal independently technically approved 2026-11-05; input-v13 compatibility amendment awaits technical review; owner adoption/body authority pending; not implementation authority.
 - **Author:** Codex
 - **Created:** 2026-11-05
 - **Design refs:** `design/06-tech.md` (hidden information, server authority, versioned replay); `design/05-mmo.md` (published community formulas).
@@ -22,6 +22,14 @@ output changes. Removing the field without an adapter fails the private codec.
 See [evidence and limitations](../planning/platform-alignment/data-rights-current-content.md#2026-11-05--public-company-replay-projection-feasibility).
 This supports the engineering direction below, not all-version acceptance or a
 claim that the existing transport has been fixed.
+
+The later independently approved Prestige correction `c195c0ae..a12218ab` adds
+Company input13 and `run_ended`4 with frozen Founder age. The following explicit
+draft amendment includes that defined representation; it does not infer coverage
+from the prior input12 Garden feasibility study or expand its recorded verdict.
+Input13 with an initialized Garden still needs the full acceptance population
+below. Original technical approval and the pending owner question concerned the
+proposal through input12; neither is silently recorded as approval of this delta.
 
 ## Specification
 
@@ -135,20 +143,23 @@ ordering remain, except for the explicitly defined public replay-input differenc
 `schema_version` stays1 inside this wrapper; it is not a claim of private-byte identity.
 The profile discriminator is required independently of both archive and HTTP version.
 
-Support only the currently defined Company replay-input versions2–12 and Founder
+Support only the currently defined Company replay-input versions2–13 and Founder
 floors through25 with their existing matching pinned-artifact rules. First decode
 and validate the original through the owning strict codecs. Unknown members,
 versions, event kinds/schemas, unsupported pins or malformed inputs cannot be
 copied through as opaque future fields. This is a closed profile, not recursive
 "delete anything named salt" or an unconstrained JSON export.
 
-For v12 carry with the required `server_garden`, project that Garden's exact SG2
+For v12/v13 carry with the required `server_garden`, project that Garden's exact SG2
 shape with the `salt_hex` member absent, preserving every other admitted member
 and value. Omit it even when its private value is null. Earlier versions/floors
 already lacking Garden remain absent. No other carried field, command, sequence,
 receipt or event is removed or reordered. Unknown nested data must fail owning
 schema admission rather than become a new public extension. Future input/Founder
 versions need an explicit reviewed public profile revision before publication.
+Input13's ending4 retains required `founder_age_ms` exactly as committed; the
+profile neither removes that fact nor adds one to retained ending2/3. Existing
+owning validation/source binding and versioned replay rules continue to apply.
 
 Encode the newly derived JSON deterministically with the existing canonical replay
 JSON rules, one final newline, then gzip best compression with zero modification
@@ -162,7 +173,7 @@ A future compressor/serialization change may not replace already stored bytes.
 Add dedicated Go and TypeScript public Company replay entry points. They exact-
 decode P3's wrapper and public shapes, verify manifest/body digests and matching
 run/pin/genesis identity, then reconstruct only a local replay input: insert
-`salt_hex:null` into a public v12 Garden carry before invoking the existing
+`salt_hex:null` into a public v12/v13 Garden carry before invoking the existing
 Company transition library. A public carry containing a `salt_hex` member, even
 null, refuses. The normal private codec keeps requiring and validating its field.
 
@@ -239,6 +250,12 @@ reconciliation; owner copy and unrelated product choices are not delegated here.
    Exercise initialized Garden, ordinary commands, real mature harvest and Exit/
    next Company; use the real worker/compactor/board authorization on Postgres.
    Fixture-controlled growth is labeled; natural pacing is not inferred from it.
+   Include actual input13 Garden-bearing ordinary and terminal histories with
+   ending4 and frozen age, alongside retained input12 ending2/3. Both runtimes
+   must match every unchanged Company outcome and the exact stored age; changing
+   or dropping age and copying a salt must each be refused. Keep legacy age
+   absent. Prior feasibility at12 or age vectors without Garden cannot substitute
+   for this joined population.
    The complete pinned catalog download/loader loop must run, requiring its own
    adopted API prerequisites, not filesystem artifacts substituted for HTTP.
 3. Compare every complete Company state/receipt/ordered-event/terminal/new-Company
@@ -279,3 +296,11 @@ all three old raw-evidence resources, and authorize the exact P6 body reconcilia
 The hidden-salt decision is already adopted and is not being reopened. Technical
 review, implementation and acceptance proof remain distinct. No endpoint, schema,
 migration, private history or CI behavior changes under this draft.
+
+## Amendment record
+
+- 2026-11-05: propose explicit input13/ending4 compatibility after the independently
+  approved Prestige correction. Preserve the single Garden-salt projection,
+  historical encodings, private originals, prior-compromise hold and all acceptance
+  gates. The prior proposal's review/adoption request does not automatically cover
+  this new delta; independent technical review and explicit adoption scope remain.
