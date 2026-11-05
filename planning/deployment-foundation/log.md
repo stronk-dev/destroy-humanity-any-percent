@@ -12372,3 +12372,31 @@ Caddy/off-host/RPO/RTO, exact-release/clean-host R-006, rights decisions or full
 feature acceptance. Complete eight-path batch after9a4bf86f needs designated
 corrective test/research review. Review by: Codex root (implementer first filter).
 Recorded by: Codex root. No owner adoption, push, deployment or goal pause.
+
+## 2026-11-05 — Composed bootstrap restore instrument independently approved
+
+APPROVED, no blocking findings, corrective test/research instrument only;
+complete eight-path range
+9a4bf86f1ef1215ff61296e8c6f3c0efa228bf9c..
+8c7ccf175c8a89861ae7a6a9df18c8f72743ae49.
+Review by: fresh independent Codex `/root/composed_account_restore_review`.
+Recorded by: Codex root, transcribing its executed verdict.
+
+Fresh declared real Linux-amd64/Postgres16 target75053 passes4.61s, one
+integration function/three observed states, zero skips. Deleted source/B_post
+remain0/401/401/401/409; B_pre1/200/200/200/201 with exact original bootstrap
+bytes; bystander200 throughout. Six SQL populations bind before restored
+composition; every successful/replayed credential reaches the original Founder;
+invalid controls refuse and no extra account appears. Independent missing-URL
+control immediately exits1, not skip. Full native87025 and vet pass;15 top-level
+manual/DB skips receive no integration credit. Formatting/range whitespace clean.
+Private assertions do not print credential/response contents.
+
+Reviewer makes no tracked edits; all handles terminal, owned project containers/
+network absent, SQL/binary ownership explicitly released. Its editorial suggestion
+is applied here: restore the pre-existing host/journal/mixed-architecture sentence
+beside its original backup-profile paragraph. Dossier/backlog reconcile scoped
+approval; no software rerun for these factual/editorial records. RP-125 and
+D-009/D-015 remain open, as do expiry/rotation, populated Guild behavior, gameplay,
+off-host/clean-host and full feature/release gates. Full nine-tier1.0 goal stays
+active; no artifact rebuild, inferred adoption, push, deployment or archival.

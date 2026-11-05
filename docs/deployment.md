@@ -1150,6 +1150,7 @@ metadata, not authenticated built-release artifacts. Only the seeded row is chec
 joined retry/receiver population; the existing populated backup/restore suite remains
 separate. This does not wait for the next six-hour slot, prove an off-host durable target,
 measure RPO/RTO, adopt the pending metadata-authentication proposal or replace R-006/full AC7.
+Host storage/journal signals remain controls here, and the local services are mixed-architecture.
 
 `make test-account-restore` is a separate manual rights-observation lane outside CI.
 It combines the real gameserver's bootstrap/Founder initialization and account deletion
@@ -1161,7 +1162,6 @@ credential controls. Missing database configuration fails when this manual lane 
 The fixture manifest and unchanged synthetic keys do not prove a release artifact,
 key expiry/rotation, populated Guild behavior or clean-host deployment. Current findings
 and policy limits are in the [RP-125 dossier](../planning/platform-alignment/data-rights-restore-resurrection.md).
-Host storage/journal signals remain controls here, and the local services are mixed-architecture.
 
 `make test-deployment-ingress-profile` exercises the actual proxy-outage arm in its own private
 project, also included in manual operations verification outside push CI. The shipped Caddyfile

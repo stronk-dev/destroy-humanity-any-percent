@@ -29,6 +29,11 @@ rather than skipping. Native package42103/vet pass; DB/manual populations skip
 natively and receive no DB credit. The owning Deployment log records setup
 limitations, cleanup and independent review status.
 
+Independent corrective review APPROVES the complete eight-path
+`9a4bf86f..8c7ccf17` range. Fresh real run75053 reproduces every arm in4.61s,
+zero skips; missing-URL control fails1, native87025/vet pass with manual/DB
+skips excluded. The owning log holds exact provenance, scope and cleanup.
+
 This removes the constructor-only and unretained bootstrap-retry evidence gaps.
 The backup manifest is still synthetic metadata with actual content/epoch/migration
 substituted; this is not the built release artifact or R-006. Synthetic keys stay
