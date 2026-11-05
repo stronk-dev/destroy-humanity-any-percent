@@ -52,6 +52,12 @@ and limits. Adjacent construction and full parent acceptance remain separately o
      supply effects, battle-legal minima, cheap-cycle/bypass coverage, full catalog
      or a live engine. Item3/AC1 remain open; the new range needs designated review.
 4. [ ] Add fixture-only Trust/Soul tables and cross-runtime golden vectors.
+   - `rfc/combat-care-tables.md` proposes the missing exact input/table/arithmetic
+     boundary and a test-only policy. Source inspection finds that the parent's
+     50%→30% pair comes from a research **win-rate** column, not obedience or
+     disobedience probabilities. No unruled endpoints may be inferred from it.
+     Technical review/adoption/body delegation remain before implementation;
+     C2's effect/catalog/crit gaps and deferred child rulings stay separate.
 5. [ ] Add source lint and full parent acceptance/property coverage. Both Go and TypeScript
    division boundaries now execute locally; `TestRepositoryCombatDivisionBoundary` and its
    AST/recursive negative controls cover Go, and `make verify-combat-boundary` covers TypeScript.

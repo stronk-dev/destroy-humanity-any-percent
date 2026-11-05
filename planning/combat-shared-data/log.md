@@ -540,3 +540,33 @@ Historical native-browser output inspected, not independently re-executed. No br
 Linux/hosted/threaded battle/log parity/catalog-label completeness/full Combat acceptance.
 Adjacent construction/specification is outside this verdict. No tracked edits/mutations/
 commits/services; corrective evidence debt closes, not feature/archival/release gates.
+
+## 2026-11-05 — Correct the source quantity before choosing C5 probabilities
+
+Resume clean0dcf71fd after current-runtime artifact approval. Marco's repeated
+Headcount model answer is already reconciled and independently approved; do not
+reopen it. Continue the accepted Combat parent rather than another unused row
+primitive. Read parent, both engine drafts, owning plan/docs, Pet Care's actual
+Go/TS input producer and the research/design chain. RP-072 has a concrete source
+error: research§3.4 Finding4/§8.3 calls50%→30% simulated **win rates**, whereas
+design/04 labels them disobedience. ParentC5 carries the pair ambiguously. The
+original sim used another-known-move fallback; draftD1 uses rest. Source-report
+inspection is not a reproduced sim or policy calibration.
+
+Draft `rfc/combat-care-tables.md` proposes strict monotone tables, endpoint
+clamping before arithmetic, exact staged interpolation/composition and an
+explicitly synthetic fixture. Preserve the shipped safe-integer Soul input
+instead of casting it into int32; all bounded intermediates fit int64/BigInt.
+The six literal examples and max-product bounds pass an independently written
+Python Fraction/integer calculation. A nonidentity0→2 over0→3 control has
+floor0 versus round1 atx1; atx2/factor750001 staged0 differs from deferred1.
+These are document arithmetic checks, not runtime/table-loader acceptance.
+
+No product code, owner-authored body, current content/artifact, version, balance
+or child ruling changes. Diff/paths/source claims checked; no software suite
+for Markdown. Complete draft/index/plan/log/RP-072 range after0dcf71fd needs
+independent technical review, then explicit adoption/body delegation before
+implementation. C2's full catalog/effects/crit and DU-C1 remain blockers; live
+care policy and Pet Care's carried consumer proof remain separate acceptance.
+Review by: Codex root, proposal author/first filter. Recorded by: Codex root.
+No publication, archival, self-acceptance or release promotion.

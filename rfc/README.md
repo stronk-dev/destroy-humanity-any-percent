@@ -32,6 +32,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [Bodiless Responses in the API Registry](api-bodiless-responses.md) | draft — RP-483; independently technically approved 2026-11-04 including BR2 correction; owner adoption pending; not implementation authority | API Foundation C19 / Account lifecycle / public caching |
 | [Minigame Platform Foundation](minigame-platform-foundation.md) | accepted — C1–C40 ruled; implementing | Gameserver Composition / Founder Attendance / Combat |
 | [Combat Shared Data & Arithmetic](combat-data-model.md) | implementing | — |
+| [Combat Care Tables](combat-care-tables.md) | draft — RP-072; corrects research win-rate/probability confusion and proposes fixture-only C5 contract; not implementation authority | Combat Shared Data C3/C5 / Pet Care input seam |
 | [Combat — Duel Engine](combat-duel-engine.md) | draft | Combat Shared Data |
 | [Combat — Lane Engine](combat-lane-engine.md) | draft | Combat Shared Data |
 | [Combat — Bots & Integration](combat-bots-and-integration.md) | draft | Combat engines / Account Bootstrap |
