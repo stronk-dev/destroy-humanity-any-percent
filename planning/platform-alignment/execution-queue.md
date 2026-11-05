@@ -16,10 +16,11 @@ combat, Tier3–8 and ending construction ahead. No new tier or release is compl
 - **Current correction:** RP-779 aligns the client's composite weight admission
   with authoritative Go's existing grouped recipe, kernel229/migration87. Shared
   actual-reader regressions retain five old client failures; affected Go/Node/
-  Linux three-engine/types/build checks pass. Complete corrective/specification
-  range needs independent review in the [Clout plan](../clout-v1-and-pr-interns/plan.md).
-  RP-663's Go-only diagnostic draft and RP-664's original catalog-exception
-  wording have independent CHANGES REQUIRED verdicts; neither is adopted.
+  Linux three-engine/types/build checks pass. Complete16-path92067c0c..2e75c853
+  has independent corrective APPROVAL in the [Clout plan](../clout-v1-and-pr-interns/plan.md).
+  RP-664's corrected full proposal has separate technical approval, not adoption.
+  Its original negative verdict remains. RP-663's Go-only diagnostic draft still
+  has CHANGES REQUIRED; prepare its complete operand-aware correction before adoption.
 - **Latest reviewed artifact:** local reconstruction at
   `a7d5a4a4` includes the reviewed continuation-clock/mode-policy fixes, kernel228/
   migration87/epoch8. Complete five-path `a7d5a4a4..beef6cff` has independent

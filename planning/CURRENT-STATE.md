@@ -1,7 +1,7 @@
 # Current repository state
 
-Current runtime is kernel0.3.229/migration87 after the locally verified RP-779
-client catalog-admission correction; independent corrective review is pending.
+Current runtime is kernel0.3.229/migration87 after RP-779's client
+catalog-admission correction, independently approved92067c0c..2e75c853.
 The [Clout log](clout-v1-and-pr-interns/log.md) owns actual old-failing/new-passing
 Go/TS/browser evidence and the separate numeric-proposal findings. RP-776's
 earlier mode-policy correction retains independent approval at kernel228;

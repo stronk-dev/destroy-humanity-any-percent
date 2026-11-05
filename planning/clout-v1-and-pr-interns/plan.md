@@ -15,11 +15,13 @@ The client now uses the same existing grouped helper as Go, at kernel0.3.229.
 The shared actual-reader fixture preserves grouped rounding; owning log records
 old failures, final native/Linux checks and the still-red historical guard.
 No exact-sum, catalog-data, epoch, report, formula or save change. Complete
-correction/tests/docs/versions and RP-664 compatibility reconciliation need
-independent review after92067c0c through the implementation checkpoint.
+16-path92067c0c..2e75c853 has independent corrective APPROVAL. Its owning
+log records fresh18-case old/current discrimination, native/Node/Linux checks
+and limits; do not repeat that completed review.
 
-RP-664's earlier technical verdict remains CHANGES REQUIRED until the complete
-corrected proposal and separate code scope are reviewed. RP-663's independently
+RP-664's complete corrected proposal union has separate independent technical
+APPROVAL, with its original negative verdict preserved. Explicit owner adoption,
+full proof/workload/report-provenance/cutover gates remain. RP-663's independently
 demonstrated client valid-zero populations still need an explicit operand-aware
 contract; the old Go-only proposal is not ready for adoption. No further positive
 aggregation census or weakening of the27 partition failures is authorized.
@@ -497,7 +499,8 @@ not adopt accounting/aggregation drafts, repair AC6 or establish the burst repla
 boundary; inspect that actual caller separately before claiming a player defect.
 
 RP-664's [Exact Represented Aggregation draft](../../rfc/exact-represented-aggregation.md)
-now specifies proposed checked APIs, all13 Go/7 TS caller dispositions, pinned catalog/Pitch
+now specifies proposed checked APIs, all13 Go/8 TS caller dispositions after the
+approved catalog conformance correction, pinned catalog/Pitch
 exceptions, accepted Company drift, capacity-only Commons cutover and existing-kernel report
 identity with an EXPLICIT new-format baseline-guard amendment. Current rules are not waived.
 Own draft bodies reconcile separate numeric reference versus accounting/wait semantics;

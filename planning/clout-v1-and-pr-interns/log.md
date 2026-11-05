@@ -9625,3 +9625,50 @@ Recorded by: Codex root. Complete code/tests/fixture/docs/versions/records and
 proposal-reconciliation range after92067c0c through the containing checkpoint
 needs independent corrective/technical review. Original RP-664 review union
 must be reread too; no self-approval, adoption, archival or publication.
+
+## 2026-11-05 — Catalog correction and exact-aggregation proposal separately approved
+
+**Corrective-code APPROVED**, complete16-path range
+`92067c0c5ac4f907070b24dc9bf316963db803eb..2e75c853ea2a8626e7c35e3a9affe2ac52f48410`.
+Review by: independent Codex `/root/exact_aggregation_contract_review` under
+Marco's corrective-code delegation. Recorded by: Codex root, transcribing the
+verdict. Accepted shared-catalog/server-authority route confirmed. Kernel229
+records actual client admission change; numeric operators/data/save unchanged.
+
+Independent read-only exact-old-source Vite overlay:18 actual-loader cases have
+the same5 false accepts; corrected source has0 mismatches and preserves input/
+term order. Explicit18 Go cases and version-source test, cold native Decimal/
+Economy/Kernel/ReplayCatalog, affected vet, Node6477 across actual economy/
+monotonicity/Decimal-vector files, final Linux ARM64 three-browser219, types0/0,
+formatting and diff pass. Its initial Node selector references a nonexistent
+vector file; two-file count reveals the omission and the actual6304-vector-file
+population then executes. No false suite credit. All review handles terminal,
+browser container absent, tree unchanged, no publication. RP-779 closes only.
+
+**Normative-proposal APPROVED**, complete original-plus-correction union:
+`38cba707312bfab5733b5b70b050295ab611f19b..4ec755798b1237aadc18d66330a529e31bdfde06`,
+`ad40b0f007885204f09e8fafe09cfece27667535..52f713edc028abc24760b96bda86bb109bac0ffa`,
+and the complete corrective range above. Review by: the same independent Codex
+reviewer under Marco's technical-specification delegation. Recorded by: Codex
+root. Full combined proposal/linked clauses/dossier inspected; historical
+ordered-TS/grouped-Go mismatch is explicit and corrected compatibility baseline
+requires the separate approved repair. Current helper inventory13 Go/8 TS.
+No additional findings; earlier applicable sparse/Pitch and full300-row report
+comparison remain valid. Original negative verdict is preserved, not erased.
+
+This approval does not adopt SumExact or prove full-domain implementation,
+complete workloads, historical report-producer provenance, Commons SQL cutover,
+original feature acceptance or1.0. Existing27 partitions and actual historical
+guard failure remain open. Request concrete owner adoption once; do not relabel
+technical approval as that answer. All other pending decisions retain their gates.
+
+RP-663 next-step grounding, no implementation: literal product scan finds five
+TS pow calls (three Economy, two Commons) and no direct exp call. Current6296
+goldens contain only two zero-expected pow/exp rows, both genuine base-zero
+compatibility cases. This is source/corpus inspection, not proof of a future
+wrapper or complete indirect call graph. The corrected contract must preserve
+these controls and distinguish shrinking-result NaN from growing-result signed
+infinity when the provider loses a nonzero value to zero. Operand context must
+be retained at the operation; changing isStateValue cannot distinguish a lost
+result from legitimate0. Do not narrow the release hold to get the old Go-only
+draft approved; author/review the complete explicit checked-operation boundary.
