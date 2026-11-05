@@ -771,3 +771,53 @@ current6e6d source for this newly failed Linux-amd64/race population. Any extra
 observation is bounded and original failure remains unconditional; a passing
 instrumented run cannot satisfy the failed-context objective. No guard change
 from incomplete timings. Full nine-tier1.0 goal remains ACTIVE, not paused.
+
+## 2026-11-05 — Complete current phase/CPU samples; failed context remains unobserved
+
+Previous turn progresses: bounded observer independently approved6e6d108c,
+recorded7a66e82d. At that exact clean source, one rebased Linux-amd64/PG race
+phase probe45353 PASS80.09s (pkg81.249). Run1 input228.702ms/replay2.294830s/
+archive690.280ms; run2 input165.151ms/replay3.553162s/archive594.172ms. Original5s
+never fires: additional bounded observation and unconditional late-failure branch
+remain unexecuted. The failed-context objective is NOT obtained; RED138.17 stays.
+The six-line compiler overlay calls the same bounded observer one extra time
+only after original expiry, then retains the original Fatal unconditionally.
+No shipping source or success predicate changes. Load/replay/archive exclude
+claim wait, projection and commit; no complete end-to-end budget is inferred.
+
+Inspect retained old CPU profile4301fd67... with its matching47,654,327-byte binary
+(ee60be17...): Go-call-stack samples show JSON/state work and smaller catalog
+hashing, but old reader and interrupted run make this insufficient for current
+cost. Capture ONE current replay-labelled CPU execution39104, preserving the
+original call arguments/verdict and the same failure-only observation. It passes
+78.56s (pkg79.859), both real archives/Founder replay/post-delete boards; run2
+input202.908ms/replay3.568598s/archive670.719ms. Both pure replay calls complete.
+Original5s again passes; failed-context/late-failure objectives remain unexercised.
+
+Actual profile tags:5.57s CPU in pure Company replay (of73.54s whole profile),
+1.96s run1/3.61s run2. This includes race/C samples without full Go stacks; do not
+mistake only1.63s visible Go-call-tree run2 samples for its entire CPU cost.
+Run2 cumulative cloneReplayState340ms/canonicalJSONEqual330ms/JSON Decoder510ms
+OVERLAP; do not sum them. Substantial flat race-instrumentation samples are not
+native production cost. Initial numeric pprof selector run=2 exits0 but matches
+NO samples: reject that interpretation, preserve output, use literal run=^2$ and
+check actual tag population. All actual profile consumers terminate0 afterward.
+This establishes current sampled hotspots, not a counterfactual gain, previous
+failure cause or larger allowance. Both Go/PG are AMD64 on ARM64 Desktop; actual
+container images/runtime captured, not native/ref hardware or hosted CI proof.
+
+Ignored .cache/first-hour-phase-7a66e82d contains exact source/overlay diffs, live
+container identities, original and corrected selectors, profile/binary/results.
+Phase log SHA4ca428b4363bb20e6b2227e5c2ace22511ee171710a4e922d85128f005628b07;
+current profile SHA f1995474eaba619bc690bf0a9564106bc27bb28815552d45389a19835f098f1a;
+profile binary SHA1f2029eb06922eeab189ffdcc2051e95918065ec25d58e177bfa977a185eae14.
+All handles45353/96431/39104/94229/48687/90883/76039 terminal. Ownedbe930f6e8f44
+confirmed Compose/tmpfs and removed; shared builders/caches/unrelated fw untouched.
+No tracked product/test, kernel226/epoch8, workflow, bounds, feature or release
+status changes. No push/archival/adoption inference/goal pause. RP-770 stays OPEN.
+Stop repeating completed probes; preserve these controls for a new actual failure.
+Continue accepted local release construction: current28aefd29 artifact predates
+approved RP-769 relay and7c850359 reader code. Existing roots measure342MiB each;
+host has7.3GiB available. No deletion/prune or new resource allowance is proposed.
+Review by: Codex root (diagnostic execution/interpretation, not designated approval).
+Recorded by: Codex root.

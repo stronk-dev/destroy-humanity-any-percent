@@ -24,10 +24,18 @@ pass and restoring the old query context fails the lock-held worker/guard contro
 The current Linux-amd64/Postgres race journey still fails run2 claimed/healthy at
 that original guard. Scoped observer repair is independently APPROVED for complete
 `95d28013..6e6d108c`; RP-770 remains open for the separate completion/timing cause.
-Next: rebase the failure-preserving phase diagnostic onto this current observer,
-then observe the failing Linux-amd64/race population once. Keep original failures
-fatal, bound any extra observation, and record if the failed-context objective is
-not reproduced. Complete relevant evidence must justify any later containment change. CI's5min workflow floor, supported native Linux-amd64 and UI
+The rebased phase-only and separately CPU-labelled executions at7a66e82d both
+complete both archives under the original guard. The failed-context objective
+is NOT reproduced; no extra late-failure branch executes. The completed current
+profile independently labels actual pure replay:5.57s CPU across both runs,
+3.61s for run2, with substantial race instrumentation and JSON/state work.
+No remaining cause, larger budget or runtime optimization is established.
+Stop repeating these populations for reassurance. Preserve the prior red race
+result and investigate the next actual failure with these source-bound controls;
+any kernel-neutral optimization still needs its existing authority/eligibility.
+Continue other accepted work, including the current release-artifact refresh
+(the retained28aefd29 package predates the approved relay/reader corrections).
+CI's5min workflow floor, supported native Linux-amd64 and UI
 reference-profile gates remain distinct and unchanged. The owning log holds exact
 runtime/image provenance, controls, review correction and limits.
 
