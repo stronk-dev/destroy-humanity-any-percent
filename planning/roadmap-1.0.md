@@ -11,8 +11,12 @@ Its real-service supplement is independently approved `8c887be1..64394095`:
 fresh built-client main journey, both actual clocks, public HTTP→TypeScript
 current/history replay/refusals and existing recovery/crash controls pass. This
 is the main journey under controlled setup, not every composed descendant or
-full Garage/obituary/hosted/release acceptance. The exact `aa5e16e8` package
-below predates the later UI and mode-policy fixes; include them in a future coherent artifact batch.
+full Garage/obituary/hosted/release acceptance. The exact current-source package
+`a7d5a4a4` now includes both reviewed UI/mode-policy fixes; complete five-path
+`a7d5a4a4..beef6cff` has independent artifact-evidence approval after own rebuild
+and actual image/inventory/consumer checks. [Deployment's plan](deployment-foundation/plan.md)
+holds the one-local-candidate limits; prior `aa5e16e8` below stays historical.
+No native clean-host/R-006, full-feature/hosted or release approval follows.
 Founder-age label adoption is requested; no answer or authored content is inferred.
 
 **Founder-age data/artifact checkpoint (2026-11-05):** RP-773's missing immutable Founder age

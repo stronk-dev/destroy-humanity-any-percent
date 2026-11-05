@@ -5,13 +5,20 @@ Minigame mode-policy correction RP-776, complete184e1dfc..512024c7.
 [Owning evidence](minigame-platform-foundation/log.md) includes old-source failures
 and real SQL/race consumers; full Platform/CI/release gates remain open.
 
+The latest local package source `a7d5a4a4` includes the reviewed continuation-clock
+and mode-policy fixes. Its complete five-path `a7d5a4a4..beef6cff` record/docs
+range is independently approved after rebuilding six binaries, client/content/metadata
+and checking the actual image, inventories and package consumers. [Exact candidate](deployment-foundation/release-builds/candidate-a7d5a4a4.json).
+This is one local artifact, not a predecessor pair/native clean-host/R-006 or
+full-feature/release approval; known CI/privacy/rights/later-tier holds remain.
+
 **Latest integrated player proof,2026-11-05:** RP-774's next-Company frozen clock
 is corrected/independently approved `04642f4c..a12346b0`. Complete real-service
 supplement `8c887be1..64394095` has independent approval after fresh main journey
 execution: both actual clocks, public HTTP→TS current/history/refusal, recovery/
 crash controls and built-asset identity pass. Controlled main journey only, not
-all composed descendants/fullfeature/hosted/clean-host proof. The last validated
-aa5e16e8 package predates the later UI and mode-policy fixes; do not relabel it. Age rendering/copy
+all composed descendants/fullfeature/hosted/clean-host proof. The prior
+aa5e16e8 package predates the later UI and mode-policy fixes and stays historical. Age rendering/copy
 and full nine-tier construction remain; the new exact label question is unanswered.
 
 **Founder-age correction,2026-11-05:** complete44-path `c195c0ae..a12218ab`

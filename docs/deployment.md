@@ -212,43 +212,27 @@ It intentionally describes a release *candidate*: designated approval of the imp
 batches and the exact clean-host R-006 rehearsal remain required before the project
 can claim supported self-hosting.
 
-A new current-source reconstruction at `a7d5a4a4`, kernel `0.3.228`, includes the
-reviewed continuation-clock and mode-policy corrections. Its [retained record](../planning/deployment-foundation/release-builds/candidate-a7d5a4a4.json)
-has matching two-build package/image results, source/image scans and offline
-helper checks; independent artifact-evidence review is pending. This is one local
-candidate, with all native-host/predecessor/full-feature/release gates still open.
+The latest independently approved local candidate is
+[`candidate-a7d5a4a4.json`](../planning/deployment-foundation/release-builds/candidate-a7d5a4a4.json):
+source `a7d5a4a4`, kernel `0.3.228`, migration 87, epoch 8. It includes the reviewed
+continuation-clock and minigame mode-policy corrections.
 
-The preceding independently approved local candidate build record is
-[`candidate-aa5e16e8.json`](../planning/deployment-foundation/release-builds/candidate-aa5e16e8.json).
-Exact source `aa5e16e8`, kernel `0.3.227`, includes the independently approved frozen
-Founder-age correction and migration 87. Two separate local builds match all six Linux-amd64
-executables, seven client files, content, metadata and image archives. Both assembled bundles
-match all 75 files and modes, with 74 manifest-bound artifacts. Actual image payloads match the
-fresh binary/content builds, including ownership and executable mode; compressed blob and
-uncompressed layer digests both validate.
+Two separate builds produce identical 75-file packages and image archives. Checks
+cover all six binaries, client/content/metadata, 74 manifest bindings, actual image
+payloads and ownership, inventory provenance, and offline helper acceptance plus
+nine semantic refusal cases. Fresh gameserver scans and explicitly reused upstream
+inventories retain distinct provenance. Independent approval covers the complete
+`a7d5a4a4..beef6cff` evidence range; [commands, digests and limitations](../planning/deployment-foundation/log.md)
+live in the owning log. Earlier [aa5e16e8](../planning/deployment-foundation/release-builds/candidate-aa5e16e8.json)
+and [c5130acf](../planning/deployment-foundation/release-builds/candidate-c5130acf.json)
+records remain historical.
 
-Both gameserver archives receive fresh package scans (41 packages each). Six unchanged
-upstream/rehearsal inventories per tree reuse checksum-bound prior raw scans, with six fresh
-registry manifest/config/platform checks and 24 normalizer executions/12 equality checks.
-Those upstream scans are reused evidence, not new scans. The actual shipped Linux helper
-accepts the build record/intact package and rejects all nine semantic tampering fixtures with
-exact exit 3. All four original/private trees retain their hashes/modes; native build-record
-and intact-package consumers pass too. The manifest-bound source/image secret scan reports
-zero findings across 2,592 tracked files and the actual image archive.
-
-These are local construction/offline helper results. The complete five-path
-`aa5e16e8..e404cce4` record/docs batch has fresh independent corrective approval,
-including its own six-executable/client/content/metadata rebuild, actual image payload
-checks, 28 inventory-normalizer comparisons, six registry reads and native/delivered-Linux
-consumers. Root scanner outputs were independently inspected and hash-bound, not rerun.
-The independently
-approved [`c5130acf` record](../planning/deployment-foundation/release-builds/candidate-c5130acf.json)
-remains historical and predates kernel227/migration87. Earlier invalid scan provenance remains
-in its dated log, not attributed to this reconstruction. Both new trees are one candidate;
-neither is a legitimate predecessor. Accounting, history-guard/hosted CI, RP-770, privacy,
-rights, predecessor provenance and clean-host gates remain open. The proposed native supervisor
-still needs adoption and implementation before conformance proof; the release call remains
-the owner's. This local preview label does not reduce the full nine-tier 1.0 objective.
+This is one local candidate built on ARM64 Desktop with emulated Linux-amd64
+checks. It supplies neither a legitimate predecessor pair nor native clean-host
+R-006 proof. Accounting, history-guard/hosted CI, RP-770, privacy, rights,
+accessibility, full-feature and ending gates remain open. The native supervisor
+still needs adoption and construction. Release approval remains with the owner;
+the local preview label does not reduce the full nine-tier 1.0 objective.
 
 The bundled `deployment-rehearsal` command validates retained release-build records and final R-006
 evidence. Its `run-plan` lane executes a reviewed, manifest-bound command plan directly—never via a

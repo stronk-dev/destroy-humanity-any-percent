@@ -12701,3 +12701,37 @@ Earlier exactaa5e16e8 approval remains historical, not relabelled. These identic
 builds are ONE candidate, not a legitimate predecessor pair or native supported
 host/R-006. Known Clout/history-guard/hostedCI, RP-770, privacy/rights/accessibility,
 fullfeature/later-tier/endings and release/owner adoption gates remain open.
+
+
+## 2026-11-05 — Current runtime candidate evidence independently APPROVED
+
+Review by: fresh independent Codex `/root/current_runtime_artifact_review`.
+Recorded by: Codex root, transcribing actual corrective artifact-evidence verdict.
+**APPROVED**, no actionable findings, complete5-path range
+`a7d5a4a4972cc7cfbdd00f1c7770f3b958a4d670` exclusive through
+`beef6cff87763b0516a688942fc1199589348fa9` inclusive. Runtime/source is still
+exacta7d, kernel228/migration87/epoch8; this verdict adds no runtime bytes.
+
+Independent root-Make rebuild of6Linux binaries,7client files,32content and2
+metadata files matches delivered bytes/modes. Both75-file bundles/74bindings
+and actual33-file image payloads match, including blobs/uncompressed diffIDs,
+owners/modes/source/version.28inventory normalizations/comparisons and6fresh
+registry manifest/config/platform reads pass. Parent's2fresh Syft41-package scans
+and source/image2606-file/findings0 scan are inspected and hash/source-bound,
+NOT independently rescanned. Original upstream scan times/chains stay reused.
+
+Fresh native and actual delivered-Linux consumers accept record/intact0/0;
+all9semantic fixtures exact3/fixture_rejected, no guard fires. Parent4trees and
+client output preserved, work empty,11review containers absent. All reviewer
+processes terminal, zero tracked edits or SQL resources, shared builders/caches
+preserved. One nonblocking editorial nit (“Current that kernel227”) is corrected
+at ordinary closeout; no behavior/check changed. Manifest
+`.cache/current-runtime-artifact-review/review-results.json`, SHA256
+0af4d6220f46dc43a820c09b900c66e8332917e0e504f207c5c7d071308469c7.
+
+Canonical/current pointers now use this exact independently approved local
+artifact. Older records/verdicts remain historical; no rebuild for editorial
+closeout. One candidate remains one candidate, not a legitimate predecessor pair,
+R-006/native-host proof, rights/privacy/CI/full-feature or release approval.
+All accepted full-nine-tier1.0 and owner/adoption gates remain open; no push,
+deployment, archival or new World/Headcount adoption is authorized or inferred.
