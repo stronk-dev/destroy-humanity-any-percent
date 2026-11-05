@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "source_base": "40c14203a813450febf6afb16cd414b88adae119",
+  "source_sha256": {
+    "rfc/world-layer-foundation.md": "2bf0fdab2a4451aca668f9927b3246cff30eda728d913a3c493f174e1a7592aa",
+    "design/05-mmo.md": "c27e04f34bc7f329cd76fe4c5438bd9e89d9b1ea8273221c8d0133e9d41f184f",
+    "design/02-economy-balancing.md": "8c2ff469403bd754b876bb06d55d08afe0e5350e779178b9676b2b828d917dc4",
+    "server/gameserver/world_source.go": "488add059c43ae3abe6efae0651d9395e08ccbccd289eaff5acfd50617e3182a"
+  },
+  "scope": "conditional exact-rational model; not an admitted runtime or selected balance formula",
+  "uniform_counts": [
+    1,
+    200,
+    20000,
+    200000
+  ],
+  "linear_multiplier_uniform_totals": [
+    "1/1",
+    "1/1",
+    "1/1",
+    "1/1"
+  ],
+  "decreasing_multiplier_uniform_totals": [
+    "0/1",
+    "199/1",
+    "19999/1",
+    "199999/1"
+  ],
+  "all_zero_invariance_valid": false,
+  "heterogeneous_groups": [
+    {
+      "count": 1,
+      "raw_per_player": "1000/1"
+    },
+    {
+      "count": 199000,
+      "raw_per_player": "1/1"
+    }
+  ],
+  "raw_ratio": "1000/1",
+  "forced_multiplier_ratio": "1000/1",
+  "forced_credit_ratio": "1000000/1",
+  "decreasing_factor_credit_ratio": "199000000/199999",
+  "separately_normalized_final_weight_ratio": "133000000/133333",
+  "separately_normalized_total": "1/1",
+  "property_outcomes": {
+    "linear_multiplier_meaningful_uniform_invariance": true,
+    "linear_multiplier_pair_non_amplification": false,
+    "decreasing_multiplier_meaningful_uniform_invariance": false,
+    "decreasing_multiplier_pair_non_amplification": true,
+    "decreasing_multiplier_solo_credit_positive": false,
+    "normalized_final_weight_pair_non_amplification": true,
+    "normalized_final_weight_heterogeneous_unit_total": true
+  },
+  "counterfactual_formula_selected": false,
+  "objective_completed": true,
+  "limitations": [
+    "active fraction / raw share / non-amplification are explicit model interpretations",
+    "no curve grammar, ppm rounding, Decimal implementation, real population or pacing proof",
+    "no per-faction ranking, NPC production, zero-population or reward implementation"
+  ]
+}
