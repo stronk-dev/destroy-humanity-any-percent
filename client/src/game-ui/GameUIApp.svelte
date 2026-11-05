@@ -397,6 +397,9 @@
       if (value.run.founder_id !== expectedFounderID) throw new RangeError("next Company snapshot belongs to another Founder");
       if (value.run.run_seq !== expectedRunSeq) throw new RangeError("next Company snapshot did not advance exactly one run");
       bindSnapshot(value);
+      // The previous timer stays terminal through resyncs and failed continuation.
+      // Only the validated next Company begins a new display-clock lifetime.
+      timer = new RTATimer({ serverNowMs: value.server_now_ms, runStartedAtMs: value.run.run_started_at_ms, sampledMonotonicMs: snapshotMonotonicMS });
       ended = undefined;
       offer = undefined;
       exitPlan = [];

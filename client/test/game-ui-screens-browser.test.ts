@@ -1365,6 +1365,48 @@ it.skipIf(typeof document === "undefined")("continues from either terminal state
   await unmount(app); target.remove();
 });
 
+for (const exitType of ["scripted_first", "collapse"] as const) {
+  it.skipIf(typeof document === "undefined")(`starts a fresh running timer after ${exitType} continuation`, async () => {
+    const runtime = new FixtureRuntime(true);
+    runtime.current = { ...snapshot, server_now_ms: ended.payload.started_at_ms + 500,
+      run: { ...snapshot.run, run_started_at_ms: ended.payload.started_at_ms, tier: 1 } };
+    const values = new Map<string, string>();
+    const timingStorage = { getItem: (key: string) => values.get(key) ?? null, setItem: (key: string, value: string) => { values.set(key, value); } };
+    const target = document.createElement("div"); document.body.append(target);
+    const app = mount(GameUIApp, { target, props: { runtime, timingStorage } }) as unknown as AppExports;
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 0)); flushSync();
+      const terminal = { ...ended, payload: { ...ended.payload, exit_type: exitType, tier: 1 } };
+      runtime.listener?.({ kind: "event", revision: 3, scope: "company", value: terminal });
+      app.fixtureMonotonicElapsed(5_000); flushSync();
+      expect(target.querySelector(".cc-titlebar")?.textContent).toContain("Timer: 0:00:01");
+      expect(target.querySelector("main")?.dataset.surface).toBe("run_end");
+      app.fixtureSnapshot({ ...runtime.current, server_now_ms: ended.payload.ended_at_ms + 6_000 });
+      app.fixtureMonotonicElapsed(2_000); flushSync();
+      expect(target.querySelector(".cc-titlebar")?.textContent).toContain("Timer: 0:00:01");
+
+      const nextStarted = terminal.payload.ended_at_ms;
+      const next = { ...snapshot, revision: 4, server_now_ms: nextStarted + 10_000,
+        evaluated_through_ms: nextStarted + 10_000,
+        run: { ...snapshot.run, run_seq: 2, exit_count: 1, tier: 0, run_started_at_ms: nextStarted } };
+      runtime.current = { ...next, run: { ...next.run, run_seq: 3 } };
+      const continuation = [...target.querySelectorAll("button")].find((button) => button.textContent === "Start the Next Company")!;
+      continuation.click(); await new Promise((resolve) => setTimeout(resolve, 0));
+      flushSync();
+      expect(target.querySelector("main")?.dataset.surface).toBe("run_end");
+      expect(target.querySelector(".cc-titlebar")?.textContent).toContain("Timer: 0:00:01");
+      runtime.current = next;
+      continuation.click(); await new Promise((resolve) => setTimeout(resolve, 0));
+      app.fixtureMonotonicElapsed(0); flushSync();
+      expect(target.querySelector("main")?.dataset.surface).toBe("desk");
+      expect(target.querySelector(".cc-titlebar")?.textContent).toContain("Timer: 0:00:10 — PB: 0:00:01");
+      app.fixtureMonotonicElapsed(2_000); flushSync();
+      expect(target.querySelector(".cc-titlebar")?.textContent).toContain("Timer: 0:00:12 — PB: 0:00:01");
+      expect(runtime.requests).toEqual([]);
+    } finally { await unmount(app); target.remove(); }
+  });
+}
+
 it.skipIf(typeof document === "undefined")("passes the C11 axe gate on all five Phase-A surfaces and the two system beats", async () => {
   const target = document.createElement("div"); document.body.append(target);
   const app = mount(GameUIApp, { target, props: { runtime: new FixtureRuntime(false) } }) as unknown as AppExports;

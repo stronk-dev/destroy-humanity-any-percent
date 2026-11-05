@@ -9,10 +9,22 @@ still held on Feed & Dispatch VQ-3. Producer existence is not feature completion
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-## Current queue — 2026-11-04
+## Current queue — 2026-11-05
 
 Continue accepted construction and corrective review; do not repeat green populations
 or expand an uninformative diagnosis into another research campaign.
+
+RP-774: the actual mounted host keeps the prior terminal RTATimer after continuing
+to the next Company. Both scripted and ordinary endings fail in Chromium/WebKit
+at the new-run10s expectation (old clock stays1s), after resample/rejected-successor
+controls pass. The bounded accepted Game UI U1/GU-C4 correction instantiates a
+fresh clock only after exact Founder/run+1 validation and snapshot binding.
+New/adjacent native checks, strict types, full Node and client build pass;
+the complete affected file passes218 native checks (10 performance-only skips).
+Independent corrective review is next.
+No new clock/gameplay/copy/schema/kernel contract or full AC7 claim. The reviewed
+aa5e16e8 package remains source-exact but predates this later UI correction;
+batch future artifact refresh, not a75-file rebuild for every small screen edit.
 
 1. Manual observer/timer/capture/portable-fixture union RP-372/712/713 is
    independently approved at0a185c06. Both negative verdicts remain; no repeat

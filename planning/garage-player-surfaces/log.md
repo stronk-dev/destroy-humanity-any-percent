@@ -8979,3 +8979,50 @@ Root also routes completed RP-374–376 to API's Nov4 verdict and RP-396 to CI's
 next unreviewed corrective scope is RP-397's pending-Exit test oracle. No software
 suite for these editorial status updates, no push/adoption/archival/release;
 the full nine-tier goal remains active.
+
+## 2026-11-05 — Restart the next Company's display timer (RP-774)
+
+Accepted authority: archived Game UI U1/GU-C4's stopped terminal timer and
+server-sample/monotonic running clock, consumed by the accepted Garage host.
+Current source04642f4c keeps one RTATimer after Exit. Its terminal latch makes
+resample intentionally inert, but successful continuation reused that same
+latched object. Actual mounted scripted and ordinary ending→Continue regressions
+fail in both native Chromium/WebKit: Desk/PB advance, new timer stays0:00:01
+instead of its authoritative sampled0:00:10. All4 final old-source cases fail
+exactly at that assertion, after same-run resampling and rejected run+2 controls
+prove the terminal clock stays frozen. Initial restricted Vite listener hits
+EPERM before tests; authorized real loopback run supplies execution evidence.
+
+Correction: after matching the ended Founder/exact run+1 and binding the fresh
+snapshot, construct a new RTATimer with that snapshot's existing monotonic anchor.
+Old terminal stays frozen during resampling and failed continuation. No server
+clock/math/intent/local-timing schema, copy, gameplay or kernel-watched source
+changes; kernel227/epoch8/migration87 stay unchanged. No new RFC/owner choice is
+needed for this accepted-contract conformance repair. No full obituary/AC7 claim.
+
+Executed on unchanged finished source: focused actual native new/adjacent timing
+and continuation8 pass (220 unselected); complete affected native file218 pass,
+10 explicit performance-only skips,17.91s. New clock10→12s on controlled monotonic
+advance, correct prior-run1s PB, existing continuation failure/focus and receipt/
+local split behavior remain covered. The regression uses runtime event delivery,
+real mounted host and actual Continue control; local timing/clock fixture is
+not a real Postgres/server or natural-progress journey. No performance, Firefox,
+full composed, hostedCI or wider feature-acceptance claim follows.
+
+Strict types zero errors/warnings and client build pass. Root mistakenly passed
+an unsupported CLIENT_TEST_FLAGS variable to make test-client; the actual command
+runs the WHOLE Node population, not the intended selector. All12520 pass,1116
+explicit browser/opt-in skips,149 passing/30 skipped files,6.66s. Do not credit
+those skips as browser execution; selected mounted cases above actually run.
+Historical Clout/history-guard CI failures remain separately open; no server
+checks or new fullCI green are inferred from this display-only change.
+
+Raw old/corrected/final native, Node/types/build logs retained under ignored
+`.cache/run-continuation-timer/`; all handles terminal and new regression always
+unmounts in finally, including failure. Formatting/diff checked. Review by:
+Codex root (implementer first filter). Recorded by: Codex root. Complete new
+six-path range after04642f4c needs independent corrective review next. No
+self-approval/archival/publication. The exact aa5e16e8 package now predates this
+later UI fix; retain its approved provenance and batch a future coherent artifact
+refresh, not a full rebuild after every small screen edit. Full nine-tier1.0
+scope and active goal remain unchanged.
