@@ -1,6 +1,6 @@
 # RFC: Public Company Replay Evidence
 
-- **Status:** draft — original proposal independently technically approved 2026-11-05; input-v13 compatibility amendment awaits technical review; owner adoption/body authority pending; not implementation authority.
+- **Status:** draft — original proposal and explicit input-v13 compatibility amendment independently technically approved 2026-11-05; owner adoption/body authority pending; not implementation authority.
 - **Author:** Codex
 - **Created:** 2026-11-05
 - **Design refs:** `design/06-tech.md` (hidden information, server authority, versioned replay); `design/05-mmo.md` (published community formulas).

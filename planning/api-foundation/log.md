@@ -5004,3 +5004,31 @@ already-pending owner question are not silently expanded to this amendment.
 Owner adoption remains required with the actual final scope; do not duplicate the
 existing question or treat a preselection as permission. No software-suite pass
 is claimed for a draft, no RP-606 closure, full-feature/release or goal pause.
+
+## 2026-11-05 — Explicit input13 public-profile amendment technically approved
+
+**APPROVED**, complete three-path `2e0814f7..c8a466e1`.
+Review by: fresh independent Codex `/root/public_company_v13_spec_review`.
+Recorded by: Codex root. Actual source inspection confirms13 retains12's Garden
+carry grammar and ending4 adds only the exact frozen age. Cold Go new-age/Garden/
+refusal cases pass0.395s, actual TypeScript age/Garden replay49/two files pass
+0.736s, complete-range diff check passes. These are explicitly separate existing
+populations, not evidence that the future joined public13/Garden pipeline exists.
+The amendment requires that joined actual-Postgres/HTTP/both-runtime population
+and preserves private originals, old encodings, all strict refusal gates and the
+previous-compromise privacy hold. No normative blocking findings.
+
+Root verifies `.cache/public-company-v13-spec-review/review-results.json` SHA256
+`01d2d4d3c4747b0a178b0b7a45da5158e084e3de8dbc544f623c1a9bbf0f5b94`.
+Reviewer changes no inputs, starts no SQL, all handles terminal, tree clean. One
+editorial finding outside the range is reconciled here: canonical Leaderboards
+docs distinguish the original12 review from the newly reviewed but unadopted13
+amendment. No current endpoint/accepted-body change, published profile or RP-606
+closure follows. The existing unanswered owner question is not silently broadened:
+final adoption must cover the explicit amended scope. No duplicate question,
+preselected approval, feature/release acceptance or goal pause.
+
+Root also finishes RP-773 test-resource cleanup: the task-owned disposable
+`cloud-clicker-postgres-1` container `fb4ec721047e` was inspected against the
+declared compose.save-test service then stopped/removed after all review handles
+returned. Shared networks, builders and caches are preserved; no product data.

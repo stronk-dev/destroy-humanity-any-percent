@@ -173,10 +173,11 @@ resolve.
 Replay-input v13 activates `run_ended` schema v4 with the exact committed post-Exit Founder
 age. Both Go and TypeScript retain the original ending-event bytes for inputs v2–v12;
 old archives are not regenerated. The projector requires a valid age for v4 and refuses
-the field on retained v2/v3 events. The independently reviewed public Company evidence
-draft currently stops at input v12: v13 requires its own reviewed compatibility amendment
-before that proposed public profile can publish it. This correction does not adopt that
-profile or resolve its existing Garden privacy hold.
+the field on retained v2/v3 events. The original public Company evidence review stopped
+at input v12. Its explicit input13/ending4 compatibility amendment now has independent
+technical approval over `2e0814f7..c8a466e1`, but remains unadopted and unimplemented.
+The joined Garden/public-download acceptance population is still required. Neither
+this correction nor that proposal resolves the existing Garden privacy hold.
 
 The live run log now separates the three replay facts: canonical payload is what the player said,
 `replay_inputs` is what the server resolved, and receipt/events are what happened. New Company log
