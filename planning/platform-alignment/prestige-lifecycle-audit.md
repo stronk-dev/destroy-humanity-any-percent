@@ -92,12 +92,14 @@ sit in the same future designated-review range; audit inference is not such a ra
 The foundational implementation was `8e269a7`, `09e7363`, `ef6e6f7`, `c3c58b9`, and the
 Leaderboards integration `ce0a5ec`; review remediation landed in `0a7f129` and `4589a64`.
 Historical log entries describe adversarial reviews of the original lifecycle and `0a7f129`, but
-they do not name `Review by:` or `Recorded by:` and cite pre-rewrite hashes. The only text that
-describes a diff review covering the final P5c/P2d remediation is
-`planning/archive/codex-fixes-2026-07-30.md`; that file is now a tracked, explicitly noncanonical
-historical queue, but it still lacks explicit reviewer provenance and therefore does not satisfy
-the current review gate. The tracked Prestige plan correctly leaves “Record independent review
-before archival” open.
+they do not name `Review by:` or `Recorded by:` and cite pre-rewrite hashes. The historical
+`planning/archive/codex-fixes-2026-07-30.md` diff review also lacks explicit reviewer provenance;
+its identity is not inferred retrospectively. On2026-11-05 a fresh independent Codex corrective
+review explicitly APPROVES all four paths of the final P5c/P2d remediation,
+`d9d8ad59..4589a642`. The owning Prestige log records actual current-source Go/client/Postgres
+execution, reproduced old Decimal mismatch and a failing private offer-guard control. This
+repairs that correction's fresh-review gap, not original foundational/full archival coverage.
+The tracked Prestige plan correctly leaves “Record independent review before archival” open.
 
 Under the current two-gate law, Prestige needs a new tracked designated cross-party adversarial
 verdict whose cited post-rewrite ranges union every implementation and remediation commit it

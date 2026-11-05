@@ -6,8 +6,10 @@
 - **Current closeout:** D2–D5/P3–P5 and canonical docs reconciled to current behavior and D-012;
   AC2–AC6 witnesses have Claude's designated approval (`fbc2452^..c50744d`), and item6's
   epoch-8 pacing evidence has Codex's designated approval (`a965538e^..a965538e`; see log).
-  Next: reconcile complete implementation/review coverage for item9; neither verdict alone
-  authorizes archival or approves later Codex-authored corrections.
+  The final P5c/P2d corrective four-path range `d9d8ad59..4589a642` now also has
+  fresh independent Codex approval under Marco's corrective-review delegation.
+  Next: reconcile complete foundational implementation/review coverage for item9;
+  these scoped verdicts do not authorize archival or approve adjacent changes.
 
 1. [x] Add save v7 Company/Founder state, validation, migrations, and corpus fixtures.
 2. [x] Implement cross-runtime prestige arithmetic and declarative Phase-0 policy.

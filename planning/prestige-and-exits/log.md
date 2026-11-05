@@ -371,3 +371,35 @@ Codex's cross-party review of this range.
   satisfied. Reconcile the stale plan header to the existing AC2–AC6 approval and this verdict.
   Item9 stays open: no archival, uncovered-range approval, later Codex implementation approval,
   release, push, balance/epoch change or owner/draft adoption follows from this review.
+
+## 2026-11-05 — Final first-exit/payout correction freshly reviewed
+
+APPROVED, no findings, corrective scope only: complete four-path range
+d9d8ad590b1fade049e3a804f114673d2ec92373..
+4589a642cc1c951fd73ec0d50f37d7c9471a119b.
+Review by: fresh independent Codex `/root/prestige_final_corrective_review`.
+Recorded by: Codex root, transcribing its independently executed verdict.
+
+Standing corrective-review delegation permits this P5c/P2d correction review,
+not acceptance of the whole original feature. The reviewer inspects all four
+historical changed paths and the accepted first-exit suppression/exact-integer
+rules. At current source8e5f9754, cold Go Prestige93840, client Prestige83395
+(16 cases), affected vet and whitespace pass. Actual declared Postgres81716
+passes0.82s/no skips, including suppressed pre-first offers and later-run offer
+acceptance. Private Go overlay59039 removing ONLY the current zero-exit guard
+fails the intended suppression case with forbidden non-null OfferState. The
+independently re-executed old Decimal expression returns6755399441055740 versus
+the correct exact-integer6755399441055741. No main-tree mutation occurs.
+
+These are current-source executions supporting historical diff inspection,
+not execution of historical4589a642. SQL uses epoch5 fixtures; no natural
+current-player/full-feature/native-host acceptance. Actual test images are
+Linux-amd64. All handles terminal; newly owned Postgres container removed,
+pre-existing network/compiler/module caches and unrelated resources preserved;
+SQL ownership released. No tracked reviewer edits/commits.
+
+Legacy4638e23 maps to4589a642 in the retained rewrite map; old anonymous review
+notes are not relabelled. Plan/audit/backlog now distinguish this explicit
+four-path corrective approval from the still-missing full foundational/archival
+union. RP-038 remains open. No code, balance, epoch, schema, feature status,
+archival, publication, deployment or goal status changes in this closeout.
