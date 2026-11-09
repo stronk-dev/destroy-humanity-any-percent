@@ -68,6 +68,13 @@ reconcile parent bodies under the actual delegation and implement adopted
 contract dependencies with their full producer/native/clean-host proof. No
 product implementation or goal pause is claimed at this checkpoint.
 
+**Incomplete package refresh, rechecked 2026-11-09:** source `85e1d158`,
+kernel0.3.229. Both local component builds match; image construction, package
+assembly and delivered-Linux checks remain unexecuted because Docker's Engine
+still times out. The restart question is unanswered. The [latest log entry](log.md)
+identifies retained outputs, completed checks and resumption requirements.
+The independently approved kernel228 artifact below remains current.
+
 **Current independently approved artifact,2026-11-05:** source `a7d5a4a4`,
 kernel0.3.228/migration87/epoch8, includes reviewed RP-774/RP-776. Matching two
 75-file/mode trees/74bindings, actual33-file image payloads, fresh gameserver/
