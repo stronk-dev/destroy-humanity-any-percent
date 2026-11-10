@@ -44,7 +44,24 @@ Make orchestration controls discriminate; source-matched independent Linux
 browser/performance evidence is reused with attribution. Shared setup and RP-706
 retain separate approvals; original timeout/reliability and hosted timing stay open.
 
-## Current checkpoint — 2026-11-02
+## Current hosted evidence — 2026-11-10
+
+Published `6afc0b5e` failed CI. Harness, composed Game UI and schema passed.
+Client failed the existing kernel history guard. Server and browser were
+canceled. The two additional server failures have independent local fixes
+(RP-780 and RP-781). The 27 Clout partition failures remain open.
+
+RP-782 identifies where this browser run lost its budget. Playwright setup
+took 570.728 seconds and the broad suite ran for only 2.160 seconds before
+cancellation. Ubuntu package transfers took 8 minutes 51 seconds. Earlier
+complete runs also exceeded the five-minute requirement, so both setup and
+test time need measurement. [CI run](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/42797873549)
+
+Scheduled maintenance at `d6b1c668` hit its 50-minute limit and the harness
+observation failed local validation. Numeric maintenance passed. Both
+Reputation reports drifted. [Run and artifact evidence](log.md)
+
+## Earlier checkpoint — 2026-11-02
 
 The accepted contract remains RFC D2/D3: all six blocking jobs, the complete
 three-engine functional population, separate native Typer and isolated Chromium
@@ -52,7 +69,7 @@ performance, strict hosted workflow under five minutes. The ten-minute local
 container guard is containment, not an enlarged acceptance budget. No push/release
 or specification adoption follows from a focused pass.
 
-**Latest inspected hosted evidence,2026-11-04:** fresh public API reads confirm
+**Earlier hosted evidence, 2026-11-04:** fresh public API reads confirm
 remote main remains d6b1c668 and CI41476621196 remains the latest CI run, completed
 failure. Browser (all phases), composed, harness and schema pass; server retains27
 Clout partition failures and client retains historical50a3a514. Browser436s/

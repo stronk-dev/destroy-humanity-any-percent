@@ -4844,3 +4844,21 @@ The local `make harness-observation-check` rejected it as incomplete.
 Job logs and the downloaded observation are retained under
 `.cache/hosted-2026-11-10`. No run was rerun and the recorded hosted failures
 remain at their original source coordinates.
+
+## 2026-11-10 — Attribute the hosted browser cancellation to setup time
+
+Browser job 129767572170 on `6afc0b5e` spent 570.728 seconds between
+the Playwright install step and `make test-browser`. The Ubuntu package
+fetch logged 114 MB in 8 minutes 51 seconds. The Playwright browser
+downloads followed. The broad suite started 2.160 seconds before
+cancellation. This bounds how much of the suite could have run and
+distinguishes RP-782 from a test failure.
+
+The retained browser log has SHA-256
+`8c72ca2c57bfda087bae1f895fa6e34451df9344a014c98fd4fdd002c23555d6`.
+Earlier complete hosted jobs exceeded the five-minute acceptance floor,
+so a faster install alone has unproven end-to-end timing. The existing
+pinned Linux-amd64 Playwright image has 947,006,567 compressed layer bytes.
+A switch to preinstalled browsers would need cold setup measurements and
+an explicit revision to D2's hosted installation contract. Keep the
+complete three-engine population and separate performance phase.
