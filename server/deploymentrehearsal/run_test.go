@@ -1,6 +1,7 @@
 package deploymentrehearsal
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"os"
@@ -343,6 +344,16 @@ func TestBaseRunRejectsRehashedOperatorAuthority(t *testing.T) {
 			data = append(data, '\n')
 			if _, err := deploymentbrowser.DecodeResult(data); err != nil {
 				t.Fatalf("forged browser result must stay schema-valid: %v", err)
+			}
+			mustRewrite(t, path, data)
+			setArtifactDigest(base, "browser_result", hashBytes(data))
+		},
+		"browser result omits failed intent count": func(t *testing.T, fixture *boundFixture, base *Evidence) {
+			path := filepath.Join(fixture.artifactsDirectory, requiredRunArtifactFiles["browser_result"])
+			original := mustRead(t, path)
+			data := bytes.Replace(original, []byte(`"failed_intent_count":0,`), nil, 1)
+			if bytes.Equal(data, original) {
+				t.Fatal("fixture lacks the failure count")
 			}
 			mustRewrite(t, path, data)
 			setArtifactDigest(base, "browser_result", hashBytes(data))

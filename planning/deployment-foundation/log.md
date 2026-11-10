@@ -12851,3 +12851,24 @@ overlay. The full cold release package and vet passed. An overlay that
 allowed migration gaps left the live-chain positive green but failed the
 new missing-version fixture. RP-780 is closed. The affected Linux package
 also passed in the combined local test. Hosted CI and R-006 remain open.
+
+## 2026-11-11 — Require explicit browser observations in R-006 evidence (RP-784)
+
+Under Deployment AC10, the browser result must establish that the journey
+reported zero failed intents and exceptions and did not exhaust its guard.
+The old decoder accepted an omitted count, null observations, a case alias
+and a duplicate that overwrote a failed-intent count of one. The old base-run
+validator also accepted the result with the missing count after its digest
+was updated in the dossier.
+
+The shared decoder now requires each declared member exactly once, with its
+exact name and a non-null value, before checking types and outcomes. Both
+the browser runner and dossier verifier use it. The producer's existing
+schema and serialized output stay the same.
+
+The five new decoder negatives and the rehashed-dossier negative failed on
+the old code. The corrected cold browser and rehearsal packages and their
+commands pass, along with vet and diff checks. This is a local check of the
+evidence readers. The approved `85e1d158` bundle predates this correction.
+Review by: Codex root (implementer check).
+Recorded by: Codex root. Independent corrective review pending.

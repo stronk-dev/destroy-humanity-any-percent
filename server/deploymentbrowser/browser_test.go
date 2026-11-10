@@ -1,6 +1,7 @@
 package deploymentbrowser
 
 import (
+	"bytes"
 	"encoding/json"
 	"os"
 	"path/filepath"
@@ -75,16 +76,29 @@ func TestDecodeBrowserResultRejectsUnknownTrailingAndInvalidEvidence(t *testing.
 	if _, err := DecodeResult(data); err != nil {
 		t.Fatal(err)
 	}
+	withoutFailedCount := bytes.Replace(data, []byte(`"failed_intent_count":0,`), nil, 1)
+	if bytes.Equal(withoutFailedCount, data) {
+		t.Fatal("fixture lacks the failure count")
+	}
 	for name, mutated := range map[string][]byte{
-		"unknown":  append(append([]byte(nil), data[:len(data)-1]...), []byte(`,"summary":"passed"}`)...),
-		"trailing": append(append([]byte(nil), data...), []byte(` {}`)...),
-		"invalid":  []byte(`{"schema_version":1}`),
+		"unknown":              append(append([]byte(nil), data[:len(data)-1]...), []byte(`,"summary":"passed"}`)...),
+		"trailing":             append(append([]byte(nil), data...), []byte(` {}`)...),
+		"invalid":              []byte(`{"schema_version":1}`),
+		"missing failed count": withoutFailedCount,
+		"null page exceptions": bytes.Replace(data, []byte(`"page_exception_count":0`), []byte(`"page_exception_count":null`), 1),
+		"null guard status":    bytes.Replace(data, []byte(`"guard_exhausted":false`), []byte(`"guard_exhausted":null`), 1),
+		"case alias":           bytes.Replace(data, []byte(`"guard_exhausted"`), []byte(`"Guard_Exhausted"`), 1),
+		"overwritten failure":  append([]byte(`{"failed_intent_\u0063ount":1,`), data[1:]...),
 	} {
 		t.Run(name, func(t *testing.T) {
 			if _, err := DecodeResult(mutated); err == nil {
 				t.Fatal("invalid browser evidence accepted")
 			}
 		})
+	}
+	escaped := bytes.Replace(data, []byte(`"guard_exhausted"`), []byte(`"guard_\u0065xhausted"`), 1)
+	if _, err := DecodeResult(escaped); err != nil {
+		t.Fatalf("valid escaped member rejected: %v", err)
 	}
 }
 

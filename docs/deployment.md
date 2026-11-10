@@ -460,10 +460,12 @@ of the plan rows assigned to that step. A plausible evidence JSON with invented 
 handwritten step summaries is invalid even when its standalone shape is correct. The three tool
 identities must equal the executable bytes of `deployment-rehearsal`, `deployment-release` and
 `deployment-browser` in that candidate bundle; a changed, non-executable or symlinked tool rejects.
-The browser and journal artifacts are decoded through their owning production contracts after
-their hashes match: unknown/trailing fields, an incomplete browser outcome, a different candidate
-manifest, an invalid journal budget/retention observation or a time interval outside the run all
-reject even if the forged bytes are rehashed into the top-level evidence.
+The browser and journal artifacts are decoded through their owning contracts after their hashes
+match. The browser result requires every observation exactly once, with its exact member name and
+a non-null value. This includes the exception count, failed intent count and guard status even
+when their values are zero or false. Unknown members, trailing JSON, an incomplete browser
+outcome, a different candidate manifest, an invalid journal budget or retention observation, and
+a time interval outside the run all reject even if the bytes are rehashed into the top-level evidence.
 
 The host and recovery-objective artifacts are also strict timed observations. Their decoded host
 and objective values must equal the corresponding top-level evidence field by field (with times
