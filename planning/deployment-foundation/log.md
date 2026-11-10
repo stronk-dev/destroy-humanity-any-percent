@@ -12838,3 +12838,16 @@ version 3 after 2 is added. No migration or package production code changed.
 Make selector matched zero tests after expansion. The corrected selector
 ran the failing test and the final full package run executed its replacement.
 Independent review is pending.
+
+
+## 2026-11-10 — Approve the migration witness correction
+
+Review by: independent Codex `/root/migration_witness_review`.
+Recorded by: Codex root. **APPROVED** for all three paths in
+`c1d342c60238001ca485855202064c64bff5066a..1e649b8799a18542b42c20b288e3aab6519eb155`.
+
+The reviewer reproduced the exact old version-87 failure using a private
+overlay. The full cold release package and vet passed. An overlay that
+allowed migration gaps left the live-chain positive green but failed the
+new missing-version fixture. RP-780 is closed. The affected Linux package
+also passed in the combined local test. Hosted CI and R-006 remain open.
