@@ -7,8 +7,8 @@
 **2026-11-11 RP-785:** the live restart notice can omit its zero stream offset.
 The corrected browser waits before reconnecting and preserves its saved
 position. The exact `5a71dbe0..12efc365` source correction is independently
-approved after old-failing runtime and real Caddy/Postgres recovery checks.
-Refresh the bundle and repeat the packaged path. [Transport evidence](log.md)
+approved. The refreshed `2f366a90` bundle independently passed the real
+Caddy/Postgres restart check with its packaged site. [Transport evidence](log.md)
 
 2026-11-05 RP-769 corrective batch: PlayerRelay's Flush serializer now honors
 waiting callers' cancellation/deadlines before claiming more work. Real locked-

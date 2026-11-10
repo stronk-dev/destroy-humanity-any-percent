@@ -13050,3 +13050,27 @@ The driver and raw evidence are in the ignored
 and matching rebuild/probe directories. This is local Chromium evidence
 on the exact package, with emulated amd64 services. The compliant
 predecessor, supported-host R-006 and full player/release acceptance remain open.
+
+## 2026-11-11 — Independent approval of the packaged restart evidence
+
+APPROVED complete two-path `2f366a90..f90e2a2d`.
+Review by: fresh independent Codex `/root/packaged_restart_release_review`.
+Recorded by: Codex root.
+
+The reviewer rebuilt the standard client and matched all seven files,
+checked six 75-file trees and all 74 manifest bindings, and verified both
+image payloads, the six unchanged executables and the seven SBOM bindings.
+The reviewer inspected the root scans, registry and inventory chains, and
+the eleven original probe results. The delivered Linux helper independently
+accepted the record and rejected a removed client with exit 3. An initial
+reviewer probe on separate bind mounts refused its setup, so the corrected
+run used one bind for the scratch directory and test copy.
+
+The independent Chromium run served the same read-only packaged site.
+Both sockets closed with 4003, all observed state reads returned 200, and
+the app reopened after 15,014 ms and committed revision 3 on the same page.
+Browser log SHA-256
+`b933b37009c87543989d41d23150a87e91ae2ece45ad06a64e35cc93f2768077`.
+The disposable test containers, networks and synthetic-data volumes were
+removed. RP-785 is closed. `2f366a90` is the latest independently reviewed
+local candidate. Supported-host R-006 and predecessor compatibility remain open.

@@ -69,12 +69,12 @@ contract dependencies with their full producer/native/clean-host proof. No
 product implementation or goal pause is claimed at this checkpoint.
 
 **Current independently approved local artifact, 2026-11-11.** Source
-`00ee0e69`, kernel 0.3.229, migration 87, epoch 8. The package includes the
-RP-781 shutdown fix and RP-784 browser evidence correction. Both 75-file
-bundles match. Independent review of `00ee0e69..6bb51594` rebuilt the changed
-executables and checked the image, manifest and delivered Linux helper.
-The [build record](release-builds/candidate-00ee0e69.json) and [log](log.md)
-record exact checks and limits. `85e1d158` retains its earlier verdict.
+`2f366a90`, kernel 0.3.229, migration 87, epoch 8. Both 75-file bundles match.
+Independent review of `2f366a90..f90e2a2d` rebuilt the client, checked the
+image, manifest and delivered Linux helper, and repeated same-page restart
+recovery through Caddy with the packaged site. RP-785 is closed.
+The [build record](release-builds/candidate-2f366a90.json) and [log](log.md)
+record exact checks and limits. Earlier packages retain their verdicts.
 Supported-host R-006 and predecessor compatibility remain open.
 
 **Previous independently approved artifact, 2026-11-05:** source `a7d5a4a4`,
@@ -1553,7 +1553,7 @@ For coherent batches, follow RFC-0000's adopted risk-based delivery procedure:
 | Wave | Scope | State |
 |---|---|---|
 | DP-F1 | Initial-install command plus exact rehearsal schema/validator and sanitized evidence contract | implemented locally at `b9d7c8a`; review remains in the DP-F range |
-| DP-F2 | Reproducible exact candidate/previous bundle build, seven image SBOMs/config identities, source/image secret scan, retained build ledger, fixed-command driver and non-circular final-evidence seal | two full byte-identical local candidate builds at `102face6` with seven independent fresh image scans, correct amd64 config identities, retained record and structured scan. Historical `7e8aa70` builds remain invalid. Source44a4a72 is now independently reconstructed, but fails the current Compose/Caddy floor (RP-514); establish a reviewed floor-compliant predecessor rather than retry artifact recovery. Full supported pair/supply-chain proof and remaining producer/author gates stay open; no R-006 run or designated verdict. |
+| DP-F2 | Reproducible exact candidate/previous bundle build, seven image SBOMs/config identities, source/image secret scan, retained build ledger, fixed-command driver and non-circular final-evidence seal | Two matching local builds at `2f366a90` with independently reviewed artifact and packaged restart evidence. Reconstructed source `44a4a72` fails the current Compose/Caddy floor (RP-514). A reviewed floor-compliant predecessor, full supported pair proof and remaining producer/author gates stay open. |
 | DP-F3 | Clean Linux/amd64 host install, browser flow, backup/restart/restore/rollback, alert delivery, journal measurement and RPO/RTO observation with no checkout/providers | requires the refreshed exact candidate/retained previous pair from DP-F2, explicit clean-host target authority and required designated review boundaries |
 | DP-F4 | R-006 dossier, canonical runbook/limitations, backlog/queue/RFC closeout and full-range first-filter | blocked on DP-F3 and designated approvals for DP-A–DP-E |
 
