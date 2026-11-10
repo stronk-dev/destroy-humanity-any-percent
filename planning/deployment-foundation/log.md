@@ -12886,3 +12886,39 @@ pass, as do vet and the range diff check. The reviewer confirmed that the
 runner and both dossier validators use the shared decoder and that valid
 v2 producer output supplies all 21 observations. RP-784 is closed.
 Artifact rebuilding and the clean-host rehearsal remain open.
+
+## 2026-11-11 — Rebuild the local package with the shutdown and evidence fixes
+
+Clean source `00ee0e69ea070a0ed6f7a572645a811f90506426`, kernel 0.3.229,
+migration 87 and epoch 8. Separate builds matched all six Linux executables,
+seven client files, 32 staged content files and two metadata outputs. Compared
+with `85e1d158`, the gameserver contains the RP-781 shutdown fix and both
+rehearsal executables contain the RP-784 decoder change. The generated client
+and staged content match the previous package.
+
+Both no-cache Linux/amd64 image builds used the pinned BuildKit builder and
+produced identical archives. Blob, uncompressed layer and 33 payload-file
+checks bind the image to the fresh executables and content, including modes
+and ownership. Two fresh Syft scans each found 41 gameserver packages and
+normalize to the same bytes. The six unchanged upstream image inventories
+in each build retain their scan provenance. Six fresh registry identity
+checks, 24 normalizations and 18 within-build and cross-build comparisons passed.
+
+The bundles match all 75 file hashes and modes and all 74 manifest bindings.
+Manifest `sha256:10f2bfb9bc454c908c175c58ab7fb8159cc70fd4a27a74a99ee6127f04403b0e`.
+Image archive `sha256:5f88e986ea5192ed828332e28cf0fdba74c95001f7e6e0ca7b23a7573eac456e`.
+Native and delivered Linux helpers accepted the build record and intact
+package. All nine delivered Linux tamper cases returned exit 3 with
+`fixture_rejected`. The four original and probe trees retained their
+hashes and modes. Both scratch directories are empty and the eleven probe
+containers are gone. The manifest-bound scan of 2,613 exact-source tracked
+files and the new image archive returned zero findings.
+
+The first staging attempt named the Dockerfile incorrectly and the first
+native package probe supplied relative paths. Both were corrected, and
+only the completed runs count. Raw evidence is under
+`.cache/release-current-00ee0e69`, `.cache/release-rebuild-00ee0e69` and
+`.cache/release-linux-probes-00ee0e69`. The [candidate build record](release-builds/candidate-00ee0e69.json)
+is ready for independent review. The prior package remains the latest
+independently approved one until that verdict. Predecessor compatibility
+and R-006 on a supported clean host remain open.
