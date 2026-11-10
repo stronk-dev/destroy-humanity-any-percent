@@ -6,8 +6,8 @@ import { fileURLToPath } from "node:url";
 import { isDeepStrictEqual } from "node:util";
 
 import { chromium } from "playwright";
-import { build, createServer, preview } from "vite";
-import { productionClientFiles, productionClientProof } from "./production-client-proof.mjs";
+import { createServer, preview } from "vite";
+import { buildProductionClient, productionClientFiles, productionClientProof } from "./production-client-proof.mjs";
 import { assertOpportunityClaimEffect, assertOpportunityReadStatus, assertQueuedOpportunityClaim } from "./opportunity-claim-proof.mjs";
 import { parents as refreshTests, refreshPopulationObserver } from "./observe-refresh-population.mjs";
 import { composedMode, observeManualBudget } from "./observe-manual-budget.mjs";
@@ -1123,7 +1123,7 @@ async function playPitchThroughUI(page, accessToken) {
 
 try {
   await waitForReady();
-  await build({ configFile: path.join(clientRoot, "vite.config.ts"), root: clientRoot });
+  buildProductionClient(repositoryRoot);
   const builtFiles = productionClientFiles(path.join(clientRoot, "dist"));
   // Test-side expected-value helpers still evaluate their source modules. This
   // HTTP middleware-only server is not listened and cannot serve the browser journey.

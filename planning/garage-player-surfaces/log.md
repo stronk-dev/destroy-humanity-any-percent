@@ -9103,3 +9103,32 @@ privacy/rights/release approval. Exact packageaa5e16e8 still predates later UI
 fix; no repeat packaging for this test-only supplement. Founder-age label/copy
 adoption question is delivered, unanswered, not implied by technical review or
 preselection. Continue independent accepted work; full nine-tier1.0 goal ACTIVE.
+
+## 2026-11-11 — Use the packaging client build in composed journeys (RP-783)
+
+The completed `32c6069e` run served `index-BaoHC12e.js` and
+`index-D3Y-gOYp.css` for main, Reputation and Tier 2. Garden and the
+approved `85e1d158` package used `index-ChJuJUbv.js` and
+`index-BvZnpxAX.css`. The old drivers invoked Vite from the repository root,
+which changes Svelte's CSS scope hashes. The old output and log are retained
+under `.cache/hosted-2026-11-10/`.
+
+The positive main, Tier 2 and Cosmetic drivers now use `make build-client`.
+Cosmetic copies the generated directory into its private fixture, including
+for Reputation and the axis-stack run. The N5 fault injections still build
+their own instrumented variants. Garden already uses the standard target.
+
+The full `make test-game-ui-composed` target exited 0 with the declared ARM64
+Postgres override. All 35 fixtures passed, as did the main journey with both
+next-Company clocks and actual process-loss recovery, both Cosmetic paths,
+Reputation, both N5 refusals, Garden and the controlled Tier 2 journey.
+Main, Reputation, Garden and Tier 2 observed the packaged asset names,
+verified the response bytes and started the bundled worker. All seven
+generated files match the approved local package byte for byte. Packaging
+adds its separate third-party notices file. The local run uses its test
+gameserver and database, so R-006 and hosted verification remain open.
+
+Corrected raw log SHA-256
+`dd0f800d54a797c5ee69f5e4adf14504aeff6aecc24ae7c9937e6d9c2e7bb390`.
+Review by: Codex root (implementer check).
+Recorded by: Codex root. Independent corrective review pending.

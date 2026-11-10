@@ -1,5 +1,14 @@
+import { spawnSync } from "node:child_process";
 import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
+
+export function buildProductionClient(repositoryRoot) {
+  const result = spawnSync("make", ["build-client"], { cwd: repositoryRoot, stdio: "inherit" });
+  if (result.error) throw result.error;
+  if (result.status !== 0) {
+    throw new Error(`production client build failed: ${result.signal ?? `exit ${result.status}`}`);
+  }
+}
 
 // Snapshot the just-built bytes before serving them; a dev server or a stale
 // bundle must not count as a production-client journey.

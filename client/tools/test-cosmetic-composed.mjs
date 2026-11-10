@@ -1,7 +1,7 @@
 import { spawn, spawnSync } from "node:child_process";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { copyFileSync, cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { createServer as createHTTPServer, request as httpRequest } from "node:http";
 import { createServer as createTCPServer, connect as connectTCP } from "node:net";
 import os from "node:os";
@@ -13,6 +13,7 @@ import { build } from "vite";
 import { activateCosmeticBuy, assertNativeCosmeticBuyTrace, installCosmeticBuyFocusTrace } from "./activate-cosmetic-buy.mjs";
 import { assertCareSnapshot } from "./care-snapshot-proof.mjs";
 import { cosmeticN5Fixture, n5CleanupMarker, n5Faults, n5RejectionPrefix } from "./cosmetic-n5-fixture.mjs";
+import { buildProductionClient } from "./production-client-proof.mjs";
 import { witnessReputation } from "./reputation-composed.mjs";
 
 const args = process.argv.slice(2);
@@ -678,8 +679,13 @@ try {
   gameserver.stderr.on("data", (value) => process.stderr.write(value));
   gameserver.on("error", (error) => processErrors.push(error));
   await waitForReady();
-  await build({ configFile: path.join(clientRoot, "vite.config.ts"), root: clientRoot, logLevel: "error",
-    build: { outDir: clientDist, emptyOutDir: true }, plugins: n5Fault ? [cosmeticN5Fixture(n5Fault)] : [] });
+  if (n5Fault) {
+    await build({ configFile: path.join(clientRoot, "vite.config.ts"), root: clientRoot, logLevel: "error",
+      build: { outDir: clientDist, emptyOutDir: true }, plugins: [cosmeticN5Fixture(n5Fault)] });
+  } else {
+    buildProductionClient(repositoryRoot);
+    cpSync(path.join(clientRoot, "dist"), clientDist, { recursive: true });
+  }
   staticServer = await serveBuiltClient();
   browser = await chromium.launch({ headless: true });
   const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
