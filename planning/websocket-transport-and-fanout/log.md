@@ -1445,3 +1445,25 @@ registration checks pass. Cold Linux-amd64/Postgres suites pass for
 checks pass. The focused SQL race check is still running. Independent
 corrective review remains pending. The approved local release bundle
 predates this runtime correction.
+
+
+## 2026-11-10 — Approve the drain close code correction
+
+Review by: independent Codex `/root/drain_close_corrective_review`.
+Recorded by: Codex root. **APPROVED** for all five paths in
+`1e649b8799a18542b42c20b288e3aab6519eb155..78c4f0b9d578a62b6b463e70d72c065d5979d7c9`.
+
+The reviewer checked every startup and drain path, the sole Centrifuge
+constructor and the pinned library's asynchronous disconnect behavior.
+The exact old-source overlay fails on a real WebSocket with 3001. The
+corrected shutdown, pending connect and late registration checks pass
+eight native race repetitions. Five adjacent drain and readiness tests,
+vet, formatting and the range whitespace check pass. The reviewer
+inspected the parent's passing three-package Linux/Postgres run.
+RP-781 is closed. Hosted CI and R-006 remain open.
+
+The parent Linux-amd64/Postgres race run completed all 16 Guild and Commons
+cases at the same transport source. Each observed 4003 with the table lock
+still held and verified that the membership wait cleared within the original
+bound. The test container exited and the Postgres service started for this
+batch was stopped. Logs are under `.cache/hosted-2026-11-10`.
