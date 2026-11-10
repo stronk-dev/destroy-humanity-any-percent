@@ -12978,3 +12978,35 @@ This covers packaged startup, a persisted player action and same-page
 recovery on the local emulated stack. The delivered Linux browser driver,
 natural progression to the next Company, backup/rollback, operations and
 supported-host R-006 remain outside this observation.
+
+## 2026-11-11 — Independent package restart rerun exposes a recovery defect (RP-785)
+
+CHANGES REQUIRED for the one-path evidence range `ef5bbb83..5a71dbe0`.
+Review by: fresh independent Codex `/root/package_browser_restart_evidence_review`.
+Recorded by: Codex root.
+
+The exact independent driver reproduced bootstrap, revision 2, graceful
+gameserver exit 0 and passive courtesy/4003, then exited 1 because the app
+failed to reconnect within 60 seconds. The original recovery result remains
+one successful observation. Root's subsequent exact-package wire capture
+showed an omitted publication offset, envelope revision 0 and an advertised
+15,000 ms delay. The app called close and issued a state read that returned
+502 during shutdown. No new socket opened within the 20-second diagnostic
+guard. The independent log hash is
+`1162b2231408432d779e6dee43a1d80b4b13eff3c6963b7fec5d4844c68baf73`.
+The wire diagnostic log hash is
+`d9bc8f9f7e22650c994eab698d199562f8ee4bd7ba7b44b7b5b3eeecebe7aaf2`.
+
+The previous no-external-requests statement covers the routed requests
+of the test browser context and the page's WebSocket events. The test did
+not inspect all process or container egress.
+
+With only the corrected built client substituted at Caddy's site mount,
+both sockets receive close 4003 and the app makes no local close call.
+No snapshot read returns an error. The browser opens a new socket
+15,019 ms after the courtesy frame, retains revision 2 and commits the
+next visible action at revision 3 on the same page. The fixed log hash is
+`ef1a26e0f98d9afc69a58a0d0450d66cc562cb56343566a304dce23d802f9cb4`.
+The exact `00ee0e69` bundle still contains the old client. A fresh bundle
+and rerun on its unchanged site remain necessary. The Transport log owns
+the corrective review.

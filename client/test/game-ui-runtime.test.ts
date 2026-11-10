@@ -441,7 +441,7 @@ describe("browser Game UI runtime", () => {
     expect(JSON.parse(sockets[3].sent[1]).subscribe).toEqual({ channel: `player:${snapshot.run.founder_id}` });
   });
 
-  it("full-syncs overflow and invalid frames, delays drain recovery, and fails credential expiry visibly", async () => {
+  it.each([undefined, 0])("full-syncs invalid frames, delays drain recovery (offset %s), and fails credential expiry visibly", async (offset) => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-08-21T12:00:00Z"));
     const storage = new MemoryStorage();
@@ -466,10 +466,17 @@ describe("browser Game UI runtime", () => {
     await vi.runAllTimersAsync();
     await vi.waitFor(() => expect(sockets).toHaveLength(3));
     openAndConnect(sockets[2]); subscribeReplies(sockets[2]);
-    publication(sockets[2], "world", 0, { v: 2, ch: "world", kind: "system", rev: 0, constants_hash: snapshot.constants_hash, ts: "2026-08-21T12:00:00Z", payload: { code: "server_restarting", resume_after_ms: 5000 } });
+    // Centrifuge omits the zero offset on live-only publications.
+    sockets[2].reply({ push: { channel: "world", pub: { offset, data: {
+      v: 2, ch: "world", kind: "system", rev: 0, constants_hash: snapshot.constants_hash,
+      ts: "2026-08-21T12:00:00Z", payload: { code: "server_restarting", resume_after_ms: 5000 },
+    } } } });
+    expect(received.at(-1)).toEqual({ kind: "system", value: { kind: "server_restarting", resume_after_ms: 5000 } });
+    expect(sockets[2].closeCount).toBe(0);
     sockets[2].emit("close", { code: 4003 });
     await vi.advanceTimersByTimeAsync(4999);
     expect(sockets).toHaveLength(3);
+    expect(snapshots).toBe(2);
     await vi.advanceTimersByTimeAsync(1);
     expect(sockets).toHaveLength(4);
     openAndConnect(sockets[3]); subscribeReplies(sockets[3], { recovered: true });
@@ -477,6 +484,32 @@ describe("browser Game UI runtime", () => {
     await vi.runAllTimersAsync();
     expect(sockets).toHaveLength(4);
     expect(received.at(-1)).toEqual({ kind: "transport_closed" });
+  });
+
+  it.each(["live receipt", "null offset", "recovered courtesy"])("resyncs on %s without an admissible offset", (kind) => {
+    const storage = new MemoryStorage();
+    storage.setItem("cloud-clicker.credentials.v1", JSON.stringify({ accessToken: "access", refreshToken: "refresh", accountID: "account", recoveryCode: "recover" }));
+    const socket = new FakeSocket();
+    const fetchSnapshot = vi.fn(() => new Promise<Response>(() => {}));
+    const runtime = createBrowserGameUIRuntime(storage, fetchSnapshot, crypto, () => socket as unknown as WebSocket, { protocol: "http:", host: "localhost" });
+    const receive = vi.fn();
+    const stop = runtime.subscribe(snapshot.run.founder_id, receive);
+    openAndConnect(socket);
+    const player = `player:${snapshot.run.founder_id}`;
+    const channel = kind === "recovered courtesy" || kind === "live receipt" ? player : "world";
+    const data = { v: 2, ch: channel, kind: kind === "live receipt" ? "receipt" : "system", rev: 0,
+      constants_hash: snapshot.constants_hash, ts: "2026-08-21T12:00:00Z",
+      payload: kind === "live receipt" ? {} : { code: "server_restarting", resume_after_ms: 5000 } };
+    const publication = kind === "null offset" ? { data, offset: null } : { data };
+    if (kind === "recovered courtesy") subscribeReplies(socket, { publications: [publication] });
+    else {
+      subscribeReplies(socket);
+      socket.reply({ push: { channel, pub: publication } });
+    }
+    expect(receive).toHaveBeenLastCalledWith({ kind: "system", value: { kind: "resync_required" } });
+    expect(socket.closeCount).toBe(1);
+    expect(fetchSnapshot).toHaveBeenCalledTimes(1);
+    stop();
   });
 
   it("stops a replaced connection without retrying or refreshing credentials", async () => {

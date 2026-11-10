@@ -64,8 +64,10 @@ output without moving a cursor (the current Game UI has no owner-authored presen
 forward gap, an unrecoverable stream, `resync_required`, queue overflow (4000), or invalid frame
 (4004) clears both positions and performs the existing authenticated `GET /api/v1/founder/state`
 sync before a live resubscribe. The same snapshot resets Company and Founder cursors. A drain courtesy publication
-has no stream offset, suppresses reconnect through `resume_after_ms`, and then uses that ordinary
-recovery path. Auth expiry (4001) and replacement (4002) stop visibly: token rotation and
+has no stream offset. Centrifuge's JSON omits that field. The browser accepts the absent offset
+only for a live revision-zero restart notice, leaves its stream positions intact, suppresses
+reconnect through `resume_after_ms`, and then uses the ordinary recovery path.
+Auth expiry (4001) and replacement (4002) stop visibly: token rotation and
 replacement arbitration belong to their owning successors and are not improvised by Transport.
 Unknown future envelope kinds are not interpreted but their valid stream position is retained, so
 forward compatibility cannot create an infinite replay loop.

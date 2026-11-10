@@ -209,14 +209,17 @@ export function createBrowserGameUIRuntime(
           if (!disposed) scheduleConnect(0);
         });
       };
-      const consumeEnvelope = (channel: string, publication: { data?: unknown; offset?: unknown }): boolean => {
-        if (!channels.has(channel) || publication.data === undefined || !Number.isSafeInteger(publication.offset) || (publication.offset as number) < 0) return false;
-        const offset = publication.offset as number;
+      const consumeEnvelope = (channel: string, publication: { data?: unknown; offset?: unknown }, live: boolean): boolean => {
+        // Centrifuge's JSON omits the offset of live-only publications.
+        const offset = publication.offset === undefined ? 0 : publication.offset;
+        if (!channels.has(channel) || publication.data === undefined || typeof offset !== "number" || !Number.isSafeInteger(offset) || offset < 0) return false;
         const priorPosition = positions[channel];
         if (offset > 0 && priorPosition && offset <= priorPosition.offset) return true;
         let raw = publication.data;
         if (typeof raw === "string") raw = JSON.parse(raw);
         const envelope = decodeTransportEnvelope(raw);
+        const drainCourtesy = live && envelope?.kind === "system" && envelope.rev === 0 && envelope.payload.code === "server_restarting";
+        if (publication.offset === undefined && !drainCourtesy) return false;
         if (!envelope) {
           if (offset === 0) return true;
           const existing = positions[channel];
@@ -225,7 +228,7 @@ export function createBrowserGameUIRuntime(
           persistPositions();
           return true;
         }
-        if (envelope.ch !== channel || offset === 0 && !(envelope.kind === "system" && envelope.payload.code === "server_restarting")) return false;
+        if (envelope.ch !== channel || offset === 0 && !drainCourtesy) return false;
         if (envelope.kind === "event") {
           const disposition = cursor.event(envelope);
           if (disposition === "resync_required") { authoritativeResync(); return true; }
@@ -319,7 +322,7 @@ export function createBrowserGameUIRuntime(
                 if (requestedRecovery.has(value.id as number) && prior?.epoch !== result.epoch) { authoritativeResync(); return; }
                 positions[channel] = { epoch: result.epoch, offset: prior?.offset ?? 0 };
                 for (const publication of (result.publications ?? []) as Array<{ data?: unknown; offset?: unknown }>) {
-                  if (!consumeEnvelope(channel, publication)) { authoritativeResync(); return; }
+                  if (!consumeEnvelope(channel, publication, false)) { authoritativeResync(); return; }
                   if (fullSync !== undefined) return;
                 }
                 if ((resultOffset as number) < positions[channel].offset) { authoritativeResync(); return; }
@@ -330,7 +333,7 @@ export function createBrowserGameUIRuntime(
                 continue;
               }
               const push = value.push as { channel?: unknown; pub?: { data?: unknown; offset?: unknown } } | undefined;
-              if (push?.pub && typeof push.channel === "string" && !consumeEnvelope(push.channel, push.pub)) { authoritativeResync(); return; }
+              if (push?.pub && typeof push.channel === "string" && !consumeEnvelope(push.channel, push.pub, true)) { authoritativeResync(); return; }
               if (fullSync !== undefined) return;
             } catch { authoritativeResync(); return; }
           }

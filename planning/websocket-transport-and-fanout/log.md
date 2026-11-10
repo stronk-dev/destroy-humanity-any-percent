@@ -1467,3 +1467,31 @@ cases at the same transport source. Each observed 4003 with the table lock
 still held and verified that the membership wait cleared within the original
 bound. The test container exited and the Postgres service started for this
 batch was stopped. Logs are under `.cache/hosted-2026-11-10`.
+
+## 2026-11-11 — Read the live Centrifuge restart notice before recovering (RP-785)
+
+Transport D4 requires the browser to wait through the advertised restart
+window, then use its normal recovery path. On the approved `00ee0e69`
+package, Centrifuge omits the zero offset for the live-only restart notice.
+The old browser rejected the publication before examining its envelope,
+closed the socket itself and requested state while the gameserver stopped.
+The captured request returned 502 and the browser stayed offline. The
+independent package run also failed to recover. The Deployment log retains
+that verdict, the successful first observation and the wire capture.
+
+The browser now accepts an omitted offset for a valid live revision-zero
+restart notice and preserves both stream positions. Explicit zero remains
+supported for the live notice. Ordinary, null-offset and history cases
+retain resync. The failing-first test observes `resync_required` on the
+old client. All 77 runtime tests, strict TypeScript/Svelte checks and the
+standard build pass. Native mounted Reputation checks pass in Chromium and
+WebKit. Native Firefox failed to connect before running its tests.
+
+A fresh client build served through the same packaged Caddy, gameserver
+and Postgres closes with 4003 without a local close call, waits 15,019 ms
+for the advertised 15,000 ms delay, and commits the next visible action on
+the same page. All observed state requests return 200. This uses a test
+site override, so the independently approved exact bundle still needs a
+refresh. The focused Linux mounted run is in progress.
+Review by: Codex root (implementer check).
+Recorded by: Codex root. Independent corrective review pending.

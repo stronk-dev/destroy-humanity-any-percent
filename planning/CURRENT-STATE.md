@@ -15,6 +15,12 @@ executables and executing delivered Linux acceptance and refusal checks.
 Supported-host R-006, predecessor compatibility, CI, privacy, rights and
 later-tier work remain open. [Candidate record](deployment-foundation/release-builds/candidate-00ee0e69.json)
 
+The exact `00ee0e69` package reproduced RP-785 during a local Caddy restart
+test. The browser discarded the live restart notice and could stay offline
+after a failed state read. The corrected client passes against the same
+packaged runtime in a test overlay. Independent corrective review and a
+refreshed bundle remain pending. [Deployment evidence](deployment-foundation/log.md)
+
 **Latest integrated player proof,2026-11-05:** RP-774's next-Company frozen clock
 is corrected/independently approved `04642f4c..a12346b0`. Complete real-service
 supplement `8c887be1..64394095` has independent approval after fresh main journey
