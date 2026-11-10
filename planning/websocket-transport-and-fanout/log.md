@@ -1495,3 +1495,28 @@ site override, so the independently approved exact bundle still needs a
 refresh. The focused Linux mounted run is in progress.
 Review by: Codex root (implementer check).
 Recorded by: Codex root. Independent corrective review pending.
+
+## 2026-11-11 — Independent approval of restart notice handling
+
+APPROVED complete seven-path `5a71dbe0..12efc365`.
+Review by: fresh independent Codex `/root/restart_notice_corrective_review`.
+Recorded by: Codex root.
+
+The reviewer independently reproduced the omitted-offset failure in an
+old-runtime overlay. Explicit zero already worked. All 77 corrected
+runtime tests passed. The reviewer ran real Chromium through the packaged
+Caddy and Postgres with the corrected client mounted. Both sockets closed
+with 4003, the app did not call close, and all four state reads before
+reconnection returned 200. The browser waited 15,041 ms for the advertised
+15,000 ms, recovered revision 2 and committed revision 3 on the same page.
+The independent log SHA-256 is
+`7f631f8ddc2d70a779e0c174a98f64eb9cb71b49ad179fa4c8a97b84d5a34056`.
+
+The implementer's focused Linux mounted run exited 0 with 273 passes and
+six expected failures across Chromium, Firefox and WebKit. The native
+Firefox launcher remained hung after its connection timeout and was
+terminated. The Linux run log SHA-256 is
+`291fd776c94df3a5468cefcd794110925aad04107bb340e8df01185cee685539`.
+The exact `00ee0e69` bundle still needs a refresh and rerun with its
+unchanged packaged site. The original independent negative verdict stays
+in the Deployment log. R-006 remains open.

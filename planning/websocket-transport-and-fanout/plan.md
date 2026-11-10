@@ -4,6 +4,12 @@
 - **RFC:** `rfc/websocket-transport-and-fanout.md`
 - **Started:** 2026-07-29
 
+**2026-11-11 RP-785:** the live restart notice can omit its zero stream offset.
+The corrected browser waits before reconnecting and preserves its saved
+position. The exact `5a71dbe0..12efc365` source correction is independently
+approved after old-failing runtime and real Caddy/Postgres recovery checks.
+Refresh the bundle and repeat the packaged path. [Transport evidence](log.md)
+
 2026-11-05 RP-769 corrective batch: PlayerRelay's Flush serializer now honors
 waiting callers' cancellation/deadlines before claiming more work. Real locked-
 outbox/server regressions fail exact old source at both shorter2s and configured15s
