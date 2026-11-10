@@ -4884,3 +4884,29 @@ SHA-256 `349386e0245dee8254965f31ccf217317a85ba00e9aef34c06cdf7735cf0b63e`.
 Both test containers exited. The test Postgres service was returned to its
 prior stopped state. The aggregate remains red on Clout, and the local
 run supplies no hosted timing or release verdict.
+
+
+## 2026-11-11 — Complete the local browser gate after hosted cancellation
+
+The default `make test-browser-ci` finished at source `de7236fe` with
+exit 0. It used the cached Playwright 1.62.0 Noble image
+`sha256:5e63ffc997394026acb443c255703c7278f97d43cdc3d49cf51bc8fdce7d5383`
+on the Linux ARM64 Docker VM with 14 available CPUs and default limits.
+The container used fresh dependency volumes. Provider checks began
+9.919 seconds after container start, and broad collection began at
+27.675 seconds. This excludes a cold image pull and uses an image with
+browsers and system libraries already installed.
+
+Both provider checks passed all 18 focus and nine input cases. The broad
+suite passed 525 files with 40,605 passes, 21 expected failures and 24
+skips in 171.73 seconds. Native Typer passed all three files with 87
+passes and six expected failures in 4.21 seconds. The separate Chromium
+performance suite passed five cases with 109 excluded by its selector
+in 7.42 seconds. The broad module observer recorded 1,987 starts and
+1,987 finishes with no pending requests. The disposable container exited
+and the worktree stayed clean.
+
+Raw log SHA-256
+`0a9e8b422c90209d38d152147e4d9a891f1fc6f230edabec6febe001765245b5`.
+The full local result covers the population canceled in hosted CI.
+RP-782 remains open for the hosted setup and five-minute requirement.

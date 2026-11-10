@@ -62,6 +62,12 @@ cancellation. Ubuntu package transfers took 8 minutes 51 seconds. Earlier
 complete runs also exceeded the five-minute requirement, so both setup and
 test time need measurement. [CI run](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/42797873549)
 
+The full default local Linux browser gate passed at `de7236fe` on
+November 11. It ran all three engines, the native Typer suite and the
+isolated performance phase. Broad execution was 171.73 seconds on a
+14-CPU ARM64 VM with a cached Playwright image. RP-782 still needs hosted
+setup and end-to-end evidence. [Local browser evidence](log.md)
+
 Scheduled maintenance at `d6b1c668` hit its 50-minute limit and the harness
 observation failed local validation. Numeric maintenance passed. Both
 Reputation reports drifted. [Run and artifact evidence](log.md)

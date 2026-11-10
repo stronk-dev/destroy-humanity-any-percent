@@ -123,6 +123,11 @@ server population at `67f12564` completed. Production alone failed, on the
 same 27 Clout cases. All six generation and boundary checks passed separately.
 The approved local package predates the drain correction. [Local server evidence](scaffolding-and-ci/log.md)
 
+The complete local Linux browser gate passed at `de7236fe`, including all
+three engines, native Typer and isolated Chromium performance. The latest
+hosted browser job remains canceled after slow dependency setup.
+[Local browser evidence](scaffolding-and-ci/log.md)
+
 Scheduled maintenance ran on the earlier `d6b1c668`. Numeric passed, the
 Reputation reports drifted, and the exhaustive harness hit the 50-minute
 limit. The downloaded observation reports 300/300 standard pacing runs and
