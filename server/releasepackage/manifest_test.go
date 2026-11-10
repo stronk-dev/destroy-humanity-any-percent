@@ -10,9 +10,36 @@ import (
 )
 
 func TestCurrentMigrationIsContiguous(t *testing.T) {
-	current, err := CurrentMigration(filepath.Join("..", ".."))
-	if err != nil || current != 85 {
-		t.Fatalf("migration=%d err=%v", current, err)
+	root := filepath.Join("..", "..")
+	entries, err := os.ReadDir(filepath.Join(root, "server", "save", "migrations"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	current, err := CurrentMigration(root)
+	if err != nil || current != len(entries) || current == 0 {
+		t.Fatalf("migration=%d want=%d err=%v", current, len(entries), err)
+	}
+}
+
+func TestCurrentMigrationRejectsMissingVersion(t *testing.T) {
+	root := t.TempDir()
+	dir := filepath.Join(root, "server", "save", "migrations")
+	if err := os.MkdirAll(dir, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	for _, name := range []string{"00001_initial.sql", "00003_later.sql"} {
+		if err := os.WriteFile(filepath.Join(dir, name), nil, 0o644); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if current, err := CurrentMigration(root); current != 0 || !errors.Is(err, ErrInvalidContent) {
+		t.Fatalf("migration chain with a gap accepted: migration=%d err=%v", current, err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, "00002_middle.sql"), nil, 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if current, err := CurrentMigration(root); err != nil || current != 3 {
+		t.Fatalf("contiguous migration chain: migration=%d want=3 err=%v", current, err)
 	}
 }
 

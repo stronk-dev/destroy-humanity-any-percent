@@ -12823,3 +12823,18 @@ were clean at the end of review.
 Source `85e1d158` is now the latest independently approved local package.
 Supported-host R-006, predecessor compatibility and the release decision
 remain open.
+
+
+## 2026-11-10 — Fix the migration contiguity witness (RP-780)
+
+The hosted `releasepackage` test on `6afc0b5e` reports
+`migration=87 err=<nil>` because it expects a literal 85. The cold focused
+test reproduces that failure locally. The expected version now comes from
+the number of entries in the checked-in chain, which starts at 1 and must
+be contiguous. A separate fixed fixture rejects the 1, 3 chain and accepts
+version 3 after 2 is added. No migration or package production code changed.
+
+`make test-go vet GO_PACKAGES=./releasepackage` passes. An initial anchored
+Make selector matched zero tests after expansion. The corrected selector
+ran the failing test and the final full package run executed its replacement.
+Independent review is pending.
