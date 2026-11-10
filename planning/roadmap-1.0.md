@@ -5,7 +5,7 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
-**Latest player integration checkpoint (2026-11-05):** the next-Company frozen
+**Player integration checkpoint (2026-11-05):** the next-Company frozen
 clock defect RP-774 is corrected and independently approved `04642f4c..a12346b0`.
 Its real-service supplement is independently approved `8c887be1..64394095`:
 fresh built-client main journey, both actual clocks, public HTTP→TypeScript
@@ -17,6 +17,8 @@ approved local package use kernel 0.3.229 after RP-779. The complete
 Supported-host R-006, predecessor compatibility and the release decision
 remain open. [Deployment evidence](deployment-foundation/plan.md)
 Founder-age label adoption is requested; no answer or authored content is inferred.
+The [November 11 local integration run](garage-player-surfaces/log.md#2026-11-11--use-the-packaging-client-build-in-composed-journeys-rp-783)
+extends that evidence to the full composed target with the packaging client build.
 
 **Founder-age data/artifact checkpoint (2026-11-05):** RP-773's missing immutable Founder age
 is corrected and independently approved over complete44-path `c195c0ae..a12218ab`.

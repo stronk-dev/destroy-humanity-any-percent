@@ -135,11 +135,13 @@ an incomplete first relevance row. The local validator rejects it.
 [Maintenance run](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/42749365385)
 [CI evidence](scaffolding-and-ci/log.md)
 
-**Local integration follow-up,2026-11-03:** one independent full composed target
-passes at `df531b9b`, with declared ARM64 Postgres, production-built browser/Worker
-bytes and all current child journeys. [Garage log](garage-player-surfaces/log.md)
-records exact ranges, fixtures, exclusions and scoped approvals. This is not a
-hosted CI verdict, natural Tier2/Headcount proof or release-artifact rehearsal.
+**Local integration, 2026-11-11:** the complete composed target passed at
+`a743e4a2` with declared ARM64 Postgres. The positive journeys use the standard
+client build, and all seven generated files match the approved `85e1d158`
+package byte for byte. The independent RP-783 review reproduced the old
+build mismatch and ran Cosmetic, Reputation and both payment fault cases.
+Hosted verification, natural Tier 2 pacing and supported-host R-006 remain
+open. [Garage log](garage-player-surfaces/log.md)
 
 ### Earlier source-bound verification notes
 

@@ -9132,3 +9132,24 @@ Corrected raw log SHA-256
 `dd0f800d54a797c5ee69f5e4adf14504aeff6aecc24ae7c9937e6d9c2e7bb390`.
 Review by: Codex root (implementer check).
 Recorded by: Codex root. Independent corrective review pending.
+
+## 2026-11-11 — Independent approval of the composed client build correction
+
+APPROVED complete five-path `32c6069e..a743e4a2`.
+Review by: fresh independent Codex `/root/composed_packaging_client_review`.
+Recorded by: Codex root.
+
+The reviewer independently reproduced the old root-cwd bundle in a private
+directory. The corrected real Postgres Cosmetic/Reputation journey verified
+the canonical browser responses and worker startup. The reviewer compared
+all seven generated files with the approved `85e1d158` client output and
+the corresponding packaged site files. Both injected N5 cases failed their
+child journey after native Buy and passed the parent refusal check. The
+canonical build stayed intact. All 35 fixtures passed, and the build helper
+reported both a failed Make invocation and a missing executable. The reviewer
+also inspected the implementer's complete composed run and raw log.
+
+Independent Cosmetic and N5 log SHA-256 values, respectively:
+`282bb8e35c2fa32596a580b127a68431c02fa186deb224cb360a80d63c40f240` and
+`e65a5aacbd23887f8f6b8ca95484b8bb35683201cc1031a5bdf119508d1c4fc9`.
+RP-783 is closed. The hosted job and supported-host R-006 remain open.
