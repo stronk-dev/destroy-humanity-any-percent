@@ -13010,3 +13010,43 @@ next visible action at revision 3 on the same page. The fixed log hash is
 The exact `00ee0e69` bundle still contains the old client. A fresh bundle
 and rerun on its unchanged site remain necessary. The Transport log owns
 the corrective review.
+
+## 2026-11-11 — Refresh the candidate and verify restart on the bundled site (RP-785)
+
+Two builds from clean source `2f366a907ffd2b7bb8aee68419df9eb73ac6ff1e`
+produced the same 75 file hashes and modes. All 74 manifest bindings pass.
+The six Linux executables match `00ee0e69`. The seven client files match
+the independently reviewed RP-785 build. Both no-cache image archives
+match, with verified blob digests, layer diff IDs and 33 payload files.
+Two new Syft runs each find 41 gameserver packages. All seven normalized
+inventories match across builds. The unchanged upstream inventories retain
+their original scans, with six fresh registry identity checks and 24
+normalizer executions.
+
+Manifest `sha256:b082b7b19b6f5c513fa72319dee40933ffb82996e408e4a9b037b37f7725470b`.
+Image archive `sha256:9a9c5682c14306c31916c156442c6e976dcaad17484dc75d8a935bf35bb090fd`.
+The native and delivered Linux validators accept the record and intact
+package. All nine Linux tamper cases return exit 3 with `fixture_rejected`.
+The manifest-bound scan covers 2,614 tracked source files and the new
+gameserver image with zero findings. Both build trees and both probe copies
+retain their hashes and modes.
+
+The loopback test used the candidate's image, Caddyfile and read-only site,
+with the pinned Caddy and Postgres image IDs. Its local override only
+selects cached image IDs, amd64 execution, loopback publication and JSON
+logging. The real database applies migration 87. Chromium loaded and
+verified the exact bundled HTML, CSS, entry script and prediction worker
+over TLS. Both sockets received the live courtesy notice with the omitted
+offset and closed with 4003. The app made no local close call. It reopened
+15,021 ms after the notice, with 15,000 ms advertised and all observed
+state reads returning 200. The same page recovered revision 2 and committed
+revision 3 through a visible action.
+
+The [build record](release-builds/candidate-2f366a90.json) and browser test
+are ready for independent review. Browser log SHA-256
+`1879401df0e8aff226d5d2027baaac2ccb09accefb035f823ca0675e518ee286`.
+The driver and raw evidence are in the ignored
+`.cache/release-browser-smoke-2f366a90`, `.cache/release-current-2f366a90`
+and matching rebuild/probe directories. This is local Chromium evidence
+on the exact package, with emulated amd64 services. The compliant
+predecessor, supported-host R-006 and full player/release acceptance remain open.
