@@ -74,7 +74,9 @@ product implementation or goal pause is claimed at this checkpoint.
 The reviewer rebuilt the binaries, client, content and metadata and ran the
 delivered Linux checks and manifest-bound scan. The [build record](release-builds/candidate-85e1d158.json)
 and [log](log.md) record the checks, source map path control and limitations.
-Supported-host R-006 and predecessor compatibility remain open.
+The package predates RP-781's shutdown fix and RP-784's independently
+approved browser evidence correction. The next artifact refresh must include
+both. Supported-host R-006 and predecessor compatibility remain open.
 
 **Previous independently approved artifact, 2026-11-05:** source `a7d5a4a4`,
 kernel0.3.228/migration87/epoch8, includes reviewed RP-774/RP-776. Matching two

@@ -12872,3 +12872,17 @@ commands pass, along with vet and diff checks. This is a local check of the
 evidence readers. The approved `85e1d158` bundle predates this correction.
 Review by: Codex root (implementer check).
 Recorded by: Codex root. Independent corrective review pending.
+
+## 2026-11-11 — Independent approval of the browser evidence correction
+
+APPROVED complete six-path `c651cbde..bb8d3694`.
+Review by: fresh independent Codex `/root/browser_rehearsal_evidence_review`.
+Recorded by: Codex root.
+
+An overlay of the exact old decoder reproduced all five malformed-input
+acceptances and the base dossier's acceptance of the rehashed result.
+The cold corrected browser and rehearsal packages and affected commands
+pass, as do vet and the range diff check. The reviewer confirmed that the
+runner and both dossier validators use the shared decoder and that valid
+v2 producer output supplies all 21 observations. RP-784 is closed.
+Artifact rebuilding and the clean-host rehearsal remain open.

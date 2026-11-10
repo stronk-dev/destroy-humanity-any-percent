@@ -11,6 +11,7 @@ The latest independently reviewed local package is source `85e1d158`,
 kernel `0.3.229`, migration 87, epoch 8. Two 75-file bundles and their images
 match. Independent review approved `6afc0b5e..d36ea78a` after rebuilds, a
 source and image scan, and delivered Linux acceptance and refusal checks.
+It predates the reviewed shutdown and browser evidence corrections.
 Supported-host R-006, predecessor compatibility, CI, privacy, rights and
 later-tier work remain open. [Candidate record](deployment-foundation/release-builds/candidate-85e1d158.json)
 
