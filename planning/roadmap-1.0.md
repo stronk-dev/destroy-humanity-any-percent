@@ -11,9 +11,9 @@ Its real-service supplement is independently approved `8c887be1..64394095`:
 fresh built-client main journey, both actual clocks, public HTTP→TypeScript
 current/history replay/refusals and existing recovery/crash controls pass. This
 is the main journey under controlled setup, not every composed descendant or
-full Garage/obituary/hosted/release acceptance. Current runtime and the latest
-approved local package use kernel 0.3.229 after RP-779. The complete
-`6afc0b5e..d36ea78a` package evidence range is independently approved.
+full Garage/obituary/hosted/release acceptance. The current runtime uses
+kernel 0.3.229 after RP-779. The independently approved local package at
+`00ee0e69` includes the shutdown and browser evidence corrections.
 Supported-host R-006, predecessor compatibility and the release decision
 remain open. [Deployment evidence](deployment-foundation/plan.md)
 Founder-age label adoption is requested; no answer or authored content is inferred.

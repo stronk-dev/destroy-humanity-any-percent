@@ -212,16 +212,15 @@ It intentionally describes a release *candidate*: designated approval of the imp
 batches and the exact clean-host R-006 rehearsal remain required before the project
 can claim supported self-hosting.
 
-The latest independently approved local candidate uses source `85e1d158`,
-kernel `0.3.229`, migration 87 and epoch 8. It incorporates the catalog
-admission correction in addition to the reviewed continuation-clock and
-minigame mode-policy fixes. [Candidate build record](../planning/deployment-foundation/release-builds/candidate-85e1d158.json)
+The latest independently approved local candidate uses source `00ee0e69`,
+kernel `0.3.229`, migration 87 and epoch 8. It incorporates the reviewed
+shutdown and browser evidence corrections. [Candidate build record](../planning/deployment-foundation/release-builds/candidate-00ee0e69.json)
 
 Two separate builds produced identical 75-file packages and image archives.
-The complete `6afc0b5e..d36ea78a` evidence range passed independent review
-with rebuilds, image and inventory checks, a fresh source/image scan and
-acceptance plus nine refusal cases using the delivered Linux helper. Earlier
-`a7d5a4a4` and `aa5e16e8` packages retain their original verdicts.
+The complete `00ee0e69..6bb51594` evidence range passed independent review.
+The reviewer rebuilt the three changed executables, checked both images and
+their inventories, and ran the delivered Linux helper against intact and
+damaged inputs. Earlier packages retain their original verdicts.
 [Commands, digests and limitations](../planning/deployment-foundation/log.md)
 
 This is one local candidate built on ARM64 Desktop with emulated Linux-amd64

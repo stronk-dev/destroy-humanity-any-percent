@@ -12922,3 +12922,25 @@ only the completed runs count. Raw evidence is under
 is ready for independent review. The prior package remains the latest
 independently approved one until that verdict. Predecessor compatibility
 and R-006 on a supported clean host remain open.
+
+## 2026-11-11 — Independent approval of the refreshed local package
+
+APPROVED complete two-path `00ee0e69..6bb51594`.
+Review by: fresh independent Codex `/root/release_refresh_evidence_review`.
+Recorded by: Codex root.
+
+The reviewer rebuilt the three changed Linux executables and matched their
+delivered bytes. Six copies retained the same 75 file hashes and modes.
+Independent checks covered all 74 manifest bindings, both 33-file image
+payloads, seven SBOM bindings, six registry identity chains and twelve
+reused inventory chains. The reviewer inspected the original Syft runs,
+eleven Linux results and manifest-bound scan. Independently executed
+Linux checks accepted the record and intact package and rejected both the
+removed client and changed image digest with exit 3 and `fixture_rejected`.
+The independent results SHA-256 is
+`050933d08dfacdfc62e21a24ac629878d02dc525d3741572f6aada5305ee5ea5`.
+The scratch directory is empty and the test containers are gone.
+
+`00ee0e69` is now the latest approved local candidate. The two builds use
+the same source and version. A floor-compliant predecessor, supported-host
+R-006, and release approval remain open.

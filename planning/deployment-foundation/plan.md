@@ -68,15 +68,14 @@ reconcile parent bodies under the actual delegation and implement adopted
 contract dependencies with their full producer/native/clean-host proof. No
 product implementation or goal pause is claimed at this checkpoint.
 
-**Current independently approved local artifact, 2026-11-10.** Source
-`85e1d158`, kernel 0.3.229, migration 87, epoch 8. The complete evidence range
-`6afc0b5e..d36ea78a` is independently approved. Both 75-file bundles match.
-The reviewer rebuilt the binaries, client, content and metadata and ran the
-delivered Linux checks and manifest-bound scan. The [build record](release-builds/candidate-85e1d158.json)
-and [log](log.md) record the checks, source map path control and limitations.
-The package predates RP-781's shutdown fix and RP-784's independently
-approved browser evidence correction. The next artifact refresh must include
-both. Supported-host R-006 and predecessor compatibility remain open.
+**Current independently approved local artifact, 2026-11-11.** Source
+`00ee0e69`, kernel 0.3.229, migration 87, epoch 8. The package includes the
+RP-781 shutdown fix and RP-784 browser evidence correction. Both 75-file
+bundles match. Independent review of `00ee0e69..6bb51594` rebuilt the changed
+executables and checked the image, manifest and delivered Linux helper.
+The [build record](release-builds/candidate-00ee0e69.json) and [log](log.md)
+record exact checks and limits. `85e1d158` retains its earlier verdict.
+Supported-host R-006 and predecessor compatibility remain open.
 
 **Previous independently approved artifact, 2026-11-05:** source `a7d5a4a4`,
 kernel0.3.228/migration87/epoch8, includes reviewed RP-774/RP-776. Matching two
