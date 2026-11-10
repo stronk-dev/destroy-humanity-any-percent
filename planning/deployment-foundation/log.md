@@ -12758,3 +12758,40 @@ matching rebuild root. All consumers/reviewers are terminal; release the source
 freeze for this editorial checkpoint. Revalidate source/dependency identity and
 pin inputs before construction resumes. Plan/log diff and retained factual
 claims checked; no runtime, acceptance, publication or deployment change.
+
+
+## 2026-11-10 — Finish the local kernel 0.3.229 package after Docker recovery
+
+Docker 28.4.0 (Linux/arm64 VM) and Compose 2.39.4-desktop.1 respond after the
+authorized force-stop and relaunch. The initial 45-second startup wait timed
+out while the backend was starting. Its logs recorded a module manifest fetch
+timeout and an interrupted shell environment lookup. The original failure's
+root cause remains unconfirmed.
+
+Resumed the two component builds at source `85e1d158bf20e1d9eeebd660f5c9cd11b6781928`.
+All later commits before this evidence were editorial planning changes. Checked
+the retained binaries, client, content, metadata and image contexts before
+using the pinned BuildKit builder for two separate no-cache builds. Verified
+both archive digests, compressed blobs, uncompressed layer digests and all
+33 payload files, including ownership and modes. Two fresh Syft scans each
+found 41 packages and normalize to identical bytes. The twelve upstream
+inventory chains retain their prior scan provenance. Six fresh registry
+identity checks pass after correcting the local script's initial reference to
+the as-yet unwritten candidate record. The failed setup produced no checks.
+
+Both bundles match all 75 file hashes and modes. All 74 manifest bindings pass.
+Manifest `sha256:497f8ce2ce90f31990404e989b6bc478b9c7a507a66b59a9c81a0a3af9f4d27e`.
+Image archive `sha256:b69b21594a5edbd5bf39b45c186372d6bfd6eb396e39a4631a74487e430f75bf`.
+Native and delivered Linux helpers accept the build record and intact bundle.
+All nine delivered Linux tampering cases return exit 3 with
+`fixture_rejected`. Four original and probe bundle trees retain their hashes
+and modes, both work directories are empty and all eleven probe containers
+are gone. The manifest-bound scan of an exact local source checkout and the
+image archive reports 2,612 tracked files and zero findings.
+
+The [build record](release-builds/candidate-85e1d158.json) captures this local
+candidate. Raw checks remain under `.cache/release-current-85e1d158`,
+`.cache/release-rebuild-85e1d158` and `.cache/release-linux-probes-85e1d158`.
+Independent artifact review is pending. The older approved candidate
+remains the latest reviewed package. Supported-host R-006, predecessor
+compatibility and the release decision remain open.

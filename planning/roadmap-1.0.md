@@ -18,7 +18,7 @@ and actual image/inventory/consumer checks. [Deployment's plan](deployment-found
 holds the one-local-candidate limits; prior `aa5e16e8` below stays historical.
 Current runtime is kernel0.3.229 after RP-779's independently approved client
 catalog-admission correction (92067c0c..2e75c853). The kernel228 package
-predates that change; batch its future refresh. [Owning evidence](clout-v1-and-pr-interns/log.md).
+predates that change. The kernel229 refresh has passed local package checks and awaits independent artifact review. [Owning evidence](clout-v1-and-pr-interns/log.md).
 No native clean-host/R-006, full-feature/hosted or release approval follows.
 Founder-age label adoption is requested; no answer or authored content is inferred.
 

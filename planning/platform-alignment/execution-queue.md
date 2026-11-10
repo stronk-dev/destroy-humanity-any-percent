@@ -28,7 +28,7 @@ combat, Tier3–8 and ending construction ahead. No new tier or release is compl
   migration87/epoch8. Complete five-path `a7d5a4a4..beef6cff` has independent
   artifact-evidence approval after actual rebuild/package/image/consumer checks.
   [Deployment's plan](../deployment-foundation/plan.md) owns exact evidence/limits.
-  This kernel228 package predates the RP-779 client correction; refresh in a batch.
+  The kernel229 refresh is built and checked locally. Independent artifact review is pending in the Deployment plan.
   Prior `aa5e16e8` stays historical; no native/clean-host/full-feature/release claim.
 - **Completed evidence:** original HTTP and actual composed bootstrap/delete/
   restore instruments are independently approved. The lifetime supplement

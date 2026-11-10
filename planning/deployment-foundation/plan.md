@@ -68,12 +68,12 @@ reconcile parent bodies under the actual delegation and implement adopted
 contract dependencies with their full producer/native/clean-host proof. No
 product implementation or goal pause is claimed at this checkpoint.
 
-**Incomplete package refresh, rechecked 2026-11-09:** source `85e1d158`,
-kernel0.3.229. Both local component builds match; image construction, package
-assembly and delivered-Linux checks remain unexecuted because Docker's Engine
-still times out. The restart question is unanswered. The [latest log entry](log.md)
-identifies retained outputs, completed checks and resumption requirements.
-The independently approved kernel228 artifact below remains current.
+**Local kernel 0.3.229 package, 2026-11-10:** source `85e1d158`. Docker is
+responding again. Both 75-file bundles match and pass the local package checks,
+including nine refusal cases run with the delivered Linux helper. The
+[build record](release-builds/candidate-85e1d158.json) and [log](log.md) identify
+the exact evidence. Independent artifact review is pending. The approved
+kernel 0.3.228 package below remains the latest reviewed package.
 
 **Current independently approved artifact,2026-11-05:** source `a7d5a4a4`,
 kernel0.3.228/migration87/epoch8, includes reviewed RP-774/RP-776. Matching two
