@@ -11,15 +11,11 @@ Its real-service supplement is independently approved `8c887be1..64394095`:
 fresh built-client main journey, both actual clocks, public HTTP→TypeScript
 current/history replay/refusals and existing recovery/crash controls pass. This
 is the main journey under controlled setup, not every composed descendant or
-full Garage/obituary/hosted/release acceptance. The latest reviewed local package
-`a7d5a4a4` includes both reviewed UI/mode-policy fixes; complete five-path
-`a7d5a4a4..beef6cff` has independent artifact-evidence approval after own rebuild
-and actual image/inventory/consumer checks. [Deployment's plan](deployment-foundation/plan.md)
-holds the one-local-candidate limits; prior `aa5e16e8` below stays historical.
-Current runtime is kernel0.3.229 after RP-779's independently approved client
-catalog-admission correction (92067c0c..2e75c853). The kernel228 package
-predates that change. The kernel229 refresh has passed local package checks and awaits independent artifact review. [Owning evidence](clout-v1-and-pr-interns/log.md).
-No native clean-host/R-006, full-feature/hosted or release approval follows.
+full Garage/obituary/hosted/release acceptance. Current runtime and the latest
+approved local package use kernel 0.3.229 after RP-779. The complete
+`6afc0b5e..d36ea78a` package evidence range is independently approved.
+Supported-host R-006, predecessor compatibility and the release decision
+remain open. [Deployment evidence](deployment-foundation/plan.md)
 Founder-age label adoption is requested; no answer or authored content is inferred.
 
 **Founder-age data/artifact checkpoint (2026-11-05):** RP-773's missing immutable Founder age

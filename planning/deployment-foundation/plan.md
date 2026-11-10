@@ -68,14 +68,15 @@ reconcile parent bodies under the actual delegation and implement adopted
 contract dependencies with their full producer/native/clean-host proof. No
 product implementation or goal pause is claimed at this checkpoint.
 
-**Local kernel 0.3.229 package, 2026-11-10:** source `85e1d158`. Docker is
-responding again. Both 75-file bundles match and pass the local package checks,
-including nine refusal cases run with the delivered Linux helper. The
-[build record](release-builds/candidate-85e1d158.json) and [log](log.md) identify
-the exact evidence. Independent artifact review is pending. The approved
-kernel 0.3.228 package below remains the latest reviewed package.
+**Current independently approved local artifact, 2026-11-10.** Source
+`85e1d158`, kernel 0.3.229, migration 87, epoch 8. The complete evidence range
+`6afc0b5e..d36ea78a` is independently approved. Both 75-file bundles match.
+The reviewer rebuilt the binaries, client, content and metadata and ran the
+delivered Linux checks and manifest-bound scan. The [build record](release-builds/candidate-85e1d158.json)
+and [log](log.md) record the checks, source map path control and limitations.
+Supported-host R-006 and predecessor compatibility remain open.
 
-**Current independently approved artifact,2026-11-05:** source `a7d5a4a4`,
+**Previous independently approved artifact, 2026-11-05:** source `a7d5a4a4`,
 kernel0.3.228/migration87/epoch8, includes reviewed RP-774/RP-776. Matching two
 75-file/mode trees/74bindings, actual33-file image payloads, fresh gameserver/
 reused upstream inventory chains, native/delivered-Linux consumers and9exact

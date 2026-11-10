@@ -12795,3 +12795,31 @@ candidate. Raw checks remain under `.cache/release-current-85e1d158`,
 Independent artifact review is pending. The older approved candidate
 remains the latest reviewed package. Supported-host R-006, predecessor
 compatibility and the release decision remain open.
+
+
+## 2026-11-10 — Independent local package approval
+
+Review by: fresh independent Codex `/root/kernel229_artifact_review`.
+Recorded by: Codex root. **APPROVED**, no actionable findings, for all six
+paths in `6afc0b5e7aaafef545b9419d14d068c3bf51d129..d36ea78a4c52266cd32fbb1f6c386a0c39eb2db8`.
+
+The reviewer verified both no-cache BuildKit receipts, both 33-file image
+payloads, four matching 75-file trees and all 74 manifest bindings. A fresh
+build matched six Linux binaries, 32 content files and two metadata files.
+The first client invocation ran from the repository root and changed Svelte
+scope hashes. The normal client working directory reproduced all seven asset
+names and six files byte for byte. The remaining source map differed only
+in the relative paths required by the private output directory. All 139
+entries resolve to the same sources and the contents and mappings match.
+
+The reviewer verified six registry identity chains and twelve prior inventory
+chains and ran 26 independent normalizations. Original Syft scans and registry
+fetches were inspected. A fresh manifest-bound scan covered 2,612 exact-source
+files and the image archive with zero findings. The delivered Linux helper
+passed both acceptance cases and returned exit 3 with `fixture_rejected` for
+all nine tampering cases. Review containers were removed and tracked files
+were clean at the end of review.
+
+Source `85e1d158` is now the latest independently approved local package.
+Supported-host R-006, predecessor compatibility and the release decision
+remain open.

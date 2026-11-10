@@ -7,13 +7,12 @@ Go/TS/browser evidence and the separate numeric-proposal findings. RP-776's
 earlier mode-policy correction retains independent approval at kernel228;
 full Platform/CI/release gates remain open.
 
-The latest reviewed local package is kernel228/source `a7d5a4a4`, predating
-the later RP-779 client correction. It includes the reviewed continuation-clock
-and mode-policy fixes. Its complete five-path `a7d5a4a4..beef6cff` record/docs
-range is independently approved after rebuilding six binaries, client/content/metadata
-and checking the actual image, inventories and package consumers. [Exact candidate](deployment-foundation/release-builds/candidate-a7d5a4a4.json).
-This is one local artifact, not a predecessor pair/native clean-host/R-006 or
-full-feature/release approval; known CI/privacy/rights/later-tier holds remain.
+The latest independently reviewed local package is source `85e1d158`,
+kernel `0.3.229`, migration 87, epoch 8. Two 75-file bundles and their images
+match. Independent review approved `6afc0b5e..d36ea78a` after rebuilds, a
+source and image scan, and delivered Linux acceptance and refusal checks.
+Supported-host R-006, predecessor compatibility, CI, privacy, rights and
+later-tier work remain open. [Candidate record](deployment-foundation/release-builds/candidate-85e1d158.json)
 
 **Latest integrated player proof,2026-11-05:** RP-774's next-Company frozen clock
 is corrected/independently approved `04642f4c..a12346b0`. Complete real-service
@@ -210,9 +209,8 @@ privacy, accessibility, rights, operations and preservation. A Phase-0 preview d
 
 **Record reconciliation, 2026-11-09:** this table retains the original product
 classification and incorporates the named later corrections below. It is not a
-new full acceptance run. Current runtime is kernel `0.3.229`; the last reviewed
-package is still kernel `0.3.228`. Deployment's [current plan](deployment-foundation/plan.md)
-records the completed local refresh awaiting independent artifact review.
+new full acceptance run. The runtime and latest reviewed local package use kernel `0.3.229`.
+[Deployment evidence and limits](deployment-foundation/plan.md)
 
 Corrective-review follow-up: Marco delegates fresh independent Codex corrective-code
 review, not specification adoption or release approval. Owning logs now record bounded
@@ -313,7 +311,7 @@ It does not turn the incomplete Garage or substantial later-tier scope into a re
 | Privacy / player rights | The data inventory and actual browser/event/SQL/backup/deletion traces expose retained data. Research publication classification/sanitization is complete. RP-606 now has an actual verified public-archive Garden salt disclosure and a technically reviewed Company-only evidence repair proposal; the [rights evidence](platform-alignment/data-rights-current-content.md) retains the failure and its limits. | The public privacy defect is not repaired: v2 evidence/unsafe-v1 withdrawal and body authority await adoption. Export/deletion/retention choices (D-008/D-009/D-015), implementations and player workflows remain. Public-board survival after deletion and credential resurrection from pre-deletion backups are explicit issues. An instance backup is not player export. |
 | Accessibility | Native keyboard, focus, pending feedback, reflow and announcement corrections exist across several surfaces; targeted browser checks execute. | Accepted cross-product task/assistive-technology matrix and actual task testing, including zoom/motion/longer workflows. Automated checks alone are not accessibility completion. |
 | MMO and later game | Commons, guild, faction and doctrine primitives exist. Combat has shared Go/TS arithmetic, deterministic random streams, validated 36 temperament/runtime identities, strict ordered team/deck references and structural species-record decoding. These are standalone libraries with no live player consumer, not a full catalog or battle engines. | Combat catalog/effect definitions and Trust/Soul tables; complete world/feed/ticker/social surfaces, combat engines/integration and fair bot backfill, Tier 3–8 content, challenge/category set and all final endings. These are substantial unbuilt work, not merely closeout paperwork. |
-| Deployment / operations | The accepted single-node Compose/Caddy tooling has bounded packaging, configuration, encrypted backup, release/rollback and operations proofs. The latest independently reviewed local candidate is source `a7d5a4a4`, kernel228/migration87/epoch8: two matching75-file bundles and actual image/inventory/native/delivered-Linux consumer checks. The kernel229 refresh at `85e1d158` has matching bundles and completed local artifact checks. [Deployment plan and log](deployment-foundation/plan.md) own the evidence. | Independently review the refreshed artifact, adopt/build the pending native/interruption/tool contracts, establish a floor-compliant predecessor and prove the full pair. Historical predecessor44a4a72 fails the current safety floor (RP-514). R-006 still requires a clean supported Linux host and exact-artifact install/restore/rollback; local builds do not establish release readiness. |
+| Deployment / operations | The accepted single-node Compose/Caddy tooling has bounded packaging, configuration, encrypted backup, release/rollback and operations proofs. The latest independently approved local candidate is source `85e1d158`, kernel 0.3.229, migration 87, epoch 8. Both 75-file bundles match, with image and inventory checks and actual delivered Linux helper execution. [Deployment evidence](deployment-foundation/plan.md) | Adopt and build the pending native, interruption and tool contracts, establish a floor-compliant predecessor and prove the pair. Historical predecessor `44a4a72` fails the current safety floor (RP-514). R-006 requires an exact-artifact install, restore and rollback on a clean supported Linux host. |
 
 ### What the weeks of work have delivered
 

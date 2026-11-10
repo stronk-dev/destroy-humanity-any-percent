@@ -23,13 +23,10 @@ combat, Tier3–8 and ending construction ahead. No new tier or release is compl
   proposal/model is independently technically approved through06da156d; owner
   adoption and actual native/client/caller implementation remain. Keep its old
   negative verdict and today's unresolved runtime cases visible.
-- **Latest reviewed artifact:** local reconstruction at
-  `a7d5a4a4` includes the reviewed continuation-clock/mode-policy fixes, kernel228/
-  migration87/epoch8. Complete five-path `a7d5a4a4..beef6cff` has independent
-  artifact-evidence approval after actual rebuild/package/image/consumer checks.
-  [Deployment's plan](../deployment-foundation/plan.md) owns exact evidence/limits.
-  The kernel229 refresh is built and checked locally. Independent artifact review is pending in the Deployment plan.
-  Prior `aa5e16e8` stays historical; no native/clean-host/full-feature/release claim.
+- **Latest reviewed artifact:** source `85e1d158`, kernel 0.3.229, migration 87,
+  epoch 8. The complete `6afc0b5e..d36ea78a` evidence range is independently
+  approved. Supported-host R-006 and predecessor compatibility remain open.
+  [Deployment evidence](../deployment-foundation/plan.md)
 - **Completed evidence:** original HTTP and actual composed bootstrap/delete/
   restore instruments are independently approved. The lifetime supplement
   `0f3a5318..6df67ab2` is independently approved too: at31 days of application time,

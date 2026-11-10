@@ -212,20 +212,17 @@ It intentionally describes a release *candidate*: designated approval of the imp
 batches and the exact clean-host R-006 rehearsal remain required before the project
 can claim supported self-hosting.
 
-The latest independently approved local candidate is
-[`candidate-a7d5a4a4.json`](../planning/deployment-foundation/release-builds/candidate-a7d5a4a4.json):
-source `a7d5a4a4`, kernel `0.3.228`, migration 87, epoch 8. It includes the reviewed
-continuation-clock and minigame mode-policy corrections.
+The latest independently approved local candidate uses source `85e1d158`,
+kernel `0.3.229`, migration 87 and epoch 8. It incorporates the catalog
+admission correction in addition to the reviewed continuation-clock and
+minigame mode-policy fixes. [Candidate build record](../planning/deployment-foundation/release-builds/candidate-85e1d158.json)
 
-Two separate builds produce identical 75-file packages and image archives. Checks
-cover all six binaries, client/content/metadata, 74 manifest bindings, actual image
-payloads and ownership, inventory provenance, and offline helper acceptance plus
-nine semantic refusal cases. Fresh gameserver scans and explicitly reused upstream
-inventories retain distinct provenance. Independent approval covers the complete
-`a7d5a4a4..beef6cff` evidence range; [commands, digests and limitations](../planning/deployment-foundation/log.md)
-live in the owning log. Earlier [aa5e16e8](../planning/deployment-foundation/release-builds/candidate-aa5e16e8.json)
-and [c5130acf](../planning/deployment-foundation/release-builds/candidate-c5130acf.json)
-records remain historical.
+Two separate builds produced identical 75-file packages and image archives.
+The complete `6afc0b5e..d36ea78a` evidence range passed independent review
+with rebuilds, image and inventory checks, a fresh source/image scan and
+acceptance plus nine refusal cases using the delivered Linux helper. Earlier
+`a7d5a4a4` and `aa5e16e8` packages retain their original verdicts.
+[Commands, digests and limitations](../planning/deployment-foundation/log.md)
 
 This is one local candidate built on ARM64 Desktop with emulated Linux-amd64
 checks. It supplies neither a legitimate predecessor pair nor native clean-host
