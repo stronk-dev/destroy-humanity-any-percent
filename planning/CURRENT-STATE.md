@@ -118,9 +118,10 @@ records the 27 Clout partition failures, the stale migration test and a Guild
 drain closing with code 3001. [Hosted CI run](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/42797873549)
 
 The migration witness and drain close code now have independently approved
-local corrections at `1e649b87` and `78c4f0b9`. Affected Linux/Postgres suites
-pass. The approved local package predates the drain correction.
-[Transport evidence](websocket-transport-and-fanout/log.md)
+local corrections at `1e649b87` and `78c4f0b9`. The full local Linux/Postgres
+server population at `67f12564` completed. Production alone failed, on the
+same 27 Clout cases. All six generation and boundary checks passed separately.
+The approved local package predates the drain correction. [Local server evidence](scaffolding-and-ci/log.md)
 
 Scheduled maintenance ran on the earlier `d6b1c668`. Numeric passed, the
 Reputation reports drifted, and the exhaustive harness hit the 50-minute

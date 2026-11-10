@@ -51,6 +51,11 @@ Client failed the existing kernel history guard. Server and browser were
 canceled. The two additional server failures have independent local fixes
 (RP-780 and RP-781). The 27 Clout partition failures remain open.
 
+At local source `67f12564`, the full declared Linux/Postgres server run
+finished all packages and found only the same 27 Clout failures. Both
+corrected packages passed, including Gameserver. The six subsequent
+generation and boundary checks passed separately. [Local server evidence](log.md)
+
 RP-782 identifies where this browser run lost its budget. Playwright setup
 took 570.728 seconds and the broad suite ran for only 2.160 seconds before
 cancellation. Ubuntu package transfers took 8 minutes 51 seconds. Earlier
