@@ -12944,3 +12944,37 @@ The scratch directory is empty and the test containers are gone.
 `00ee0e69` is now the latest approved local candidate. The two builds use
 the same source and version. A floor-compliant predecessor, supported-host
 R-006, and release approval remain open.
+
+## 2026-11-11 — Browser startup and restart against the exact packaged runtime
+
+The disposable `cc-package-smoke-00ee0e69` project started the approved
+`00ee0e69` gameserver image, pinned Caddy and Postgres images, and the
+package's unchanged Caddyfile and site. The read-only gameserver mounted
+only synthetic secret files. Postgres and the gameserver published no host
+ports. The test overlay bound Caddy to loopback, selected the cached amd64
+image IDs and used JSON logging on Docker Desktop. Only these three services
+ran. The client verified Caddy's local TLS chain and hostname before pinning
+the verified leaf key in its disposable Chromium process.
+
+Native Enter on Begin returned HTTP 201, moved focus to the Desk, committed
+credentials and opened the WebSocket. Chromium loaded the exact bundled
+HTML, JavaScript, CSS and prediction worker, and started the worker. A
+visible Fix Computer click applied one intent and advanced authoritative
+revision 1 to 2. After normal SIGTERM, the packaged gameserver exited 0.
+A passive authenticated, subscribed socket through Caddy received
+`server_restarting` and close 4003. The app socket called close and recorded
+1005. On restart, the same page opened a new socket, read revision 2, and
+committed a second visible Fix Computer action at revision 3. No external
+browser requests or page exceptions were observed.
+
+The first observer incorrectly required the app's own socket to see 4003
+and failed at 1005. The second run captured both the passive socket and the
+app close call. Compose's `start --wait` also refused the unsupported flag
+before the successful plain start. The local driver and logs are retained
+under `.cache/release-browser-smoke-00ee0e69/`. Corrected browser log SHA-256
+`b5c331cecb8641f9afafdace3b09e0732ea6e7b4248c3a3b67a788e83b71f694`.
+
+This covers packaged startup, a persisted player action and same-page
+recovery on the local emulated stack. The delivered Linux browser driver,
+natural progression to the next Company, backup/rollback, operations and
+supported-host R-006 remain outside this observation.
