@@ -4816,3 +4816,31 @@ one-sample timing boundary remain. Plan now marks this corrective batch approved
 no new software checks for this editorial closeout. Hosted/full-CI, flakes,
 feature acceptance and full nine-tier1.0 remain open; no archival/publication or
 goal pause. Continue accepted work while separate owner adoptions remain pending.
+
+
+## 2026-11-10 — Inspect hosted CI after the push to 6afc0b5e
+
+[CI run 42797873549](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/42797873549)
+on published `6afc0b5e` failed. Harness, composed Game UI and schema passed.
+Server and browser were canceled around their configured ten-minute limits.
+The client tests passed and the kernel history guard still rejected
+`50a3a514`. The server log reached the 27 known Clout partition failures
+before cancellation. It also recorded two additional failures:
+
+- `TestCurrentMigrationIsContiguous` expected version 85. The repository
+  contains a contiguous chain through 87. See the Deployment log.
+- `TestComposedDrainCancelsBlockedMembershipLookupIntegration/guild/configured`
+  observed close code 3001 instead of the required 4003. See the Transport log.
+
+[Maintenance run 42749365385](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/42749365385)
+ran on the earlier `d6b1c668`. Numeric maintenance passed. Both Reputation
+report comparisons failed. The harness hit its unchanged 50-minute timeout.
+Downloaded artifact 13735042582 records 300/300 standard pacing runs in
+2,791,809 ms. It reports 0/107 completed runs for relevance row 0 when
+interrupted. Relevance row 1 did not start. The exact downloaded observation
+JSON has SHA-256 `a89b77d3326439956d1f22c373da8179da68be7c23fd9a3c3568efbdd882b237`.
+The local `make harness-observation-check` rejected it as incomplete.
+
+Job logs and the downloaded observation are retained under
+`.cache/hosted-2026-11-10`. No run was rerun and the recorded hosted failures
+remain at their original source coordinates.

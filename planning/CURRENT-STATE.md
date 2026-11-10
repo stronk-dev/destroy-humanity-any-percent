@@ -111,19 +111,18 @@ This is isolation, not literal quiescence or implemented Deployment recovery.
 No product/runtime/CI/kernel/epoch/release claim changes; full1.0 construction
 and original acceptance gates remain open.
 
-**Hosted verification, rechecked2026-11-04:** published main is still `d6b1c668`;
-[CI41476621196](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/41476621196)
-passes browser (all phases), composed-player, harness and schema. Server still
-fails27 Clout partition cases; client still fails historical kernel guard50a3a514.
-Browser7m16s/composed6m15s/server8m44s exceed the unchanged five-minute floor.
-Latest maintenance41767107179 at that same published source fails the50-minute
-harness guard: standard300/300 completes in2733124ms, relevance0 stops82/107 and
-row1 is unstarted. The exact digest-checked artifact is locally rejected as
-incomplete; numeric passes and both Reputation reports drift. Earlier complete
-maintenance41383212848 at different source`efa9223c` remains historical, not a
-current-source substitute. [CI log](scaffolding-and-ci/log.md) owns source/digests/
-counts/limits. No current local-artifact, full-CI, reliability or release acceptance
-follows; later local work has not been published or tested by those runs.
+**Hosted verification, 2026-11-10.** Published main is `6afc0b5e`. Harness,
+composed Game UI and schema passed. Client verification failed at the existing
+kernel history guard. Server and browser jobs were canceled. The server log
+records the 27 Clout partition failures, the stale migration test and a Guild
+drain closing with code 3001. [Hosted CI run](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/42797873549)
+
+Scheduled maintenance ran on the earlier `d6b1c668`. Numeric passed, the
+Reputation reports drifted, and the exhaustive harness hit the 50-minute
+limit. The downloaded observation reports 300/300 standard pacing runs and
+an incomplete first relevance row. The local validator rejects it.
+[Maintenance run](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/42749365385)
+[CI evidence](scaffolding-and-ci/log.md)
 
 **Local integration follow-up,2026-11-03:** one independent full composed target
 passes at `df531b9b`, with declared ARM64 Postgres, production-built browser/Worker
@@ -192,10 +191,8 @@ and independently approved scanner correction `76cba7bc` (no gameplay/kernel cha
 The whole-product classification retains its
 `77fe2275` base and the explicit follow-ups below, not a fresh complete acceptance sweep.
 Independent-review records and their exact bounded scopes live in the owning logs.
-Latest read-only branch/run/job/log queries confirm published `d6b1c668` and
-failed CI41476621196, plus failed maintenance41383212848 on different source
-`efa9223c`. Completed harness/browser evidence and remaining failures are
-distinguished above and below; later local Headcount changes are not published.
+The November 10 hosted CI and maintenance results above supersede the older
+run summaries below. The owning logs retain their original source coordinates.
 Local commit volume is not a product-completion measure.
 Cloud Clicker remains a **development snapshot**, not a released or
 release-ready 1.0. The objective is the full nine-tier game through Transcendence plus recovery,
@@ -351,7 +348,7 @@ acceptance run for every feature. These are different evidence populations:
 
 | Evidence | Result and limit |
 |---|---|
-| Last inspected published CI | [CI41476621196](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/41476621196) on `d6b1c668` completes failure. Browser/composed/schema/harness pass; actual logs retain client RP-131 at50a3a514 and server's27 RP-307 partition cases. Browser7m16s/composed6m15s/server8m44s exceed the five-minute floor. Browser all phases execute:40530 broad cases (40485 ordinary/21 expected/24 skipped),93 native (87/six expected),five performance passes; provider18+9 controls pass. Later local commits are absent; no full-CI/reliability/release approval. |
+| Earlier published CI | [CI41476621196](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/41476621196) on `d6b1c668` completes failure. Browser/composed/schema/harness pass; actual logs retain client RP-131 at50a3a514 and server's27 RP-307 partition cases. Browser7m16s/composed6m15s/server8m44s exceed the five-minute floor. Browser all phases execute:40530 broad cases (40485 ordinary/21 expected/24 skipped),93 native (87/six expected),five performance passes; provider18+9 controls pass. Later local commits are absent; no full-CI/reliability/release approval. |
 | Previous completed published failures | [CI38222406320](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/38222406320) on `e0cb9187` failed historical kernel guard (RP-131), 27 Clout partition cases (RP-307), and Fiscal performance-census whitespace (RP-484), exceeding the blocking floor. The new run passes browser/performance but retains the guard/arithmetic failures. Earlier failures are not erased. |
 | Recent repairs | Performance census, feedback/input, backup metadata/snapshot consistency and API admission/evidence corrections through `4eaed0c9` are now published, not independently approved by publication. Owning logs retain exact verification/review boundaries. The later hoard-preview guard is local and pending review/integration. Neither publication nor local passes establish whole-CI success. |
 | Earlier hosted browser evidence | CI38381138075 at `4eaed0c9`, not the newer published run: all three functional projects complete426 files/34,704 passes/twelve expected deadlines/24 skips,305.18s. Five isolated Chromium performance cases pass with105 deselected and their declared exclusions. Browser6m38s/server6m40s exceed the five-minute floor. This dated census is retained evidence, not current-source acceptance or reliability proof; CI log owns scope. |
