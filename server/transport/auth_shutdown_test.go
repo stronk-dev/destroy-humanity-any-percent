@@ -47,6 +47,51 @@ func (auth *shutdownAuthenticator) Authenticate(ctx context.Context, token strin
 	}
 }
 
+func TestNodeShutdownUsesServerDrainCloseCode(t *testing.T) {
+	now := time.Now().UTC()
+	auth := staticAuthenticator{claims: account.Claims{
+		Subject: "account", FounderID: "founder", IssuedAt: now.Add(-time.Minute).Unix(), ExpiresAt: now.Add(time.Hour).Unix(), TokenID: "token",
+	}}
+	node, err := NewNode(phase0Policy(t), auth, testMemberships{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := node.Run(); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() {
+		ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+		defer cancel()
+		_ = node.Shutdown(ctx)
+	})
+	server := testhttp.New(node.Handler())
+	defer server.Close()
+	connection := dialAuthenticated(t, "ws"+strings.TrimPrefix(server.URL, "http"), server.Client)
+	defer connection.CloseNow()
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancel()
+	// Reach the library shutdown path with a live peer, as can happen when
+	// it runs before the asynchronous CloseForDrain request takes effect.
+	shutdown := make(chan error, 1)
+	go func() { shutdown <- node.Shutdown(ctx) }()
+	for {
+		if _, _, err := connection.Read(ctx); err != nil {
+			if status := websocket.CloseStatus(err); status != websocket.StatusCode(CloseServerDrain) {
+				t.Errorf("shutdown close=%d want=%d: %v", status, CloseServerDrain, err)
+			}
+			break
+		}
+	}
+	select {
+	case err := <-shutdown:
+		if err != nil {
+			t.Fatal(err)
+		}
+	case <-ctx.Done():
+		t.Fatal("node shutdown did not finish")
+	}
+}
+
 func TestShutdownCancelsInFlightSocketReauthentication(t *testing.T) {
 	now := time.Now().UTC()
 	auth := &shutdownAuthenticator{staticAuthenticator: staticAuthenticator{claims: account.Claims{

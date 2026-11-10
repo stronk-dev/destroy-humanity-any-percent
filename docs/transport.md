@@ -183,6 +183,9 @@ shuts down Centrifuge under the configured 15-second bound. New intents during t
 with `server_draining/retry_same_intent_id`; health remains process-liveness while readiness also
 checks Postgres.
 
+The explicit disconnect request and Centrifuge's shutdown both use close code 4003.
+Peers see the same drain reason even when the library shutdown closes them first.
+
 Player-outbox flushes remain serialized, but waiting for an active flush also
 honors the waiting caller's cancellation or deadline. A cancelled waiter claims
 no new batch and leaves the active caller alone. If the background relay is

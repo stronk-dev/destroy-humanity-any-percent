@@ -26,7 +26,7 @@ var (
 	disconnectInvalidFrame = centrifuge.Disconnect{Code: CloseInvalidFrame, Reason: "invalid publication frame"}
 )
 
-var configureSlowDisconnectOnce sync.Once
+var configureDisconnectsOnce sync.Once
 
 type Authenticator interface {
 	Authenticate(context.Context, string) (account.Claims, error)
@@ -69,11 +69,13 @@ func newNode(policy Policy, auth Authenticator, memberships Memberships, registe
 	if !policy.valid() || auth == nil {
 		return nil, ErrInvalidNode
 	}
-	// Centrifuge exposes its slow-writer disconnect as a package policy rather
-	// than a per-node option. Configure it exactly once before any Node can run;
-	// this avoids per-node mutation races while preserving the application wire
-	// contract that overflow is recoverable close code 4000.
-	configureSlowDisconnectOnce.Do(func() { centrifuge.DisconnectSlow = disconnectQueueFull })
+	// Centrifuge exposes these disconnects as package defaults. Configure them
+	// before any node runs. Its shutdown can close a peer before our asynchronous
+	// CloseForDrain request runs, so both paths must send the same close code.
+	configureDisconnectsOnce.Do(func() {
+		centrifuge.DisconnectSlow = disconnectQueueFull
+		centrifuge.DisconnectShutdown = disconnectServerDrain
+	})
 	engine, err := centrifuge.New(centrifuge.Config{
 		Version:                        kernel.Version,
 		ClientConnectIncludeServerTime: true,

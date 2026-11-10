@@ -1421,3 +1421,27 @@ queue without the archive JOIN (which currently hides status), actual worker
 failure state and archive/log counts before cleanup; keep the5s observer unchanged
 and measure the real blocked/slow phase before proposing a remedy. No owner
 question, new RFC, timeout increase or goal pause is needed for that debugging.
+
+
+## 2026-11-10 — Preserve the drain close code during library shutdown (RP-781)
+
+Hosted CI on `6afc0b5e` recorded close code 3001 for the configured Guild
+drain with a blocked membership query. Eight local repetitions of the
+unchanged four-case Postgres witness passed. The focused real WebSocket
+regression reaches the competing library shutdown path directly and fails
+with the exact 3001 close on old code.
+
+Centrifuge schedules `Client.Disconnect` asynchronously. Its own shutdown
+can close the same peer first. The application now configures the library
+shutdown default once at node construction, alongside the existing slow
+writer default. Both paths send the existing 4003 drain close and reason.
+This restores Transport AC5 without changing the drain deadline, auth
+policy, membership cancellation or replay kernel.
+
+The corrected native regression and adjacent drain tests pass. Eight
+native race repetitions of the fallback, pending connect and late
+registration checks pass. Cold Linux-amd64/Postgres suites pass for
+`./transport ./gameserver ./releasepackage`. Affected vet and formatting
+checks pass. The focused SQL race check is still running. Independent
+corrective review remains pending. The approved local release bundle
+predates this runtime correction.
