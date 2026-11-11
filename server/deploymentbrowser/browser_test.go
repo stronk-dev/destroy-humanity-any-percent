@@ -2,12 +2,16 @@ package deploymentbrowser
 
 import (
 	"bytes"
+	"context"
+	"encoding/base64"
 	"encoding/json"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/chromedp/chromedp"
 )
 
 func TestBrowserResultRequiresEveryObservedUserBoundary(t *testing.T) {
@@ -132,5 +136,54 @@ func TestJourneySelectsOnlyEnabledPlayerControls(t *testing.T) {
 				t.Fatalf("action=%s want=%s", got, sample.want)
 			}
 		})
+	}
+}
+
+func TestJourneyBuysFromVisibleEnabledRows(t *testing.T) {
+	browser := os.Getenv("CLOUD_CLICKER_TEST_CHROMIUM")
+	if browser == "" {
+		t.Skip("set CLOUD_CLICKER_TEST_CHROMIUM to execute the browser driver regression")
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+	allocator, cancelAllocator := chromedp.NewExecAllocator(ctx, append(
+		chromedp.DefaultExecAllocatorOptions[:],
+		chromedp.ExecPath(browser), chromedp.NoSandbox,
+	)...)
+	defer cancelAllocator()
+	page, cancelPage := chromedp.NewContext(allocator)
+	defer cancelPage()
+
+	const html = `<main data-surface="desk">
+		<button disabled>Buy Max</button>
+		<button id="earlier" onclick="document.body.dataset.clicked=this.id">Buy Max</button>
+		<button id="eligible" onclick="document.body.dataset.clicked=this.id">Buy Max</button>
+		<button aria-disabled="true" onclick="document.body.dataset.clicked='pending'">Buy Max</button>
+		<button id="hidden" hidden onclick="document.body.dataset.clicked=this.id">Buy Max</button>
+		<button>Fix Computer</button>
+	</main>`
+	if err := chromedp.Run(page, chromedp.Navigate("data:text/html;base64,"+base64.StdEncoding.EncodeToString([]byte(html)))); err != nil {
+		t.Fatal(err)
+	}
+	state, err := observePage(page)
+	if err != nil || chooseAction(state, false) != actionBuyMax {
+		t.Fatalf("visible eligible purchase was missed: state=%+v err=%v", state, err)
+	}
+	if err := clickAction(page, actionBuyMax); err != nil {
+		t.Fatal(err)
+	}
+	var clicked string
+	if err := chromedp.Run(page, chromedp.Evaluate("document.body.dataset.clicked", &clicked)); err != nil || clicked != "eligible" {
+		t.Fatalf("clicked=%q err=%v", clicked, err)
+	}
+	if err := chromedp.Run(page,
+		chromedp.SetAttributeValue("#earlier", "disabled", "", chromedp.ByQuery),
+		chromedp.SetAttributeValue("#eligible", "disabled", "", chromedp.ByQuery),
+	); err != nil {
+		t.Fatal(err)
+	}
+	state, err = observePage(page)
+	if err != nil || chooseAction(state, false) != actionManual {
+		t.Fatalf("hidden or disabled purchase counted as actionable: state=%+v err=%v", state, err)
 	}
 }

@@ -34,6 +34,11 @@ type browserAction string
 // and starve the gate requirement. This is driver pacing, not game balance.
 const purchaseSpacing = 15 * time.Second
 
+// Use the same ordered set for observation and the native click.
+const buyMaxButton = `Array.from(document.querySelectorAll("button:not(:disabled)"))
+  .filter((button)=>button.textContent?.trim()==="Buy Max" && button.getAttribute("aria-disabled")!=="true" &&
+    button.getClientRects().length && getComputedStyle(button).visibility==="visible").at(-1)`
+
 const (
 	actionWait     browserAction = "wait"
 	actionGate     browserAction = "gate"
@@ -142,7 +147,7 @@ func observePage(ctx context.Context) (pageState, error) {
     const enabled=(label)=>{const item=button(label);return !!item&&!item.disabled&&!!item.getClientRects().length};
     return {surface:main?.getAttribute("data-surface")??"",gate_present:!!button("Move Into the Garage"),
       gate_enabled:enabled("Move Into the Garage"),wind_down_enabled:enabled("Wind Down Company"),
-      buy_max_enabled:enabled("Buy Max"),manual_enabled:enabled("Fix Computer"),
+      buy_max_enabled:Boolean(` + buyMaxButton + `),manual_enabled:enabled("Fix Computer"),
       decline_enabled:enabled("Decline"),continue_enabled:enabled("Start the Next Company")};
   })())`
 	var encoded string
@@ -164,7 +169,7 @@ func clickAction(ctx context.Context, action browserAction) error {
 	case actionWindDown:
 		selector = `//button[normalize-space()="Wind Down Company" and not(@disabled)]`
 	case actionBuyMax:
-		selector = `(//button[normalize-space()="Buy Max" and not(@disabled)])[last()]`
+		return chromedp.Run(ctx, chromedp.Click(buyMaxButton, chromedp.ByJSPath))
 	case actionManual:
 		selector = `//button[normalize-space()="Fix Computer" and not(@disabled)]`
 	case actionDecline:

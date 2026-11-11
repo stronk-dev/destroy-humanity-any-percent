@@ -509,7 +509,8 @@ measurement tool, not another running Cloud Clicker service.
 
 The driver navigates the canonical HTTPS Caddy origin in real headless Chromium, clicks the visible
 `BEGIN ATTEMPT` and `Fix Computer` controls, then uses enabled player controls to buy generators,
-cross the T0 gate, reach the first run-end and continue into run 2. It does not seed the database,
+cross the T0 gate, reach the first run-end and continue into run 2. The purchase check and click
+use the same last visible, enabled `Buy Max` button in document order. It does not seed the database,
 call the intent API directly or advance the product clock. It accepts a result only when the desk
 and run-2 state render, bootstrap credentials are retired, durable credentials exist, a WebSocket
 handshake completed, the manual and later intent responses succeeded, the gate and terminal were

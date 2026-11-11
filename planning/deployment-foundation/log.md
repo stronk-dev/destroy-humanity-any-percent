@@ -13074,3 +13074,34 @@ Browser log SHA-256
 The disposable test containers, networks and synthetic-data volumes were
 removed. RP-785 is closed. `2f366a90` is the latest independently reviewed
 local candidate. Supported-host R-006 and predecessor compatibility remain open.
+
+## 2026-11-11 — Exercise the shipped browser driver and correct Buy Max selection (RP-786)
+
+The exact `2f366a90` package booted with fresh Postgres. Its shipped Linux
+browser driver ran in the manifest-pinned Playwright image, with the local
+TLS chain and hostname verified separately and a scoped leaf key pin passed
+to Chromium. No save or clock was altered. The active browser showed a
+disabled Answering Machine Buy Max before enabled Beige Tower and
+Dot-Matrix Queue controls. The original driver reported that no purchase
+was available. Postgres showed one account, 287 applied intents, zero
+rejections and no purchased generators at the captured point. The obsolete
+run was deliberately stopped with exit 143 after capturing this defect.
+
+The accepted DP-F browser flow now observes and clicks the same last
+visible, enabled Buy Max button. The existing purchase spacing, gameplay
+controls and journey guards are unchanged. The actual Go/chromedp regression
+fails against the old selector, then passes with a disabled first row,
+multiple enabled rows, an aria-disabled row and a hidden last row. It also
+checks the manual fallback when no visible purchase is enabled. Cold
+browser, rehearsal and affected command checks and vet passed.
+
+A new run is in progress against a fresh disposable database and the
+same packaged app, with only the browser driver replaced by its corrected
+Linux build. The source correction and natural journey require separate
+review and evidence. Raw output and read-only DOM/SQL observations are in
+`.cache/release-browser-natural-2f366a90` and
+`.cache/release-browser-natural-corrected`. The old project and its
+synthetic-data volumes were removed. The reviewed `2f366a90` bundle still
+ships the old driver.
+Review by: Codex root (implementer check).
+Recorded by: Codex root. Independent corrective review pending.
