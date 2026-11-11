@@ -5407,3 +5407,52 @@ all browser fixtures/resets/DOM journeys and failure propagation must remain.
 No composed source behavior changed here; this is the next investigation, not
 a completed deduplication or adopted performance claim. Review by: Codex root
 (read actual primary log/source). Recorded by: Codex root. Editorial checkpoint.
+
+
+## 2026-11-11 — Share composed backend preparation without dropping journeys
+
+Under accepted CI D2/D3 and RFC-0000, extract the unchanged eight-case refresh
+and ten-parent persisted/replay preparation into one aggregate gate. Preserve all
+three replay consumer witnesses, cold execution, population refusals, schema
+resets and every main/cosmetic/N5/Garden/Tier2 browser journey. The public runner
+keeps complete preparation for all standalone modes; no skip flag or cached pass
+marker. The 1282-line browser suffix is byte-identical to the previous runner.
+New controls exercise actual Make orchestration under -j4, incomplete/skipped
+populations, missing replay markers, tool/reset failures and occupied-port refusal.
+
+Executed old standalone Tier2 successfully, then the final changed aggregate and
+changed standalone Tier2 successfully against real Postgres and built-client
+Chromium. Commands, from root:
+
+```sh
+make test-game-ui-composed COMPOSE_PROJECT_NAME=cloud-clicker-composed-preflight GAME_UI_COMPOSE_FILES='-f compose.game-ui-test.yml -f compose.game-ui-arm64.yml'
+make test-tier2-composed COMPOSE_PROJECT_NAME=cloud-clicker-composed-preflight GAME_UI_COMPOSE_FILES='-f compose.game-ui-test.yml -f compose.game-ui-arm64.yml'
+node --test client/tools/composed-preflight.fixtures.mjs
+make verify-ci-topology
+```
+
+Final aggregate exits0 with all43 Node controls, one8/8 refresh population, each
+of10 persisted parents once, all3 consumer witnesses, both N5 negative executions
+and Tier2 completion. Standalone retains its own full preparation and real DOM/
+SQL/reload completion. The eight new controls also pass on Linux ARM64 Node24.18.0
+in the declared Playwright image with Make installed as a disposable prerequisite;
+29 topology negative controls pass. Actual native environment is macOS ARM64,
+Go1.27.3 (also confirmed on the built gameserver), Node26.13.0, Postgres16 and
+Chromium. Full journeys were not run in the pinned hosted Go/Node environment.
+The observation manifest binds the raw logs, populations and unchanged suffix.
+
+Preliminary independent review by /root/composed_shared_preflight_review caught
+an intermediate extraction regression: the destructive preparation preceded the
+occupied18081 guard. A new control failed that unsafe variant before correction.
+Restore the guard before both public entry points' resets and retain the journey
+probe. A real bound socket, without test preload, makes default/Tier2/preflight
+entry points exit1 with zero Docker/Make calls. Re-execute the complete aggregate
+after the correction: exit0. Retain the intermediate green journey log separately;
+it is not final-revision evidence. The reviewer independently ran the corrected
+standalone Tier2 and actual occupied-port refusals successfully; its formal verdict
+will follow inspection of the full committed range after3a1069ec.
+
+No gameplay, schema, balance, copy, population, cache policy or timeout change.
+No native timing result is presented as hosted speed or five-minute completion.
+Exact-range designated approval remains pending; hosted CI, known Clout/history
+and full nine-tier1.0 release obligations remain open. No push or archival.

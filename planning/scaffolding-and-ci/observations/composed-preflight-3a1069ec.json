@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "base": "3a1069ec92be582cbd78a8924730ca7da45c9f23",
+  "scope": "Shared backend preparation; every browser journey and standalone command retained",
+  "actual_environment": "native macOS ARM64/Go1.27.3/Node26.13.0/Postgres16/Chromium; shared-preparation controls separately on Linux ARM64/Node24.18.0",
+  "outcomes": {
+    "old_standalone_tier2_exit": 0,
+    "final_aggregate_exit": 0,
+    "final_standalone_tier2_exit": 0,
+    "aggregate_refresh_populations": 1,
+    "persisted_parent_pass_counts": {
+      "TestSessionRequestSchemaAdmissionIntegration": 1,
+      "TestSoulRecoveryErrorRegistryIntegration": 1,
+      "TestFiscalProjectionMatchesPersistedHarvestIntegration": 1,
+      "TestFirstContentEpochPersistedBoundaryIntegration": 1,
+      "TestResolveMinigameSessionIntegrationAtomicReplayAndFaults": 1,
+      "TestPublicBoardRankingAndPagesIntegration": 1,
+      "TestPublicRunEvidenceIntegration": 1,
+      "TestComposedGameserverPostgresSocketClearingAndGCIntegration": 1,
+      "TestComposedMinigameAPILifecycleUsesPinnedTenantResolverIntegration": 1,
+      "TestComposedGameserverExitVerificationAndBoardIntegration": 1
+    },
+    "node_controls": 43,
+    "new_control_tests": 8,
+    "new_control_skips": 0,
+    "n5_negative_executions": 2,
+    "tier2_completed": true
+  },
+  "unchanged_browser_suffix": {
+    "lines": 1282,
+    "sha256": "d1f44487ce8ed329af44ff0d60328f86ef85c06bc72f7ac0c0f4c8d20d1cb447"
+  },
+  "port_refusal": {
+    "actual_listener": "127.0.0.1:18081",
+    "no_preload": true,
+    "results": [
+      {
+        "script": "test-game-ui-composed.mjs",
+        "args": [],
+        "exit": 1,
+        "occupied_port_refused": true,
+        "tool_calls": 0
+      },
+      {
+        "script": "test-game-ui-composed.mjs",
+        "args": [
+          "--tier2-fixture"
+        ],
+        "exit": 1,
+        "occupied_port_refused": true,
+        "tool_calls": 0
+      },
+      {
+        "script": "test-game-ui-preflight.mjs",
+        "args": [],
+        "exit": 1,
+        "occupied_port_refused": true,
+        "tool_calls": 0
+      }
+    ]
+  },
+  "review_finding": "Intermediate extraction moved port guard after destructive preparation; occupied-port regression fired; guard restored before resets and final aggregate re-executed.",
+  "raw_directory": ".cache",
+  "raw_sha256": {
+    "composed-preflight-old-tier2.log": "ee33932b6447395dd8e8075615a76085fd68931665e2b971166d69f434347482",
+    "composed-preflight-old-make-controls.log": "716c931d37c803322b9ca2b54f2c8fc214abd89475bb7bc257e6449f609896fc",
+    "composed-preflight-port-before.log": "53660d8f7f3f737583d43add1513c5d2e3700bf3429e40e52ce84c66ccfcd7e8",
+    "composed-preflight-before-port-fix.log": "27de66e73ad817d95f8c5d880f1dc272689e1dd18291075d88814952088a75d6",
+    "composed-preflight-new-controls.log": "83ce51b4309412d21b20f3f21b6f0e66fc581cef30bca904f4f2dbe759c264bc",
+    "composed-preflight-node24.log": "399d91f64107cb6790637d774a518c7db01acc68a089cd5fd7f008a3d66deec9",
+    "composed-port-actual.json": "c0a4b56eb88f033090ff107b0b78d71b0114f6c8388004daec061e0076a7db8a",
+    "composed-preflight-full.log": "5a4fa3c6127a21a49b11e0a257b54dadcf63a7265739c7918c49ffa6b5838b5d",
+    "composed-preflight-new-tier2.log": "d46574b333696f70eb5a892dbc4ae76e0e19d2993a1f3e4efe01c0ace962bd41"
+  },
+  "limits": [
+    "Full journeys use native host runtimes, not the pinned hosted Go/Node environment; only the new control population also ran under Linux Node24.",
+    "No elapsed-speed or hosted-five-minute claim from native hardware.",
+    "Control doubles test orchestration; real aggregate and standalone results supply integration evidence.",
+    "The intermediate pre-port-fix aggregate pass is retained but not final-revision evidence.",
+    "Full1.0, hosted CI, accounting/history and other release gates remain open."
+  ]
+}

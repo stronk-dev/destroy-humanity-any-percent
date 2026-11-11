@@ -170,6 +170,25 @@ all named cases, failure propagation, standalone Make coverage and every indepen
 browser fixture/reset/journey. Do not add a trusted skip flag or treat source
 similarity as proof; inspect callers and execute the changed full composed target.
 
+**Shared composed preparation,2026-11-11:** extraction now retains one real8-case/
+10-parent preparation in the aggregate, all original browser journeys/negative
+controls and unchanged public standalone mode behavior. The1282-line browser body
+from server-binary setup onward is byte-identical. Actual old standalone Tier2
+passes; final changed complete aggregate and changed standalone Tier2 both pass
+against real native ARM64 Postgres/Go/Chromium. Aggregate shows one preparation,
+all10persisted parents and replay markers, both N5 negatives and Tier2 completion.
+All43Node controls execute; final8new controls also pass under Linux Node24.
+
+Preliminary independent review caught an intermediate unsafe ordering: preparation
+could reset an existing witness's DB before its occupied-port check. Correct it
+before landing: both public entry points now probe first, while journeys keep a
+second pre-reset probe. The new occupied-port control fails the unsafe variant;
+an actual bound18081 listener confirms three entry points refuse with zero tool
+calls. That intermediate whole-journey pass is retained but is not final evidence.
+The final aggregate is run again after the correction. Complete batch still needs
+exact-range independent approval; native proof does not close hosted timing or
+full1.0. No gameplay, authored copy, schema, population or timeout change.
+
 ## Current hosted evidence — 2026-11-11
 
 [CI42942631238](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/42942631238)

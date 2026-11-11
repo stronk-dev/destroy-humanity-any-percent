@@ -1,0 +1,1359 @@
+// Browser journeys. The public wrapper prepares standalone runs; Make prepares
+// its aggregate once before invoking these journeys in sequence.
+import { spawn, spawnSync } from "node:child_process";
+import { mkdirSync } from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { isDeepStrictEqual } from "node:util";
+
+import { chromium } from "playwright";
+import { createServer, preview } from "vite";
+import { buildProductionClient, productionClientFiles, productionClientProof } from "./production-client-proof.mjs";
+import { assertOpportunityClaimEffect, assertOpportunityReadStatus, assertQueuedOpportunityClaim } from "./opportunity-claim-proof.mjs";
+import { assertComposedPortAvailable, resetComposedDatabase } from "./test-game-ui-preflight.mjs";
+import { composedMode, observeManualBudget } from "./observe-manual-budget.mjs";
+import { observeLockedPitchView } from "./pitch-locked-view.mjs";
+import { tier2Fixture, witnessTier2 } from "./tier2-composed.mjs";
+import { witnessSoulRecovery } from "./soul-recovery-composed.mjs";
+
+const fullRecovery = process.argv.length === 3 && process.argv[2] === "--soul-recovery-full";
+const mode = fullRecovery ? "journey" : process.argv.length === 3 && process.argv[2] === "--tier2-fixture" ? "tier2-fixture" : composedMode(process.argv.slice(2));
+
+const clientRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const repositoryRoot = path.resolve(clientRoot, "..");
+const gameserverURL = "http://127.0.0.1:18081";
+const uiURL = "http://localhost:5173";
+
+const key = Buffer.alloc(32, 7).toString("base64");
+const processErrors = [];
+let pitchOffersDeclined = 0;
+
+// Request metadata only: no tokens, IDs, query strings or bodies. Count the
+// main account's browser traffic AND the driver's direct authenticated reads.
+let requestTraceStart;
+let requestPhase = "bootstrap/recovery";
+const accountRequests = [];
+function traceAccountRequest(source, method, url) {
+  if (requestTraceStart === undefined) return undefined;
+  const route = new URL(url).pathname.replace(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/giu, ":id");
+  const row = { at_ms: Math.round(performance.now() - requestTraceStart), source, phase: requestPhase, method, route, status: "pending" };
+  accountRequests.push(row);
+  return row;
+}
+async function tracedAccountFetch(url, options) {
+  const row = traceAccountRequest("driver", options?.method ?? "GET", url);
+  try {
+    const response = await fetch(url, options);
+    if (row) row.status = response.status;
+    return response;
+  } catch (error) {
+    if (row) row.status = "failed";
+    throw error;
+  }
+}
+function reportAccountRequests() {
+  if (requestTraceStart === undefined) return;
+  const counts = {};
+  for (const row of accountRequests) {
+    const key = `${row.phase}: ${row.source} ${row.method} ${row.route} ${row.status}`;
+    counts[key] = (counts[key] ?? 0) + 1;
+  }
+  let windowStart = 0, peakOneSecond = 0;
+  for (let end = 0; end < accountRequests.length; end += 1) {
+    while (accountRequests[end].at_ms - accountRequests[windowStart].at_ms >= 1_000) windowStart += 1;
+    peakOneSecond = Math.max(peakOneSecond, end - windowStart + 1);
+  }
+  // Issued requests are not proof of server arrival; a navigation can leave
+  // an interrupted request pending in Playwright's event stream.
+  console.info(`composed main-account HTTP trace: ${JSON.stringify({ total_issued: accountRequests.length,
+    elapsed_ms: Math.round(performance.now() - requestTraceStart), peak_issued_requests_in_one_second: peakOneSecond,
+    counts, last_requests: accountRequests.slice(-32) })}`);
+}
+
+await assertComposedPortAvailable();
+
+const testDatabaseURL = "postgres://cloud_clicker:cloud_clicker_game_ui_test@127.0.0.1:55433/cloud_clicker_game_ui_test?sslmode=disable";
+resetComposedDatabase(repositoryRoot);
+
+const gameserverBinary = path.join(repositoryRoot, ".cache", "game-ui-gameserver");
+mkdirSync(path.dirname(gameserverBinary), { recursive: true });
+const tier2 = mode === "tier2-fixture" ? tier2Fixture(repositoryRoot) : null;
+const gameserverEnvironment = {
+  ...process.env,
+  CLOUD_CLICKER_ACTIVITY_BRACKET: "activity.standard",
+  CLOUD_CLICKER_BOOTSTRAP_KEY: key,
+  CLOUD_CLICKER_BOOTSTRAP_KEY_ID: "browser-fixture",
+  CLOUD_CLICKER_CURSOR_KEY: key,
+  CLOUD_CLICKER_JWT_KEY: key,
+  CLOUD_CLICKER_REPOSITORY_ROOT: tier2?.root ?? repositoryRoot,
+  CLOUD_CLICKER_SERVER_ID: "01986666-b001-4000-8000-000000000001",
+  DATABASE_URL: testDatabaseURL,
+  GOCACHE: path.join(repositoryRoot, ".cache", "go-build"),
+  LISTEN_ADDR: "127.0.0.1:18081",
+};
+const buildGameserver = spawnSync("go", ["build", "-o", gameserverBinary, "./cmd/gameserver"], {
+  cwd: path.join(repositoryRoot, "server"),
+  env: gameserverEnvironment,
+  encoding: "utf8",
+});
+if (buildGameserver.status !== 0) {
+  throw new Error(`composed gameserver build failed (${buildGameserver.status}): ${buildGameserver.stderr || buildGameserver.stdout}`);
+}
+function startGameserver() {
+  const child = spawn(gameserverBinary, [], {
+    cwd: repositoryRoot,
+    env: gameserverEnvironment,
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  child.stdout.on("data", (value) => process.stdout.write(value));
+  child.stderr.on("data", (value) => process.stderr.write(value));
+  child.on("error", (error) => processErrors.push(error));
+  return child;
+}
+let gameserver = startGameserver();
+
+let vite;
+let clientPreview;
+let browser;
+
+// DOM-only observation: no new gameplay request, test clock or fixture endpoint.
+// With no prior value, return seconds; with one, wait for actual clock progress.
+function observeRunTimer(previous) {
+  const title = document.querySelector(".cc-titlebar")?.textContent ?? "";
+  const match = title.match(/\bTimer: (\d+):([0-5]\d):([0-5]\d) — PB:/u);
+  if (!match) throw new Error("composed run title has no valid displayed timer");
+  const seconds = Number(match[1]) * 3600 + Number(match[2]) * 60 + Number(match[3]);
+  if (!Number.isSafeInteger(seconds)) throw new Error("composed displayed timer is outside its integer range");
+  return previous === null ? seconds : seconds > previous;
+}
+
+async function witnessContinuedTimer(page, ending) {
+  const before = await page.evaluate(observeRunTimer, null);
+  await page.waitForFunction(observeRunTimer, before, { timeout: 30_000 });
+  const after = await page.evaluate(observeRunTimer, null);
+  if (after <= before) throw new Error(`composed ${ending} next-Company clock did not advance`);
+  console.log(`composed ${ending} next-Company clock advances: ${before}s → ${after}s: PASS`);
+}
+
+async function waitForReady() {
+  const deadline = Date.now() + 60_000;
+  while (Date.now() < deadline) {
+    if (processErrors.length > 0 || gameserverStopped()) throw processErrors[0] ?? new Error("composed gameserver stopped before readiness");
+    try {
+      const response = await fetch(`${gameserverURL}/readyz`);
+      if (response.ok) {
+        // A stale listener must not let a newly failed child masquerade as ready.
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        if (processErrors.length > 0 || gameserverStopped()) throw processErrors[0] ?? new Error("composed gameserver stopped during readiness");
+        return;
+      }
+    } catch {
+      // The listener is still starting.
+    }
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  }
+  throw new Error("composed gameserver did not become ready");
+}
+
+async function stopGameserver() {
+  if (gameserverStopped()) return;
+  gameserver.kill("SIGTERM");
+  const deadline = Date.now() + 10_000;
+  while (!gameserverStopped() && Date.now() < deadline) {
+    await new Promise((resolve) => setTimeout(resolve, 50));
+  }
+  if (!gameserverStopped()) {
+    gameserver.kill("SIGKILL");
+    await new Promise((resolve) => gameserver.once("exit", resolve));
+  }
+}
+
+function gameserverStopped() {
+  return gameserver.exitCode !== null || gameserver.signalCode !== null;
+}
+
+async function crashGameserver() {
+  if (gameserverStopped()) throw new Error("cannot crash an already stopped composed gameserver");
+  const child = gameserver;
+  let timeout;
+  try {
+    await new Promise((resolve, reject) => {
+      timeout = setTimeout(() => reject(new Error("composed gameserver did not exit after SIGKILL")), 10_000);
+      child.once("exit", (code, signal) => {
+        if (signal === "SIGKILL") resolve();
+        else reject(new Error(`composed crash exited unexpectedly (${code}, ${signal})`));
+      });
+      if (!child.kill("SIGKILL")) reject(new Error("could not SIGKILL the owned composed gameserver"));
+    });
+  } finally { clearTimeout(timeout); }
+  return child.pid;
+}
+
+function assertPitchHistory(sessionID, commands, status, expectedSnapshot) {
+  if (!/^[0-9a-f-]{36}$/u.test(sessionID)) throw new Error("invalid Pitch session ID in history check");
+  const sql = `SELECT json_build_object('revision', revision, 'status', status, 'snapshot', state,
+    'commands', (SELECT count(*) FROM minigame_session_commands WHERE session_id = session.session_id),
+    'receipts', (SELECT count(*) FROM minigame_command_receipts WHERE session_id = session.session_id))
+    FROM minigame_sessions session WHERE session_id = '${sessionID}';`;
+  const result = spawnSync("docker", ["compose", "-f", "compose.game-ui-test.yml", "exec", "-T", "game-ui-postgres",
+    "psql", "-v", "ON_ERROR_STOP=1", "-At", "-U", "cloud_clicker", "-d", "cloud_clicker_game_ui_test", "-c", sql],
+  { cwd: repositoryRoot, encoding: "utf8" });
+  if (result.status !== 0) throw new Error("Pitch persisted history query failed");
+  const history = JSON.parse(result.stdout.trim());
+  if (history.revision !== commands + 1 || history.commands !== commands || history.receipts !== commands || history.status !== status) {
+    throw new Error(`Pitch persisted history does not match once-only commands: ${JSON.stringify({ revision: history.revision, commands: history.commands, receipts: history.receipts, status: history.status })}`);
+  }
+  if (expectedSnapshot !== undefined && !isDeepStrictEqual(history.snapshot, expectedSnapshot)) throw new Error("Pitch persisted snapshot differs from the committed command response");
+}
+
+function seedGateRequirement(founderID) {
+  if (!/^[0-9a-f-]{36}$/u.test(founderID)) throw new Error("invalid Founder ID in server-side setup");
+  const sql = `WITH current AS (
+    SELECT revision.stream_id, revision.revision, revision.version, revision.state, revision.constants_hash
+    FROM save_revisions revision
+    JOIN save_streams stream ON stream.id = revision.stream_id
+    WHERE stream.owner_kind = 'founder' AND stream.owner_id = '${founderID}' AND stream.scope = 'company' AND stream.archived_at IS NULL
+    ORDER BY revision.revision DESC LIMIT 1
+  ) INSERT INTO save_revisions(stream_id, revision, version, state, constants_hash)
+    SELECT stream_id, revision + 1, version,
+      jsonb_set(state, '{balances,company.cash}', to_jsonb('1e5'::text), false), constants_hash FROM current;`;
+  const result = spawnSync("docker", ["compose", "-f", "compose.game-ui-test.yml", "exec", "-T", "game-ui-postgres",
+    "psql", "-v", "ON_ERROR_STOP=1", "-U", "cloud_clicker", "-d", "cloud_clicker_game_ui_test", "-c", sql],
+  { cwd: repositoryRoot, encoding: "utf8" });
+  if (result.status !== 0 || !result.stdout.includes("INSERT 0 1")) {
+    throw new Error(`server-side gate setup failed (${result.status}): ${result.stderr || result.stdout}`);
+  }
+}
+
+async function waitForEnabledButton(page, name) {
+  await page.waitForFunction(async (label) => {
+    const button = [...document.querySelectorAll("button")]
+      .find((candidate) => candidate.textContent?.trim() === label && !candidate.disabled);
+    if (!button) return false;
+    await new Promise(requestAnimationFrame);
+    await new Promise(requestAnimationFrame);
+    const style = getComputedStyle(button);
+    const bounds = button.getBoundingClientRect();
+    return button.isConnected && !button.disabled && button.textContent?.trim() === label &&
+      style.display !== "none" && style.visibility !== "hidden" && bounds.width > 0 && bounds.height > 0;
+  }, name, { timeout: 30_000 });
+  return name;
+}
+
+async function clickAppliedIntent(page, buttonLabel, label) {
+  return clickAppliedIntentChoice(page, [buttonLabel], label);
+}
+
+async function clickReadyPitchControl(page, control) {
+  return page.evaluate(async (target) => {
+    const deadline = performance.now() + 30_000;
+    while (performance.now() < deadline) {
+      const main = document.querySelector("main");
+      if (main?.getAttribute("data-surface") === "offer_sheet") return "offer";
+      let button;
+      if (target === "start") button = [...(main?.querySelectorAll("button") ?? [])]
+        .find((candidate) => candidate.textContent?.trim() === "Start a pitch");
+      else button = [...document.querySelectorAll('section[aria-labelledby="fiscal-unlocks-heading"] li')]
+        .find((item) => item.querySelector("h3")?.textContent?.trim() === "The Pitch")
+        ?.querySelector("button");
+      if (main?.getAttribute("aria-busy") === "false" && button && !button.disabled) {
+        button.click();
+        return "clicked";
+      }
+      await new Promise(requestAnimationFrame);
+    }
+    throw new Error(`Pitch ${target} control never became atomically actionable`);
+  }, control);
+}
+
+async function declinePitchOffer(page, destination, surface) {
+  const result = await clickAppliedIntent(page, "Decline", "Pitch offer preemption");
+  if (result.intent?.kind !== "decline_exit_offer") throw new Error(`Pitch preemption did not use visible Decline: ${JSON.stringify(result.intent)}`);
+  pitchOffersDeclined += 1;
+  await (surface === "fiscal" ? page.locator('nav button[data-nav-surface="fiscal"]')
+    : page.getByRole("button", { name: destination, exact: true })).click();
+  await page.locator(`main[data-surface="${surface}"]`).waitFor({ state: "visible", timeout: 30_000 });
+}
+
+async function clickAppliedIntentChoice(page, buttonLabels, label) {
+  const requestPromise = page.waitForRequest((request) =>
+    new URL(request.url()).pathname === "/api/v1/intents", { timeout: 30_000 });
+  let request;
+  let clickedLabel;
+  try {
+    [request, clickedLabel] = await Promise.all([requestPromise, page.evaluate(async (expectedLabels) => {
+      const deadline = performance.now() + 30_000;
+      while (performance.now() < deadline) {
+        const main = document.querySelector("main");
+        if (main?.getAttribute("aria-busy") === "false") {
+          for (const expectedLabel of expectedLabels) {
+            const element = [...document.querySelectorAll("button")]
+              .find((candidate) => candidate.textContent?.trim() === expectedLabel);
+            if (!element || element.disabled) continue;
+            const style = getComputedStyle(element);
+            const bounds = element.getBoundingClientRect();
+            if (style.display !== "none" && style.visibility !== "hidden" && bounds.width > 0 && bounds.height > 0) {
+              element.click();
+              return expectedLabel;
+            }
+          }
+        }
+        await new Promise(requestAnimationFrame);
+      }
+      throw new Error(`${expectedLabels.join(" or ")} did not become atomically actionable`);
+    }, buttonLabels)]);
+  } catch (error) {
+    const state = await page.evaluate(() => ({
+      surface: document.querySelector("main")?.getAttribute("data-surface"),
+      ariaBusy: document.querySelector("main")?.getAttribute("aria-busy"),
+      buttons: [...document.querySelectorAll("button")].map((candidate) => ({ disabled: candidate.disabled, text: candidate.textContent?.trim() })),
+      alerts: [...document.querySelectorAll('[role="alert"]')].map((candidate) => candidate.textContent?.trim()),
+    }));
+    throw new Error(`${label} emitted no intent request; rendered state=${JSON.stringify(state)}`, { cause: error });
+  }
+  const response = await request.response();
+  if (!response) throw new Error(`${label} visible intent request completed without a response`);
+  const body = await response.json();
+  if (response.status() !== 200 || body?.outcome !== "applied") {
+    throw new Error(`${label} visible intent was not applied (${response.status()}): ${JSON.stringify(body)}`);
+  }
+  await page.waitForFunction(() => document.querySelector("main")?.getAttribute("aria-busy") === "false", undefined, { timeout: 30_000 });
+  return { body, clickedLabel, intent: request.postDataJSON() };
+}
+
+// GS0.8/GS5-A4: native Claim waits behind an actual purchase AND its actual
+// authoritative read. Only delivery is held: upstream bytes, gameplay and
+// persisted receipts are unchanged. No runtime double or supplied JSON.
+async function claimBehindPurchase(page, buy, pendingID) {
+  const latch = () => {
+    let resolve;
+    const promise = new Promise((done) => { resolve = done; });
+    return { promise, resolve };
+  };
+  const purchaseReady = latch(), readReady = latch(), claimReady = latch();
+  const releasePurchase = latch(), releaseRead = latch(), failure = latch();
+  const requests = [], tasks = new Set();
+  let phase = "purchase-held", purchaseStarted = false, purchase, read;
+  const timeout = setTimeout(() => failure.resolve({ error: new Error("GS5 queued purchase/Claim exceeded the existing 30-second action guard") }), 30_000);
+  const guard = async (task) => {
+    const outcome = await Promise.race([task.then((value) => ({ value })), failure.promise]);
+    if (outcome.error) throw outcome.error;
+    return outcome.value;
+  };
+  const record = (request) => {
+    if (request.method() === "POST" && new URL(request.url()).pathname === "/api/v1/intents") {
+      requests.push({ phase, intent: request.postDataJSON() });
+    }
+  };
+  const track = (handler) => (route) => {
+    const task = handler(route).catch(async (error) => {
+      failure.resolve({ error });
+      await route.abort().catch(() => {});
+    });
+    tasks.add(task);
+    task.finally(() => tasks.delete(task));
+    return task;
+  };
+  const intents = track(async (route) => {
+    const intent = route.request().postDataJSON();
+    if (intent.kind !== "buy_generator" && intent.kind !== "claim_opportunity") return route.continue();
+    if (intent.kind === "buy_generator") purchaseStarted = true;
+    const response = await route.fetch({ maxRetries: 0, timeout: 30_000 });
+    const body = await response.json();
+    if (response.status() !== 200 || body?.outcome !== "applied") throw new Error(`GS5 queued ${intent.kind} was not applied (${response.status()}): ${JSON.stringify(body)}`);
+    if (intent.kind === "buy_generator") {
+      purchase = { intent, body };
+      purchaseReady.resolve();
+      await releasePurchase.promise;
+    } else claimReady.resolve({ intent, body });
+    await route.fulfill({ response });
+  });
+  const reads = track(async (route) => {
+    if (!purchaseStarted || phase === "released") return route.continue();
+    const response = await route.fetch({ maxRetries: 0, timeout: 30_000 });
+    assertOpportunityReadStatus(response.status());
+    const snapshot = await response.json();
+    if (read === undefined) {
+      read = snapshot;
+      readReady.resolve();
+    }
+    await releaseRead.promise;
+    await route.fulfill({ response });
+  });
+  page.on("request", record);
+  await page.route("**/api/v1/intents", intents);
+  await page.route("**/api/v1/founder/state", reads);
+  try {
+    await buy.focus();
+    await page.keyboard.press("Enter");
+    await guard(purchaseReady.promise);
+    const claim = page.locator("[data-region='desk.region.opportunity']").getByRole("button", { name: "Claim", exact: true });
+    if (await claim.isDisabled() || await claim.getAttribute("aria-disabled") === "true") throw new Error("GS5 another purchase incorrectly disables fresh Claim input");
+    await claim.focus();
+    await page.keyboard.press("Enter");
+    await page.evaluate(async () => { await new Promise(requestAnimationFrame); await new Promise(requestAnimationFrame); });
+    if (requests.length !== 1 || requests[0].intent.kind !== "buy_generator") throw new Error("GS5 Claim submitted before the purchase reply");
+    phase = "read-held";
+    releasePurchase.resolve();
+    await guard(readReady.promise);
+    await page.evaluate(async () => { await new Promise(requestAnimationFrame); await new Promise(requestAnimationFrame); });
+    if (requests.length !== 1 || await page.locator("main").getAttribute("aria-busy") !== "true") throw new Error("GS5 Claim escaped the held authoritative purchase read");
+    phase = "released";
+    releaseRead.resolve();
+    const result = await guard(claimReady.promise);
+    await page.waitForFunction(() => document.querySelector("main")?.getAttribute("aria-busy") === "false", undefined, { timeout: 30_000 });
+    const ids = [purchase.intent.intent_id, result.intent.intent_id];
+    if (ids.some((id) => !/^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u.test(id))) throw new Error("GS5 invalid UUID in committed history check");
+    const sql = `SELECT json_build_object('stream_id', log.company_stream_id, 'founder_id', stream.owner_id,
+      'run_seq', log.run_seq, 'seq', log.seq, 'intent_id', log.intent_id, 'applied_revision', log.applied_revision,
+      'payload', convert_from(log.canonical_payload,'UTF8')::jsonb, 'receipt', log.receipt,
+      'record_receipt', record.receipt, 'balances', revision.state->'balances', 'generators', revision.state->'generators')
+      FROM run_log log JOIN save_streams stream ON stream.id=log.company_stream_id AND stream.scope='company'
+      JOIN intent_records record ON record.stream_id=log.company_stream_id AND record.intent_id=log.intent_id
+      JOIN save_revisions revision ON revision.stream_id=log.company_stream_id AND revision.revision=log.applied_revision
+      WHERE log.intent_id IN ('${ids[0]}','${ids[1]}') ORDER BY log.applied_revision;`;
+    const stored = spawnSync("docker", ["compose", "-f", "compose.game-ui-test.yml", "exec", "-T", "game-ui-postgres",
+      "psql", "-v", "ON_ERROR_STOP=1", "-At", "-U", "cloud_clicker", "-d", "cloud_clicker_game_ui_test", "-c", sql],
+    { cwd: repositoryRoot, encoding: "utf8" });
+    if (stored.status !== 0) throw new Error(`GS5 queued committed history query failed: ${stored.stderr}`);
+    const history = stored.stdout.trim().split("\n").filter(Boolean).map((line) => JSON.parse(line));
+    assertQueuedOpportunityClaim({ purchase, read, result, requests, pendingID, history });
+    return result;
+  } finally {
+    clearTimeout(timeout);
+    releasePurchase.resolve(); releaseRead.resolve();
+    await page.unroute("**/api/v1/intents", intents);
+    await page.unroute("**/api/v1/founder/state", reads);
+    await Promise.allSettled([...tasks]);
+    page.off("request", record);
+  }
+}
+
+async function witnessOpportunityClaim(page) {
+  const { parseCanonical } = await vite.ssrLoadModule("/src/numeric.ts");
+  const { t } = await vite.ssrLoadModule("/src/copy/index.ts");
+  const { eraForSnapshot } = await vite.ssrLoadModule("/src/game-ui/contracts.ts");
+  const { GAME_UI_PRESENTATION } = await vite.ssrLoadModule("/src/game-ui/presentation.ts");
+  const before = await page.evaluate(async () => {
+    const parsed = JSON.parse(localStorage.getItem("cloud-clicker.credentials.v1"));
+    const response = await fetch("/api/v1/founder/state", { headers: { Authorization: `Bearer ${parsed.accessToken}` } });
+    return { status: response.status, snapshot: await response.json() };
+  });
+  assertOpportunityReadStatus(before.status);
+  const era = eraForSnapshot(before.snapshot);
+  const buy = page.locator('section[aria-labelledby="generators-heading"] article')
+    .filter({ has: page.getByRole("heading", { name: t(GAME_UI_PRESENTATION.generators.get("generator.beige_tower").title_key, {}, era), exact: true }) })
+    .getByRole("button", { name: t("desk.buy_one", {}, era), exact: true });
+  for (let attempt = 0; attempt < 60; attempt += 1) {
+    const claimable = await page.evaluate(() => [...document.querySelectorAll("[data-region='desk.region.opportunity'] button")]
+      .some((button) => button.textContent?.trim() === "Claim" && !button.disabled));
+    if (!claimable || !await buy.isEnabled()) {
+      await clickAppliedIntent(page, "Fix Computer", "GS5 manual click toward an opportunity spawn");
+      await new Promise((resolve) => setTimeout(resolve, 250));
+      continue;
+    }
+    const pendingID = await page.evaluate(async () => {
+      const parsed = JSON.parse(localStorage.getItem("cloud-clicker.credentials.v1"));
+      const response = await fetch("/api/v1/founder/state", { headers: { Authorization: `Bearer ${parsed.accessToken}` } });
+      if (response.status !== 200) throw new Error(`GS5 pre-purchase read failed (${response.status})`);
+      return (await response.json()).features?.opportunity?.pending?.opportunity_id;
+    });
+    if (!pendingID) throw new Error("GS5 rendered Claim has no authoritative pending opportunity");
+    const result = await claimBehindPurchase(page, buy, pendingID);
+    const claim = result.body?.receipt?.opportunity;
+    if (result.intent?.kind !== "claim_opportunity" || !claim?.effect_row_id) throw new Error(`GS5 claim receipt carried no opportunity evidence: ${JSON.stringify(result.body)}`);
+    const successor = await page.evaluate(async () => {
+      const parsed = JSON.parse(localStorage.getItem("cloud-clicker.credentials.v1"));
+      const response = await fetch("/api/v1/founder/state", { headers: { Authorization: `Bearer ${parsed.accessToken}` } });
+      return { status: response.status, snapshot: await response.json() };
+    });
+    assertOpportunityReadStatus(successor.status);
+    const after = successor.snapshot;
+    const proofBranch = assertOpportunityClaimEffect(result, after, parseCanonical);
+    return { effect_row_id: claim.effect_row_id, proof_branch: proofBranch, revision: after.revision,
+      manual_clicks: attempt };
+  }
+  throw new Error("GS5: no claimable opportunity and affordable purchase within 60 manual clicks (250 ms pause after each completed action; authenticated follow-up reads also consume the account limiter)");
+}
+
+function receiptCoordinate(result) {
+  return {
+    clicked_label: result.clickedLabel,
+    intent_kind: result.intent?.kind,
+    intent_id: result.body?.intent_id,
+    outcome: result.body?.outcome,
+    new_revision: result.body?.new_revision,
+    founder_revision: result.body?.founder_revision,
+  };
+}
+
+function receivedLifecycleKinds(frames) {
+  const kinds = ["exit_offer_spawned", "exit_offer_resolved", "run_ended", "run_started", "receipt"];
+  return frames.flatMap((frame) => kinds.filter((kind) => frame.includes(`\\"kind\\":\\"${kind}\\"`) || frame.includes(`"kind":"${kind}"`)));
+}
+
+function receivedPlayerCoordinates(frames, channel) {
+  const coordinates = [];
+  const record = (publication) => {
+    if (!publication || typeof publication !== "object") return;
+    let envelope = publication.data;
+    if (typeof envelope === "string") {
+      try { envelope = JSON.parse(envelope); } catch { return; }
+    }
+    if (envelope?.ch !== channel) return;
+    coordinates.push({ envelope_kind: envelope.kind, event_kind: envelope.payload?.kind, offset: publication.offset, revision: envelope.rev,
+      achievement_id: envelope.payload?.payload?.achievement_id, run_seq: envelope.payload?.payload?.run_id?.run_seq });
+  };
+  for (const frame of frames) {
+    for (const line of String(frame).split("\n").filter(Boolean)) {
+      let value;
+      try { value = JSON.parse(line); } catch { continue; }
+      if (value?.push?.channel === channel) record(value.push.pub);
+      if (value?.subscribe && Array.isArray(value.subscribe.publications)) value.subscribe.publications.forEach(record);
+    }
+  }
+  return coordinates;
+}
+
+async function founderState(accessToken) {
+  const response = await tracedAccountFetch(`${gameserverURL}/api/v1/founder/state`, { headers: { Authorization: `Bearer ${accessToken}` } });
+  if (response.status !== 200) throw new Error(`founder state read failed (${response.status})`);
+  return response.json();
+}
+
+// GS2-A4: earn through a real first purchase, not SQL setup or a supplied
+// earned-row fixture. Observe the live event, announcement and refreshed DOM.
+async function witnessFirstPurchaseAchievement(page, frames, accessToken) {
+  const achievementID = "achievement.generators_purchased_1", generatorID = "generator.beige_tower";
+  const before = await founderState(accessToken);
+  const row = before.features?.achievements?.rows.find((candidate) => candidate.achievement_id === achievementID);
+  const generator = before.generators.find((candidate) => candidate.generator_id === generatorID);
+  if (!row || row.earned !== null || !generator || generator.owned !== 0) {
+    throw new Error("GS2-A4 requires a locked achievement and genuinely unowned first generator");
+  }
+  const { t } = await vite.ssrLoadModule("/src/copy/index.ts");
+  const { eraForSnapshot } = await vite.ssrLoadModule("/src/game-ui/contracts.ts");
+  const { GAME_UI_PRESENTATION } = await vite.ssrLoadModule("/src/game-ui/presentation.ts");
+  const era = eraForSnapshot(before), title = t(row.copy_key, {}, era);
+  // Garage OD-15: bind real persisted-state projection to the production DOM
+  // before this journey earns money. Both locked populations must actually
+  // exist, so a server that omits every reason cannot pass vacuously.
+  const reasonKeys = { owned: "desk.upgrade.owned", window: "desk.rejection.not_in_window", requirement: "desk.rejection.requires", unaffordable: "desk.rejection.unaffordable" };
+  const observedReasons = new Set();
+  for (const upgrade of before.upgrades) {
+    if (!Object.hasOwn(upgrade, "ineligible_reason")) throw new Error(`OD-15 missing server upgrade reason: ${upgrade.upgrade_id}`);
+    const reasonID = `upgrade-reason-${upgrade.upgrade_id}`;
+    const explanation = page.locator(`[id="${reasonID}"]`);
+    if (upgrade.ineligible_reason === null) {
+      if (!upgrade.eligible || await explanation.count() !== 0) throw new Error(`OD-15 eligible upgrade has a stale reason: ${upgrade.upgrade_id}`);
+      continue;
+    }
+    const key = reasonKeys[upgrade.ineligible_reason];
+    if (!key || upgrade.eligible) throw new Error(`OD-15 invalid server reason: ${upgrade.upgrade_id}`);
+    await explanation.waitFor({ state: "visible", timeout: 30_000 });
+    const control = explanation.locator("..").getByRole("button", { name: t("desk.buy_one", {}, era), exact: true });
+    if (await explanation.innerText() !== t(key, {}, era) || await control.isEnabled() || await control.getAttribute("aria-describedby") !== reasonID) {
+      throw new Error(`OD-15 upgrade explanation does not bind the disabled control: ${upgrade.upgrade_id}`);
+    }
+    observedReasons.add(upgrade.ineligible_reason);
+  }
+  if (!observedReasons.has("window") || !observedReasons.has("requirement")) throw new Error("OD-15 real initial journey did not exercise both window and requirement reasons");
+  console.log("composed OD-15: actual server window/requirement reasons → visible production-client text and disabled button descriptions: PASS");
+  const achievementNav = page.getByRole("button", { name: t("surface.achievements.title", {}, era), exact: true });
+  const displayed = page.locator(".achievements li").filter({ has: page.getByRole("heading", { name: title, exact: true }) });
+  await achievementNav.click();
+  if (await displayed.getAttribute("data-earned") !== "none" ||
+      await displayed.locator("strong").innerText() !== t("achievements.state.locked", {}, era)) {
+    throw new Error("GS2-A4 first-purchase row was not visibly locked before buying");
+  }
+  await page.getByRole("button", { name: "The Desk", exact: true }).click();
+  const generatorTitle = t(GAME_UI_PRESENTATION.generators.get(generatorID).title_key, {}, era);
+  const buy = page.locator('section[aria-labelledby="generators-heading"] article')
+    .filter({ has: page.getByRole("heading", { name: generatorTitle, exact: true }) })
+    .getByRole("button", { name: t("desk.buy_one", {}, era), exact: true });
+  // Use the player's manual action with the same post-action pause as GS5 and the
+  // existing 30-second action guard. No fixture cash or direct intent call.
+  const deadline = Date.now() + 30_000;
+  let clicks = 0;
+  while (!await buy.isEnabled() && Date.now() < deadline) {
+    await clickAppliedIntent(page, "Fix Computer", "GS2 manual work toward first generator");
+    clicks += 1;
+    await new Promise((resolve) => setTimeout(resolve, 250));
+  }
+  if (!await buy.isEnabled()) throw new Error(`GS2-A4 first generator never became affordable after ${clicks} manual actions`);
+  const frameStart = frames.length;
+  const purchases = [];
+  const recordPurchase = (request) => {
+    if (request.method() === "POST" && new URL(request.url()).pathname === "/api/v1/intents" &&
+        request.postDataJSON()?.kind === "buy_generator") purchases.push(request);
+  };
+  page.on("request", recordPurchase);
+  const responseTask = page.waitForResponse((response) => response.request().method() === "POST" &&
+    new URL(response.url()).pathname === "/api/v1/intents" && response.request().postDataJSON()?.kind === "buy_generator",
+  { timeout: 30_000 }).then((value) => ({ value }), (error) => ({ error }));
+  await buy.focus();
+  await page.keyboard.press("Enter");
+  const result = await responseTask;
+  if (result.error) throw result.error;
+  const response = result.value, intent = response.request().postDataJSON(), receipt = await response.json();
+  if (purchases.length !== 1 || response.status() !== 200 || receipt.outcome !== "applied" || intent.generator_id !== generatorID ||
+      intent.count?.mode !== "exact" || intent.count.value !== 1) throw new Error("GS2-A4 DOM first purchase was not applied exactly once");
+  const announcement = t("achievements.earned_announcement", { achievement: title }, era);
+  await page.locator("p.announcement[role=status]").getByText(announcement, { exact: true }).waitFor({ state: "visible", timeout: 30_000 });
+  const events = receivedPlayerCoordinates(frames.slice(frameStart), `player:${before.run.founder_id}`)
+    .filter((event) => event.event_kind === "achievement_earned.v1" && event.achievement_id === achievementID);
+  if (events.length !== 1 || events[0].revision !== receipt.new_revision || events[0].run_seq !== before.run.run_seq) {
+    throw new Error(`GS2-A4 achievement event did not bind to the purchased run/revision: ${JSON.stringify(events)}`);
+  }
+  await page.waitForFunction(() => document.querySelector("main")?.getAttribute("aria-busy") === "false", undefined, { timeout: 30_000 });
+  await achievementNav.click();
+  await displayed.locator("strong").getByText(t("achievements.state.earned_run", {}, era), { exact: true }).waitFor({ state: "visible", timeout: 30_000 });
+  const after = await founderState(accessToken);
+  page.off("request", recordPurchase);
+  if (purchases.length !== 1 || await displayed.getAttribute("data-earned") !== "run" || after.revision < receipt.new_revision ||
+      after.features.achievements.rows.find((candidate) => candidate.achievement_id === achievementID)?.earned !== "run" ||
+      after.generators.find((candidate) => candidate.generator_id === generatorID)?.owned !== 1) {
+    throw new Error("GS2-A4 refreshed earned DOM did not agree with persisted ownership/achievement");
+  }
+  await page.getByRole("button", { name: "The Desk", exact: true }).click();
+  console.log(`composed GS2 achievement: ${clicks} manual actions → one native Enter purchase → live earned event/announcement → refreshed earned row at Company revision ${receipt.new_revision}: PASS`);
+}
+
+// GS0.2/GS1-A4: corrupt only the outgoing DOM-origin request, never supply a
+// response or throw from a runtime double. Account/Production/Postgres decide
+// the refusal and the real browser runtime must render and recover from it.
+async function witnessFiscalServerRefusals(page, accessToken) {
+  const { t } = await vite.ssrLoadModule("/src/copy/index.ts");
+  const { eraForSnapshot } = await vite.ssrLoadModule("/src/game-ui/contracts.ts");
+  const rejectedIDs = [];
+  for (const arm of ["invalid", "stale"]) {
+    const before = await founderState(accessToken), era = eraForSnapshot(before);
+    if (before.founder_revision <= 1) throw new Error("stale Fiscal control requires an older positive revision");
+    const requests = [], reads = [], diagnostics = [], routed = [], responses = [], failedRequests = [];
+    const observeRequest = (request) => {
+      const pathname = new URL(request.url()).pathname;
+      if (pathname === "/api/v1/intents" && request.method() === "POST") requests.push(request);
+      if (pathname === "/api/v1/founder/state") reads.push(request);
+    };
+    const observeConsole = (message) => {
+      if (message.type() === "error" && message.text().startsWith("game UI invariant:")) diagnostics.push(message.text());
+    };
+    const observeResponse = (response) => {
+      if (new URL(response.url()).pathname === "/api/v1/intents" &&
+          response.request().postDataJSON()?.kind === "harvest_fiscal_period") responses.push(response.status());
+    };
+    const observeFailure = (request) => {
+      if (new URL(request.url()).pathname === "/api/v1/intents") failedRequests.push(request.failure()?.errorText ?? "unknown");
+    };
+    const corruptRequest = async (route) => {
+      const request = route.request(), original = request.postDataJSON();
+      if (request.method() !== "POST" || original?.kind !== "harvest_fiscal_period") return route.continue();
+      const sent = arm === "invalid" ? { ...original, expected_revision: 0 }
+        : { ...original, expected_revision: original.expected_revision - 1 };
+      routed.push({ original, sent });
+      await route.continue({ postData: JSON.stringify(sent) });
+    };
+    page.on("request", observeRequest); page.on("console", observeConsole);
+    page.on("response", observeResponse); page.on("requestfailed", observeFailure);
+    await page.route("**/api/v1/intents", corruptRequest);
+    try {
+      const harvest = page.getByRole("button", { name: t("fiscal.harvest", {}, era), exact: true });
+      // The preceding harvest opens a new ripening quarter. Native focus on
+      // its disabled button is ignored; wait for actual actionability, without
+      // activating it or sending Enter to the previously focused navigation.
+      await harvest.click({ trial: true, timeout: 30_000 });
+      const responseTask = page.waitForResponse((response) => new URL(response.url()).pathname === "/api/v1/intents" &&
+        response.request().postDataJSON()?.kind === "harvest_fiscal_period", { timeout: 30_000 })
+        .then((value) => ({ value }), (error) => ({ error }));
+      await harvest.focus();
+      if (!await harvest.evaluate((button) => document.activeElement === button)) {
+        throw new Error(`Fiscal ${arm} consent did not focus the eligible harvest control`);
+      }
+      await page.keyboard.press("Enter");
+      const result = await responseTask;
+      if (result.error) throw result.error;
+      const response = result.value, body = await response.json();
+      if (routed.length !== 1 || requests.length !== 1 || routed[0].original.expected_revision !== before.founder_revision) {
+        throw new Error(`Fiscal ${arm} refusal did not originate once at the current Founder revision`);
+      }
+      rejectedIDs.push(routed[0].original.intent_id);
+      if (arm === "invalid") {
+        if (response.status() !== 400 || JSON.stringify(Object.keys(body).sort()) !== '["category","detail"]' ||
+            body.category !== "invalid" || body.detail !== "intent") throw new Error(`wrong real invalid-intent response: ${JSON.stringify(body)}`);
+      } else if (response.status() !== 200 || body.outcome !== "rejected" || body.current_revision !== before.founder_revision ||
+          body.intent_id !== routed[0].original.intent_id || body.rejection?.category !== "revision_conflict" ||
+          body.rejection.detail !== "expected_revision") {
+        throw new Error(`wrong real stale-revision receipt: ${JSON.stringify(body)}`);
+      }
+      const notice = t(arm === "invalid" ? "intent.rejection.unknown" : "intent.conflict", {}, era);
+      const feedback = page.locator(".fiscal [role=status]");
+      if (await feedback.count() !== 1) throw new Error(`Fiscal ${arm} requires exactly one own-surface feedback region`);
+      await feedback.locator(".intent-notice").getByText(notice, { exact: true }).waitFor({ state: "visible", timeout: 30_000 });
+      await page.waitForFunction(() => document.querySelector("main")?.getAttribute("aria-busy") === "false", undefined, { timeout: 30_000 });
+      await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+      const after = await founderState(accessToken);
+      if (requests.length !== 1 || routed.length !== 1 || reads.length !== (arm === "stale" ? 1 : 0) ||
+          JSON.stringify(diagnostics) !== JSON.stringify(arm === "invalid" ? ["game UI invariant: invalid intent response"] : []) ||
+          after.revision !== before.revision || after.founder_revision !== before.founder_revision ||
+          after.features.fiscal.credit !== before.features.fiscal.credit ||
+          JSON.stringify(after.features.fiscal.period) !== JSON.stringify(before.features.fiscal.period)) {
+        throw new Error(`Fiscal ${arm} refusal changed saved state, retried, or failed recovery: ${JSON.stringify({ requests: requests.length, reads: reads.length, diagnostics })}`);
+      }
+      if (await harvest.isDisabled() || await harvest.getAttribute("aria-disabled") === "true" ||
+          !await harvest.evaluate((button) => document.activeElement === button)) {
+        throw new Error(`Fiscal ${arm} refusal did not preserve an enabled, focused consent control`);
+      }
+      console.log(`composed Fiscal ${arm}: real HTTP${response.status()}, exact surface notice, ${reads.length} refresh, no automatic retry or persisted change: PASS`);
+    } catch (error) {
+      const dom = await page.evaluate(() => {
+        const main = document.querySelector("main");
+        const control = main?.querySelector('button[data-fiscal-action="harvest"]');
+        return { surface: main?.getAttribute("data-surface"), busy: main?.getAttribute("aria-busy"),
+          phase: main?.querySelector(".fiscal")?.getAttribute("data-phase"), disabled: control?.disabled,
+          aria_disabled: control?.getAttribute("aria-disabled"), focused: document.activeElement === control,
+          events: globalThis.__composedFiscalInputTrace };
+      });
+      throw new Error(`Fiscal ${arm} refusal boundary failed: ${JSON.stringify({ dom,
+        emitted: requests.length, routed: routed.length, reads: reads.length, responses, failedRequests, diagnostics })}`, { cause: error });
+    } finally {
+      await page.unroute("**/api/v1/intents", corruptRequest);
+      page.off("request", observeRequest); page.off("console", observeConsole);
+      page.off("response", observeResponse); page.off("requestfailed", observeFailure);
+    }
+  }
+  return rejectedIDs;
+}
+
+async function witnessFiscalRefusalJourney() {
+  // Independent UI-created account: diagnostic reads must not consume the
+  // main gameplay population's account bucket or change its command sequence.
+  const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
+  const errors = [];
+  page.on("pageerror", (error) => errors.push(error));
+  await page.addInitScript(() => {
+    globalThis.__composedFiscalInputTrace = [];
+    for (const type of ["focusin", "keydown", "keyup", "click"]) document.addEventListener(type, (event) => {
+      const control = event.target instanceof Element ? event.target.closest("button[data-fiscal-action]") : null;
+      if (!control && (type === "focusin" || type === "click" || event.key !== "Enter")) return;
+      const main = document.querySelector("main");
+      globalThis.__composedFiscalInputTrace.push({ type, trusted: event.isTrusted, key: event.key ?? null,
+        action: control?.getAttribute("data-fiscal-action") ?? null, target: event.target?.nodeName,
+        disabled: control?.disabled ?? null, aria_disabled: control?.getAttribute("aria-disabled") ?? null,
+        surface: main?.getAttribute("data-surface"), busy: main?.getAttribute("aria-busy"),
+        phase: main?.querySelector(".fiscal")?.getAttribute("data-phase"), time: performance.now() });
+      if (globalThis.__composedFiscalInputTrace.length > 16) globalThis.__composedFiscalInputTrace.shift();
+    }, true);
+  });
+  try {
+    await page.goto(uiURL, { waitUntil: "networkidle" });
+    await page.getByRole("button", { name: "BEGIN ATTEMPT", exact: true }).click();
+    await page.locator('main[data-surface="desk"]').waitFor({ state: "visible", timeout: 30_000 });
+    const accessToken = await page.evaluate(() => JSON.parse(localStorage.getItem("cloud-clicker.credentials.v1")).accessToken);
+    await page.locator('nav button[data-nav-surface="fiscal"]').click();
+    await page.locator('main[data-surface="fiscal"]').waitFor({ state: "visible", timeout: 30_000 });
+    await new Promise((resolve) => setTimeout(resolve, 400));
+    await clickAppliedIntent(page, "Hold the earnings call", "Fiscal refusal journey initial harvest");
+    const rejectedIDs = await witnessFiscalServerRefusals(page, accessToken);
+    const before = await founderState(accessToken);
+    const consent = await clickAppliedIntent(page, "Hold the earnings call", "Fiscal fresh consent after server refusals");
+    const after = await founderState(accessToken);
+    if (consent.intent?.kind !== "harvest_fiscal_period" || rejectedIDs.includes(consent.intent.intent_id) ||
+        consent.intent.expected_revision !== before.founder_revision || consent.body.founder_revision !== before.founder_revision + 1 ||
+        after.founder_revision !== consent.body.founder_revision || after.features.fiscal.credit !== consent.body.fiscal_credit_after ||
+        after.features.fiscal.period.seq !== consent.body.seq_after ||
+        after.features.fiscal.period.opened_wall_ms !== consent.body.period_opened_wall_ms || errors.length !== 0) {
+      throw new Error(`fresh Fiscal consent did not apply at the current Founder revision: ${JSON.stringify(consent)}; errors=${errors.map(String)}`);
+    }
+    console.log(`composed Fiscal fresh consent: new intent UUID, current Founder revision, applied receipt and persisted revision${after.founder_revision}: PASS`);
+  } finally { await page.close(); }
+}
+
+async function unlockPitchThroughFiscalUI(page) {
+  const { t } = await vite.ssrLoadModule("/src/copy/index.ts");
+  await page.locator('nav button[data-nav-surface="fiscal"]').click();
+  await page.locator('main[data-surface="fiscal"]').waitFor({ state: "visible", timeout: 30_000 });
+  // The composed Fiscal clock guarantees a harvest 200 ms after the period
+  // opens. The player uses the rendered controls for both prerequisite intents.
+  await new Promise((resolve) => setTimeout(resolve, 400));
+  const readyBadge = await page.locator('nav button[data-nav-surface="fiscal"] .fiscal-ripe-badge').textContent();
+  if (readyBadge !== t("fiscal.nav_ripe_badge", {})) {
+    throw new Error(`Fiscal harvest is ready but its navigation suffix is absent or incorrect: ${JSON.stringify(readyBadge)}`);
+  }
+  let harvest;
+  for (let offers = 0; offers < 3; offers += 1) {
+    const result = await clickAppliedIntentChoice(page, ["Hold the earnings call", "Decline"], "Fiscal harvest for Pitch or offer preemption");
+    if (result.intent?.kind === "harvest_fiscal_period") { harvest = result; break; }
+    if (result.intent?.kind !== "decline_exit_offer") throw new Error(`unexpected Fiscal preemption intent: ${result.intent?.kind}`);
+    pitchOffersDeclined += 1;
+    await page.locator('nav button[data-nav-surface="fiscal"]').click();
+    await page.locator('main[data-surface="fiscal"]').waitFor({ state: "visible", timeout: 30_000 });
+  }
+  if (!harvest) throw new Error("Pitch Fiscal harvest was repeatedly preempted by Exit offers");
+  if (harvest.intent?.kind !== "harvest_fiscal_period") throw new Error(`Fiscal harvest control emitted ${JSON.stringify(harvest.intent)}`);
+  const intentRequest = page.waitForRequest((request) => new URL(request.url()).pathname === "/api/v1/intents" &&
+    request.postDataJSON()?.kind === "spend_fiscal_credit", { timeout: 30_000 });
+  let unlockClicked = false;
+  for (let offers = 0; offers < 3 && !unlockClicked; offers += 1) {
+    const action = await clickReadyPitchControl(page, "unlock");
+    if (action === "offer") await declinePitchOffer(page, "Earnings Calls", "fiscal");
+    else unlockClicked = true;
+  }
+  if (!unlockClicked) throw new Error("Pitch Fiscal unlock was repeatedly preempted by Exit offers");
+  let request;
+  try { request = await intentRequest; }
+  catch (error) {
+    const state = await page.evaluate(() => ({
+      surface: document.querySelector("main")?.getAttribute("data-surface"),
+      busy: document.querySelector("main")?.getAttribute("aria-busy"),
+      unlock: [...document.querySelectorAll('section[aria-labelledby="fiscal-unlocks-heading"] li')]
+        .filter((item) => item.querySelector("h3")?.textContent?.trim() === "The Pitch")
+        .map((item) => ({ text: item.textContent?.trim(), disabled: item.querySelector("button")?.disabled })),
+      alerts: [...document.querySelectorAll('[role="alert"]')].map((item) => item.textContent?.trim()),
+      trace: globalThis.__composedPitchActionTrace,
+    }));
+    throw new Error(`Pitch Fiscal unlock control emitted no intent request; state=${JSON.stringify(state)}`, { cause: error });
+  }
+  const intent = request.postDataJSON();
+  if (intent?.kind !== "spend_fiscal_credit" || intent.target?.kind !== "unlock" || intent.target?.unlock_id !== "minigame.pitch") {
+    throw new Error(`Pitch-specific Fiscal unlock control emitted ${JSON.stringify(intent)}`);
+  }
+  const response = await request.response();
+  if (!response) throw new Error("Pitch Fiscal unlock emitted no response");
+  const body = await response.json();
+  if (response.status() !== 200 || body?.outcome !== "applied") throw new Error(`Pitch Fiscal unlock was not applied (${response.status()}): ${JSON.stringify(body)}`);
+  await page.waitForFunction(() => document.querySelector("main")?.getAttribute("aria-busy") === "false", undefined, { timeout: 30_000 });
+  await page.getByRole("button", { name: "The Pitch", exact: true }).click();
+  await page.locator('main[data-surface="minigame_session"]').waitFor({ state: "visible", timeout: 30_000 });
+}
+
+async function playPitchThroughUI(page, accessToken) {
+  const minigameResponses = [];
+  const snapshotRevisions = [];
+  page.on("response", async (response) => {
+    const pathname = new URL(response.url()).pathname;
+    if (pathname === "/api/v1/founder/state" && response.status() === 200) {
+      try { snapshotRevisions.push((await response.json()).revision); } catch { snapshotRevisions.push(undefined); }
+      return;
+    }
+    if (!pathname.startsWith("/api/v1/minigames/")) return;
+    try { minigameResponses.push({ pathname, status: response.status(), body: await response.json() }); }
+    catch { minigameResponses.push({ pathname, status: response.status(), invalid_json: true }); }
+  });
+  const nav = page.getByRole("button", { name: "The Pitch", exact: true });
+  await nav.click();
+  await page.locator('main[data-surface="minigame_session"]').waitFor({ state: "visible", timeout: 30_000 });
+
+  // Locked first: every submitted Start must get the exact typed refusal.
+  // Lifecycle offers may unmount the launcher (GS0.4). Decline visibly and
+  // submit fresh player consent; an offer alone never passes the notice gate.
+  let lockedNoticeObserved = false;
+  let lockedStarts = 0;
+  for (let attempts = 0; attempts < 3 && !lockedNoticeObserved; attempts++) {
+    const lockedCreate = page.waitForResponse((response) => new URL(response.url()).pathname === "/api/v1/minigames/pitch/sessions", { timeout: 30_000 }).catch((error) => error);
+    try {
+      let clicked = false;
+      for (let offers = 0; offers < 3 && !clicked; offers += 1) {
+        const action = await clickReadyPitchControl(page, "start");
+        if (action === "offer") await declinePitchOffer(page, "The Pitch", "minigame_session");
+        else { clicked = true; lockedStarts++; }
+      }
+      if (!clicked) throw new Error("locked Pitch Start was repeatedly preempted by Exit offers");
+    }
+    catch (error) {
+      throw new Error(`locked Pitch control could not be clicked; surface=${await page.locator("main").getAttribute("data-surface")} page_text=${JSON.stringify((await page.locator("main").innerText()).slice(0, 800))} trace=${JSON.stringify(await page.evaluate(() => globalThis.__composedPitchActionTrace))}`, { cause: error });
+    }
+    const locked = await lockedCreate;
+    if (locked instanceof Error) {
+      throw new Error(`locked Pitch create emitted no response; surface=${await page.locator("main").getAttribute("data-surface")} minigame_responses=${JSON.stringify(minigameResponses)} page_text=${JSON.stringify((await page.locator("main").innerText()).slice(0, 800))} trace=${JSON.stringify(await page.evaluate(() => globalThis.__composedPitchActionTrace))}`, { cause: locked });
+    }
+    const lockedBody = await locked.json();
+    if (locked.status() !== 409 || lockedBody.category !== "not_eligible" || lockedBody.detail !== "fiscal_unlock_required") {
+      throw new Error(`locked Pitch create was not the typed fiscal rejection (${locked.status()}): ${JSON.stringify(lockedBody)}`);
+    }
+    try {
+      const view = await page.evaluate(observeLockedPitchView, { budgetMs: 30_000 });
+      if (view === "offer") {
+        await declinePitchOffer(page, "The Pitch", "minigame_session");
+      } else if (view === "notice") lockedNoticeObserved = true;
+      else throw new Error("unknown locked Pitch observation");
+    } catch (error) {
+      // Capture the mounted lifecycle boundary, not credentials, full responses
+      // or private state. A valid HTTP rejection alone does not prove its notice.
+      const dom = await page.evaluate(() => {
+        const main = document.querySelector("main");
+        return { surface: main?.getAttribute("data-surface"), busy: main?.getAttribute("aria-busy"),
+          headings: [...(main?.querySelectorAll("h1") ?? [])].map((item) => item.textContent?.trim()),
+          statuses: [...(main?.querySelectorAll('[role="status"], [role="alert"]') ?? [])].map((item) => item.textContent?.trim()),
+          pitchMounted: Boolean(main?.querySelector(".minigame-session")),
+          offerMounted: Boolean(main?.querySelector("#offer-heading")),
+          trace: globalThis.__composedPitchActionTrace };
+      });
+      throw new Error(`locked Pitch rejection notice missing: ${JSON.stringify({ dom,
+        response: { status: locked.status(), category: lockedBody.category, detail: lockedBody.detail }, snapshotRevisions })}`, { cause: error });
+    }
+  }
+  if (!lockedNoticeObserved) throw new Error("locked Pitch notice never observed after bounded offer preemption handling");
+  console.log(`composed locked Pitch: ${lockedStarts} DOM Start consent(s), exact HTTP409 pair and visible mounted-launcher rejection: PASS`);
+
+  await unlockPitchThroughFiscalUI(page);
+  const beforeSession = await founderState(accessToken);
+  if (beforeSession?.transitions?.wind_down?.eligible !== true) {
+    throw new Error(`Tier-1 Wind Down was not eligible before Pitch: ${JSON.stringify(beforeSession?.transitions)}`);
+  }
+  const create = page.waitForResponse((response) => new URL(response.url()).pathname === "/api/v1/minigames/pitch/sessions", { timeout: 30_000 });
+  let startClicked = false;
+  for (let offers = 0; offers < 3 && !startClicked; offers += 1) {
+    const action = await clickReadyPitchControl(page, "start");
+    if (action === "offer") await declinePitchOffer(page, "The Pitch", "minigame_session");
+    else startClicked = true;
+  }
+  if (!startClicked) throw new Error("unlocked Pitch Start was repeatedly preempted by Exit offers");
+  const created = await create;
+  if (created.status() !== 200) throw new Error(`unlocked Pitch create failed (${created.status()}): ${JSON.stringify(await created.json())}`);
+  const createdSession = await created.json();
+  const duringSession = await founderState(accessToken);
+  if (duringSession?.transitions?.wind_down?.eligible !== false) {
+    throw new Error(`active Pitch session offered Wind Down: ${JSON.stringify(duringSession?.transitions)}`);
+  }
+
+  // Commit one native command upstream, lose only its reply, then kill the
+  // actual owned OS process. The browser must use its existing same-ID retry;
+  // neither a reload nor a driver-issued gameplay request may repair the run.
+  const commandRoute = "**/api/v1/minigames/sessions/*/commands";
+  const retryRequests = [];
+  let lostReply;
+  let crashInjected = false;
+  let bootstrapDuringCrash = 0;
+  let navigationsDuringCrash = 0;
+  const observeRetry = (request) => {
+    const pathname = new URL(request.url()).pathname;
+    if (/^\/api\/v1\/minigames\/sessions\/[^/]+\/commands$/u.test(pathname)) retryRequests.push({ pathname, body: request.postData() });
+    if (pathname === "/api/v1/bootstrap" && request.method() === "POST") bootstrapDuringCrash += 1;
+  };
+  const observeNavigation = (frame) => { if (frame === page.mainFrame()) navigationsDuringCrash += 1; };
+  page.on("request", observeRetry);
+  page.on("framenavigated", observeNavigation);
+  let crashFinished;
+  let crashFailed;
+  const crashBoundary = new Promise((resolve, reject) => { crashFinished = resolve; crashFailed = reject; }).catch((error) => error);
+  await page.route(commandRoute, async (route) => {
+    if (crashInjected) { await route.continue(); return; }
+    crashInjected = true;
+    try {
+      // Playwright's fetch diagnostics can contain Authorization headers.
+      const committed = await route.fetch({ maxRetries: 0 }).catch(() => { throw new Error("Pitch upstream command failed before crash injection"); });
+      const text = await committed.text();
+      const body = JSON.parse(text);
+      if (committed.status() !== 200 || body.status !== "active" || body.session_id !== createdSession.session_id || body.revision !== createdSession.revision + 1) {
+        throw new Error("Pitch crash requires one committed nonterminal command on the created session");
+      }
+      lostReply = { text, body, request: retryRequests[0], oldPID: await crashGameserver() };
+      await route.abort("connectionreset");
+      crashFinished();
+    } catch (error) {
+      crashFailed(error);
+      await route.abort().catch(() => {});
+    }
+  });
+  let commands = 0;
+  const terminal = page.getByText("Credited to the company", { exact: false });
+  for (let step = 0; step < 64; step += 1) {
+    if (await terminal.isVisible()) break;
+    const hand = page.locator("fieldset input[type=checkbox]");
+    await page.waitForFunction(() => document.querySelector("fieldset input[type=checkbox]") !== null ||
+      [...document.querySelectorAll("button")].some((button) => button.textContent?.trim() === "Close the shop" && !button.disabled) ||
+      document.body.textContent?.includes("Credited to the company"), undefined, { timeout: 30_000 });
+    if (await terminal.isVisible()) break;
+    const commandResponse = page.waitForResponse((response) => /^\/api\/v1\/minigames\/sessions\/[^/]+\/commands$/u.test(new URL(response.url()).pathname) &&
+      (step !== 0 || response.status() === 200), { timeout: 30_000 }).catch((error) => error);
+    if (await hand.count() > 0) {
+      // Keyboard-only selection: focus each native checkbox and press Space.
+      const count = Math.min(4, await hand.count());
+      for (let index = 0; index < count; index += 1) {
+        await hand.nth(index).focus();
+        await page.keyboard.press("Space");
+      }
+      const selected = await page.locator("fieldset input[type=checkbox]:checked").count();
+      if (selected !== count) throw new Error(`keyboard selection checked ${selected} of ${count} cards`);
+      await page.getByRole("button", { name: "Pitch these cards", exact: true }).focus();
+      await page.keyboard.press("Enter");
+    } else {
+      await page.getByRole("button", { name: "Close the shop", exact: true }).focus();
+      await page.keyboard.press("Enter");
+    }
+    if (step === 0) {
+      // A severed native control must fail on the existing response deadline,
+      // not leave the fault callback waiting forever for a request.
+      const crashed = await Promise.race([crashBoundary, commandResponse.then((result) => result instanceof Error ? result :
+        new Error("Pitch command returned before the OS-crash boundary"))]);
+      if (crashed instanceof Error) throw crashed;
+      await page.locator(".minigame-session").getByText("Connection lost. Your last move is kept and will be sent again.", { exact: true }).waitFor({ state: "visible", timeout: 30_000 });
+      await page.locator(".minigame-session").getByRole("button", { name: "Retry", exact: true }).waitFor({ state: "visible" });
+      const socketsBeforeRestart = await page.evaluate(() => globalThis.__cloudClickerTestSockets.length);
+      const recoveredSnapshot = page.waitForResponse((response) => new URL(response.url()).pathname === "/api/v1/founder/state" && response.status() === 200,
+        { timeout: 30_000 }).catch((error) => error);
+      gameserver = startGameserver();
+      if (gameserver.pid === lostReply.oldPID) throw new Error("Pitch crash did not create a new gameserver process");
+      await waitForReady();
+      await page.waitForFunction((count) => globalThis.__cloudClickerTestSockets.length > count &&
+        globalThis.__cloudClickerTestSockets.at(-1)?.readyState === WebSocket.OPEN, socketsBeforeRestart, { timeout: 30_000 });
+      const refreshed = await recoveredSnapshot;
+      if (refreshed instanceof Error) throw refreshed;
+      const state = await refreshed.json();
+      if (state.run?.founder_id !== beforeSession.run.founder_id || state.run?.run_seq !== beforeSession.run.run_seq) {
+        throw new Error("Pitch crash recovery changed Founder or Company run identity");
+      }
+    }
+    const response = await commandResponse;
+    if (response instanceof Error) throw response;
+    if (response.status() !== 200) throw new Error(`Pitch command failed (${response.status()}): ${JSON.stringify(await response.json())}`);
+    if (step === 0) {
+      if (await response.text() !== lostReply.text) throw new Error("Pitch crash retry did not return byte-identical committed response");
+      if (retryRequests.length < 2 || retryRequests.some((request) => request.pathname !== lostReply.request.pathname || request.body !== lostReply.request.body)) {
+        throw new Error("Pitch crash retry changed command identity/body or did not execute");
+      }
+      assertPitchHistory(createdSession.session_id, 1, "active", lostReply.body.snapshot);
+      if (bootstrapDuringCrash !== 0 || navigationsDuringCrash !== 0) throw new Error("Pitch crash recovery replaced the account or navigated the document");
+      await page.unroute(commandRoute);
+      page.off("request", observeRetry);
+      page.off("framenavigated", observeNavigation);
+      console.log("composed Pitch OS crash after commit/lost reply: visible pause, new process, socket/snapshot recovery, identical browser retry and one persisted command/receipt: PASS");
+    }
+    commands += 1;
+    await page.waitForFunction(() => document.querySelector("main section[aria-busy]")?.getAttribute("aria-busy") !== "true", undefined, { timeout: 30_000 });
+  }
+  if (!await terminal.isVisible()) throw new Error(`Pitch did not reach a terminal receipt within the step bound; responses=${JSON.stringify(minigameResponses.map((row) => [row.pathname, row.status]))}`);
+  const final = minigameResponses.filter((row) => row.status === 200 && row.body?.status === "resolved").at(-1);
+  const receipt = final?.body?.resolution_receipt;
+  if (!receipt || receipt.outcome !== "applied" || receipt.credited_resource_id !== "company.cash") throw new Error(`terminal response carried no applied receipt: ${JSON.stringify(final)}`);
+  assertPitchHistory(createdSession.session_id, commands, "resolved");
+  // The host refreshes the authoritative Game UI snapshot exactly once after
+  // the terminal receipt; it must reflect the resolution's Company revision.
+  const deadline = Date.now() + 30_000;
+  while (!snapshotRevisions.some((revision) => Number.isSafeInteger(revision) && revision >= receipt.company_revision) && Date.now() < deadline) {
+    await new Promise((resolve) => setTimeout(resolve, 50));
+  }
+  const refreshedRevision = snapshotRevisions.filter((revision) => Number.isSafeInteger(revision) && revision >= receipt.company_revision).at(0);
+  if (refreshedRevision === undefined) {
+    const state = await founderState(accessToken);
+    throw new Error(`no post-terminal Game UI refresh reached company revision ${receipt.company_revision}; UI snapshots=${JSON.stringify(snapshotRevisions)} server=${state.revision}`);
+  }
+  const current = await tracedAccountFetch(`${gameserverURL}/api/v1/minigames/sessions/current`, { headers: { Authorization: `Bearer ${accessToken}` } }).then((response) => response.json());
+  if (current.kind !== "none") throw new Error(`resolved Pitch session is still current: ${JSON.stringify(current)}`);
+  const afterSession = await founderState(accessToken);
+  if (afterSession?.transitions?.wind_down?.eligible !== true) {
+    throw new Error(`Tier-1 Wind Down did not return after Pitch: ${JSON.stringify(afterSession?.transitions)}`);
+  }
+  await page.getByRole("button", { name: "Back to the desk", exact: true }).click();
+  await page.locator('main[data-surface="desk"]').waitFor({ state: "visible", timeout: 30_000 });
+  return { commands, credited: receipt.credited_delta, companyRevision: receipt.company_revision, refreshedRevision };
+}
+
+try {
+  await waitForReady();
+  buildProductionClient(repositoryRoot);
+  const builtFiles = productionClientFiles(path.join(clientRoot, "dist"));
+  // Test-side expected-value helpers still evaluate their source modules. This
+  // HTTP middleware-only server is not listened and cannot serve the browser journey.
+  vite = await createServer({
+    configFile: path.join(clientRoot, "vite.config.ts"),
+    root: clientRoot,
+    server: { middlewareMode: true },
+    appType: "custom",
+  });
+  clientPreview = await preview({
+    configFile: path.join(clientRoot, "vite.config.ts"),
+    root: clientRoot,
+    preview: {
+      host: "127.0.0.1",
+      port: 5173,
+      strictPort: true,
+      proxy: {
+        "/api": { target: gameserverURL },
+        "/connection": { target: gameserverURL, ws: true },
+      },
+    },
+  });
+  // The composed binary mounts the unauthenticated public read surface
+  // beside the account API (API Foundation C10); prove it through the proxy.
+  const publicEpochs = await fetch(`${uiURL}/api/public/v1/epochs?limit=1`);
+  const publicEpochsBody = await publicEpochs.json();
+  if (publicEpochs.status !== 200 || !publicEpochs.headers.get("x-request-id") || !publicEpochs.headers.get("etag") ||
+      !Array.isArray(publicEpochsBody.items) || publicEpochsBody.items.length !== 1 || publicEpochsBody.items[0].ended_at !== null) {
+    throw new Error(`composed public epochs failed: ${publicEpochs.status} ${JSON.stringify(publicEpochsBody)}`);
+  }
+  browser = await chromium.launch({ headless: true });
+  if (mode === "tier2-fixture") {
+    await witnessTier2(browser, uiURL, builtFiles, repositoryRoot, tier2);
+  } else if (mode === "manual-budget") {
+    await observeManualBudget(browser, uiURL);
+  } else {
+  await witnessFiscalRefusalJourney();
+  const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
+  const clientProof = productionClientProof(builtFiles);
+  const clientResponses = [];
+  const clientErrors = [];
+  page.context().on("response", (response) => {
+    const url = new URL(response.url());
+    if (url.origin !== uiURL || url.pathname.startsWith("/api/") || url.pathname === "/favicon.ico") return;
+    clientResponses.push((response.status() === 304 ? Promise.resolve(undefined) : response.body())
+      .then((body) => clientProof.response(url.pathname, response.status(), body))
+      .catch((error) => clientErrors.push(new Error(`built-client response ${url.pathname} HTTP${response.status()}: ${error.message}`, { cause: error }))));
+  });
+  page.on("worker", (worker) => {
+    try { clientProof.worker(new URL(worker.url()).pathname); }
+    catch (error) { clientErrors.push(error); }
+  });
+  requestTraceStart = performance.now();
+  const tracedBrowserRequests = new WeakMap();
+  page.on("request", (request) => {
+    if (!request.headers().authorization || !new URL(request.url()).pathname.startsWith("/api/v1/")) return;
+    tracedBrowserRequests.set(request, traceAccountRequest("browser", request.method(), request.url()));
+  });
+  page.on("response", (response) => {
+    const row = tracedBrowserRequests.get(response.request());
+    if (row) row.status = response.status();
+  });
+  page.on("requestfailed", (request) => {
+    const row = tracedBrowserRequests.get(request);
+    if (row) row.status = "failed";
+  });
+  await page.addInitScript(() => {
+    const BrowserWebSocket = globalThis.WebSocket;
+    globalThis.__cloudClickerTestSockets = [];
+    globalThis.__composedPitchActionTrace = [];
+    for (const type of ["pointerdown", "pointerup", "click"]) document.addEventListener(type, (event) => {
+      const button = event.target instanceof Element ? event.target.closest("button") : null;
+      const label = button?.textContent?.trim();
+      if (label !== "Start a pitch" && !label?.startsWith("Unlock for ")) return;
+      globalThis.__composedPitchActionTrace.push({ type, label, disabled: button.disabled,
+        busy: document.querySelector("main")?.getAttribute("aria-busy"), time: performance.now() });
+      if (globalThis.__composedPitchActionTrace.length > 32) globalThis.__composedPitchActionTrace.shift();
+    }, true);
+    globalThis.WebSocket = class extends BrowserWebSocket {
+      constructor(url, protocols) {
+        super(url, protocols);
+        globalThis.__cloudClickerTestSockets.push(this);
+      }
+    };
+  });
+  const pageErrors = [];
+  const websocketFrames = [];
+  const websocketReceivedFrames = [];
+  const snapshotRevisions = [];
+  let bootstrapRequests = 0;
+  page.on("request", (request) => {
+    if (new URL(request.url()).pathname === "/api/v1/bootstrap" && request.method() === "POST") bootstrapRequests++;
+  });
+  page.on("pageerror", (error) => pageErrors.push(error));
+  page.on("response", async (response) => {
+    if (new URL(response.url()).pathname !== "/api/v1/founder/state" || response.status() !== 200) return;
+    try {
+      const body = await response.json();
+      snapshotRevisions.push({ founder_revision: body?.founder_revision, revision: body?.revision, run_seq: body?.run?.run_seq });
+    } catch { snapshotRevisions.push({ invalid_json: true }); }
+  });
+  page.on("websocket", (socket) => {
+    socket.on("framesent", (event) => websocketFrames.push(String(event.payload)));
+    socket.on("framereceived", (event) => websocketReceivedFrames.push(String(event.payload)));
+  });
+  await page.goto(uiURL, { waitUntil: "networkidle" });
+  const bootstrapReply = page.waitForResponse((response) =>
+    new URL(response.url()).pathname === "/api/v1/bootstrap" && response.request().method() === "POST");
+  // Native activation against the real service; sequential Tab and held/failing
+  // replies are covered separately by the controlled native browser population.
+  await page.getByRole("button", { name: "BEGIN ATTEMPT" }).press("Enter");
+  const bootstrapStatus = (await bootstrapReply).status();
+  if (bootstrapStatus !== 201 || bootstrapRequests !== 1) {
+    throw new Error(`native Begin activation expected one HTTP201 bootstrap; status=${bootstrapStatus}, requests=${bootstrapRequests}`);
+  }
+  await page.locator('main[data-surface="desk"]').waitFor({ state: "visible", timeout: 30_000 });
+  await page.getByText(/You are visitor #\d+/u).waitFor({ state: "visible", timeout: 30_000 });
+  if (!await page.locator("#desk-heading").evaluate((heading) => document.activeElement === heading)) {
+    throw new Error("successful native Begin did not hand focus to the authoritative Desk");
+  }
+  const stored = await page.evaluate(() => ({
+    bootstrap: localStorage.getItem("cloud-clicker.bootstrap-key.v1"),
+    credentials: localStorage.getItem("cloud-clicker.credentials.v1"),
+  }));
+  if (stored.bootstrap !== null || stored.credentials === null) throw new Error("bootstrap credential handoff was not committed before navigation");
+  const liveSnapshot = await page.evaluate(async () => {
+    const storedCredentials = localStorage.getItem("cloud-clicker.credentials.v1");
+    if (!storedCredentials) throw new Error("missing composed credentials");
+    const parsed = JSON.parse(storedCredentials);
+    const response = await fetch("/api/v1/founder/state", { headers: { Authorization: `Bearer ${parsed.accessToken}` } });
+    return { body: await response.json(), status: response.status };
+  });
+  const features = liveSnapshot.body?.features;
+  const doom = features?.meters?.meters?.find((row) => row.meter_id === "doom.probability");
+  if (!features || features.active_play !== null || features.pets !== null || features.meters?.meters?.length !== 11 || doom?.value !== 50 ||
+      !Array.isArray(features.achievements?.rows) || features.achievements.rows.length === 0 || !Number.isSafeInteger(features.fiscal?.credit) ||
+      features.minigames?.rows?.find((row) => row.minigame_id === "pitch")?.unlocked !== false ||
+      !liveSnapshot.body.facts.some((fact) => fact.fact_id === "feature.fiscal" && fact.value === true)) {
+    throw new Error(`composed live Game UI v4 features arms are not the pinned live systems: ${JSON.stringify(features)}`);
+  }
+  // Clout v1 CV9: the pinned epoch declares no axis_stack, so the composed
+  // server withholds the arm and reports the feature fact false (the arm is
+  // fixture-first until a content mint pins the v5 economy).
+  if (features.axis_stack !== undefined && features.axis_stack !== null ||
+      !liveSnapshot.body.facts.some((fact) => fact.fact_id === "feature.axis_stack" && fact.value === false)) {
+    throw new Error(`composed live Game UI projected an axis stack the pinned epoch does not declare: ${JSON.stringify(features.axis_stack)}`);
+  }
+  // GS5: the pinned epoch has the opportunities artifact, so the live arm is
+  // projected beside the null-only active_play and the feature fact follows it.
+  if (features.opportunity === null || typeof features.opportunity !== "object" || !Array.isArray(features.opportunity.buffs) ||
+      !liveSnapshot.body.facts.some((fact) => fact.fact_id === "feature.active_play" && fact.value === true)) {
+    throw new Error(`composed live Game UI did not project the GS5 opportunity arm: ${JSON.stringify(features.opportunity)}`);
+  }
+  if (liveSnapshot.status !== 200 || liveSnapshot.body?.schema_version !== 4 || !Number.isSafeInteger(liveSnapshot.body?.founder_revision) || liveSnapshot.body.founder_revision < 1 ||
+      liveSnapshot.body?.transitions?.cross_gate?.gate_id !== "gate.t0_to_t1" || liveSnapshot.body.transitions.cross_gate.eligible !== false || liveSnapshot.body?.transitions?.wind_down?.eligible !== false) {
+    throw new Error("composed live Game UI v4 transition snapshot round trip failed");
+  }
+  const recoveryBefore = await page.evaluate(() => {
+    const key = Object.keys(localStorage).find((candidate) => candidate.startsWith("cloud-clicker.transport.v1."));
+    if (!key) throw new Error("production runtime did not persist transport positions");
+    return { key, value: JSON.parse(localStorage.getItem(key)) };
+  });
+  const playerChannel = `player:${liveSnapshot.body.run.founder_id}`;
+  if (!recoveryBefore.value[playerChannel]?.epoch || !Number.isSafeInteger(recoveryBefore.value[playerChannel]?.offset)) {
+    throw new Error("production runtime player position is incomplete");
+  }
+  websocketFrames.length = 0;
+  await page.evaluate(async () => {
+    const socket = globalThis.__cloudClickerTestSockets.at(-1);
+    if (!socket) throw new Error("missing production WebSocket");
+    socket.close();
+    if (socket.readyState !== WebSocket.CLOSED) await new Promise((resolve) => socket.addEventListener("close", resolve, { once: true }));
+  });
+  const parsedCredentials = JSON.parse(stored.credentials);
+  const expectedRecoveryRevision = liveSnapshot.body.revision + 1;
+  const recoverySnapshot = page.waitForResponse(async (response) => {
+    if (new URL(response.url()).pathname !== "/api/v1/founder/state" || response.status() !== 200) return false;
+    const body = await response.json();
+    return body?.revision === expectedRecoveryRevision;
+  }, { timeout: 30_000 });
+  const missedIntent = await tracedAccountFetch(`${gameserverURL}/api/v1/intents`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${parsedCredentials.accessToken}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      intent_id: "01985555-5555-7555-8555-555555555555",
+      kind: "perform_manual_batch",
+      expected_revision: liveSnapshot.body.revision,
+      action_id: liveSnapshot.body.manual_action.action_id,
+      count: 1,
+      window_ms: 1,
+    }),
+  });
+  const missedReceipt = await missedIntent.json();
+  if (missedIntent.status !== 200 || missedReceipt.new_revision !== liveSnapshot.body.revision + 1) {
+    throw new Error(`missed intent did not commit exactly once (${missedIntent.status})`);
+  }
+  await page.waitForFunction(({ key, channel, offset }) => {
+    const raw = localStorage.getItem(key);
+    if (!raw) return false;
+    return JSON.parse(raw)[channel]?.offset > offset;
+  }, { key: recoveryBefore.key, channel: playerChannel, offset: recoveryBefore.value[playerChannel].offset }, { timeout: 30_000 });
+  const recoveredCommand = websocketFrames.map((frame) => {
+    try { return JSON.parse(frame); } catch { return undefined; }
+  }).find((frame) => frame?.subscribe?.channel === playerChannel && frame.subscribe.recover === true);
+  if (recoveredCommand?.subscribe.epoch !== recoveryBefore.value[playerChannel].epoch || recoveredCommand.subscribe.offset !== recoveryBefore.value[playerChannel].offset) {
+    throw new Error("production runtime did not reconnect from the persisted player position");
+  }
+  const refreshedResponse = await recoverySnapshot;
+  const refreshed = await refreshedResponse.json();
+  if (refreshed.revision !== missedReceipt.new_revision) {
+    throw new Error(`recovered receipt landed revision ${refreshed.revision}, expected ${missedReceipt.new_revision}`);
+  }
+
+  requestPhase = "GS2 first purchase";
+  await witnessFirstPurchaseAchievement(page, websocketReceivedFrames, parsedCredentials.accessToken);
+
+  // GU-C28 permits ordinary server-side setup so Chromium proves the UI-owned
+  // controls without replaying the already-proven two-hour policy or gaining a
+  // clock/control endpoint. Every transition below originates from a visible
+  // enabled button and reaches the server through runtime.ts.
+  requestPhase = "first terminal/next run";
+  seedGateRequirement(liveSnapshot.body.run.founder_id);
+  await page.reload({ waitUntil: "networkidle" });
+  const crossGate = await waitForEnabledButton(page, "Move Into the Garage");
+  await clickAppliedIntent(page, crossGate, "first cross-gate");
+  const firstWindDown = await waitForEnabledButton(page, "Wind Down Company");
+  const firstExit = await clickAppliedIntent(page, firstWindDown, "first wind-down");
+  try {
+    await page.locator('main[data-surface="run_end"]').waitFor({ state: "visible", timeout: 30_000 });
+  } catch (error) {
+    const finalSurface = await page.locator("main").getAttribute("data-surface");
+    const playerFrames = websocketReceivedFrames.filter((frame) => frame.includes(`player:${liveSnapshot.body.run.founder_id}`));
+    throw new Error(`first terminal did not render; command=${JSON.stringify(receiptCoordinate(firstExit))} surface=${finalSurface} page_errors=${pageErrors.map(String).join(" | ")} received_kinds=${JSON.stringify(receivedLifecycleKinds(playerFrames))} player_coordinates=${JSON.stringify(receivedPlayerCoordinates(websocketReceivedFrames, playerChannel))} snapshots=${JSON.stringify(snapshotRevisions)}`, { cause: error });
+  }
+  await page.getByText("Your First Company Failed", { exact: true }).waitFor({ state: "visible", timeout: 30_000 });
+  await page.getByRole("button", { name: "Start the Next Company", exact: true }).click();
+  await page.locator('main[data-surface="desk"]').waitFor({ state: "visible", timeout: 30_000 });
+  await witnessContinuedTimer(page, "scripted");
+
+  requestPhase = "second terminal/next run";
+  seedGateRequirement(liveSnapshot.body.run.founder_id);
+  await page.reload({ waitUntil: "networkidle" });
+  const secondCrossGate = await waitForEnabledButton(page, "Move Into the Garage");
+  await clickAppliedIntent(page, secondCrossGate, "second cross-gate");
+  const secondExit = await clickAppliedIntentChoice(page, ["Wind Down Company", "Decline"], "second wind-down or offer preemption");
+  if (secondExit.clickedLabel === "Decline") {
+    await page.locator('main[data-surface="desk"]').waitFor({ state: "visible", timeout: 30_000 });
+    const secondWindDown = await waitForEnabledButton(page, "Wind Down Company");
+    const windDown = await clickAppliedIntent(page, secondWindDown, "second wind-down after declining offer");
+    if (windDown.intent.expected_revision !== secondExit.body.new_revision) {
+      throw new Error("Wind Down after decline did not use the authoritative revision");
+    }
+    console.log("composed Exit offer decline returned to Desk and used the new revision: PASS");
+  }
+  try {
+    await page.locator('main[data-surface="run_end"]').waitFor({ state: "visible", timeout: 30_000 });
+  } catch (error) {
+    const finalSurface = await page.locator("main").getAttribute("data-surface");
+    const playerFrames = websocketReceivedFrames.filter((frame) => frame.includes(`player:${liveSnapshot.body.run.founder_id}`));
+    throw new Error(`second terminal did not render; command=${JSON.stringify(receiptCoordinate(secondExit))} surface=${finalSurface} page_errors=${pageErrors.map(String).join(" | ")} received_kinds=${JSON.stringify(receivedLifecycleKinds(playerFrames))} player_coordinates=${JSON.stringify(receivedPlayerCoordinates(websocketReceivedFrames, playerChannel))} snapshots=${JSON.stringify(snapshotRevisions)}`, { cause: error });
+  }
+  await page.getByText("The Company Has Exited", { exact: true }).waitFor({ state: "visible", timeout: 30_000 });
+  await page.getByRole("button", { name: "Start the Next Company", exact: true }).click();
+  await page.locator('main[data-surface="desk"]').waitFor({ state: "visible", timeout: 30_000 });
+  await witnessContinuedTimer(page, "ordinary");
+  // MA AC5: The Pitch through the Game UI against the composed server. The
+  // The Fiscal prerequisite and Pitch play both originate in rendered player
+  // controls; the composed epoch pins minigame.pitch at 3 credit.
+  requestPhase = "GS5 opportunity";
+  const opportunity = await witnessOpportunityClaim(page);
+  console.log(`composed GS5 opportunity: ${opportunity.manual_clicks} manual clicks → native Buy/queued Claim → held real reply/read → consecutive SQL receipts; ${opportunity.effect_row_id} ${opportunity.proof_branch} effect bound to next snapshot revision ${opportunity.revision}: PASS`);
+  requestPhase = "Pitch gate/unlock/play";
+  seedGateRequirement(liveSnapshot.body.run.founder_id);
+  await page.reload({ waitUntil: "networkidle" });
+  const pitchTierGate = await waitForEnabledButton(page, "Move Into the Garage");
+  await clickAppliedIntent(page, pitchTierGate, "Pitch-run cross-gate");
+  const pitch = await playPitchThroughUI(page, parsedCredentials.accessToken);
+  if (pageErrors.length > 0) throw new AggregateError(pageErrors, "composed browser path emitted page errors");
+  console.log(`composed Fiscal UI harvest + Pitch unlock: ${pitch.commands} Pitch UI commands, ${pitchOffersDeclined} visible offer declines, terminal receipt credited ${pitch.credited} at company revision ${pitch.companyRevision}, snapshot refreshed to ${pitch.refreshedRevision}: PASS`);
+  requestPhase = "Soul Recovery player workflow";
+  await witnessSoulRecovery(page, repositoryRoot, liveSnapshot.body.run.founder_id, fullRecovery, {
+    crash: crashGameserver,
+    async restart() {
+      if (!gameserverStopped()) throw new Error("Recovery cannot restart a live gameserver");
+      gameserver = startGameserver();
+      await waitForReady();
+      return gameserver.pid;
+    },
+  });
+  if (pageErrors.length > 0) throw new AggregateError(pageErrors, "Soul Recovery browser path emitted page errors");
+  console.log("composed Game UI v4 features + transitions + both terminal states + next-run continuation + WebSocket recovery: PASS");
+  await page.goto("about:blank");
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  await Promise.all(clientResponses);
+  if (clientErrors.length > 0) throw new AggregateError(clientErrors, "production client asset proof failed");
+  console.log(`composed production client loaded exact HTML/JS/CSS/worker bytes and started bundled worker: ${JSON.stringify(clientProof.finish())}: PASS`);
+  }
+} finally {
+  await browser?.close();
+  reportAccountRequests();
+  await clientPreview?.close();
+  await vite?.close();
+  await stopGameserver();
+  tier2?.cleanup();
+}

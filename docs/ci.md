@@ -613,15 +613,28 @@ composite still fails the existing RP-131 history guard; passing its client
 population and separately run remaining gates is not whole-CI success.
 
 `make test-game-ui-composed` first runs the five production-asset oracle checks, twenty-five
-care-projection controls and five no-payment fixture/classifier checks with Node's native test
-runner. Those files use the `.fixtures.mjs`
+care-projection controls, five no-payment fixture/classifier checks and eight shared-preparation
+controls with Node's native test runner. Those files use the `.fixtures.mjs`
 suffix (`production-client-proof.fixtures.mjs`, `care-snapshot-proof.fixtures.mjs`,
-`cosmetic-n5-fixture.fixtures.mjs`), not
+`cosmetic-n5-fixture.fixtures.mjs`, `composed-preflight.fixtures.mjs`), not
 `.test.mjs`: Vitest cannot register `node:test` suites. They remain mandatory in this blocking
 Make/Actions lane rather than being silently excluded from all automation. The client/browser
 Vitest configurations and their legitimate `.test.mjs` population are unchanged.
 
-The target then starts its isolated repository Postgres service. Its first driver
+The target then starts its isolated repository Postgres service and runs
+`test-game-ui-preflight.mjs` once. This retains all eight refresh API cases, all ten
+persisted API/replay parent tests and their three consumer witnesses, with cold Go
+execution and schema resets separating the diagnostic populations. Missing/skipped
+cases, absent replay witnesses, child errors and reset failures stop the aggregate
+before any browser journey. The public standalone runner
+`test-game-ui-composed.mjs` still runs that complete preparation for every existing
+mode, including Tier 2, natural Soul recovery and the manual-budget observation.
+The aggregate invokes `game-ui-composed-journey.mjs` after its shared gate and again
+for Tier 2; each journey starts with a fresh schema. No flag or cached success
+marker substitutes for preparation. Both public entry points check port 18081
+before their first destructive schema reset; each browser journey probes again.
+
+Its first browser driver
 starts the real composed gameserver and serves production-built client assets, then drives Chromium through anonymous bootstrap, an authenticated live
 `/api/v1/founder/state` v4 round trip, and the actual Centrifuge WebSocket subscription. The
 snapshot assertion and visitor-counter assertion prove both HTTP synchronization and the socket

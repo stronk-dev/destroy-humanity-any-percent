@@ -451,14 +451,15 @@ research-browser-refresh-dispatch:
 	node client/tools/research-browser-refresh-dispatch.mjs $(shell git rev-parse HEAD) $(RESEARCH_BROWSER_ENGINES)
 
 test-game-ui-composed:
-	node --test client/tools/production-client-proof.fixtures.mjs client/tools/care-snapshot-proof.fixtures.mjs client/tools/cosmetic-n5-fixture.fixtures.mjs
+	node --test client/tools/production-client-proof.fixtures.mjs client/tools/care-snapshot-proof.fixtures.mjs client/tools/cosmetic-n5-fixture.fixtures.mjs client/tools/composed-preflight.fixtures.mjs
 	docker compose $(GAME_UI_COMPOSE_FILES) up -d --wait game-ui-postgres
-	node client/tools/test-game-ui-composed.mjs
+	node client/tools/test-game-ui-preflight.mjs
+	node client/tools/game-ui-composed-journey.mjs
 	node client/tools/test-cosmetic-composed.mjs
 	node client/tools/test-cosmetic-composed.mjs --axis-stack
 	$(MAKE) test-cosmetic-n5
 	$(MAKE) test-garden-harvest-composed
-	$(MAKE) test-tier2-composed
+	node client/tools/game-ui-composed-journey.mjs --tier2-fixture
 
 verify-game-ui: verify-client test-browser test-game-ui-composed
 
