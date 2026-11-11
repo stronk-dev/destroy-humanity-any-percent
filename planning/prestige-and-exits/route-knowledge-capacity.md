@@ -122,3 +122,22 @@ same model `M+M` is `18014398509481982`, and JavaScript `Number` aliases `M+1`
 with `M+2`. These are arithmetic checks. The acceptance population still needs
 an actual scripted Exit whose combined grant exceeds `M` and actual replayers
 and SQL consumers that preserve the amount.
+
+The actual Go minigame scaler also refuses the whole context when a Founder
+counter is `M+1`, even with a literal-only policy. A cold private overlay of
+`server/minigame/scaling_test.go` loaded C28 rows for `literal 3 + 0` and
+`route_knowledge_balance + (−M)`, both clamped to `[0,8]`. At `M`, the two
+controls returned 3 and 0. At `M+1`, both refused with `invalid minigame scaling
+policy` instead of returning 3 and 1. The second case also distinguishes
+operation-before-clamp from clipping the source to `M`. This is a scaler test,
+with the Founder balance injected at its Go input; there is no live wider save
+or session. Run the retained private overlay from the repo root:
+
+```sh
+make test-go GO_PACKAGES=./minigame GO_TEST_FLAGS='-overlay ../.cache/rp771-scaling/overlay.json -run TestRouteKnowledgeCapacityScalingProbe -v'
+```
+
+Overlay source SHA-256 `23384c6562dded05cfbebbc90c7fdaaf78923e3d9cc6f961833d9a6ed9e76b4e`;
+result SHA-256 `1c4220f41ff7bf5792938dfa3e3e05e73c0d9ccac28e3a46a50a3c1700080c9c`.
+The initial Make invocation lost the regex end anchor to Make expansion and
+ran no tests. The invocation above executed four rows, two red and two green.
