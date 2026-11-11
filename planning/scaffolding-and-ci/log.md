@@ -5171,3 +5171,57 @@ awaits fresh independent corrective review; RP-791 remains review-pending. No
 product/schema/kernel/formula/acceptance-floor change or publication. Next: exact
 range review, then further measured latency repair while existing accounting,
 history, hosted and full-nine-tier1.0 obligations remain open.
+
+## 2026-11-11 — Independent core SQL-isolation integration review
+
+Review by: Codex sub-agent `/root/ci_core_isolation_integration_review`.
+Recorded by: Codex sub-agent `/root/ci_core_isolation_integration_review`.
+Verdict: **APPROVED** for the complete seven-path range
+`fa8d5c90..7a238d0d`, including Make orchestration, topology fixtures, canonical
+docs and implementation closeout records. Fresh independent corrective review
+under the standing delegation inspected the complete committed diff against
+accepted CI D2/D3 and RFC-0000. No actionable defect found in discovery failure,
+selection/argument/stream preservation, native-versus-SQL execution, temporary
+adapter cleanup or hosted/local leaf parity.
+
+Independently executed `make verify-ci-topology` on the final fixture source:
+all29 topology negatives and actual Make controls pass, including omitted-count
+cold default, explicit2, discovery/build/test failures and empty filtering.
+An independent exact-old `fa8d5c90` Make reconstruction emits a partial list then
+discovery exit37: old Make returns0 and starts tests; current Make returns2
+without starting tests. Current only-harness discovery also returns2 before tests.
+Actual native `make test-go-core GO_TEST_FLAGS='-run TestRefusesUnsafeInvocationBeforeConnecting -v'`
+terminates0 with the intended parent/14 admission subcases visibly executed.
+An earlier dollar-anchored selector was incorrectly escaped through Make and
+selected no tests; it supplies no named-test evidence and was corrected above.
+
+After explicit fixture lease release, independently executed the actual core
+Make target through project `cloud-clicker-ci-isolation`, declared save/CI Compose
+files and retained four-CPU/cpuset0-3 override. The literal quoted `-run` selection
+contains `TestConcurrentDatabaseIsolationIntegration`,
+`TestSharedDatabaseNegativeControlIntegration`,
+`TestFailureAndSignalDatabaseCleanupIntegration`,
+`TestCreateCollisionDoesNotDropExistingDatabaseIntegration` and
+`TestGuildFixtureRefusesOtherDatabaseIntegration`, joined by `|`, with `-v` and
+the unchanged count1 default. Terminal0; adapter1.784s/Guild0.275s, all five
+named parents and two failure/signal subcases pass without SQL skips. Other
+discovered packages remain selected but have no matching tests; this is focused
+real-boundary evidence, not a second full-population run. Initial sandbox socket
+denial ran no tests; the narrow Compose escalation permitted the completed run.
+Final independent SQL query finds only `cloud_clicker_test`/`postgres` non-template
+databases and zero `ci_exec_%` marker tables; no temporary core adapter remains.
+
+Independently re-read the implementer's complete actual server log rather than
+trusting its summary: raw SHA256
+`380ceb0a15f40a45d6acde4b6d48fdf3b794fa97b325f5de01bfbdc5e3df6eb4`, all83
+package terminal identities and all15476pass/33skip/28failed test identities
+match the prior comparison. Population hash remains
+`b7981a44c6e1d27fcc47aa4fce7177fd096fed0e0055582fd32a42860446999c`; failures
+are exactly the27 recorded Clout cases and their parent, with Go failure visible.
+The implementer executed that full aggregate; this reviewer executed the focused
+real core command above. `git diff --check fa8d5c90..7a238d0d` passes.
+
+Approval covers this bounded CI integration and RP-791 correction. It does not
+make the known-red server aggregate green, establish hosted five-minute timing,
+close accounting/history obligations, accept the full feature or authorize a
+release/publication. Existing downstream gates remain open.

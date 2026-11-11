@@ -106,11 +106,22 @@ four-CPU `make verify-server-core GO_TEST_FLAGS=-json` completes vet and all83pa
 results with the identical15476pass/33skip/28fail test population hash above.
 Make exits2 on the known Clout failure; subsequent generation/boundary dependencies
 do not run in that failed aggregate. No owned databases, marker tables or temporary
-executables remain. The complete batch awaits independent corrective review in
-the owning log. After review, continue CI latency repair and reconcile hosted
-evidence when publication is authorized. The local isolated comparison itself
+executables remain. Complete seven-path `fa8d5c90..7a238d0d` now has independent
+corrective approval, including executed old/current discovery controls and actual
+SQL core-Make execution; RP-791 closes in source. The owning log holds the exact
+verdict. Continue CI latency repair and reconcile hosted evidence when publication
+is authorized. The local isolated comparison itself
 exceeds five minutes before hosted setup; accounting/history/five-minute/whole-CI
 gates remain open. Multi-database restore profiles remain explicitly refused.
+
+Next bounded diagnostic: existing full-run timings attribute70.33s to the unchanged
+200-seed/24-hour cosmetics isolation property and54.12s to the unchanged1024-seed
+Snake content gate. Read the actual bodies; do not reduce either population,
+transition/restore/oracle coverage or limits. Run one focused cosmetics CPU profile
+on the declared four-CPU Linux service with the ordinary200 seeds/288steps/two arms
+and cold count1. Profile only to attribute cost; retain the profile/binary identity
+and passing result, then choose a conformance repair from measured hotspots. This
+does not itself authorize a contract change or prove a hosted timing improvement.
 
 ## Current hosted evidence — 2026-11-11
 
