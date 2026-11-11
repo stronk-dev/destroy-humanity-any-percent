@@ -9,10 +9,15 @@ still held on Feed & Dispatch VQ-3. Producer existence is not feature completion
 Constraint for this lane: no kernel-guarded path (`kernel/affecting-paths.json`) is edited. A slice
 that would need one is recorded as a blocker in `log.md` instead.
 
-## Current queue — 2026-11-05
+## Current queue — 2026-11-11
 
 Continue accepted construction and corrective review; do not repeat green populations
 or expand an uninformative diagnosis into another research campaign.
+
+RP-788 is corrected and independently approved in source. Real Caddy/Postgres
+decline and expiry fixtures now confirm the automatic Desk return and next
+revision through the built client. The owning log records the whole composed
+pass and the remaining release-bundle check.
 
 RP-774: the actual mounted host keeps the prior terminal RTATimer after continuing
 to the next Company. Both scripted and ordinary endings fail in Chromium/WebKit

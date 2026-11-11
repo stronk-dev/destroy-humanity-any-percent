@@ -9244,3 +9244,26 @@ return and verifies the next intent's revision. Its manual Desk navigation
 bypass is removed. Complete composed verification is running.
 This is current-client integration with a controlled catalog. Inclusion in a
 refreshed release bundle and the supported-host rehearsal remain open.
+
+The complete `make test-game-ui-composed` run finished with exit 0. It passed
+the main journey, Cosmetic, Reputation, Clout, both N5 controls, Garden and
+Tier-2 candidate integration on the built client. The main run observed one
+Pitch offer decline. Its optional second-Exit decline branch was not selected,
+so the full pass supplies no execution credit for that new assertion.
+The deterministic two-case fixture above supplies the direct behavior proof.
+Full composed log SHA-256
+`64a2a1334ad1cfbc4a767fcffd8026c0e24ad006f03540d64800b0a2a861bcd5`.
+Independent review of the test/evidence supplement is pending.
+
+**APPROVED** complete two-path `4364c980..e6862b10`.
+Review by: fresh independent Codex `/root/offer_composed_supplement_review`.
+Recorded by: Codex root. The reviewer independently repeated both live cases
+with a frozen copy of the built client in a separate local stack. SQL,
+restored focus and the next native revision 8→9 all passed. It also executed
+the exact changed driver branch with controlled inputs, rejecting a missing
+Desk and a stale revision. That branch check supplies no live Wind Down
+evidence. The fixture left no containers, volumes or networks.
+Independent aggregate SHA-256
+`68b99dd8afd87b72cfb54ac0510af707a85c8c7688a50a972afebb2b7e7624b5`.
+RP-788 now has independent real-service integration evidence. The current
+release package still predates the fix.
