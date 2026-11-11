@@ -13347,3 +13347,22 @@ This adds repeatable source integration evidence under AC4. The exact local
 bundle evidence above has its own scope. The packaged R-006 producer and
 supported clean-host run still need construction and execution. Independent
 review of this test-only supplement is pending.
+
+**Review correction:** CHANGES REQUIRED on `ef652fea..2a5e3c5c`.
+Review by: fresh independent Codex `/root/admitted_purchase_crash_witness_review`.
+Recorded by: Codex root. The reviewer kept the identical HTTP purchase request
+and forced an unaffordable rejection in the first gameserver only. The old
+witness passed because rejected intents also insert an intent record. The
+receipt-insert observation alone did not prove that the backend had reached
+the applied transaction's writes.
+
+The corrected test requires the blocked PID to hold granted write locks on
+the save revisions, events and run log before the kill. Both declared
+Linux/amd64 Caddy/Postgres tests pass cold with this correction (crash 2.02s,
+graceful drain and rollback 2.24s), and vet passes. The exact `22fed6be`
+package was also rerun with the stronger checkpoint. It observed all three
+locks, exit 137, Caddy 502, unchanged rollback counts, a single purchase on
+retry, and an identical duplicate receipt. The successful aggregate is in
+ignored `.cache/rp143-packaged-crash-applied/evidence.json`, SHA-256
+`9021df127b9e4eaa2bf5242602cf651a47d44d0cf8b2709baa9a6d7dd2478ec2`.
+The local fixture resources were removed. The corrected union awaits review.

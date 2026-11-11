@@ -86,8 +86,8 @@ func TestCaddyIntegrationCrashRollsBackAdmittedPurchaseAndRetriesExactlyOnce(t *
 	if err := blocker.QueryRowContext(ctx, `SELECT pg_backend_pid()`).Scan(&blockerPID); err != nil {
 		t.Fatal(err)
 	}
-	// applyIntent has already inserted the save, events and run-log row when
-	// this lock blocks its receipt insert. None of those writes can commit yet.
+	// A rejected intent also writes a receipt. Wait for the blocked backend
+	// to hold write locks on all three tables touched by the applied path.
 	if _, err := blocker.ExecContext(ctx, `LOCK TABLE intent_records IN SHARE MODE`); err != nil {
 		t.Fatal(err)
 	}
@@ -95,9 +95,12 @@ func TestCaddyIntegrationCrashRollsBackAdmittedPurchaseAndRetriesExactlyOnce(t *
 	requestDone := make(chan crashIntentResponse, 1)
 	go func() { requestDone <- submitCrashIntent(ctx, session, purchase) }()
 	var waitingPID int
-	waitForCrashCondition(t, ctx, "purchase reaching the blocked receipt insert", func(ctx context.Context) (bool, error) {
-		err := database.QueryRowContext(ctx, `SELECT pid FROM pg_stat_activity
-			WHERE $1 = ANY(pg_blocking_pids(pid)) AND query LIKE '%INSERT INTO intent_records%'`, blockerPID).Scan(&waitingPID)
+	waitForCrashCondition(t, ctx, "applied purchase reaching the blocked receipt insert", func(ctx context.Context) (bool, error) {
+		err := database.QueryRowContext(ctx, `SELECT a.pid FROM pg_stat_activity a
+			WHERE $1 = ANY(pg_blocking_pids(a.pid)) AND a.query LIKE '%INSERT INTO intent_records%'
+			AND (SELECT count(DISTINCT l.relation) FROM pg_locks l
+				WHERE l.pid=a.pid AND l.granted AND l.mode='RowExclusiveLock'
+				AND l.relation IN ('save_revisions'::regclass, 'events'::regclass, 'run_log'::regclass))=3`, blockerPID).Scan(&waitingPID)
 		if errors.Is(err, sql.ErrNoRows) {
 			return false, nil
 		}
