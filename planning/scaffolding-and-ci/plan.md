@@ -185,8 +185,11 @@ before landing: both public entry points now probe first, while journeys keep a
 second pre-reset probe. The new occupied-port control fails the unsafe variant;
 an actual bound18081 listener confirms three entry points refuse with zero tool
 calls. That intermediate whole-journey pass is retained but is not final evidence.
-The final aggregate is run again after the correction. Complete batch still needs
-exact-range independent approval; native proof does not close hosted timing or
+The final aggregate is run again after the correction. Complete nine-path range
+`3a1069ec..eea80614` now has independent corrective approval, including fresh43
+controls, actual standalone Tier2 and actual occupied-port refusals. The owning
+log holds the exact verdict. Owned fixture container/network are removed; images
+and unrelated resources remain. Native proof does not close hosted timing or
 full1.0. No gameplay, authored copy, schema, population or timeout change.
 
 ## Current hosted evidence — 2026-11-11

@@ -5456,3 +5456,57 @@ No gameplay, schema, balance, copy, population, cache policy or timeout change.
 No native timing result is presented as hosted speed or five-minute completion.
 Exact-range designated approval remains pending; hosted CI, known Clout/history
 and full nine-tier1.0 release obligations remain open. No push or archival.
+
+
+## 2026-11-11 — Independent shared composed-preparation review
+
+Review by: Codex independent reviewer `/root/composed_shared_preflight_review`.
+Recorded by: the same reviewer. **APPROVED** complete nine-path range
+`3a1069ec92be582cbd78a8924730ca7da45c9f23..eea806147cc482b10e1c497894002e694e93216e`.
+This is the designated delegated corrective-code/tooling review under AGENTS,
+not implementation self-review, feature acceptance or release approval.
+
+Independently inspected all source, fixture, Make, canonical-doc, plan, log and
+observation changes. The original 1282-line browser suffix is byte-identical;
+the preparation retains every original parent/case, replay witness, cold flag
+and population refusal. Public standalone modes keep full preparation; aggregate
+recipes run it once before all existing serial browser populations. The initial
+occupied-port/destructive-reset finding is resolved by probes before both public
+entry points' resets and a second journey probe. The artifact's incorrect native
+Go version was also corrected before this reviewed commit. No actionable finding
+remains in the final range.
+
+Executed independently from repository root:
+
+- Final four-file `node --test` command from the aggregate:43 passes, zero skips,
+  including all8 new controls. `make verify-ci-topology` passes29 seeded topology
+  negatives and existing Linux/browser/Go command/failure controls.
+- Actual old/current Makefiles under `-j4`, with external tools doubled: old has
+  zero shared preparations/two journeys and cannot observe injected preparation
+  failure; current has one preparation/two journeys on success and exits2 with
+  zero journeys when that preparation fails. This proves orchestration only.
+- `make test-tier2-composed COMPOSE_PROJECT_NAME=cloud-clicker-composed-preflight
+  GAME_UI_COMPOSE_FILES='-f compose.game-ui-test.yml -f compose.game-ui-arm64.yml'`:
+  exit0, complete8/8 refresh population, all10 persisted parents once, all3 replay
+  witnesses and native built-client Tier2/SQL/reload completion. The first sandbox
+  attempt stopped at Docker socket permission before testing; the permitted run
+  completed. Raw `.cache/composed-preflight-independent-tier2.log`, SHA256
+  `5cde7e0ac9cfdfd9b0ad1d777c4957ff382c9e378adcb44fd0c149cfa2f50ef6`.
+- Real occupied18081 listener, no Node preload, Docker/Make doubled: public default,
+  public Tier2 and preparation CLI each exit1 with zero tool calls. The initial
+  Python bind encountered recent-connection address reuse with no live listener;
+  the same check with SO_REUSEADDR completed. Reproduction/report:
+  `.cache/composed-port-independent.py` and `.cache/composed-port-independent.json`.
+- `git diff --check 3a1069ec..eea80614` passes. Independently verified all9 raw
+  manifest hashes, the old/new browser-suffix digest, aggregate one8/8 summary,
+  each10-parent pass count, replay markers, all browser outcomes and both N5
+  negative completions in the implementer's final full-aggregate artifact.
+
+Real reviewer integration uses native macOS ARM64/Go1.27.3/Node26.13.0,
+Postgres16 and Chromium. The full aggregate was executed by the implementer and
+its bound artifact inspected independently; the reviewer executed the actual
+standalone entry point and failure boundaries. No pinned Linux full-journey,
+hosted five-minute, whole-CI, reliability or full-nine-tier1.0 claim follows.
+Known Clout/history and broader release gates remain open. SQL/browser lease
+released explicitly before root removed its owned container/network; no reviewer
+source edits, commit, publication or archival.
