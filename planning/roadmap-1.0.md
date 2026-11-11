@@ -5,6 +5,13 @@ reach and understand the designed endings through the full nine-tier game, while
 supported self-host package meet the same recovery, rights, accessibility, privacy, operations and
 preservation obligations as the gameplay. This is the long-term goal, not a claim that 1.0 is near.
 
+**Local CI checkpoint (2026-11-11):** independently approved isolation/scheduling
+and shared composed preparation retain their complete test populations. New
+`make test-game-ui-composed-ci` runs the full composed target on Linux Go1.26/
+Node24/Chromium/Postgres, with real positive and independently executed failure/
+cleanup evidence. [CI plan](scaffolding-and-ci/plan.md) owns exact ranges and limits.
+Hosted timing, known Clout/history failures and the full product floor stay open.
+
 **Player integration checkpoint (2026-11-05):** the next-Company frozen
 clock defect RP-774 is corrected and independently approved `04642f4c..a12346b0`.
 Its real-service supplement is independently approved `8c887be1..64394095`:

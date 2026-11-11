@@ -6109,3 +6109,16 @@ playable tier or completed R-006. Retained candidate3a209466 stays unchanged;
 include both helper corrections in the next necessary package. Accounting/
 history, owner decisions, supported-host/predecessor, privacy/accessibility,
 later tiers/endings and the full nine-tier1.0 goal remain open and ACTIVE.
+
+
+## 2026-11-11 — Complete Linux composed reproduction is available locally
+
+Local CI corrections retain full populations: isolated four-package Go scheduling
+and shared composed preparation are independently approved in source. Complete
+nine-path622e4250..2f87fde0 adds independently approved
+`make test-game-ui-composed-ci`; actual Linux Go1.26/Node24/Postgres/Chromium whole
+journeys pass, while an independent real failed-container control stays red and
+cleans its fixture. The CI plan/log own source, environment and reuse limits.
+This improves repeatable verification, not a new playable tier or hosted speed/
+whole-CI/release acceptance. Accounting/history, owner decisions, supported-host
+R-006 and full nine-tier/endings construction remain; goal stays ACTIVE.

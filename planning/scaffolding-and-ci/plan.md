@@ -209,9 +209,11 @@ populations and zero owned containers/network/dependency volumes after automatic
 cleanup. Eight actual-Make failure/termination controls and topology pass.
 Independent review caught an intermediate export masking UUID-generation failure;
 the regression fails before correction and now refuses before any Docker call.
-The valid-UUID successful path is unchanged; the reviewer is executing the final
-failed-container/cleanup boundary and Linux Node24 controls. Exact-range approval
-remains pending. No change to hosted jobs, gameplay, populations, caches in
+The valid-UUID successful path is unchanged. Complete nine-path
+`622e4250..2f87fde0` now has independent corrective approval after actual final
+failed-container/cleanup execution and Linux Node24 controls; both succeed and
+leave no owned resources. The owning log holds the exact verdict. No change to
+hosted jobs, gameplay, populations, caches in
 Actions or guards; this is compatibility evidence, not a hosted speed claim.
 
 ## Current hosted evidence — 2026-11-11

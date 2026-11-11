@@ -5552,3 +5552,59 @@ fixtures and records. No product/schema/kernel/copy change, omitted population,
 raised guard, five-minute/hosted/whole-CI or full-nine-tier1.0 claim. Known accounting/
 history, other accepted construction, owner decisions and release gates remain.
 No push, publication, deployment or archival.
+
+
+## 2026-11-11 — Independent local Linux composed-command review
+
+Review by: Codex independent reviewer `/root/composed_linux_local_review`.
+Recorded by: the same reviewer. **APPROVED** complete nine-path range
+`622e4250..2f87fde0` under the standing corrective-code/tooling delegation.
+Independently inspected the complete Make, image/entrypoint, Compose, fixture,
+canonical-documentation, plan/log and observation changes against CI D2/D3 and
+RFC-0000. This approves local reproduction tooling, not feature acceptance,
+specification adoption, hosted timing or release approval.
+
+The initial UUID finding was real: independently doubled only Node/Docker around
+actual Make, made Node exit37 and observed Make0 plus build/run/down under the
+shared literal prefix. Separating the assignment before export resolves it;
+final actual-Make regression refuses before any Docker call. No actionable finding
+remains. The successful full alias began before that isolated error-path repair;
+its successful UUID/export/recipe and all journey inputs are unchanged. Reuse is
+explicitly limited to that successful path; the corrected recipe's real failure
+and cleanup boundary was separately executed below.
+
+Independently executed final native eight-control suite and full
+`make verify-ci-topology`:8/8, zero skips, plus29 seeded topology negatives and
+existing command controls. Independently executed those same eight controls on
+Linux/amd64 Node24.18.0 in the actual local image, with a read-only checkout and
+Docker doubled:8/8, zero skips. Raw `.cache/composed-linux-independent-node24.log`,
+SHA256 `5c45bd2dad5908ac7107bbd2c47ca47edd66b5cbc86b2f4af0f3842cc6f3a1c9`.
+
+After explicit lease transfer, executed the corrected actual public Make recipe
+against real Docker, forwarding build/down and injecting only a runner
+`--entrypoint /bin/false` failure. Make exits2; Docker daemon events confirm the
+real composed-linux container died with exitCode1. Build/run/down use one fresh
+UUID project, then actual label queries find zero owned containers, networks and
+anonymous volumes. This is a real failure/cleanup control, not another complete
+browser execution. `.cache/composed-linux-independent-failure.py` and its JSON/
+raw-log artifacts retain the probe; raw SHA256
+`cd692ca18e3a6249dcdd68c020f1498b7be14ca761657fd164972acf44f9497c`, report SHA256
+`846e4e1d61e63f836789a3352b312c407a9ebbba296f2e5025311be1246572f6`.
+Lease explicitly released after both checks terminated.
+
+Independently verified all5 source and8 raw manifest hashes, then re-parsed both
+implementer full-run logs: each retains43 Node controls, one8/8 refresh population,
+all10 persisted parents once, all3 replay witnesses, main/Recovery/process-loss,
+both Cosmetic variants/Reputation/Clout, two N5 negatives, Garden and Tier2.
+Prototype SHA256 `c3c373b84f8ca71244c69b51521702c399327492f6a2d154b5ad62a7414e33e0`;
+public-alias SHA256 `bf01be21d1d5126038c54ba11759cc56206b925f95a394406a0da8d3686821e0`.
+The implementer executed those full journeys; this reviewer inspected their raw
+outputs and independently executed controls/failure boundaries. Independently
+queried the successful alias's project too: no containers/network/volumes remain.
+`git diff --check 622e4250..2f87fde0` passes.
+
+Image build precedes the runner's10m guard; client dependency setup is inside it.
+Local compiler-cache reuse and amd64 emulation prevent clean-hosted/speed claims.
+No Actions/default/population/guard/product change, five-minute/whole-CI,
+accounting/history, clean-host/R-006 or full-nine-tier1.0 acceptance follows.
+No publication, deployment or archival authorization is supplied.
