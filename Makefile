@@ -11,6 +11,7 @@
 .PHONY: test-deployment-gameserver-profile
 .PHONY: test-deployment-journal
 .PHONY: verify-combat-go-boundary
+.PHONY: test-go-isolated-ci
 
 # Keep ordinary Go builds inside the writable repository sandbox. Override either
 # variable when a developer deliberately wants another cache or a focused package set.
@@ -37,6 +38,7 @@ SAVE_TEST_COUNT ?= 1
 CI_TEST_PACKAGES ?= ./...
 CI_TEST_FLAGS ?=
 CI_TEST_COUNT ?= 1
+CI_TEST_PARALLEL ?= 2
 SAVE_TEST_HOST_PORT ?= 55432
 export SAVE_TEST_HOST_PORT
 CLIENT_BIN := $(CURDIR)/client/node_modules/.bin
@@ -88,6 +90,14 @@ test-harness:
 # Integration-named subset used by the focused save-integration target.
 test-go-ci:
 	docker compose -f compose.save-test.yml -f compose.ci-test.yml run --rm test go test -p 1 $(CI_TEST_FLAGS) $(CI_TEST_PACKAGES) -count=$(CI_TEST_COUNT)
+
+# Experimental/manual only: Go still schedules and reports every selected test.
+# Build inside the declared amd64 service, then wrap each package executable in
+# an owned disposable database. No blocking workflow/default switches to this.
+test-go-isolated-ci:
+	mkdir -p .cache/bin
+	docker compose -f compose.save-test.yml -f compose.ci-test.yml run --rm test go build -o /workspace/.cache/bin/test-postgres-exec-linux-amd64 ./cmd/test-postgres-exec
+	docker compose -f compose.save-test.yml -f compose.ci-test.yml run --rm test go test -p $(CI_TEST_PARALLEL) -exec /workspace/.cache/bin/test-postgres-exec-linux-amd64 $(CI_TEST_FLAGS) $(CI_TEST_PACKAGES) -count=$(CI_TEST_COUNT)
 
 test-save-integration:
 	docker compose -f compose.save-test.yml run --rm test go test -p 1 $(SAVE_TEST_FLAGS) $(SAVE_TEST_PACKAGES) -count=$(SAVE_TEST_COUNT)

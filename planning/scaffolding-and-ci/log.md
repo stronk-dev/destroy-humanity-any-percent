@@ -4990,3 +4990,47 @@ actual published server runs64successful packages totaling331.714s plus117.002s
 in the failed Production package; total body448.716s within561s job. This is
 serial-cost evidence, not proof a particular concurrent architecture succeeds.
 Full test/failure preservation and real isolation/cancellation controls are required.
+
+## 2026-11-11 — Construct disposable database wrapping before parallel CI
+
+Under accepted CI D2/D3, add a manual `test-go-isolated-ci` target and the test-only
+`server/cmd/test-postgres-exec` adapter. Go retains discovery, flags, cwd, streams,
+cold results and failure propagation; the adapter creates a random database per
+executable and cleans only confirmed creations. Child exit/signal status remains
+nonzero; cleanup failures cannot turn green. Remaining child process-group members
+are killed on success/failure/handled cancellation. Ambiguous creation and an
+uncatchable wrapper/VM kill can leave an orphan; the disposable service owns that
+remainder. Connection-error text is omitted to avoid credential disclosure.
+
+Guild's destructive-fixture guard now recognizes only an exact isolated name bound
+to its declared base connection, while retaining its maintenance-database refusal.
+Fixed-name multi-database restore profiles are refused rather than falsely called
+isolated. Canonical docs describe these limits. No gameplay, balance, kernel, schema,
+workflow, ordinary target default, cache policy, timeout or acceptance floor changes.
+
+Native cold affected packages and vet pass. `make verify-ci-topology` passes its
+27 negative controls and existing Make/selector checks. Native SQL tests explicitly
+skip; that result is not the DB proof. On the declared disposable Compose project
+`cloud-clicker-ci-isolation`, port55439, whole adapter population executes against
+real Postgres and passes in1.954s: concurrent children/source sentinel preservation,
+direct shared-database collision, failed/signalled child and descendant cleanup,
+and a confirmed preexisting database that survives CREATE failure. Unit controls
+also cover invalid/duplicate URLs, randomness/connect/start failure, stream/argument
+forwarding, credential-safe diagnostics and cleanup errors preserving child failure.
+
+Actual manual Go `-exec` command over `./cmd/test-postgres-exec ./guild ./account`
+with `-p2`, `-json -timeout=4m`, `-count=1` terminates0:351 test/subtest passes,
+zero skips/failures. Package elapsed2.068s/5.434s/14.561s. The cold compile gaps
+mean those package bodies do not overlap; do not cite this as a concurrent speedup.
+The separate barrier-controlled two-child integration test establishes actual
+overlap/isolation. Raw `.cache/ci-isolation-smoke.log`, SHA256
+`42ac4dd6434f8bc4e7495807117f0920a08db76b6038a7fd01f17e220df99c84`.
+Final SQL catalog query finds zero owned `cc_pkg_test_%` databases/`ci_exec_%`
+marker tables. The fixture is retained only for serial independent reviewer use.
+
+Review by: Codex root(implementer checks, not designated approval).
+Recorded by: Codex root. Complete batch after `1e3ae207` through this containing
+commit awaits fresh independent Codex corrective review. Next: that review, then
+one complete matched serial/concurrent population comparison before proposing any
+default change. Known27 Clout and history-guard failures, hosted five-minute floor
+and full1.0 remain open. No publication, release or feature acceptance is claimed.

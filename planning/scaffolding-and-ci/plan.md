@@ -75,6 +75,20 @@ an unchanged original database on the declared service before a full comparison.
 No workflow/default change, extra cache, guard increase or accounting waiver is
 authorized by the timing arithmetic alone.
 
+**Prototype constructed,2026-11-11:** the manual `test-go-isolated-ci` target now
+uses Go's standard `-exec` seam with an owned database per test executable. Existing
+serial targets/workflow defaults are unchanged. Real Postgres controls pass for
+overlap/source preservation, shared-database collision, failure/signal cleanup and
+refusal to delete a preexisting database. Actual adapter/Guild/Account execution
+passes351 test/subtest cases with zero skips. Cold compilation kept those package
+bodies from overlapping, so this is compatibility evidence, not a speed comparison;
+the dedicated two-child control proves overlap directly. Independent corrective
+review remains pending. After that review, compare the complete unchanged server
+population serially and with isolated concurrent execution, retaining every
+failure/skip identity and the known Clout failures. No workflow change or hosted
+floor claim follows from this prototype. Multi-database restore profiles remain
+outside its supported population and are explicitly refused.
+
 ## Current hosted evidence — 2026-11-11
 
 [CI42942631238](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/42942631238)

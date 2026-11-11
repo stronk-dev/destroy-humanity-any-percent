@@ -218,6 +218,37 @@ fixtures truncate accounts, catalogs and epochs. Run these targets serially acro
 implementers and reviewers unless the project and database are explicitly isolated.
 Changing `SAVE_TEST_HOST_PORT` alone changes the host binding, not the database namespace.
 
+`make test-go-isolated-ci` is a manual prototype for concurrent SQL packages;
+the blocking workflow and existing serial targets do not use it. It builds
+`server/cmd/test-postgres-exec` in the declared Linux/amd64 test service, then
+uses Go's standard `-exec` option with `-p 2`. `CI_TEST_PACKAGES`, `CI_TEST_FLAGS`
+and `CI_TEST_COUNT` retain their normal meaning; `CI_TEST_PARALLEL` controls this
+manual target's package concurrency. Go owns discovery, execution and results.
+
+The adapter admits only the repository's local `cloud_clicker_test` fixture URL,
+creates one random database per test executable, and passes its URL through
+`TEST_DATABASE_URL`. The original URL is available to the adapter's own integration
+tests as `CLOUD_CLICKER_TEST_DATABASE_BASE_URL`. Ordinary package arguments,
+streams, working directory, environment and nonzero exit codes are preserved.
+On success, failure or handled cancellation it kills remaining child processes
+in its process group and drops only the database whose creation it confirmed.
+Cleanup failures fail the command; diagnostics omit connection errors that could
+disclose credentials. Setup/cleanup operations have a 15-second containment guard,
+which does not change any test timeout or the workflow's latency floor.
+
+A failed or ambiguous database creation does not grant authority to drop that
+name. An unacknowledged creation or uncatchable `SIGKILL` can therefore leave an
+orphan until the disposable Postgres service is removed. This tool must never
+point at a production database. It does not promise cleanup after host/VM loss.
+Multi-database backup/restore profiles are refused: their additional URLs and
+fixed database names need their own isolation and are not part of this prototype.
+The Guild fixture's destructive-cleanup guard also requires the exact isolated
+name and matching base connection; another database remains refused.
+Its integration population exercises overlapping databases, an unchanged source
+fixture, a shared-database negative control, child exit and signal cleanup, and
+an existing-database collision. Correctness alone does not establish a complete
+test-population speedup, hosted green or the five-minute gate.
+
 On Apple Silicon, that Docker lane disables AVX2 inside the emulated amd64 test container because
 Docker Desktop's QEMU CPU-feature combination corrupts the age authenticated-payload path. The
 hosted Actions runner is native amd64 and retains ordinary CPU detection, so the optimized path is

@@ -3,6 +3,7 @@ package guild
 import (
 	"context"
 	"database/sql"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -35,10 +36,56 @@ func requireGuildFixtureDatabase(ctx context.Context, db *sql.DB) error {
 	if err := db.QueryRowContext(ctx, "SELECT current_database()").Scan(&name); err != nil {
 		return err
 	}
-	if name != "cloud_clicker_test" {
+	if !isGuildFixtureDatabase(name, os.Getenv("TEST_DATABASE_URL"), os.Getenv("CLOUD_CLICKER_TEST_DATABASE_BASE_URL")) {
 		return errGuildFixtureDatabase
 	}
 	return nil
+}
+
+// Keep the original refusal before migrations/truncation. An isolated namespace
+// is permitted only when its exact name and connection match the wrapper's base.
+func isGuildFixtureDatabase(name, raw, baseRaw string) bool {
+	if name == "cloud_clicker_test" {
+		return true
+	}
+	suffix := strings.TrimPrefix(name, "cc_pkg_test_")
+	decoded, err := hex.DecodeString(suffix)
+	if err != nil || len(decoded) != 16 || hex.EncodeToString(decoded) != suffix || name == suffix {
+		return false
+	}
+	current, err := url.Parse(raw)
+	if err != nil || current.Path != "/"+name {
+		return false
+	}
+	base, err := url.Parse(baseRaw)
+	if err != nil || base.EscapedPath() != "/cloud_clicker_test" {
+		return false
+	}
+	base.Path = "/" + name
+	return base.String() == current.String()
+}
+
+func TestGuildFixtureDatabaseNamespaceGuard(t *testing.T) {
+	base := "postgres://cloud_clicker:cloud_clicker_test@postgres:5432/cloud_clicker_test?sslmode=disable"
+	name := "cc_pkg_test_" + strings.Repeat("a", 32)
+	isolated := strings.Replace(base, "/cloud_clicker_test?", "/"+name+"?", 1)
+	for _, tc := range []struct {
+		name, raw, base string
+		want            bool
+	}{
+		{"cloud_clicker_test", base, "", true},
+		{name, isolated, base, true},
+		{"postgres", isolated, base, false},
+		{name, base, base, false},
+		{name, isolated, "", false},
+		{name, isolated, strings.Replace(base, "@postgres:", "@other:", 1), false},
+		{"cc_pkg_test_short", isolated, base, false},
+		{"cc_pkg_test_" + strings.Repeat("A", 32), isolated, base, false},
+	} {
+		if got := isGuildFixtureDatabase(tc.name, tc.raw, tc.base); got != tc.want {
+			t.Fatalf("name=%s accepted=%v want=%v", tc.name, got, tc.want)
+		}
+	}
 }
 
 func guildIntegrationDatabase(t *testing.T, ctx context.Context) *sql.DB {
