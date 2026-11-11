@@ -990,7 +990,9 @@ generator, with identical receipt bytes on duplicate. The
 [owning log](log.md#2026-11-11--packaged-crash-during-an-admitted-purchase-rp-143)
 binds the fixture and observations. Reuse the transaction checkpoint and
 persisted-result checks when constructing the supported rehearsal producer.
-The compiled R-006 population still lacks that producer.
+`make test-deployment-release` now repeats those checks with real Caddy and
+Postgres and a killable gameserver child. The compiled R-006 population still
+lacks that producer.
 
 **Safety corrective review checkpoint, 2026-11-01:** fresh independent Codex
 approves complete RP-466 atomic backup commit, RP-544 live-writer cleanup,

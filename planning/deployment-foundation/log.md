@@ -13321,3 +13321,29 @@ aggregate SHA-256 `c090a7e8ad1e5e651ab1f2e8ea0dd026b2147f7fcec675862c47afa5b56f5
 This is a local Caddy/HTTP/Postgres observation under Docker Desktop emulation.
 The shipped R-006 command still needs a real producer for this population,
 and the supported-host rehearsal, backup objectives and AC4 closeout remain open.
+
+## 2026-11-11 — Repeat the admitted purchase crash in the deployment integration suite
+
+`make test-deployment-release` now starts a killable gameserver child behind
+the existing Caddy and Postgres Compose services. The test identifies the
+active purchase's blocked receipt insert using the specific fixture blocker.
+It checks the HTTP request is still pending, verifies SIGKILL and Caddy's
+502, and waits for the old Postgres connection to exit before starting a
+new gameserver. The original authenticated request then applies once, and
+its duplicate returns the same bytes. The rollback and duplicate comparisons
+include the complete latest Company save, revisions, purchases, events,
+intent, replay-command and receipt-outbox counts.
+
+The cold Linux/amd64 Compose suite passed both the new crash test (2.39s)
+and the existing drain/rollback test (2.41s). A private overlay removed
+only the purchase request. The same crash test failed at the required SQL
+checkpoint while the graceful drain test still passed. The suite was then
+rebuilt without the overlay for the passing run above. Native cold package
+tests (9.433s) and vet passed. The initial sandboxed native run could not
+bind loopback and provided no test evidence. The declared Compose cleanup
+removed the test services and network.
+
+This adds repeatable source integration evidence under AC4. The exact local
+bundle evidence above has its own scope. The packaged R-006 producer and
+supported clean-host run still need construction and execution. Independent
+review of this test-only supplement is pending.
