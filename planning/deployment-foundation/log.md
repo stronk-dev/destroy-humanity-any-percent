@@ -13120,3 +13120,33 @@ Old and corrected review log SHA-256 values are
 `56266886df0ee907c5e5028f568b0ac1fcee00b83018d1ab219da6b2981e40a3` and
 `907bcec5a2e1a6d9945cdea13f59d10872e3a9a9a3c8bd125df0b996f91b0f03`.
 The natural journey and exact bundle remain separate.
+
+## 2026-11-11 — Natural packaged player journey passes with the rebuilt driver
+
+The reviewed RP-786 Linux driver, SHA-256
+`8757f3e4458732b282fa6423daa2874bc3b3f18a25989298af7378150b84e7ec`,
+ran in the exact manifest-pinned Playwright image against the unchanged
+`2f366a90` gameserver image, Caddyfile and site. Only the driver was
+substituted. The local Caddy chain and hostname were verified before the
+fixture Chromium used the scoped leaf-key pin. Fresh Postgres began with
+no player data. The driver used visible controls and normal wall time.
+
+The process exited 0 after 11 minutes 12 seconds. Its mode-0600 result
+records 1,259 actions, 1,259 successful intent responses, zero failed
+responses and zero page exceptions. It observed the Garage gate, the
+first ending and the next Company Desk. Postgres independently records
+one account, 1,259 applied intents, zero rejected intents, one gate
+event, one ending event and one successor event. The active Company
+is run 2. The normal verifier archived Company 1 at terminal sequence
+1,259 and produced the `any_percent`, `ethical_percent` and `valuation`
+board rows for that single archived run. No clock or save was seeded.
+
+The retained result SHA-256 is
+`b28919cec4ada2fac6235bacd1be2f3c6c735555893c53a1189b09734d201c71`.
+The aggregate SQL record SHA-256 is
+`dec51462650ee85970f91e68a7719d16da66d1a63856687486579d03ade811e8`.
+Both live under `.cache/release-browser-natural-corrected`. The disposable
+stack was removed. This local emulated run exercises the real package
+app with a rebuilt driver. Next, put that driver in a fresh manifest
+and repeat the workflow with the manifest-bound driver. The supported
+clean-host, rollback predecessor and full release gates remain open.

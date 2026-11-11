@@ -16,8 +16,11 @@ Supported-host R-006, predecessor compatibility, CI, privacy, rights and
 later-tier work remain open. [Candidate record](deployment-foundation/release-builds/candidate-2f366a90.json)
 
 The shipped rehearsal driver in that package can miss affordable generator
-purchases (RP-786). Its selector correction is independently approved and
-being exercised against the packaged app with a separately built driver.
+purchases (RP-786). Its independently approved replacement reached the
+first Exit and Company 2 from a fresh account in 11 minutes 12 seconds
+against the packaged app, with an archived run and three verified board
+rows. The corrected driver still needs to be included in the manifest and
+rerun from the exact rebuilt bundle.
 [Deployment evidence](deployment-foundation/log.md)
 
 **Latest integrated player proof,2026-11-05:** RP-774's next-Company frozen clock
