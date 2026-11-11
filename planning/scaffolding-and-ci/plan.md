@@ -44,6 +44,37 @@ Make orchestration controls discriminate; source-matched independent Linux
 browser/performance evidence is reused with attribution. Shared setup and RP-706
 retain separate approvals; original timeout/reliability and hosted timing stay open.
 
+## Completed browser scheduling comparison — 2026-11-11
+
+Fresh hosted broad282.32s/native5.74s/performance9.75s identifies broad scheduling
+as the remaining browser cost. Before execution, compare exactly one default
+three-files-per-engine arm then one two-files arm on the same cached ARM64 image,
+cpuset0-3/four CPUs, fresh dependency volumes and unchanged complete Make target.
+Keep every test/input/deadline, real60s idle, native and performance phases. Require
+complete exit0 and identical functional IDs/statuses plus5performance passes/113
+nonperformance exclusions. Stop on invalid/red/incomplete; no retry/count sweep.
+Only a lower complete elapsed sample can justify proposing a reviewed change;
+one local pair is not a universal speedup or hosted five-minute proof. No current
+CI/test source changes. Raw plan/results in ignored .cache/browser-width-6f39653b.
+
+Both arms completed with identical functional case IDs/statuses and every phase.
+Default three:286.776s cold command,243.07s broad. Candidate two:372.681s cold,
+327.12s broad. Reject the candidate; retain three. This one ordered ARM64/four-CPU
+pair is not a universal speed comparison or hosted-floor proof. All owned fixture
+containers/network/four anonymous dependency volumes are absent; source unchanged.
+[Small result record](observations/browser-width-6f39653b.json) and owning log hold
+full populations, hashes, validation controls and limits. No worker-count sweep.
+
+Next accepted CI construction: prototype per-package disposable Postgres databases
+through Go's existing test-executable wrapper seam before considering concurrent
+package execution. The fresh hosted server reports over447s of serial test bodies
+including its failed Production package, versus561s total. Keep Go's own package
+selection, cold test flags, failure propagation and every named test. Prove URL/
+database ownership, cross-package isolation, child-failure/cancellation cleanup and
+an unchanged original database on the declared service before a full comparison.
+No workflow/default change, extra cache, guard increase or accounting waiver is
+authorized by the timing arithmetic alone.
+
 ## Current hosted evidence — 2026-11-11
 
 [CI42942631238](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/42942631238)

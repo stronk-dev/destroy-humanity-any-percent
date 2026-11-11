@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "source_commit": "6f39653bd2e4c06300d669ece7e98de8aa52210f",
+  "subject": "complete browser lane file concurrency",
+  "platform": "linux/arm64 on ARM64 Docker Desktop",
+  "image": "sha256:5e63ffc997394026acb443c255703c7278f97d43cdc3d49cf51bc8fdce7d5383",
+  "cpus": 4,
+  "cpuset": "0-3",
+  "source_unchanged": true,
+  "arms": {
+    "baseline-three": {
+      "files_per_engine": 3,
+      "cold_elapsed_seconds": 286.775814417284,
+      "exit": 0,
+      "maximum_reported_nonzero_file_overlap": 9,
+      "phase_timings": [
+        "Duration  243.07s (transform 0ms, setup 22.14s, import 163.33s, tests 1450.27s, environment 0ms)",
+        "Duration  4.62s (transform 0ms, setup 50ms, import 867ms, tests 7.08s, environment 0ms)",
+        "Duration  8.07s (transform 0ms, setup 6ms, import 864ms, tests 6.30s, environment 0ms)"
+      ]
+    },
+    "candidate-two": {
+      "files_per_engine": 2,
+      "cold_elapsed_seconds": 372.6811525830999,
+      "exit": 0,
+      "maximum_reported_nonzero_file_overlap": 6,
+      "phase_timings": [
+        "Duration  327.12s (transform 0ms, setup 15.48s, import 182.06s, tests 1300.40s, environment 0ms)",
+        "Duration  6.59s (transform 0ms, setup 54ms, import 1.41s, tests 10.46s, environment 0ms)",
+        "Duration  8.48s (transform 0ms, setup 8ms, import 942ms, tests 6.54s, environment 0ms)"
+      ]
+    }
+  },
+  "population": {
+    "broad_files": 525,
+    "broad_passed": 40635,
+    "broad_expected_failures": 21,
+    "broad_skipped": 24,
+    "native_files": 3,
+    "native_passed": 87,
+    "native_expected_failures": 6,
+    "performance_files": 1,
+    "performance_passed": 5,
+    "performance_excluded": 113
+  },
+  "functional_case_identity_sha256": "9f698d97cacdf12c582e655a1aa3bb20a547d3bab552e339ad5ad7b601dd8714",
+  "decision": "Reject two files per engine; retain the existing default three. No worker-count sweep or CI/source change.",
+  "limitations": [
+    "One ordered local pair, not a universal causal speed comparison",
+    "ARM64 fixture and cached browser image differ from hosted AMD64 setup",
+    "Does not meet or waive the accepted hosted five-minute floor",
+    "Server/accounting/history failures remain separate"
+  ],
+  "objective_completed": true,
+  "guard_exhausted": false,
+  "owned_resources_absent": true,
+  "evidence": {
+    ".cache/browser-width-6f39653b/plan.json": "sha256:5d0e6c53fd85655c1fc634f23b803e68182e14d84f0737d43089773d15840cda",
+    ".cache/browser-width-6f39653b/runs.json": "sha256:ad0189e21b9979ea61f1469ae5c3194236057524aee617475db70a2e262bdfcc",
+    ".cache/browser-width-6f39653b/comparison.json": "sha256:569b887b8ff06f8c693dc0f38fab6cd88dbef56915efc7adb11a2a43df5cede3",
+    ".cache/browser-width-6f39653b/baseline-three.log": "sha256:3dc5d146a9014b01bee990dcaea13d7418943b741465fc38b83fe22b1d315be0",
+    ".cache/browser-width-6f39653b/candidate-two.log": "sha256:264111e77bfebd8b30511d8894ba5bf4a13e9d8403b5f0c25cbd31f28e62fd4f",
+    ".cache/browser-width-6f39653b/baseline-container.json": "sha256:108bb76a26b35428905b13b15e9ef2183c72e2a9cd3bce59a3a2a804cd906844",
+    ".cache/browser-width-6f39653b/candidate-container.json": "sha256:bdf16defd8d0335b2c982e4ddfa8954a24901cd29dbce050106b8b28b8a6f3da",
+    ".cache/browser-width-6f39653b/run.py": "sha256:59c535c61bd2662c22318e0b3d06bb4a17d8e7ef62a489fe70c9970937b1efba",
+    ".cache/browser-width-6f39653b/validate.py": "sha256:0909067ff93d4a8c656cc7de08863ef5f65ea79cfb56b2539695c2c52ba0100d"
+  }
+}

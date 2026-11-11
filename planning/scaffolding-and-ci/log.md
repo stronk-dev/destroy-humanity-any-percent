@@ -4940,3 +4940,53 @@ Client log SHA256 ae065c70b85e65aba23bbb5a188e309f23e45fd2012be3e5ea809531247025
 server log SHA256 0ae877d014d69bc4bf6fed2fec2ba2947c2ea3c49d8a64440eca0a3863e30005.
 Review by: Codex root(read-only external evidence check). Recorded by: Codex root.
 Editorial record only; no new software behavior or independent feature acceptance.
+
+## 2026-11-11 — Reject lower browser concurrency after a complete comparison
+
+Fresh hosted42942631238 browser log confirms broad282.32s, native Typer5.74s and
+performance9.75s; raw log SHA256
+`d54082318585d7b7dd667d4298533980e29d4b6e627856672c3c12e7a0c93b9c`.
+The broad suite, particularly Firefox DOM files, supplies the remaining cost.
+RP-770 was also revalidated in its owning log: it is an unresolved intermittent
+observer failure, not a proved5s product SLO. Its completed phase/CPU probes remain
+preserved for a new actual failure; none was speculatively repeated here.
+
+Before executing, fix exactly one default-three then one two-files-per-engine
+comparison at source6f39653b, immutable cached ARM64 image5e63ffc9..., cpuset0-3
+and4CPUs. Existing full Make target, fresh dependency/store volumes, real60s idle,
+all assertions/inputs/deadlines, native/performance phases and10m containment are
+unchanged. Source client/server/balance remain unchanged; this is not hosted
+AMD64 hardware or a browser-install cold start. No extra worker-count arms/retries.
+
+Both processes terminate0. Default:286.775814s total, broad243.07s/native4.62s/
+performance8.07s. Two workers:372.681153s total, broad327.12s/native6.59s/
+performance8.48s. Functional full case-identity/status hashes agree at
+`9f698d97cacdf12c582e655a1aa3bb20a547d3bab552e339ad5ad7b601dd8714`.
+Each arm has525 broad files(175per engine),40,635ordinary passes/21expected
+failures/24skips; native3files87ordinary/6expected; isolated Chromium5passes/
+113nonperformance exclusions. Reported nonzero-file-interval peak is9 versus6,
+confirming that the commanded widths affect actual overlapping execution.
+
+The launch shim checks functional JSON and has only a loose performance substring;
+that check alone is not evidence. The separate final consumer strictly requires
+all three command phases, per-engine files, exact summaries/timings and identical
+functional identities/statuses. Changing5performance passes to4 is refused for
+each retained log. Final complete population qualification passes. No conclusion
+comes from the loose check. All owned containers/network and four captured
+anonymous dependency volumes are absent after cleanup.
+
+The candidate fails the predeclared lower-elapsed criterion in this pair: REJECT
+it and retain the current default three. This is not a universal causal speed
+claim. [Result record](observations/browser-width-6f39653b.json) binds original
+plan, actual image/CPU/mount identities, logs/reports and consumers. Raw evidence
+is ignored under .cache/browser-width-6f39653b. No CI/test source, budget, population,
+policy or release-status change; hosted5min/accounting/history holds remain.
+Review by: Codex root(executed bounded comparison and consumer controls).
+Recorded by: Codex root. Editorial evidence checkpoint, not designated CI approval.
+
+Next: accepted server-test isolation construction, using Go-native executable
+wrapping and owned disposable databases, before any parallelism/CI change. The
+actual published server runs64successful packages totaling331.714s plus117.002s
+in the failed Production package; total body448.716s within561s job. This is
+serial-cost evidence, not proof a particular concurrent architecture succeeds.
+Full test/failure preservation and real isolation/cancellation controls are required.
