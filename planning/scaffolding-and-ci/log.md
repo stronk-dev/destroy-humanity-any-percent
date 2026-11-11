@@ -5034,3 +5034,45 @@ commit awaits fresh independent Codex corrective review. Next: that review, then
 one complete matched serial/concurrent population comparison before proposing any
 default change. Known27 Clout and history-guard failures, hosted five-minute floor
 and full1.0 remain open. No publication, release or feature acceptance is claimed.
+
+## 2026-11-11 — Independent disposable database adapter corrective review
+
+Review by: Codex sub-agent `/root/ci_database_isolation_corrective_review`.
+Recorded by: Codex sub-agent `/root/ci_database_isolation_corrective_review`.
+Verdict: **APPROVED** for the complete nine-path range
+`1e3ae207..3b25015c`, including implementation, tests, Make target, canonical
+documentation and closeout records. Fresh independent review under the standing
+corrective-code delegation inspected the whole diff against CI D2/D3 and RFC-0000.
+No actionable defect found in URL admission, database creation/drop authority,
+failure propagation, independent cleanup context, child process-group teardown,
+Guild fixture refusal or supported fixture compatibility.
+
+Independently executed native cold affected packages and vet through root targets:
+`make test-go GO_PACKAGES='./cmd/test-postgres-exec ./guild' GO_TEST_FLAGS='-count=1'`
+and `make vet GO_PACKAGES='./cmd/test-postgres-exec ./guild'` pass. Native SQL
+skips are not the database evidence. After the implementer released the fixture
+lease, executed `docker compose -p cloud-clicker-ci-isolation -f compose.save-test.yml -f compose.ci-test.yml run --rm test go test -count=1 -v ./cmd/test-postgres-exec`:
+terminal0,2.439s, with every SQL integration control executed and no skips.
+The actual shared-database collision is rejected; overlapping isolated children,
+unchanged source sentinel, normal/failing/signalled child and descendant cleanup,
+and preservation of a preexisting database all pass.
+
+Then executed the actual root manual target:
+`make test-go-isolated-ci COMPOSE_PROJECT_NAME=cloud-clicker-ci-isolation SAVE_TEST_HOST_PORT=55439 CI_TEST_PACKAGES='./cmd/test-postgres-exec ./guild ./account' CI_TEST_FLAGS='-timeout=4m' CI_TEST_COUNT=1 CI_TEST_PARALLEL=2`.
+Terminal0; adapter3.759s, Guild4.761s, Account23.666s. The full Guild package
+includes `TestGuildFixtureRefusesOtherDatabaseIntegration`, exercising the real
+maintenance-database refusal before migrations/truncation. This pilot establishes
+compatibility; its summary output does not measure package-body overlap, and
+`-p2` alone is not proof of overlap. An initial sandbox socket
+denial occurred before execution; the narrow target escalation permitted this
+completed run. The first direct Compose command recreated the disposable fixture
+using the default host port; the manual target restored55439, independently
+confirmed by `docker compose ... port postgres 5432`. Final real SQL catalog
+queries report zero `cc_pkg_test_%` databases and zero `ci_exec_%` marker tables.
+`git diff --check 1e3ae207..3b25015c` passes. Fixture remains available for the
+implementer; no product or fixture source was edited by this reviewer.
+
+This approves the bounded manual prototype, not a default/workflow switch,
+complete-population performance result, hosted five-minute result, feature
+acceptance or release. The matched full-population comparison and existing
+Clout/history/hosted gates retain their recorded next actions and limits.

@@ -82,8 +82,10 @@ overlap/source preservation, shared-database collision, failure/signal cleanup a
 refusal to delete a preexisting database. Actual adapter/Guild/Account execution
 passes351 test/subtest cases with zero skips. Cold compilation kept those package
 bodies from overlapping, so this is compatibility evidence, not a speed comparison;
-the dedicated two-child control proves overlap directly. Independent corrective
-review remains pending. After that review, compare the complete unchanged server
+the dedicated two-child control proves overlap directly. Complete nine-path
+`1e3ae207..3b25015c` now has independent corrective approval with fresh SQL controls
+and actual manual-target execution; the owning log records the verdict. Next,
+compare the complete unchanged server
 population serially and with isolated concurrent execution, retaining every
 failure/skip identity and the known Clout failures. No workflow change or hosted
 floor claim follows from this prototype. Multi-database restore profiles remain
