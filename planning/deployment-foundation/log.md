@@ -13481,3 +13481,41 @@ inspection admits precisely that prefix or the actual host path and hashes the
 mounted files. No player data or clock was seeded. There is no terminal journey
 or restore result yet. Supported native clean-host/R-006, predecessor, privacy/
 rights/accessibility/full1.0 and owner release approval remain open.
+
+## 2026-11-11 — New exact candidate completes natural play and populated restore
+
+The manifest-bound Linux browser driver exited0 in12m12s on exact source3a209466/
+manifesteff6b739. Its mode0600 result records Company1→2,1,094 selected UI actions,
+1,093 successful intent responses, no failed responses/page exceptions and no
+exhausted guard. Fresh Postgres started with0accounts/0intents/migration87; no
+player save/content/clock was seeded. SQL after completion confirms1account,
+1,093 applied intents,0rejected/other,1each gate_crossed/run_ended/run_started,
+active Company2 at revision1,095, and Company1 archive at terminal_seq1,093.
+The ordinary verifier reports verified and produces exactly3categories for1run/
+Founder: any_percent,ethical_percent,valuation. Browser result SHA256
+`d79aca034502120833d337312ec26fa4e60397794ccaeff5192cdb932bf02183`;
+aggregate SQL SHA256 `24751d07101a5b8ad0411369f121eaef0b7f99db8f107538645702407d380620`.
+
+After the gameserver stopped cleanly(exit0), the bundled deployment-backup helper
+created an encrypted backup bound to this manifest and epoch8. Source-before,
+source-after, restored-target and target-after-refusal complete identity JSON
+are byte-identical: migration87,3verified rows,2,799database rows and all semantic
+domains populated. Wrong age key returns invalid_input with0public target tables;
+the correct restore succeeds; repeating into that target returns non_clean_target
+and preserves its full identity. Identity JSON SHA256
+`ad586945f2b83ff07098bccd4f00dbb469749d073f2b752845210f25f32ca5e6`;
+encrypted backup SHA256 `0590de502e9a0904bdf5871d762d40d59f4362b7a190bbbb2127ac9c68f6d761`.
+The independent target container is stopped/removed. Source database remains
+available under the independent reviewer lease.
+
+Actual commands: ignored release-browser-natural-3a209466/setup.py and its
+finish-setup.py mount-mapping correction; run-natural.py with the exact manifest
+argument; observe-completed.py; clean gameserver stop; recover-local.py using the
+manifest-bound helper and separate clean Postgres image/config. New private/raw
+evidence lives solely under that ignored cache root. The earlier22fed6be records
+remain unchanged. TLS chain/hostname verified; the fixture browser uses its scoped
+leaf-key pin. Local-only port/logging overrides remain explicit: this is ARM64
+Desktop with emulated amd64 containers, not supported native clean-host/R-006,
+off-host delivery, measured RPO/RTO, predecessor/rollback or full-feature proof.
+Review by: Codex root (implementer execution). Recorded by: Codex root.
+Independent terminal-evidence review pending; no release/adoption/archival/push.

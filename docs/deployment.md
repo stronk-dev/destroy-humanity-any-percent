@@ -228,8 +228,13 @@ The current independently approved local candidate at source `3a209466` packages
 rehearsal command-reader and Offer Sheet corrections. Its two builds match;
 native and delivered-Linux package validation, nine tampering controls and the
 source/image secret scan pass. Its [build record](../planning/deployment-foundation/release-builds/candidate-3a209466.json)
-has independent artifact-evidence approval over `3a209466..7be32421`. Live-play and restore evidence above belongs
-to `22fed6be`; those outcomes have not been rerun on the new package.
+has independent artifact-evidence approval over `3a209466..7be32421`. Its own
+manifest-bound driver subsequently reached Company 2 in 12m12s, with 1,093
+applied intents and no rejections/page exceptions. The verifier archived the
+first run and produced three board rows. The packaged backup helper restored
+the resulting database with the same full 2,799-row identity; wrong-key and
+occupied-target refusals preserved their targets. This new terminal evidence
+awaits independent review. The earlier observations above stay tied to `22fed6be`.
 
 This is one local candidate built on ARM64 Desktop with emulated Linux-amd64
 checks. It supplies neither a legitimate predecessor pair nor native clean-host

@@ -77,7 +77,12 @@ has zero findings. [Build record](release-builds/candidate-3a209466.json); the o
 log records scan reuse, fresh image scans, exact digests and setup limitations.
 Fresh independent Codex review APPROVES complete `3a209466..7be32421`, including
 its own client/helper rebuilds and actual delivered-Linux positive/refusal checks.
-Next: finish the running exact-package natural journey and prove populated restore.
+The exact-package natural journey reached Company 2 in 12m12s with 1,093 applied
+intents and no rejections/page exceptions. The verifier archived Company 1 and
+produced three board rows. The shipped helper restored a populated backup with
+equal full identity; wrong-key and occupied-target controls passed. These new
+terminal observations await independent evidence review; preserve the source
+database until its review lease is released.
 Do not transfer the older candidate's live-play/restore verdict to these bytes.
 No predecessor, native clean-host/R-006, hosted CI or release approval follows.
 
@@ -90,8 +95,8 @@ separate independent verdicts. RP-786 is closed.
 The [build record](release-builds/candidate-22fed6be.json) and [log](log.md)
 record exact checks and limits. The `2f366a90` packaged restart verdict remains.
 Supported-host R-006 and predecessor compatibility remain open.
-The later RP-787 dossier-reader correction is independently approved in source.
-Include it in the next exact package build before collecting R-006 evidence.
+This retained artifact predates RP-787/RP-788; their current packaged evidence
+is recorded above.
 
 **Previous independently approved artifact, 2026-11-05:** source `a7d5a4a4`,
 kernel0.3.228/migration87/epoch8, includes reviewed RP-774/RP-776. Matching two
