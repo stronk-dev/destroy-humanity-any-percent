@@ -23,9 +23,9 @@ combat, Tier3–8 and ending construction ahead. No new tier or release is compl
   proposal/model is independently technically approved through06da156d; owner
   adoption and actual native/client/caller implementation remain. Keep its old
   negative verdict and today's unresolved runtime cases visible.
-- **Latest reviewed artifact:** source `2f366a90`, kernel 0.3.229, migration 87,
-  epoch 8. The complete `2f366a90..f90e2a2d` evidence range is independently
-  approved, including same-page restart recovery on the packaged site.
+- **Latest reviewed artifact:** source `22fed6be`, kernel 0.3.229, migration 87,
+  epoch 8. The build and the exact-package natural journey and populated
+  restore each have independent review. RP-786 is closed.
   Supported-host R-006 and predecessor compatibility remain open.
   [Deployment evidence](../deployment-foundation/plan.md)
 - **Completed evidence:** original HTTP and actual composed bootstrap/delete/

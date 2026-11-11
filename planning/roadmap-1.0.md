@@ -13,7 +13,8 @@ current/history replay/refusals and existing recovery/crash controls pass. This
 is the main journey under controlled setup, not every composed descendant or
 full Garage/obituary/hosted/release acceptance. The current runtime uses
 kernel 0.3.229 after RP-779. The independently approved local package at
-`2f366a90` passes the real browser restart check through packaged Caddy.
+`22fed6be` reached Company 2 with its bundled driver and restored the
+resulting database with equal identity.
 Supported-host R-006, predecessor compatibility and the release decision
 remain open. [Deployment evidence](deployment-foundation/plan.md)
 Founder-age label adoption is requested; no answer or authored content is inferred.

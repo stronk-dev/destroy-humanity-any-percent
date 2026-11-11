@@ -212,16 +212,16 @@ It intentionally describes a release *candidate*: designated approval of the imp
 batches and the exact clean-host R-006 rehearsal remain required before the project
 can claim supported self-hosting.
 
-The latest independently approved local candidate uses source `2f366a90`,
-kernel `0.3.229`, migration 87 and epoch 8. It incorporates the browser
-restart recovery correction. [Candidate build record](../planning/deployment-foundation/release-builds/candidate-2f366a90.json)
+The latest independently approved local candidate uses source `22fed6be`,
+kernel `0.3.229`, migration 87 and epoch 8. [Candidate build record](../planning/deployment-foundation/release-builds/candidate-22fed6be.json)
 
 Two separate builds produced identical 75-file packages and image archives.
-The complete `2f366a90..f90e2a2d` evidence range passed independent review.
-The reviewer rebuilt the client, checked both images and their inventories,
-ran the delivered Linux helper, and independently verified same-page
-restart recovery through Caddy with the unchanged packaged site.
-Earlier packages retain their original verdicts.
+The manifest-bound browser driver reached Company 2 from an empty player
+database. The verifier archived the first run and produced three board rows.
+The shipped backup helper restored that database into separate clean
+Postgres with an equal full identity. Both results have independent
+evidence review. The earlier `2f366a90` package retains its same-page
+restart verdict.
 [Commands, digests and limitations](../planning/deployment-foundation/log.md)
 
 This is one local candidate built on ARM64 Desktop with emulated Linux-amd64

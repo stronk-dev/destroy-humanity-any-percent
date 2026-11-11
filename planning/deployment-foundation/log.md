@@ -13228,3 +13228,22 @@ The browser and restore ran locally with emulated amd64 containers and a
 disposable network. The supported-host rehearsal, rollback predecessor,
 off-host backup delivery and release timing objectives remain open.
 The terminal natural-play and recovery evidence awaits independent review.
+
+## 2026-11-11 — Independent approval of the packaged journey and restore evidence
+
+APPROVED terminal evidence over `d0b9a09f..4bc4460f`.
+Review by: fresh independent Codex `/root/natural_play_restore_evidence_review`.
+Recorded by: Codex root.
+
+The reviewer executed read-only SQL on the disposable source and confirmed
+1,340 applied intents, zero rejections, Company 2 at revision 1,342, the
+three transition events, and the verified Company 1 archive and board
+rows. The reviewer validated the manifest-bound mode-0600 browser result,
+all four identical recovery identities, the encrypted archive framing,
+header bindings and hashes. The browser, restore and refusal commands were
+inspected through their retained evidence. The source stack was removed
+after the reviewer returned the test lease.
+
+RP-786 is closed. Source `22fed6be` is the latest independently reviewed
+local candidate. Supported-host R-006, predecessor compatibility, off-host
+delivery and release timing remain open.

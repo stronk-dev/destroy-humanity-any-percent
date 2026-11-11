@@ -7,21 +7,13 @@ Go/TS/browser evidence and the separate numeric-proposal findings. RP-776's
 earlier mode-policy correction retains independent approval at kernel228;
 full Platform/CI/release gates remain open.
 
-The latest independently reviewed local package is source `2f366a90`,
-kernel `0.3.229`, migration 87, epoch 8. Two 75-file bundles and their images
-match. Independent review approved `2f366a90..f90e2a2d` after rebuilding the
-client and running the delivered Linux helper and the packaged browser
-restart test. RP-785 is closed.
+The latest independently reviewed local package is source `22fed6be`,
+kernel `0.3.229`, migration 87, epoch 8. The manifest-bound browser reached
+Company 2 in 11 minutes 57 seconds with 1,340 successful actions and three
+verified board rows for the first run. The shipped backup helper restored
+that database with an identical full identity. RP-786 is closed.
 Supported-host R-006, predecessor compatibility, CI, privacy, rights and
-later-tier work remain open. [Candidate record](deployment-foundation/release-builds/candidate-2f366a90.json)
-
-The shipped rehearsal driver in that package can miss affordable generator
-purchases (RP-786). Its independently approved replacement reached the
-first Exit and Company 2 from a fresh account in 11 minutes 12 seconds
-against the packaged app, with an archived run and three verified board
-rows. The corrected driver still needs to be included in the manifest and
-rerun from the exact rebuilt bundle.
-[Deployment evidence](deployment-foundation/log.md)
+later-tier work remain open. [Candidate record](deployment-foundation/release-builds/candidate-22fed6be.json)
 
 **Latest integrated player proof,2026-11-05:** RP-774's next-Company frozen clock
 is corrected/independently approved `04642f4c..a12346b0`. Complete real-service
@@ -330,7 +322,7 @@ It does not turn the incomplete Garage or substantial later-tier scope into a re
 | Privacy / player rights | The data inventory and actual browser/event/SQL/backup/deletion traces expose retained data. Research publication classification/sanitization is complete. RP-606 now has an actual verified public-archive Garden salt disclosure and a technically reviewed Company-only evidence repair proposal; the [rights evidence](platform-alignment/data-rights-current-content.md) retains the failure and its limits. | The public privacy defect is not repaired: v2 evidence/unsafe-v1 withdrawal and body authority await adoption. Export/deletion/retention choices (D-008/D-009/D-015), implementations and player workflows remain. Public-board survival after deletion and credential resurrection from pre-deletion backups are explicit issues. An instance backup is not player export. |
 | Accessibility | Native keyboard, focus, pending feedback, reflow and announcement corrections exist across several surfaces; targeted browser checks execute. | Accepted cross-product task/assistive-technology matrix and actual task testing, including zoom/motion/longer workflows. Automated checks alone are not accessibility completion. |
 | MMO and later game | Commons, guild, faction and doctrine primitives exist. Combat has shared Go/TS arithmetic, deterministic random streams, validated 36 temperament/runtime identities, strict ordered team/deck references and structural species-record decoding. These are standalone libraries with no live player consumer, not a full catalog or battle engines. | Combat catalog/effect definitions and Trust/Soul tables; complete world/feed/ticker/social surfaces, combat engines/integration and fair bot backfill, Tier 3–8 content, challenge/category set and all final endings. These are substantial unbuilt work, not merely closeout paperwork. |
-| Deployment / operations | The accepted single-node Compose/Caddy tooling has bounded packaging, configuration, encrypted backup, release/rollback and operations proofs. The latest independently approved local candidate is source `2f366a90`, kernel 0.3.229, migration 87, epoch 8. Both 75-file bundles match, and the packaged browser passes same-page restart recovery. [Deployment evidence](deployment-foundation/plan.md) | Adopt and build the pending native, interruption and tool contracts, establish a floor-compliant predecessor and prove the pair. Historical predecessor `44a4a72` fails the current safety floor (RP-514). R-006 requires an exact-artifact install, restore and rollback on a clean supported Linux host. |
+| Deployment / operations | The accepted single-node Compose/Caddy tooling has bounded packaging, configuration, encrypted backup, release/rollback and operations proofs. The latest independently approved local candidate is source `22fed6be`, kernel 0.3.229, migration 87, epoch 8. The manifest-bound browser completed the first Company, and the packaged backup helper restored the resulting database with equal identity. [Deployment evidence](deployment-foundation/plan.md) | Adopt and build the pending native, interruption and tool contracts, establish a floor-compliant predecessor and prove the pair. Historical predecessor `44a4a72` fails the current safety floor (RP-514). R-006 requires an exact-artifact install, restore and rollback on a clean supported Linux host. |
 
 ### What the weeks of work have delivered
 
