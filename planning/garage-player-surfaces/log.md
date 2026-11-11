@@ -9194,3 +9194,14 @@ Postgres as separate server-side controls. They do not join that fixture to
 the mounted browser. Strict types and production build passed. One client
 boundary run picked up an independent temporary Svelte source copy. That run
 was repeated with the copy removed. Corrected union review pending.
+
+**APPROVED** on the complete seven-path `3091ae55..6a78f623` range.
+Review by: fresh independent Codex `/root/offer_resolution_corrective_review`.
+Recorded by: Codex root. The independent Linux mounted-browser file passed
+339 tests in Chromium, Firefox and WebKit, with 15 performance-only skips.
+The exact Node runtime suite passed all 79 tests. The separate old-cursor
+reproduction also passed for both late resolutions with the correction.
+Types, client boundary, production build and range diff checks passed.
+RP-788 is closed in source. The tests control the browser's runtime inputs
+and snapshot ordering. A real composed Offer Sheet and inclusion in a
+refreshed release bundle remain unverified.
