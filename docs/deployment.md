@@ -282,7 +282,9 @@ The stateful rows consume one strict mode-0600 scenario-input document. It conta
 identity, candidate/previous bundle paths, distinct work/artifact/install-operator/lifecycle-operator/
 backup/metrics paths,
 the private age-identity file path, public origin, receiver-health URL, public age recipient and
-server UUID and bounded operator ID. Unknown/trailing fields, relative or nested mutable paths, unsafe URL identities,
+server UUID and bounded operator ID. Every declared member must occur exactly once,
+with its exact decoded JSON name and a non-null value. Duplicate/case-aliased or
+unknown members, trailing values, relative or nested mutable paths, unsafe URL identities,
 missing/symlinked directories and a group/world-readable age identity reject before orchestration.
 Secret values are not scenario fields: production Compose continues to read its existing mounted
 secret files, and the reviewed plan contains only the scenario document path.

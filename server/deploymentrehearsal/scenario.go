@@ -1,9 +1,6 @@
 package deploymentrehearsal
 
 import (
-	"bytes"
-	"encoding/json"
-	"io"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -13,6 +10,7 @@ import (
 	"filippo.io/age"
 
 	"cloud-clicker/server/deploymentconfig"
+	"cloud-clicker/server/internal/evidencejson"
 )
 
 const maximumScenarioConfigBytes = 64 << 10
@@ -59,9 +57,7 @@ func LoadScenarioConfig(path string) (ScenarioConfig, error) {
 
 func DecodeScenarioConfig(data []byte) (ScenarioConfig, error) {
 	var config ScenarioConfig
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	if decoder.Decode(&config) != nil || decoder.Decode(&struct{}{}) != io.EOF || ValidateScenarioConfig(config) != nil {
+	if !evidencejson.DecodeFlatRecord(data, &config) || ValidateScenarioConfig(config) != nil {
 		return ScenarioConfig{}, ErrInvalid
 	}
 	return config, nil

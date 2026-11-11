@@ -1,6 +1,7 @@
 package deploymentrehearsal
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"os"
@@ -9,6 +10,52 @@ import (
 
 	"filippo.io/age"
 )
+
+func TestScenarioConfigRejectsAmbiguousOriginalMembers(t *testing.T) {
+	config := validScenarioConfig(t)
+	encoded, err := json.Marshal(config)
+	if err != nil {
+		t.Fatal(err)
+	}
+	otherBundle, err := json.Marshal(config.PreviousBundle)
+	if err != nil {
+		t.Fatal(err)
+	}
+	appendMember := func(member string) []byte {
+		return append(append([]byte{}, encoded[:len(encoded)-1]...), []byte(","+member+"}")...)
+	}
+	cases := map[string][]byte{
+		"overwritten path":     append([]byte(`{"candidate_bundle":`+string(otherBundle)+`,`), encoded[1:]...),
+		"case alias":           bytes.Replace(encoded, []byte(`"candidate_bundle"`), []byte(`"CANDIDATE_BUNDLE"`), 1),
+		"case collision":       append([]byte(`{"CANDIDATE_BUNDLE":`+string(otherBundle)+`,`), encoded[1:]...),
+		"null path shadow":     appendMember(`"candidate_bundle":null`),
+		"null operator shadow": appendMember(`"operator":null`),
+	}
+	path := filepath.Join(t.TempDir(), "scenario.json")
+	for name, data := range cases {
+		t.Run(name, func(t *testing.T) {
+			if err := os.WriteFile(path, data, 0o600); err != nil {
+				t.Fatal(err)
+			}
+			loaded, err := LoadScenarioConfig(path)
+			if !errors.Is(err, ErrInvalid) || loaded != (ScenarioConfig{}) {
+				t.Fatal("ambiguous private scenario selected runtime inputs")
+			}
+		})
+	}
+	for _, data := range [][]byte{
+		append(encoded, '\n'),
+		bytes.Replace(encoded, []byte(`"candidate_bundle"`), []byte(`"\u0063andidate_bundle"`), 1),
+	} {
+		if err := os.WriteFile(path, data, 0o600); err != nil {
+			t.Fatal(err)
+		}
+		loaded, err := LoadScenarioConfig(path)
+		if err != nil || loaded != config {
+			t.Fatal("complete private scenario did not preserve its inputs")
+		}
+	}
+}
 
 func TestScenarioConfigStrictlyBindsPrivateRuntimeInputs(t *testing.T) {
 	config := validScenarioConfig(t)

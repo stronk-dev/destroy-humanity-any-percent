@@ -13543,3 +13543,33 @@ evidence/encrypted backup remain ignored. Local emulated-container provenance,
 clean-host/R-006, predecessor, off-host RPO/RTO, rights/privacy/accessibility/full
 nine-tier1.0 and release gates remain explicit. No editorial package rebuild,
 new product/specification change, push or release-status promotion.
+
+## 2026-11-11 — Refuse ambiguous private rehearsal inputs (RP-789)
+
+Under accepted DP3 fail-closed configuration and AC10 evidence input handling,
+the actual mode0600 scenario file reader admits all five new old-source cases: a
+previous-bundle path overwritten by the valid candidate path, uppercase alias,
+case collision, later null candidate path and later null operator. Old reader
+returns a complete selected ScenarioConfig rather than ErrInvalid. No wrong-target
+operation or data loss is claimed; the defect is ambiguous input admission.
+
+Reuse the existing strict flat-record decoder before ScenarioConfig validation.
+All five now return ErrInvalid and no selected config. Complete lowercase input
+and a legally escaped lowercase member preserve every exact field, while existing
+unknown/trailing/mode/symlink/overlap/URL/identity checks still pass. No new schema,
+policy, mechanic, kernel/save/content version or native runtime architecture.
+
+Executed root commands: focused old regression(all5fail), corrected complete
+TestScenarioConfig population(pass), full cold make test-go for deploymentrehearsal,
+cmd/deployment-rehearsal and internal/evidencejson(pass; shared decoder has no
+separate tests and is exercised through its consumers), matching make vet(pass),
+and build-deployment-rehearsal-linux-amd64(pass). The actual filesystem reader
+is the changed boundary; no database/Compose/clean-host proof is inferred.
+Ignored evidence: .cache/rp789-original-members-old.log, rp789-affected-go.log and
+rp789-deployment-rehearsal-linux. Current3a209466 reviewed package remains exact
+and unchanged, but predates this helper-only repair; batch its inclusion at the
+next necessary package build before R-006, not an editorial rebuild now.
+
+Review by: Codex root(implementer checks). Recorded by: Codex root.
+Independent corrective review pending for the complete range after54f2b6d0.
+No external publication or original feature/release acceptance.

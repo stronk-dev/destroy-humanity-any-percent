@@ -7,6 +7,15 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Current source correction, 2026-11-11 (RP-789):** private scenario inputs now
+require each original decoded member exactly once and non-null before selecting
+runtime paths. All five actual mode-0600 old-reader regressions fail; corrected
+cases and valid/plain/escaped controls pass. Full affected Rehearsal/CLI checks,
+vet and Linux helper build pass. Independent corrective review is pending.
+The reviewed `3a209466` package remains unchanged and predates this helper-only
+correction; include it in the next necessary package before R-006 evidence.
+No gameplay/kernel/native-supervisor policy or release criterion is changed.
+
 **Projector contract validation,2026-11-04 (RP-757):** before native-profile
 adoption, make the existing proposed15s/300s diagnostics executable. The present
 three gauge names do not state whether projection_success is observation success
