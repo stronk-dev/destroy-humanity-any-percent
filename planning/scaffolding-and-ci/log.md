@@ -4910,3 +4910,33 @@ Raw log SHA-256
 `0a9e8b422c90209d38d152147e4d9a891f1fc6f230edabec6febe001765245b5`.
 The full local result covers the population canceled in hosted CI.
 RP-782 remains open for the hosted setup and five-minute requirement.
+
+## 2026-11-11 — Fresh published CI completes with the two known correctness blockers
+
+Read-only GitHub run/job/log API inspection confirms CI42942631238 at
+`1d81edbdb36f941d9a33e440db213e9a31cb8503` completed FAILURE. The remote ref
+advanced through a push outside this agent while the new exact-package journey
+was running; no push/rerun/workflow change was issued by Codex root. Browser,
+composed Game UI, harness and schema jobs pass. Client type/build and12,544
+Node tests pass(1,120 browser/other cases excluded by that Node lane); the client
+then fails the historical50a3a514 kernel guard. Server has exactly27 failed
+TestAxisAccrualPartitionProperty subcases and no other failed test; Gameserver
+passes161.312s. Later server boundary targets do not run after the core failure.
+This is hosted confirmation of the RP-780/RP-781 corrections, not whole-CI approval.
+
+Job times from the actual Actions API: client121s,server561s,browser399s,
+harness224s,schema23s,composed403s. Browser Playwright install58s; actual
+make test-browser321s. RP-782 retains its original setup-transfer incident and
+remains open: this successful execution still misses the five-minute floor, as
+do composed/server. No assertion, golden, retry or guard budget is changed.
+Accounting/history-contract adoption questions remain pending; no repeated
+local run of those unchanged known failures was needed to interpret this run.
+
+Run URL: https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/42942631238
+Client job130267834947,server130267835313,browser130267835346,
+harness130267835348,schema130267835350,composed130267835429. Raw downloaded
+client/server logs retained in ignored .cache/ci-42942631238-{client,server}.log.
+Client log SHA256 ae065c70b85e65aba23bbb5a188e309f23e45fd2012be3e5ea809531247025aa;
+server log SHA256 0ae877d014d69bc4bf6fed2fec2ba2947c2ea3c49d8a64440eca0a3863e30005.
+Review by: Codex root(read-only external evidence check). Recorded by: Codex root.
+Editorial record only; no new software behavior or independent feature acceptance.

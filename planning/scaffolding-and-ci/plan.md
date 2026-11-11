@@ -44,7 +44,22 @@ Make orchestration controls discriminate; source-matched independent Linux
 browser/performance evidence is reused with attribution. Shared setup and RP-706
 retain separate approvals; original timeout/reliability and hosted timing stay open.
 
-## Current hosted evidence — 2026-11-10
+## Current hosted evidence — 2026-11-11
+
+[CI42942631238](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/42942631238)
+at published `1d81edbd` completed failure. Browser, composed Game UI, harness and
+schema passed. Client type/build and 12,544 Node tests passed before the unchanged
+historical `50a3a514` kernel-version rejection. Server reports exactly the 27
+Clout partition-property cases and no other failed test; Gameserver passes.
+This supplies hosted evidence for the RP-780/RP-781 fixes without completing CI.
+
+Browser setup is now 58s, followed by 321s in `make test-browser`; total job 399s.
+Composed totals 403s and server 561s. Thus the earlier setup cancellation is not
+reproduced here, but the accepted five-minute floor remains unmet. Do not change
+budgets, accounting assertions or historical metadata to make this green. The
+reviewed accounting/history proposals retain their named adoption gates.
+
+## Previous hosted evidence — 2026-11-10
 
 Published `6afc0b5e` failed CI. Harness, composed Game UI and schema passed.
 Client failed the existing kernel history guard. Server and browser were
