@@ -13150,3 +13150,34 @@ stack was removed. This local emulated run exercises the real package
 app with a rebuilt driver. Next, put that driver in a fresh manifest
 and repeat the workflow with the manifest-bound driver. The supported
 clean-host, rollback predecessor and full release gates remain open.
+
+## 2026-11-11 — Build the candidate with the approved purchase selector
+
+Two builds from clean source `22fed6bedcee7e006d5585ec2f6b9e27de5683be`
+matched across 75 files and modes, including all 74 manifest bindings.
+The new `deployment-browser` equals the driver used in the successful
+RP-786 natural run. The rehearsal executable also changes because it
+imports the browser package. The first comparison assumed that executable
+would be unchanged and stopped. The follow-up comparison verified that
+both changed executables match across builds. The four remaining Linux
+executables, client and staged content match `2f366a90`.
+
+Manifest `sha256:f9438412fe23a5ec0f382dac968791ecdf7fb2889b3d16f4931800c2d3a35843`.
+Image archive `sha256:29632570766fc1efcaaca5b6e6a58883c669cc7908381b2fd7c283a295294560`.
+Both no-cache image archives match. Blob, uncompressed layer and 33
+payload-file checks pass. Two fresh Syft scans each identify 41 packages
+and normalize to the same bytes. Twelve unchanged upstream inventories
+retain their prior scan provenance. Six registry identity checks and 24
+normalizer executions pass. The native and delivered Linux helpers accept
+the intact build, and the Linux helper rejects all nine tampered fixtures.
+The manifest-bound source/image scan covers 2,615 tracked files with zero
+findings.
+
+The [build record](release-builds/candidate-22fed6be.json) is ready for
+independent review. The live natural run started with zero accounts and
+intents, migration 87, the exact gameserver image, the read-only Caddyfile
+and site, and the read-only manifest-bound browser driver. The pinned
+Chromium image runs in the local disposable network with an independently
+verified fixture CA and scoped leaf pin. The browser journey outcome will
+be recorded separately. Supported-host R-006 and predecessor compatibility
+remain open.
