@@ -212,7 +212,7 @@ It intentionally describes a release *candidate*: designated approval of the imp
 batches and the exact clean-host R-006 rehearsal remain required before the project
 can claim supported self-hosting.
 
-The latest independently approved local candidate uses source `22fed6be`,
+The previous independently approved local candidate uses source `22fed6be`,
 kernel `0.3.229`, migration 87 and epoch 8. [Candidate build record](../planning/deployment-foundation/release-builds/candidate-22fed6be.json)
 
 Two separate builds produced identical 75-file packages and image archives.
@@ -224,11 +224,11 @@ evidence review. The earlier `2f366a90` package retains its same-page
 restart verdict.
 [Commands, digests and limitations](../planning/deployment-foundation/log.md)
 
-A newer local candidate at source `3a209466` packages the independently approved
+The current independently approved local candidate at source `3a209466` packages the approved
 rehearsal command-reader and Offer Sheet corrections. Its two builds match;
 native and delivered-Linux package validation, nine tampering controls and the
 source/image secret scan pass. Its [build record](../planning/deployment-foundation/release-builds/candidate-3a209466.json)
-awaits independent artifact review. Live-play and restore evidence above belongs
+has independent artifact-evidence approval over `3a209466..7be32421`. Live-play and restore evidence above belongs
 to `22fed6be`; those outcomes have not been rerun on the new package.
 
 This is one local candidate built on ARM64 Desktop with emulated Linux-amd64

@@ -68,18 +68,20 @@ reconcile parent bodies under the actual delegation and implement adopted
 contract dependencies with their full producer/native/clean-host proof. No
 product implementation or goal pause is claimed at this checkpoint.
 
-**New local artifact awaiting independent review, 2026-11-11.** Source
+**Current independently approved local artifact, 2026-11-11.** Source
 `3a209466` includes the approved RP-787 rehearsal-reader and RP-788 Offer Sheet
 corrections. Two complete builds match across all 75 files/modes and 74 manifest
 bindings, with matching no-cache images. Native and shipped-Linux consumers pass;
 all nine damaged packages produce exact fixture refusals. The source/image scan
 has zero findings. [Build record](release-builds/candidate-3a209466.json); the owning
 log records scan reuse, fresh image scans, exact digests and setup limitations.
-Next: independent artifact-evidence review, then actual packaged workflow proof.
+Fresh independent Codex review APPROVES complete `3a209466..7be32421`, including
+its own client/helper rebuilds and actual delivered-Linux positive/refusal checks.
+Next: finish the running exact-package natural journey and prove populated restore.
 Do not transfer the older candidate's live-play/restore verdict to these bytes.
 No predecessor, native clean-host/R-006, hosted CI or release approval follows.
 
-**Current independently approved local artifact, 2026-11-11.** Source
+**Previous independently approved local artifact, 2026-11-11.** Source
 `22fed6be`, kernel 0.3.229, migration 87, epoch 8. Both 75-file bundles match.
 The manifest-bound driver reached Company 2 and the verifier archived
 Company 1. The packaged backup helper restored the populated database

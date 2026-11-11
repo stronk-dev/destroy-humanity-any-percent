@@ -6063,3 +6063,16 @@ Linux consumer/refusal checks. Deployment log/record own exact proof and limits.
 Prior aa5e16e8 stays historical. This is one local candidate, with no new playable
 tier, native clean-host/R-006, predecessor/full-feature/hostedCI or release gate
 closed. Full nine-tier1.0 remains active; no publication/adoption is inferred.
+
+## 2026-11-11 — Approved corrections now have an exact local candidate
+
+Source3a209466/kernel229/migration87/epoch8 packages reviewed RP-787 rehearsal
+command validation and RP-788 Offer Sheet resolution/focus corrections. Two
+75-file builds match; complete four-path3a209466..7be32421 has independent Codex
+artifact-evidence approval. The Deployment log owns actual rebuilds, image/
+inventory/consumer checks, scans and their attribution. Its own natural player
+journey is running; older22fed6be play/restore evidence remains historical.
+No new tier, native clean-host/R-006, predecessor, hostedCI, rights/accessibility
+or release gate is closed. Finish this artifact workflow proof, then continue
+accepted construction and named owner-adoption boundaries. Full nine-tier goal
+remains ACTIVE. Nothing pushed or published.

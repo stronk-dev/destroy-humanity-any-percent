@@ -13454,3 +13454,30 @@ historical, not evidence for this new manifest. Native clean-host/R-006, a
 floor-compliant predecessor, rights/privacy/accessibility/full1.0 and release
 approval remain open. No push, deployment or product/specification change.
 Review by: Codex root (implementer check). Recorded by: Codex root.
+
+## 2026-11-11 — Independent approval of the reader/Offer Sheet package evidence
+
+APPROVED complete four-path `3a209466..7be32421`.
+Review by: fresh independent Codex `/root/reader_offer_package_evidence_review`.
+Recorded by: Codex root.
+
+The reviewer rebuilt both changed Linux helpers and all seven client build files,
+compared four75-file/mode trees and74 manifest bindings, verified both image blob/
+diffID/config/33-file payload chains, six retained fresh registry chains and14
+raw/canonical normalizations. Actual delivered-Linux build/intact checks pass; a
+removed helper returns exact3/fixture_rejected. All six original/review trees
+remain unchanged, work is empty and three owned review containers are absent.
+Four unchanged binaries match the earlier reviewed22fed6be artifact. Root Syft,
+source/image scans, native and full nine-control results are inspected/hash-bound,
+not independently rerun. No finding. Review artifact SHA256
+`274ceddc3e9ef29f93cee65d79831f59619be18434cdbea7540468ee4d5dd3d5` at
+`.cache/review-reader-offer-package/verdict.json`.
+
+A fresh disposable exact-package natural journey is now running with pinned
+Chromium, real TLS Caddy, bundled driver/site/image/content and empty Postgres87.
+Mounted Caddyfile/site hashes match the bundle. Initial provenance inspection
+stopped on Desktop native mount spelling `/host_mnt/Users/...`; the corrected
+inspection admits precisely that prefix or the actual host path and hashes the
+mounted files. No player data or clock was seeded. There is no terminal journey
+or restore result yet. Supported native clean-host/R-006, predecessor, privacy/
+rights/accessibility/full1.0 and owner release approval remain open.
