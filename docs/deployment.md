@@ -250,6 +250,9 @@ be at or after the previous command's completion, including within the same life
 an invalid start refuses before launching that command. Exact adjacent boundaries are allowed,
 but each command's completion must still be after its own start. The final evidence binds
 the reviewed plan hash, so an operator cannot silently substitute a shorter command list.
+Each check result must explicitly report every field once with the declared name,
+including its exit code, guard status and SHA-256 output digest. The dossier
+rejects incomplete or ambiguous results even when their byte hashes match.
 The command-shape constraint does not authenticate the executable: a substitute with the same
 basename can still pass it (RP-140). Candidate-bundle tool hashes checked later do not establish
 that those bytes were the executables launched by the plan. The producer-identity contract

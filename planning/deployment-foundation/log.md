@@ -13247,3 +13247,23 @@ after the reviewer returned the test lease.
 RP-786 is closed. Source `22fed6be` is the latest independently reviewed
 local candidate. Supported-host R-006, predecessor compatibility, off-host
 delivery and release timing remain open.
+
+## 2026-11-11 — Require explicit rehearsal command outcomes (RP-787)
+
+Under Deployment AC10, the base dossier must establish that every positive check
+reported exit zero and no exhausted guard. On the old reader the bound-dossier
+regression admitted all six malformed command results: omitted and null exit
+code, omitted and case-aliased guard status, contradictory duplicate guard
+status, and malformed output digest. The fixture recomputed both affected
+digests for every variant. Its complete, rebound control passed.
+
+The reader now shares the browser result's exact flat-record decoder and
+requires a syntactically valid output SHA-256 digest. The validator still
+checks the recorded exit against the plan and every command against the
+population and step bindings. The full cold Deployment Rehearsal, Browser and
+Rehearsal CLI packages passed, and vet passed over those packages and the
+Browser CLI. Old and current outputs are retained in ignored
+`.cache/rp787-command-result-*.log`. This is real validator execution on a
+fixture dossier. It does not authenticate subprocess output or complete
+an actual R-006 run. The retained package at `22fed6be` predates the correction.
+Independent corrective review pending.

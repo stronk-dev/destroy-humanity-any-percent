@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"cloud-clicker/server/deploymentbrowser"
+	"cloud-clicker/server/internal/evidencejson"
 	"cloud-clicker/server/operations"
 	"cloud-clicker/server/releasepackage"
 )
@@ -326,13 +327,9 @@ func manifestSourceCommit(data []byte) (string, error) {
 }
 
 func decodeCheckResult(data []byte) (CheckResult, error) {
-	if containsForbiddenEvidenceKey(data) {
-		return CheckResult{}, ErrInvalid
-	}
 	var result CheckResult
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	if decoder.Decode(&result) != nil || decoder.Decode(&struct{}{}) != io.EOF {
+	if containsForbiddenEvidenceKey(data) || !evidencejson.DecodeFlatRecord(data, &result) ||
+		!hashPattern.MatchString(result.OutputSHA256) {
 		return CheckResult{}, ErrInvalid
 	}
 	return result, nil

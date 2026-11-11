@@ -6,6 +6,7 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"testing"
 	"time"
@@ -214,6 +215,66 @@ func TestRunValidationRejectsRewrittenMissingAndUnsafeResults(t *testing.T) {
 			mutate(t, fixture)
 			if _, err := LoadAndValidateRun(fixture.evidencePath, fixture.planPath, fixture.resultsDirectory, fixture.artifactsDirectory, fixture.candidateBundleDirectory, fixture.sealDirectory); !errors.Is(err, ErrInvalid) {
 				t.Fatalf("invalid result population accepted: %v", err)
+			}
+		})
+	}
+}
+
+func TestBaseRunRejectsIncompleteOrAmbiguousCommandResults(t *testing.T) {
+	for _, test := range []struct {
+		name string
+		from string
+		to   string
+	}{
+		{name: "complete control", from: `"exit_code":0`, to: `"exit_code": 0`},
+		{name: "missing exit", from: `"exit_code":0,`},
+		{name: "null exit", from: `"exit_code":0`, to: `"exit_code":null`},
+		{name: "missing guard", from: `,"guard_exhausted":false`},
+		{name: "aliased guard", from: `"guard_exhausted":false`, to: `"GUARD_EXHAUSTED":false`},
+		{name: "contradictory guard", from: `"guard_exhausted":false`, to: `"guard_exhausted":true,"guard_exhausted":false`},
+		{name: "invalid output digest", from: `"output_sha256":"sha256:`, to: `"output_sha256":"invalid:`},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			fixture := boundRunFixture(t)
+			basePath := filepath.Join(fixture.sealDirectory, "base-evidence.json")
+			base, err := decodeBaseEvidence(mustRead(t, basePath))
+			if err != nil {
+				t.Fatal(err)
+			}
+			checkIndex := slices.IndexFunc(fixture.plan.Checks, func(check PlannedCheck) bool {
+				return check.Name == "clean_linux_amd64_bundle_only_install"
+			})
+			if checkIndex < 0 {
+				t.Fatal("fixture lacks the clean install check")
+			}
+			check := fixture.plan.Checks[checkIndex]
+			resultPath := filepath.Join(fixture.resultsDirectory, check.Name+".json")
+			original := string(mustRead(t, resultPath))
+			if !strings.Contains(original, test.from) {
+				t.Fatal("test requires the original member")
+			}
+			changed := []byte(strings.Replace(original, test.from, test.to, 1))
+			if !json.Valid(changed) {
+				t.Fatal("test requires valid JSON syntax")
+			}
+			if err := os.WriteFile(resultPath, changed, 0o600); err != nil {
+				t.Fatal(err)
+			}
+			setPopulationDigest(&base, check.Name, hashBytes(changed))
+			stepIndex := slices.IndexFunc(base.Steps, func(step Step) bool { return step.Name == check.Step })
+			if stepIndex < 0 || base.Steps[stepIndex].OutputSHA256 != hashJSON([]string{hashBytes([]byte(original))}) {
+				t.Fatal("fixture requires a step with one result")
+			}
+			base.Steps[stepIndex].OutputSHA256 = hashJSON([]string{hashBytes(changed)})
+			writeEvidenceFixture(t, basePath, base)
+			_, err = LoadAndValidateBaseRun(basePath, fixture.planPath, fixture.resultsDirectory,
+				fixture.artifactsDirectory, fixture.candidateBundleDirectory)
+			if test.name == "complete control" {
+				if err != nil {
+					t.Fatalf("complete rebound result refused: %v", err)
+				}
+			} else if !errors.Is(err, ErrInvalid) {
+				t.Fatalf("malformed rebound result admitted: %v", err)
 			}
 		})
 	}
