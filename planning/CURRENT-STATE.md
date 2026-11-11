@@ -15,6 +15,11 @@ restart test. RP-785 is closed.
 Supported-host R-006, predecessor compatibility, CI, privacy, rights and
 later-tier work remain open. [Candidate record](deployment-foundation/release-builds/candidate-2f366a90.json)
 
+The shipped rehearsal driver in that package can miss affordable generator
+purchases (RP-786). Its selector correction is independently approved and
+being exercised against the packaged app with a separately built driver.
+[Deployment evidence](deployment-foundation/log.md)
+
 **Latest integrated player proof,2026-11-05:** RP-774's next-Company frozen clock
 is corrected/independently approved `04642f4c..a12346b0`. Complete real-service
 supplement `8c887be1..64394095` has independent approval after fresh main journey

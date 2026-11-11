@@ -13105,3 +13105,18 @@ synthetic-data volumes were removed. The reviewed `2f366a90` bundle still
 ships the old driver.
 Review by: Codex root (implementer check).
 Recorded by: Codex root. Independent corrective review pending.
+
+## 2026-11-11 — Independent approval of the browser purchase selector
+
+APPROVED complete five-path `7e3ed7f5..0f941e39`.
+Review by: fresh independent Codex `/root/rehearsal_buy_max_review`.
+Recorded by: Codex root.
+
+An exact old-source overlay failed in real Chromium because the visible
+purchase was missed. The corrected browser regression passed, including the
+native click and manual fallback. Cold affected Go tests and vet passed.
+The reviewer also inspected the actual old packaged DOM and SQL capture.
+Old and corrected review log SHA-256 values are
+`56266886df0ee907c5e5028f568b0ac1fcee00b83018d1ab219da6b2981e40a3` and
+`907bcec5a2e1a6d9945cdea13f59d10872e3a9a9a3c8bd125df0b996f91b0f03`.
+The natural journey and exact bundle remain separate.
