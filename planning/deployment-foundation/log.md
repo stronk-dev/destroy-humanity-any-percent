@@ -13366,3 +13366,14 @@ retry, and an identical duplicate receipt. The successful aggregate is in
 ignored `.cache/rp143-packaged-crash-applied/evidence.json`, SHA-256
 `9021df127b9e4eaa2bf5242602cf651a47d44d0cf8b2709baa9a6d7dd2478ec2`.
 The local fixture resources were removed. The corrected union awaits review.
+
+**Independent verdict:** APPROVED on the complete test-only
+`ef652fea..fd2b0f47` range. Review by: fresh independent Codex
+`/root/admitted_purchase_crash_witness_review`. Recorded by: Codex root.
+The first-process rejection control fired and failed the applied-write
+checkpoint. Its neighboring graceful drain test passed. The intact cold
+Compose suite passed both tests, with crash 2.05s and drain/rollback 2.34s,
+and left no test containers, volumes or networks. Cold native package tests
+and vet passed. The reviewer inspected the packaged repeat's digest and
+observations. The developer integration test is approved, while RP-143's
+shipped producer and supported-host R-006 execution remain open.
