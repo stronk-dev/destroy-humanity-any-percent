@@ -224,6 +224,13 @@ evidence review. The earlier `2f366a90` package retains its same-page
 restart verdict.
 [Commands, digests and limitations](../planning/deployment-foundation/log.md)
 
+A newer local candidate at source `3a209466` packages the independently approved
+rehearsal command-reader and Offer Sheet corrections. Its two builds match;
+native and delivered-Linux package validation, nine tampering controls and the
+source/image secret scan pass. Its [build record](../planning/deployment-foundation/release-builds/candidate-3a209466.json)
+awaits independent artifact review. Live-play and restore evidence above belongs
+to `22fed6be`; those outcomes have not been rerun on the new package.
+
 This is one local candidate built on ARM64 Desktop with emulated Linux-amd64
 checks. It supplies neither a legitimate predecessor pair nor native clean-host
 R-006 proof. Accounting, history-guard/hosted CI, RP-770, privacy, rights,

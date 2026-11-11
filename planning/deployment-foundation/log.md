@@ -13412,3 +13412,45 @@ aggregate SHA-256 `6a32bc089eaccdd27a9963fb944e7aa139e573d73b3a05a9f06730125130f
 All disposable Docker resources were removed. This is local packaged-player
 evidence for an interrupted purchase. The shipped R-006 producer, supported
 clean-host run and formal AC4 closeout remain open.
+
+## 2026-11-11 — Package the approved rehearsal-reader and Offer Sheet corrections
+
+Accepted DP1/AC1/AC10 construction from clean source
+`3a209466741f01ed85f3d316b5e3594927b74e80`, kernel0.3.229, migration87, epoch8.
+Two separate six-executable/client/content/metadata builds and no-cache pinned
+BuildKit image builds produce identical75-file/mode trees and74 manifest bindings.
+Both images verify all blobs, uncompressed diff IDs and33 actual payload files
+against the fresh binary/content, including ownership and runtime permissions.
+Manifest `sha256:eff6b73965a928722a830718a7357797f12acf34e7c5e17e2551fa77dd9bd564`;
+image config `sha256:df2824f07bb16297eb84cc3e56cf668561deac2320cc2913d389dbf3fc758af9`;
+image archive `sha256:b8cb0e64d03d645966f291db72a7f2342b7c588ea2366f53ccec82a17f76bd0f`.
+
+Two fresh pinned Syft scans each identify41 gameserver packages and normalize
+identically. The six unchanged upstream/rehearsal inventories reuse explicitly
+retained raw/canonical chains from22fed6be, with six fresh registry manifest/
+config/platform checks and24 normalizer executions/12 equalities. These are
+reused upstream scans, not fresh scans. Native build-record/intact-bundle checks
+and the shipped Linux helper pass; all nine semantic mutations return exact
+exit3/fixture_rejected. Four original/fixture75-file trees remain unchanged,
+probe work is empty, and all11 owned containers are absent. The manifest-bound
+source/image scan covers2619 tracked files with zero findings.
+
+Commands use the root Make release targets with current/rebuild inputs.mk,
+`make build-deployment-rehearsal`, the resulting native validate-build/probe
+commands, and the delivered Linux helper through run-linux-probes.py. One initial
+native probe used relative paths and was rejected with invalid_probe/exit2; the
+valid pass uses required absolute paths and a separate work directory. No pass
+is inferred from that setup refusal. During the user-requested Desktop recovery,
+the app/backend/VM fully stopped; startup initially timed out, then recovered.
+Fresh native-ARM and emulated-amd64 execution checks passed before package probes.
+
+Raw builds and evidence remain under ignored release-current-3a209466,
+release-rebuild-3a209466 and release-linux-probes-3a209466 cache roots.
+Linux probe record SHA256 bfee16c8b1d29d7ff48d81119fe21b9958920ecc5ae18797fe8bde9ca5839ed6;
+source/image scan SHA256 d5067169d740a2bb87f772b0e44cc269971c41359ea2c2336d15d0d6d0ed1a72.
+[Build record](release-builds/candidate-3a209466.json) is pending independent
+artifact-evidence review. The older22fed6be natural-play/restore verdicts remain
+historical, not evidence for this new manifest. Native clean-host/R-006, a
+floor-compliant predecessor, rights/privacy/accessibility/full1.0 and release
+approval remain open. No push, deployment or product/specification change.
+Review by: Codex root (implementer check). Recorded by: Codex root.
