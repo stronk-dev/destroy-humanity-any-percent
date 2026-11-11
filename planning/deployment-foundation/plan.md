@@ -77,6 +77,8 @@ separate independent verdicts. RP-786 is closed.
 The [build record](release-builds/candidate-22fed6be.json) and [log](log.md)
 record exact checks and limits. The `2f366a90` packaged restart verdict remains.
 Supported-host R-006 and predecessor compatibility remain open.
+The later RP-787 dossier-reader correction is independently approved in source.
+Include it in the next exact package build before collecting R-006 evidence.
 
 **Previous independently approved artifact, 2026-11-05:** source `a7d5a4a4`,
 kernel0.3.228/migration87/epoch8, includes reviewed RP-774/RP-776. Matching two

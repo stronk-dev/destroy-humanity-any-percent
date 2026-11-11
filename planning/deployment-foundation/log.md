@@ -13267,3 +13267,14 @@ Browser CLI. Old and current outputs are retained in ignored
 fixture dossier. It does not authenticate subprocess output or complete
 an actual R-006 run. The retained package at `22fed6be` predates the correction.
 Independent corrective review pending.
+
+**Independent verdict:** APPROVED, complete seven-path `68e5c79b..4a60cc20`.
+Review by: fresh independent Codex `/root/rehearsal_command_result_corrective_review`
+under Marco's corrective-code delegation. Recorded by: Codex root. The
+reviewer independently overlaid the exact old readers and reproduced all six
+admissions, ran the corrected regression and cold affected packages, checked
+the existing browser reader controls on both versions, and ran vet. Raw
+review evidence is in ignored `.cache/rp787-independent-review/`.
+The root also cross-compiled both updated helpers with the packaging Make
+targets and verified their Linux/amd64 ELF format. RP-787 is closed in source.
+The builds alone do not refresh `22fed6be` or execute R-006.
