@@ -9205,3 +9205,42 @@ Types, client boundary, production build and range diff checks passed.
 RP-788 is closed in source. The tests control the browser's runtime inputs
 and snapshot ordering. A real composed Offer Sheet and inclusion in a
 refreshed release bundle remain unverified.
+
+## 2026-11-11 — Real Offer Sheet decline and expiry integration (RP-788)
+
+The production client at `4364c980` passed both cases against real Caddy,
+the existing gameserver image and fresh Postgres. The fixture used the
+unchanged production content except for Tier-1 offer probability 1,000,000 ppm
+and a 10-second duration. Its separately derived constants hash was
+`sha256:e8ad834f3798fe1758e64a11c5c6c6e36d9220d33bbf88ec8cb870357c18049e`.
+Cash was supplied through ordinary disposable SQL setup before each Garage
+gate. The first Exit and next Company used visible controls. These are
+controlled integration populations.
+
+The second Company crossed its gate through the browser and the server
+created the offer. In the decline case, native Enter on **Decline** committed
+the real intent. In the expiry case, the server's published timestamp elapsed
+and a separate authenticated manual request materialized the expiry while
+the page stayed on the Offer Sheet. Both actual WebSocket publications
+returned the page to the Desk and restored heading focus. A subsequent native
+**Fix Computer** action used revision 8 and committed revision 9. SQL confirmed
+one matching resolution event and applied receipt per case, the exact offer
+ID and intent ID, and no remaining live offer.
+
+Browser proof matched the served HTML, CSS, entry script and prediction worker
+against the current production build. Repeating the same decline fixture
+with the `22fed6be` release client reached the real `exit_offer_declined`
+publication but remained on `offer_sheet` until the 12-second assertion
+failed. Its old script and content were isolated from the corrected client.
+Both disposable stacks were removed.
+
+Private source and results are in ignored `.cache/rp788-offer-composed/`
+and the `-old` companion. The successful aggregate SHA-256 is
+`8c28cdc61dc1e7a215b8345df0cb5e59255a9300b569705ecb8fdb99c7bfbb73`.
+The old client failure log SHA-256 is
+`a9e7e202a144a5a356f5e5d406ff107948b07ffb45c97b07e9c3cc1307a21a4b`.
+The main composed journey's decline branch now waits for the automatic Desk
+return and verifies the next intent's revision. Its manual Desk navigation
+bypass is removed. Complete composed verification is running.
+This is current-client integration with a controlled catalog. Inclusion in a
+refreshed release bundle and the supported-host rehearsal remain open.

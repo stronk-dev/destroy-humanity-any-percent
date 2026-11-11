@@ -1370,14 +1370,13 @@ try {
   await clickAppliedIntent(page, secondCrossGate, "second cross-gate");
   const secondExit = await clickAppliedIntentChoice(page, ["Wind Down Company", "Decline"], "second wind-down or offer preemption");
   if (secondExit.clickedLabel === "Decline") {
-    await page.evaluate(() => {
-      const desk = [...document.querySelectorAll("button")].find((button) => button.textContent?.trim() === "The Desk");
-      if (!desk || desk.disabled) throw new Error("Desk navigation unavailable after declining preempting offer");
-      desk.click();
-    });
     await page.locator('main[data-surface="desk"]').waitFor({ state: "visible", timeout: 30_000 });
     const secondWindDown = await waitForEnabledButton(page, "Wind Down Company");
-    await clickAppliedIntent(page, secondWindDown, "second wind-down after declining offer");
+    const windDown = await clickAppliedIntent(page, secondWindDown, "second wind-down after declining offer");
+    if (windDown.intent.expected_revision !== secondExit.body.new_revision) {
+      throw new Error("Wind Down after decline did not use the authoritative revision");
+    }
+    console.log("composed Exit offer decline returned to Desk and used the new revision: PASS");
   }
   try {
     await page.locator('main[data-surface="run_end"]').waitFor({ state: "visible", timeout: 30_000 });
