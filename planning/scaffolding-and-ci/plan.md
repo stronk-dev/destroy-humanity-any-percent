@@ -138,6 +138,25 @@ order/resources/expected failures before executing, compare with the retained
 two-package result, stop on new failure/incomplete evidence, and do not sweep
 workers or promote a default without the complete result and independent review.
 
+**Four-package scheduling,2026-11-11:** that one predeclared candidate at clean
+source07c0d490 completes204.061886s versus the retained329.550885s two-package
+result, with identical83 package terminals and15476pass/33skip/28fail test identities.
+Actual body interval peak4 and first four starts match the planned long packages.
+This is local emulation with a retained control and combined width/order change;
+no separate causal attribution or hosted setup/five-minute claim. The final
+consumer refuses false green, guard exhaustion, missing package and rebound
+same-count ID substitution. [Bound observation](observations/go-schedule-07c0d490.json).
+
+The SQL core recipe now passes those discovered long packages first to Go with
+`-p4`, then preserves remaining discovery order; native/no-URL behavior stays serial.
+Actual shuffled/sparse discovery controls, flags, cold/repeat defaults, failures
+and cleanup pass on native and Linux Node24. Actual updated four-CPU Linux core
+Make runs vet plus the entire83-package population with identical test identities
+and honestly exits2 on Go1/known Clout failures. No owned DBs/markers or temporary
+adapter remain. Complete batch awaits fresh independent review in the owning log.
+After review, pursue remaining measured latency and hosted reconciliation when
+publication is authorized; no cache, test, budget or full1.0 floor is waived.
+
 ## Current hosted evidence — 2026-11-11
 
 [CI42942631238](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/42942631238)

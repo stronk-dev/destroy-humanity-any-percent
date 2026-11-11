@@ -1,0 +1,162 @@
+{
+  "schema_version": 1,
+  "status": "complete_with_preserved_expected_failures",
+  "source": "07c0d49035a8fd94249a175e9c3aba494a096cc9",
+  "baseline_record": "planning/scaffolding-and-ci/observations/go-isolation-98e46e52.json",
+  "method": {
+    "question": "Does four-package concurrency with measured long packages first improve complete elapsed while preserving all results?",
+    "priority": [
+      "cloud-clicker/server/gameserver",
+      "cloud-clicker/server/production",
+      "cloud-clicker/server/transport",
+      "cloud-clicker/server/arcade"
+    ],
+    "packages": 83,
+    "remaining_order": "unchanged discovery order",
+    "parallel": 4,
+    "cpus": 4,
+    "cpuset": "0-3",
+    "cold_count": 1,
+    "guard_seconds": 600,
+    "timeout": "ordinary Go default",
+    "selection": "all Go packages excluding exactly cloud-clicker/server/harness",
+    "go_subject_unchanged_from_baseline": true,
+    "baseline_delta_paths": [
+      "Makefile",
+      "client/tools/ci-topology.mjs",
+      "client/tools/verify-ci-topology-fixtures.mjs",
+      "design/BACKLOG.md",
+      "docs/ci.md",
+      "planning/scaffolding-and-ci/log.md",
+      "planning/scaffolding-and-ci/observations/cosmetics-cpu-b07d9928.json",
+      "planning/scaffolding-and-ci/observations/go-isolation-98e46e52.json",
+      "planning/scaffolding-and-ci/plan.md"
+    ],
+    "normal_compilation_cache": "retained warm cache; no test-result caching",
+    "local_architecture": "Linux/amd64 under Apple Silicon emulation"
+  },
+  "result": {
+    "elapsed_seconds": 204.06188612477854,
+    "baseline_seconds": 329.5508849998005,
+    "percent_less_elapsed": 38.07879286232168,
+    "exit_code": 1,
+    "timed_out": false,
+    "test_results": {
+      "pass": 15476,
+      "skip": 33,
+      "fail": 28
+    },
+    "package_results": {
+      "pass": 65,
+      "skip": 17,
+      "fail": 1
+    },
+    "population_sha256": "b7981a44c6e1d27fcc47aa4fce7177fd096fed0e0055582fd32a42860446999c",
+    "ci_default_changed_during_measurement": false
+  },
+  "actual_core_make": {
+    "log": "integrated.log",
+    "sha256": "aad5a7e0b6c77a99a80e81ef212018933a8cabcdf39d2d1ca6892dd10da59fca",
+    "population_sha256": "b7981a44c6e1d27fcc47aa4fce7177fd096fed0e0055582fd32a42860446999c",
+    "test_results": {
+      "pass": 15476,
+      "skip": 33,
+      "fail": 28
+    },
+    "package_results": {
+      "pass": 65,
+      "skip": 17,
+      "fail": 1
+    },
+    "actual_make_exit": 2,
+    "temporary_executor_removed": true
+  },
+  "runtime": [
+    {
+      "name": "/cloud-clicker-ci-isolation-test-run-099d130d1ddf",
+      "id": "60bc0d0568ddf55ada77df036346dc7ed892f85e5056db5b3289c8afe4622d23",
+      "image": "sha256:593dc3550e0514c6ec0f7861c9bf7bf415aeabc9f4852f83f7469bfe06db1335",
+      "cpus": 4.0,
+      "cpuset": "0-3",
+      "started": "2026-11-11T04:10:18.453706593Z",
+      "mounts": [
+        {
+          "type": "bind",
+          "source": "/Users/stronk/repos/cloud-clicker",
+          "destination": "/workspace"
+        },
+        {
+          "type": "volume",
+          "source": "/var/lib/docker/volumes/cloud-clicker-ci-isolation_go-cache/_data",
+          "destination": "/go-cache"
+        }
+      ]
+    },
+    {
+      "name": "/cloud-clicker-ci-isolation-postgres-1",
+      "id": "d518d7f347434a2bcc24e9cd5e25ecc383b2ce13778b680fab2ac9b9cf8db09f",
+      "image": "sha256:6a2e324ebe59af6031c4c1cd96c1d5072c2ebc36563d2196365e43b8297c062d",
+      "cpus": 4.0,
+      "cpuset": "0-3",
+      "started": "2026-11-11T04:10:15.187034591Z",
+      "mounts": []
+    }
+  ],
+  "observed_overlap": {
+    "observed_body_interval_peak": 4,
+    "first_four": [
+      "cloud-clicker/server/gameserver",
+      "cloud-clicker/server/production",
+      "cloud-clicker/server/transport",
+      "cloud-clicker/server/arcade"
+    ]
+  },
+  "validation": {
+    "valid": true,
+    "negative_controls": [
+      {
+        "control": "false green",
+        "rejected": "incomplete measurement or unexpected exit (known failures must stay red)"
+      },
+      {
+        "control": "guard exhausted",
+        "rejected": "incomplete measurement or unexpected exit (known failures must stay red)"
+      },
+      {
+        "control": "missing package terminal",
+        "rejected": "missing/extra package terminal results"
+      },
+      {
+        "control": "same-count passing ID substitution",
+        "rejected": "test identities/statuses differ from retained complete baseline"
+      }
+    ]
+  },
+  "helper": {
+    "path": "/workspace/.cache/bin/test-postgres-exec-schedule-07c0d490-linux-amd64",
+    "sha256": "90394dafd62a6443b0c3a8edea447be4f5179bb5ca67e04767c6f280c0ce08b4"
+  },
+  "raw_directory": ".cache/ci-schedule-07c0d490",
+  "sha256": {
+    "plan.json": "b8fecae72f9ab0d08ecee4e8cf050d6de8bb95e4d7ea097e272b5152079df8ba",
+    "observe.py": "be9fa03c9c1a2fa660873fd1d6f65112bad06966aba92a49d2b1ae1193df399b",
+    "validate.py": "11d5ad15204988c8809d2cbb64ad2fc122c9a82a6a13b46e3c68f46c44c1abce",
+    "validation.json": "865940c42576d322383a6f761dc142c9e8f3c12d1a132967107119c5ee19f964",
+    "candidate.json": "453be0d860819dd4b0e42efd8d8c52fdd8d2e31f0f65814ecceeec4d87eedae7",
+    "candidate.log": "aecd45ee558c47c748ccd32e57da063f45c4cbfae1c12d4061e882399291961c",
+    "comparison.json": "48640cda2586d6c9143f043318f64585af6db04a45da8b7d21c44928a29030d5",
+    "runtime.json": "963b3c04658ffd0ee428fa2097f24efdb093ac837abcae64025e50043ed34e61",
+    "overlap.json": "97e8101ec8592f275e6c931a89e03e07c9111e533dd9a4c91131605530256c24",
+    "helper.json": "18c66619783fec1aeaa4598b035690392a6ac69e4dcaa0cc9d8958c6b8ffd247",
+    "integrated.log": "aad5a7e0b6c77a99a80e81ef212018933a8cabcdf39d2d1ca6892dd10da59fca",
+    "integrated-summary.json": "55a2d9d03c0dd5e92eb1ab01b7b24e2519d0b9b43bec0bfd90289776e8d860b5",
+    "make-controls.log": "ccc7f2839f93196eef757a5212e86875ac339d1c11d170a06cbeef83797f7e6e",
+    "node24-controls.log": "0f3ab9f1032bbf54b89ed16caa312fa21996806cb0820a54c453b431ff9dea1f"
+  },
+  "limits": [
+    "One ordered local candidate against retained two-package result; not an exact new matched pair or universal speed claim.",
+    "Width and argument ordering change together; this does not attribute savings separately to either.",
+    "Host setup/compilation and other job gates are outside the timed Go command; no hosted five-minute claim.",
+    "The27 known Clout failures plus their parent remain; full1.0 is incomplete."
+  ]
+}

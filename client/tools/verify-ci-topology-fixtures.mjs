@@ -179,15 +179,16 @@ try {
 const fs = require('node:fs');
 const args = process.argv.slice(2);
 fs.appendFileSync(process.env.CORE_MAKE_TRACE, JSON.stringify(args) + '\\n');
-if (args[0] === 'list') console.log(process.env.CORE_MAKE_ONLY_HARNESS === '1' ? 'cloud-clicker/server/harness' : 'cloud-clicker/server/account\\ncloud-clicker/server/harness\\ncloud-clicker/server/guild');
+if (args[0] === 'list') console.log((process.env.CORE_MAKE_ONLY_HARNESS === '1' ? ['cloud-clicker/server/harness'] : process.env.CORE_MAKE_SPARSE === '1' ? ['cloud-clicker/server/guild','cloud-clicker/server/account'] : ['cloud-clicker/server/guild','cloud-clicker/server/transport','cloud-clicker/server/account','cloud-clicker/server/production','cloud-clicker/server/gameserver','cloud-clicker/server/harness','cloud-clicker/server/arcade']).join('\\n'));
 if (args[0] === 'build') fs.writeFileSync(args[args.indexOf('-o') + 1], 'adapter test double');
 if (args[0] === 'test') { console.log('fixture test output'); console.error('fixture test diagnostic'); }
 process.exit(args[0] === process.env.CORE_MAKE_FAIL ? 37 : 0);
 `, { mode: 0o700 });
-  const core = (database, fail = "", count, onlyHarness = false) => {
+  const core = (database, fail = "", count, onlyHarness = false, sparse = false) => {
     writeFileSync(trace, "");
     const env = { ...process.env, PATH: `${bin}:${process.env.PATH}`, TEST_DATABASE_URL: database,
-      CORE_MAKE_TRACE: trace, CORE_MAKE_FAIL: fail, CORE_MAKE_ONLY_HARNESS: onlyHarness ? "1" : "0" };
+      CORE_MAKE_TRACE: trace, CORE_MAKE_FAIL: fail, CORE_MAKE_ONLY_HARNESS: onlyHarness ? "1" : "0",
+      CORE_MAKE_SPARSE: sparse ? "1" : "0" };
     // Test the actual cold default, without inheriting a parent Make override.
     delete env.CORE_TEST_COUNT;
     delete env.MAKEFLAGS;
@@ -205,15 +206,24 @@ process.exit(args[0] === process.env.CORE_MAKE_FAIL ? 37 : 0);
   for (const database of ["", "postgres://declared-fixture"]) {
     for (const count of [undefined, "2"]) {
       const result = core(database, "", count);
-      const expected = ["test", "-p", database ? "2" : "1",
+      const packages = database ? ["gameserver", "production", "transport", "arcade", "guild", "account"] :
+        ["guild", "transport", "account", "production", "gameserver", "arcade"];
+      const expected = ["test", "-p", database ? "4" : "1",
         ...(database ? ["-exec", result.executable] : []), "-run", "Test literal pattern",
-        "cloud-clicker/server/account", "cloud-clicker/server/guild", `-count=${count ?? "1"}`];
+        ...packages.map((name) => `cloud-clicker/server/${name}`), `-count=${count ?? "1"}`];
       if (result.status !== 0 || JSON.stringify(result.calls.at(-1)) !== JSON.stringify(expected) ||
           JSON.stringify(result.calls[0]) !== JSON.stringify(["list", "./..."]) ||
           result.calls.length !== (database ? 3 : 2) ||
           !result.stdout.includes("fixture test output") || !result.stderr.includes("fixture test diagnostic")) {
         throw new Error(`core Make changed population/arguments/streams: ${JSON.stringify(result)}`);
       }
+    }
+    const sparse = core(database, "", undefined, false, true);
+    const expectedSparse = ["test", "-p", database ? "4" : "1",
+      ...(database ? ["-exec", sparse.executable] : []), "-run", "Test literal pattern",
+      "cloud-clicker/server/guild", "cloud-clicker/server/account", "-count=1"];
+    if (sparse.status !== 0 || JSON.stringify(sparse.calls.at(-1)) !== JSON.stringify(expectedSparse)) {
+      throw new Error("core Make introduced absent priority packages or changed the remaining discovery order");
     }
     for (const fail of ["list", ...(database ? ["build"] : []), "test"]) {
       const result = core(database, fail);

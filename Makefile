@@ -79,6 +79,8 @@ test-go:
 # The relevance content matrix is intentionally long-running. Keep it in the
 # harness lane while allowing hosted CI to run the remaining server suite in
 # parallel; the expensive beam is manual-only and is not part of either lane.
+# The isolated SQL branch gives measured long packages early slots without
+# changing discovery membership or the relative order of the remaining packages.
 test-go-core:
 	set -eu; \
 	cd server; \
@@ -90,7 +92,18 @@ test-go-core:
 		executor=$$(mktemp "$(CURDIR)/.cache/bin/test-postgres-exec.XXXXXX"); \
 		trap 'rm -f "$$executor"' EXIT; \
 		go build -o "$$executor" ./cmd/test-postgres-exec; \
-		set -- -p 2 -exec "$$executor"; \
+		set -- -p 4 -exec "$$executor"; \
+		ordered=; \
+		for wanted in cloud-clicker/server/gameserver cloud-clicker/server/production cloud-clicker/server/transport cloud-clicker/server/arcade ""; do \
+			for package in $$packages; do \
+				if [ "$$package" = "$$wanted" ]; then \
+					ordered="$$ordered $$package"; \
+				elif [ -z "$$wanted" ]; then \
+					case " $$ordered " in *" $$package "*) ;; *) ordered="$$ordered $$package" ;; esac; \
+				fi; \
+			done; \
+		done; \
+		packages=$$ordered; \
 	fi; \
 	go test "$$@" $(GO_TEST_FLAGS) $$packages -count=$(CORE_TEST_COUNT)
 

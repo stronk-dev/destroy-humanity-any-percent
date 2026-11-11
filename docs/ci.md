@@ -219,8 +219,11 @@ implementers and reviewers unless the project and database are explicitly isolat
 Changing `SAVE_TEST_HOST_PORT` alone changes the host binding, not the database namespace.
 
 `make test-go-core`, used by the hosted server job and `verify-server-ci`, now
-runs two packages concurrently when `TEST_DATABASE_URL` is set. It compiles a
-temporary adapter for the current Go platform, uses Go's standard `-exec` option,
+runs up to four packages concurrently when `TEST_DATABASE_URL` is set. It passes
+the measured long packages (`gameserver`, `production`, `transport`, `arcade`)
+first to Go's scheduler, then retains discovery order for every remaining package. Only discovered packages
+are included. This overlaps real wait windows without narrowing the population.
+It compiles a temporary adapter for the current Go platform, uses Go's standard `-exec` option,
 and removes that executable on success or failure. Without a database URL, the
 native target retains serial execution and its existing explicit SQL skips; that
 is not CI database evidence. The topology check refuses a missing/empty hosted

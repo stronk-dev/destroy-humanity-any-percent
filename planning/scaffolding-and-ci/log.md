@@ -5260,3 +5260,53 @@ Next: bounded full-population scheduling experiment driven by the measured long
 packages, with resources/order/known failures fixed first. Preserve all tests and
 the accounting/history/five-minute/full1.0 holds; no worker sweep or blind codec
 rewrite. The full nine-tier goal remains active.
+
+## 2026-11-11 — Four long-package slots retain the complete CI population
+
+Before execution, at clean07c0d490 fix one candidate: all83 non-harness packages,
+Go-native `-p4`, measured gameserver/production/transport/arcade arguments first,
+remaining discovery order unchanged, same4CPU/cpuset0-3 declared Linux/amd64 images,
+fresh tmpfs PG, ordinary Go timeout, count1 and600s command containment. Retain
+the preceding two-package329.550885s control; independently verify no Go, balance,
+schema or runtime input changed between source refs. Build a uniquely named
+adapter rather than overwrite the preceding retained binary. No retry/worker sweep.
+
+Candidate completes Go1/no guard in204.061886s,38.08% less elapsed against that
+retained control. It is one local emulated comparison of combined width/order,
+not a fresh matched pair, separate causal attribution or hosted speed guarantee.
+All83terminals(65pass/17no-test-files/1fail),15476pass/33skip/28fail test/subtest
+identities equal the control. Hash remains
+`b7981a44c6e1d27fcc47aa4fce7177fd096fed0e0055582fd32a42860446999c`;
+failures are exactly27 Clout subcases plus their parent. Actual first4package
+starts and body-interval peak4 match plan. Inspected live container images,
+mounts and actual CPU quota/affinity. A separate consumer rejects false-green,
+guard-exhausted, missing-terminal and rebound same-count ID substitution controls.
+The candidate's owned project is removed after completion; normal Go cache stays.
+
+Integrate this same order/width into actual `test-go-core`, preserving native serial
+behavior, cold/repeat flags, discovery/filter/build/test failures and temporary
+adapter cleanup. Updated actual Make fixtures use shuffled discovery, require
+stable remainder order, and refuse adding priority packages absent from sparse
+discovery. All29 topology negatives and Make controls pass natively and on Linux
+Node24.18 with its normal Make prerequisite installed in a disposable container.
+
+Actual subject then runs the updated `make verify-server-core GO_TEST_FLAGS=-json`
+through declared four-CPU Linux/amd64/Postgres service. Full vet and all83package
+results execute; all test identities/statuses still match the complete control.
+Make returns2 on the retained Go1/Clout failure; subsequent generation/boundary
+dependencies do not execute in this failed aggregate. No full-green/server-job/
+hosted-five-minute claim follows from a local timed Go body. Final real catalog
+contains only base/postgres non-template DBs, no markers, no temporary adapter;
+the fixture is retained only for the independent review lease.
+
+[Small observation](observations/go-schedule-07c0d490.json) binds plan, commands,
+runtime identities, consumer, raw hashes and all limitations. Raw ignored evidence
+`.cache/ci-schedule-07c0d490`; candidate log SHA256
+`aecd45ee558c47c748ccd32e57da063f45c4cbfae1c12d4061e882399291961c`;
+actual integrated log `aad5a7e0b6c77a99a80e81ef212018933a8cabcdf39d2d1ca6892dd10da59fca`.
+Review by: Codex root(implementer execution/consumer checks, not designated approval).
+Recorded by: Codex root. Complete batch after07c0d490 through this containing commit
+awaits fresh independent corrective review. No gameplay, formula, kernel, schema,
+cache-policy, timeout or acceptance-floor change; no push/publication. Accounting,
+history, other job latency, hosted and full-nine-tier1.0 gates remain open. Next:
+exact-range review, then continue measured CI/platform work without narrowing scope.
