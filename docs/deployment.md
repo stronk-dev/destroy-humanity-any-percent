@@ -244,8 +244,17 @@ accessibility, full-feature and ending gates remain open. The native supervisor
 still needs adoption and construction. Release approval remains with the owner;
 the local preview label does not reduce the full nine-tier 1.0 objective.
 
-The bundled `deployment-rehearsal` command validates retained release-build records and final R-006
-evidence. Its `run-plan` lane executes a reviewed, manifest-bound command plan directly—never via a
+The later RP-789/RP-790 helper input corrections exist in source and are not in
+the retained `3a209466` candidate. Include them in the next package before R-006;
+its recorded play and restore observations remain tied to the original bytes.
+
+The source `deployment-rehearsal` command validates retained release-build records and final R-006
+evidence. Its proof readers require each declared observation, including zero/false values,
+with exact decoded names and no duplicate or null members throughout nested records and arrays.
+This includes explicit guard flags, planned positive exit codes, RPO/RTO values and secret-scan
+findings. Declared optional historical build fields may remain absent; existing schema/version
+validation still determines which build images are required.
+Its `run-plan` lane executes a reviewed, manifest-bound command plan directly—never via a
 shell—into a new empty result directory. The plan must enumerate the 42 non-forgery positive and
 negative populations in canonical lifecycle order, require exit zero for positive checks and exact
 exit three for severing checks, and give every command a one-second to four-hour guard. Every row

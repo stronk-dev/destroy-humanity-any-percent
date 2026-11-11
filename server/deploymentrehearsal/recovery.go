@@ -1,17 +1,16 @@
 package deploymentrehearsal
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
-	"io"
 	"os"
 	"path/filepath"
 	"time"
 
 	"cloud-clicker/server/deploymentbackup"
 	"cloud-clicker/server/deploymentrelease"
+	"cloud-clicker/server/internal/evidencejson"
 )
 
 const recoveryCheckpointName = "recovery-checkpoint.json"
@@ -313,9 +312,7 @@ func loadRecoveryCheckpoint(path string) (RecoveryCheckpoint, error) {
 		return RecoveryCheckpoint{}, err
 	}
 	var checkpoint RecoveryCheckpoint
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	if decoder.Decode(&checkpoint) != nil || decoder.Decode(&struct{}{}) != io.EOF {
+	if !evidencejson.DecodeRecord(data, &checkpoint) {
 		return RecoveryCheckpoint{}, ErrInvalid
 	}
 	return checkpoint, nil

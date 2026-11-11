@@ -4,16 +4,16 @@
 package deploymentrehearsal
 
 import (
-	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"os"
 	"regexp"
 	"slices"
 	"strings"
 	"time"
+
+	"cloud-clicker/server/internal/evidencejson"
 )
 
 var ErrInvalid = errors.New("invalid deployment rehearsal evidence")
@@ -217,9 +217,7 @@ func Decode(data []byte) (Evidence, error) {
 		return Evidence{}, ErrInvalid
 	}
 	var evidence Evidence
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	if decoder.Decode(&evidence) != nil || decoder.Decode(&struct{}{}) != io.EOF || Validate(evidence) != nil {
+	if !evidencejson.DecodeRecord(data, &evidence) || Validate(evidence) != nil {
 		return Evidence{}, ErrInvalid
 	}
 	return evidence, nil

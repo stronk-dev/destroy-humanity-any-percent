@@ -1,10 +1,10 @@
 package deploymentrehearsal
 
 import (
-	"bytes"
 	"encoding/json"
-	"io"
 	"time"
+
+	"cloud-clicker/server/internal/evidencejson"
 )
 
 type HostObservation struct {
@@ -27,9 +27,7 @@ type ObjectiveObservation struct {
 
 func DecodeHostObservation(data []byte) (HostObservation, error) {
 	var observation HostObservation
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	if decoder.Decode(&observation) != nil || decoder.Decode(&struct{}{}) != io.EOF || ValidateHostObservation(observation) != nil {
+	if !evidencejson.DecodeRecord(data, &observation) || ValidateHostObservation(observation) != nil {
 		return HostObservation{}, ErrInvalid
 	}
 	return observation, nil
@@ -56,9 +54,7 @@ func WriteHostObservation(path string, observation HostObservation) error {
 
 func DecodeObjectiveObservation(data []byte) (ObjectiveObservation, error) {
 	var observation ObjectiveObservation
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	if decoder.Decode(&observation) != nil || decoder.Decode(&struct{}{}) != io.EOF || ValidateObjectiveObservation(observation) != nil {
+	if !evidencejson.DecodeRecord(data, &observation) || ValidateObjectiveObservation(observation) != nil {
 		return ObjectiveObservation{}, ErrInvalid
 	}
 	return observation, nil

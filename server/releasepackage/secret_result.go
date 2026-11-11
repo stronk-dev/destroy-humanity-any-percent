@@ -1,13 +1,13 @@
 package releasepackage
 
 import (
-	"bytes"
 	"encoding/json"
 	"errors"
-	"io"
 	"os"
 	"path/filepath"
 	"time"
+
+	"cloud-clicker/server/internal/evidencejson"
 )
 
 type SecretScanResult struct {
@@ -34,9 +34,7 @@ func ValidateSecretScanResult(result SecretScanResult) error {
 
 func DecodeSecretScanResult(data []byte) (SecretScanResult, error) {
 	var result SecretScanResult
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	if decoder.Decode(&result) != nil || decoder.Decode(&struct{}{}) != io.EOF || ValidateSecretScanResult(result) != nil {
+	if !evidencejson.DecodeRecord(data, &result) || ValidateSecretScanResult(result) != nil {
 		return SecretScanResult{}, ErrInvalidContent
 	}
 	return result, nil

@@ -1,14 +1,13 @@
 package deploymentrehearsal
 
 import (
-	"bytes"
 	"encoding/json"
-	"io"
 	"os"
 	"path/filepath"
 	"slices"
 	"time"
 
+	"cloud-clicker/server/internal/evidencejson"
 	"cloud-clicker/server/releasepackage"
 )
 
@@ -126,9 +125,7 @@ func ValidateSupplyChainResult(result SupplyChainResult) error {
 
 func DecodeSupplyChainResult(data []byte) (SupplyChainResult, error) {
 	var result SupplyChainResult
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	if decoder.Decode(&result) != nil || decoder.Decode(&struct{}{}) != io.EOF || ValidateSupplyChainResult(result) != nil {
+	if !evidencejson.DecodeRecord(data, &result) || ValidateSupplyChainResult(result) != nil {
 		return SupplyChainResult{}, ErrInvalid
 	}
 	return result, nil

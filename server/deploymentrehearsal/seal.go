@@ -3,12 +3,13 @@ package deploymentrehearsal
 import (
 	"bytes"
 	"encoding/json"
-	"io"
 	"os"
 	"path/filepath"
 	"reflect"
 	"sort"
 	"time"
+
+	"cloud-clicker/server/internal/evidencejson"
 )
 
 const ForgeryMutation = "browser_result_hash"
@@ -90,9 +91,7 @@ func ValidateForgeryProof(proof ForgeryProof) error {
 
 func DecodeForgeryProof(data []byte) (ForgeryProof, error) {
 	var proof ForgeryProof
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	if decoder.Decode(&proof) != nil || decoder.Decode(&struct{}{}) != io.EOF || ValidateForgeryProof(proof) != nil {
+	if !evidencejson.DecodeRecord(data, &proof) || ValidateForgeryProof(proof) != nil {
 		return ForgeryProof{}, ErrInvalid
 	}
 	return proof, nil

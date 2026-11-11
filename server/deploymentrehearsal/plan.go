@@ -1,18 +1,18 @@
 package deploymentrehearsal
 
 import (
-	"bytes"
 	"context"
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
-	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
 	"time"
+
+	"cloud-clicker/server/internal/evidencejson"
 )
 
 const maximumCommandOutput = 1 << 20
@@ -154,9 +154,7 @@ func LoadExecutionPlan(path string) (ExecutionPlan, error) {
 		return ExecutionPlan{}, ErrInvalid
 	}
 	var plan ExecutionPlan
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	if decoder.Decode(&plan) != nil || decoder.Decode(&struct{}{}) != io.EOF || ValidateExecutionPlan(plan) != nil {
+	if !evidencejson.DecodeRecord(data, &plan) || ValidateExecutionPlan(plan) != nil {
 		return ExecutionPlan{}, ErrInvalid
 	}
 	return plan, nil

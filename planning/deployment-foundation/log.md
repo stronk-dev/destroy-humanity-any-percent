@@ -13588,3 +13588,48 @@ legally escaped-name controls preserve the full config. No findings. Verdict
 `d214ecf853d2cb1b2b8f57a8ed4a51bb984a33076c8e093753444ba77c5fda19`.
 RP-789 closes in source; the reviewed3a209466 package predates this helper-only
 change. No database, native clean-host/R-006 or feature/release approval follows.
+
+## 2026-11-11 — Require recorded observations throughout rehearsal proof (RP-790)
+
+Accepted AC10/schema requiredness and DP3 fail-closed admission: eight real proof
+readers accept missing/null/case-aliased/overwritten guard fields. Secret scans
+also admit four corresponding missing/contradictory findings variants. Missing
+RPO/RTO and nested planned positive expected_exit become zero. All complete
+controls pass on old source. Four host-guard variants ALSO pass the actual
+LoadAndValidateBaseRun fixture after updating the artifact hash; its complete
+rebound control passes. The43 old admissions are not an actual clean-host/R-006
+run or a proved falsified producer, but they violate the existing recorded-input
+requirements. Tests retain the input variants and legal controls; original
+readers remain in Git at3c175dcb.
+
+Reuse the existing evidencejson decoder with recursive declared-struct/array
+member checking. Required observations must be present once, exact decoded name
+and non-null before Go materializes defaults. Scalar-owned JSON such as time.Time
+retains its decoder. omitempty fields may be absent, preserving historical
+BuildRecord v1; supplied optional members still must be unambiguous. Existing
+value/binding/version/secret-key validators and all limits remain. Wire this into
+final/base evidence, build, host/objective, plan, recovery checkpoint, forgery,
+supply-chain and secret-scan readers; existing flat browser/command/scenario
+consumers retain their API and requirements. No ledger/native ownership policy,
+version/schema/content/kernel, gameplay or producer change.
+
+All43 corrected regressions and complete controls pass. Full cold affected
+Rehearsal/Browser/ReleasePackage and three command owners pass; the shared utility
+and browser CLI have no separate tests. Matching vet and Linux helper build pass.
+Actual offline Linux controls use the exact retained3a209466 candidate record:
+both old and corrected helpers return0; after guard omission old returns0 and
+corrected returns1/invalid_evidence. All four containers are absent; original
+bundles are untouched. Raw logs and isolated fixture/results live under ignored
+.cache/rp790-*. One initial selective Make command lacked shell quoting around
+its regex and one intermediate compile retained an unused import; both setup
+failures were corrected before the complete red/green executions. No pass was
+inferred from them.
+
+Commands: root make test-go selected actual regression names, then complete
+seven-package affected list; make vet same list; root Linux rehearsal helper
+build; .cache/rp790-linux-inputs/run.py actual old/new executable controls.
+Review by: Codex root(implementer execution). Recorded by: Codex root.
+Independent corrective review pending for complete range after3c175dcb. The
+reviewed3a209466 package predates this and RP-789: batch inclusion at the next
+necessary build before R-006 rather than rebuild for records. Full nine-tier1.0,
+native/clean-host/predecessor, owner decisions and release approval remain open.

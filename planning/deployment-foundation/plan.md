@@ -7,6 +7,17 @@
 - **State:** implementing
 - **Implementation baseline:** `cd102d7` (accepted after designated cross-party review)
 
+**Current proof-reader correction, 2026-11-11 (RP-790):** ordinary Go zero
+defaults admit unrecorded guard/measurement fields. The complete regression has
+43 old admissions, including four fully rebound host-observation dossier cases.
+The corrected shared decoder checks required members recursively while retaining
+declared optional historical build fields. All regressions/controls, affected
+readers/CLIs, vet and Linux helper build pass. Old/new actual Linux consumers
+accept the intact retained candidate; only the corrected helper rejects its
+missing guard. Independent corrective review pending. The `3a209466` artifact
+remains unchanged and predates RP-789/RP-790; batch both helper corrections in
+the next necessary package before R-006. No native/feature/release claim follows.
+
 **Current source correction, 2026-11-11 (RP-789):** private scenario inputs now
 require each original decoded member exactly once and non-null before selecting
 runtime paths. All five actual mode-0600 old-reader regressions fail; corrected

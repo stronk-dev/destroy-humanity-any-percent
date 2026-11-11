@@ -1,12 +1,11 @@
 package deploymentrehearsal
 
 import (
-	"bytes"
-	"encoding/json"
-	"io"
 	"os"
 	"regexp"
 	"time"
+
+	"cloud-clicker/server/internal/evidencejson"
 )
 
 type BuildRecord struct {
@@ -57,9 +56,7 @@ func DecodeBuildRecord(data []byte) (BuildRecord, error) {
 		return BuildRecord{}, ErrInvalid
 	}
 	var record BuildRecord
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	if decoder.Decode(&record) != nil || decoder.Decode(&struct{}{}) != io.EOF || ValidateBuildRecord(record) != nil {
+	if !evidencejson.DecodeRecord(data, &record) || ValidateBuildRecord(record) != nil {
 		return BuildRecord{}, ErrInvalid
 	}
 	return record, nil

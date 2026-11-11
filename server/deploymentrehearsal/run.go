@@ -3,7 +3,6 @@ package deploymentrehearsal
 import (
 	"bytes"
 	"encoding/json"
-	"io"
 	"os"
 	"path/filepath"
 	"sort"
@@ -163,9 +162,7 @@ func decodeBaseEvidence(data []byte) (Evidence, error) {
 		return Evidence{}, ErrInvalid
 	}
 	var evidence Evidence
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	if decoder.Decode(&evidence) != nil || decoder.Decode(&struct{}{}) != io.EOF || ValidateBaseEvidence(evidence) != nil {
+	if !evidencejson.DecodeRecord(data, &evidence) || ValidateBaseEvidence(evidence) != nil {
 		return Evidence{}, ErrInvalid
 	}
 	return evidence, nil
