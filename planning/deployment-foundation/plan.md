@@ -80,11 +80,16 @@ its own client/helper rebuilds and actual delivered-Linux positive/refusal check
 The exact-package natural journey reached Company 2 in 12m12s with 1,093 applied
 intents and no rejections/page exceptions. The verifier archived Company 1 and
 produced three board rows. The shipped helper restored a populated backup with
-equal full identity; wrong-key and occupied-target controls passed. These new
-terminal observations await independent evidence review; preserve the source
-database until its review lease is released.
+equal full identity; wrong-key and occupied-target controls passed. Independent
+terminal-evidence review APPROVES complete `1d81edbd..de82f5f7`, including live SQL
+and an independent shipped-helper recomputation of the full source identity.
+The review lease is released; disposable resources are removed after approval.
+Next: continue accepted producer construction where authorized; native supervisor
+adoption, a legitimate predecessor and supported clean-host/R-006 remain separate.
 Do not transfer the older candidate's live-play/restore verdict to these bytes.
-No predecessor, native clean-host/R-006, hosted CI or release approval follows.
+No predecessor, native clean-host/R-006, whole-CI or release approval follows.
+Fresh hosted CI at `1d81edbd` passes browser/composed/harness/schema and retains
+the known history-guard/27-Clout failures; the CI plan owns timing and details.
 
 **Previous independently approved local artifact, 2026-11-11.** Source
 `22fed6be`, kernel 0.3.229, migration 87, epoch 8. Both 75-file bundles match.
@@ -1588,7 +1593,7 @@ For coherent batches, follow RFC-0000's adopted risk-based delivery procedure:
 | Wave | Scope | State |
 |---|---|---|
 | DP-F1 | Initial-install command plus exact rehearsal schema/validator and sanitized evidence contract | implemented locally at `b9d7c8a`; review remains in the DP-F range |
-| DP-F2 | Reproducible exact candidate/previous bundle build, seven image SBOMs/config identities, source/image secret scan, retained build ledger, fixed-command driver and non-circular final-evidence seal | Two matching local builds at `22fed6be` with independently reviewed natural play and populated restore evidence. Reconstructed source `44a4a72` fails the current Compose/Caddy floor (RP-514). A reviewed floor-compliant predecessor, full supported pair proof and remaining producer/author gates stay open. |
+| DP-F2 | Reproducible exact candidate/previous bundle build, seven image SBOMs/config identities, source/image secret scan, retained build ledger, fixed-command driver and non-circular final-evidence seal | Two matching local builds at `3a209466` with independently reviewed natural play and populated restore evidence. Reconstructed source `44a4a72` fails the current Compose/Caddy floor (RP-514). A reviewed floor-compliant predecessor, full supported pair proof and remaining producer/author gates stay open. |
 | DP-F3 | Clean Linux/amd64 host install, browser flow, backup/restart/restore/rollback, alert delivery, journal measurement and RPO/RTO observation with no checkout/providers | requires the refreshed exact candidate/retained previous pair from DP-F2, explicit clean-host target authority and required designated review boundaries |
 | DP-F4 | R-006 dossier, canonical runbook/limitations, backlog/queue/RFC closeout and full-range first-filter | blocked on DP-F3 and designated approvals for DP-A–DP-E |
 

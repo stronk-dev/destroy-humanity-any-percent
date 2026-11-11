@@ -26,12 +26,17 @@ combat, Tier3–8 and ending construction ahead. No new tier or release is compl
 - **Latest reviewed artifact:** source `3a209466`, kernel 0.3.229, migration 87,
   epoch 8. Complete `3a209466..7be32421` has independent artifact-evidence
   approval and packages the reviewed RP-787 reader/RP-788 Offer Sheet fixes.
-  Its exact-package natural journey and populated restore passed locally;
-  terminal evidence awaits independent review in the Deployment log.
+  Its exact-package natural journey and populated restore have independent
+  terminal-evidence approval over `1d81edbd..de82f5f7` in the Deployment log.
   The previous `22fed6be` natural-play/restore verdicts remain historical.
   RP-786 is closed.
   Supported-host R-006 and predecessor compatibility remain open.
   [Deployment evidence](../deployment-foundation/plan.md)
+- **Fresh hosted verification:** CI42942631238 at `1d81edbd` completed failure.
+  Browser/composed/harness/schema pass; client retains the historical `50a3a514`
+  rejection, server reports the 27 known Clout partition cases. Browser/composed/
+  server still exceed the five-minute floor. The [CI plan](../scaffolding-and-ci/plan.md)
+  owns actual logs/times and the adoption-dependent repair boundaries.
 - **Completed evidence:** original HTTP and actual composed bootstrap/delete/
   restore instruments are independently approved. The lifetime supplement
   `0f3a5318..6df67ab2` is independently approved too: at31 days of application time,

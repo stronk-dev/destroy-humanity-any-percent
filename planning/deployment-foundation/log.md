@@ -13519,3 +13519,27 @@ Desktop with emulated amd64 containers, not supported native clean-host/R-006,
 off-host delivery, measured RPO/RTO, predecessor/rollback or full-feature proof.
 Review by: Codex root (implementer execution). Recorded by: Codex root.
 Independent terminal-evidence review pending; no release/adoption/archival/push.
+
+## 2026-11-11 — Independently approve the current packaged workflow evidence
+
+APPROVED complete five-path `1d81edbd..de82f5f7`.
+Review by: fresh independent Codex `/root/reader_offer_package_evidence_review`.
+Recorded by: Codex root.
+
+Independent live read-only SQL confirms1,093applied/0rejected, all three
+transitions, Company2revision1,095, Run1archive terminal1,093 and the three
+verified board rows joined to that same archive. The actual shipped helper
+independently recomputes the current source full identity, equal to all four
+retained2,799-row/migration87/three-board identities. Existing browser DecodeResult
+and backup ReadHeader/payload consumers accept the actual files. TLS CA/hostname/
+SPKI and static200 are independently verified. Root actual backup/restore/wrong-
+key/occupied-target executions are inspected, not repeated by the reviewer.
+No findings; verdict .cache/review-reader-offer-package/natural-terminal/verdict.json
+SHA256 `acb156b5aebf9d7481b09854a39e9c41f1741704e653b6ae62ce7a9a44472149`.
+
+Source database review lease RELEASED. The owned cc-package-natural-3a209466
+Compose stack and synthetic volumes/networks are removed after approval; raw
+evidence/encrypted backup remain ignored. Local emulated-container provenance,
+clean-host/R-006, predecessor, off-host RPO/RTO, rights/privacy/accessibility/full
+nine-tier1.0 and release gates remain explicit. No editorial package rebuild,
+new product/specification change, push or release-status promotion.

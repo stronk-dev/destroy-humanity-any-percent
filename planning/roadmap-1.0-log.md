@@ -6076,3 +6076,23 @@ No new tier, native clean-host/R-006, predecessor, hostedCI, rights/accessibilit
 or release gate is closed. Finish this artifact workflow proof, then continue
 accepted construction and named owner-adoption boundaries. Full nine-tier goal
 remains ACTIVE. Nothing pushed or published.
+
+## 2026-11-11 — Current artifact workflow independently proved; fresh CI reconciled
+
+Exact source3a209466 candidate now has both artifact approval3a209466..7be32421
+and terminal-evidence approval1d81edbd..de82f5f7 from independent Codex review.
+Actual natural play reaches Company2; verifier archives the first run and3board
+rows; the packaged helper restores identical2,799-row populated identity with
+wrong-key/occupied-target refusals. Owning Deployment log holds digests,
+independent execution versus inspected root runs, local-emulation limits and
+post-lease cleanup. No new tier, supported native R-006, predecessor or release
+acceptance follows. Current pointers now distinguish this artifact from historical
+22fed6be evidence; no rebuild for editorial closeout.
+
+External publication advanced origin/main to1d81edbd during this work. Fresh
+CI42942631238 completes: browser/composed/harness/schema pass; historical client
+guard and27Clout partition cases still fail. Browser399s/composed403s/server561s
+miss the unchanged five-minute floor. CI log owns exact jobs/logs and pending
+accounting/history adoption routes. No push/rerun or altered assertion/budget by
+this agent. Continue accepted construction and named owner decisions toward the
+unchanged full nine-tier1.0 goal, which remains ACTIVE.

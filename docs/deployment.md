@@ -234,7 +234,8 @@ applied intents and no rejections/page exceptions. The verifier archived the
 first run and produced three board rows. The packaged backup helper restored
 the resulting database with the same full 2,799-row identity; wrong-key and
 occupied-target refusals preserved their targets. This new terminal evidence
-awaits independent review. The earlier observations above stay tied to `22fed6be`.
+has independent terminal-evidence approval over `1d81edbd..de82f5f7`. The earlier
+observations above stay tied to `22fed6be`.
 
 This is one local candidate built on ARM64 Desktop with emulated Linux-amd64
 checks. It supplies neither a legitimate predecessor pair nor native clean-host
