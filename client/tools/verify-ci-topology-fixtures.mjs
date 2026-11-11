@@ -1,4 +1,4 @@
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -17,6 +17,8 @@ const mutations = [
   ["maintenance trigger in blocking CI", ci.replace("  pull_request:\n", "  pull_request:\n  schedule:\n"), maintenance, makefile],
   ["missing blocking job", ci.replace(/^  schema:[\s\S]*$/m, ""), maintenance, makefile],
   ["wrong workflow leaf", ci.replace("make verify-server-core", "make verify-server"), maintenance, makefile],
+  ["missing server Postgres URL", ci.replace(/^      TEST_DATABASE_URL:.*\n/m, ""), maintenance, makefile],
+  ["empty server Postgres URL", ci.replace(/^      TEST_DATABASE_URL:.*$/m, "      TEST_DATABASE_URL:"), maintenance, makefile],
   ["missing local push leaf", ci, maintenance, makefile.replace("verify-push: verify-server-core verify-harness-fast verify-client test-browser test-game-ui-composed verify-schema", "verify-push: verify-server-core verify-harness-fast verify-client test-browser verify-schema")],
   ["extra local push leaf", ci, maintenance, makefile.replace("verify-push: verify-server-core verify-harness-fast verify-client test-browser test-game-ui-composed verify-schema", "verify-push: verify-server-core verify-harness-fast verify-client test-browser test-game-ui-composed verify-schema verify-server")],
   ["unbounded exhaustive command", ci, maintenance.replace("timeout --signal=INT --kill-after=30s 50m make harness-observe", "make harness-observe"), makefile],
@@ -166,6 +168,69 @@ if (goRepeated.status !== 0 || !goRepeated.stdout.includes("go test -p 1 -count=
   throw new Error("explicit developer repetition was overridden by the cold Go default");
 }
 console.log("Go Make cold default, focused selection and explicit repetition controls passed");
+
+// Execute the actual core target. These doubles test orchestration, not SQL;
+// the adapter and complete package population have real Postgres observations.
+const coreRoot = mkdtempSync(join(tmpdir(), "cloud-clicker-core-make-"));
+try {
+  const bin = join(coreRoot, "bin"), trace = join(coreRoot, "trace.jsonl");
+  mkdirSync(bin);
+  writeFileSync(join(bin, "go"), `#!/usr/bin/env node
+const fs = require('node:fs');
+const args = process.argv.slice(2);
+fs.appendFileSync(process.env.CORE_MAKE_TRACE, JSON.stringify(args) + '\\n');
+if (args[0] === 'list') console.log(process.env.CORE_MAKE_ONLY_HARNESS === '1' ? 'cloud-clicker/server/harness' : 'cloud-clicker/server/account\\ncloud-clicker/server/harness\\ncloud-clicker/server/guild');
+if (args[0] === 'build') fs.writeFileSync(args[args.indexOf('-o') + 1], 'adapter test double');
+if (args[0] === 'test') { console.log('fixture test output'); console.error('fixture test diagnostic'); }
+process.exit(args[0] === process.env.CORE_MAKE_FAIL ? 37 : 0);
+`, { mode: 0o700 });
+  const core = (database, fail = "", count, onlyHarness = false) => {
+    writeFileSync(trace, "");
+    const env = { ...process.env, PATH: `${bin}:${process.env.PATH}`, TEST_DATABASE_URL: database,
+      CORE_MAKE_TRACE: trace, CORE_MAKE_FAIL: fail, CORE_MAKE_ONLY_HARNESS: onlyHarness ? "1" : "0" };
+    // Test the actual cold default, without inheriting a parent Make override.
+    delete env.CORE_TEST_COUNT;
+    delete env.MAKEFLAGS;
+    delete env.MFLAGS;
+    const result = spawnSync("make", ["test-go-core", "GO_TEST_FLAGS=-run 'Test literal pattern'",
+      ...(count === undefined ? [] : [`CORE_TEST_COUNT=${count}`])], {
+      cwd: root, encoding: "utf8", env,
+    });
+    const calls = readFileSync(trace, "utf8").trim().split("\n").filter(Boolean).map(JSON.parse);
+    const build = calls.find((args) => args[0] === "build");
+    const executable = build?.[build.indexOf("-o") + 1];
+    if (executable && existsSync(executable)) throw new Error("core Make left its temporary adapter executable behind");
+    return { ...result, calls, executable };
+  };
+  for (const database of ["", "postgres://declared-fixture"]) {
+    for (const count of [undefined, "2"]) {
+      const result = core(database, "", count);
+      const expected = ["test", "-p", database ? "2" : "1",
+        ...(database ? ["-exec", result.executable] : []), "-run", "Test literal pattern",
+        "cloud-clicker/server/account", "cloud-clicker/server/guild", `-count=${count ?? "1"}`];
+      if (result.status !== 0 || JSON.stringify(result.calls.at(-1)) !== JSON.stringify(expected) ||
+          JSON.stringify(result.calls[0]) !== JSON.stringify(["list", "./..."]) ||
+          result.calls.length !== (database ? 3 : 2) ||
+          !result.stdout.includes("fixture test output") || !result.stderr.includes("fixture test diagnostic")) {
+        throw new Error(`core Make changed population/arguments/streams: ${JSON.stringify(result)}`);
+      }
+    }
+    for (const fail of ["list", ...(database ? ["build"] : []), "test"]) {
+      const result = core(database, fail);
+      if (result.status !== 2 || result.calls.at(-1)?.[0] !== fail || !result.stderr.includes("Error 37")) {
+        throw new Error(`core Make hid or continued after ${fail} failure: ${JSON.stringify(result)}`);
+      }
+    }
+    const empty = core(database, "", undefined, true);
+    if (empty.status !== 2 || empty.calls.length !== 1 || empty.calls[0][0] !== "list") {
+      throw new Error("empty non-harness discovery continued to a default Go test population");
+    }
+  }
+} finally {
+  rmSync(coreRoot, { recursive: true, force: true });
+}
+console.log("Core Go Make preserves SQL isolation, complete selection, cold execution, failures and executable cleanup");
+
 const focused = dryRun("test-browser-focused", "BROWSER_TEST_FLAGS=test/amount-format.test.ts --project chromium");
 if (focused.status !== 0 || !focused.stdout.includes("test/amount-format.test.ts --project chromium") ||
     focused.stdout.includes("typer-table-browser.test.ts")) throw new Error("focused browser selector was expanded into a full/native population");

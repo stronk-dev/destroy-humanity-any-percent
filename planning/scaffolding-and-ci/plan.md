@@ -94,12 +94,23 @@ The separate final consumer rejects missing-package, same-count ID substitution,
 false-green and guard-exhaustion controls. [Bound result](observations/go-isolation-98e46e52.json)
 and owning log retain exact commands, identities, hashes and limitations.
 
-Next: integrate the independently reviewed isolation approach into the accepted
-server CI target as its own reviewable batch, preserving full population, errors
-and native/local command parity. No workflow/default has changed yet. The local
-isolated arm itself exceeds five minutes before hosted setup; full CI latency and
-known accounting/history failures remain open. Multi-database restore profiles
-remain outside the adapter's supported population and are explicitly refused.
+**Server-target integration,2026-11-11:** `test-go-core` now selects the reviewed
+two-package isolation when a test DB URL is supplied, so Actions and the local
+`verify-server-ci` alias consume the same recipe. No-URL native execution stays
+serial. Discovery/filtering must succeed before testing(RP-791); build/test failures
+stay red and each invocation removes its own temporary adapter. Executed old Make
+control hid discovery exit37 as Make0; current controls stop it before tests.
+
+Native/Linux Node24.18 orchestration controls pass. Actual declared Linux/amd64,
+four-CPU `make verify-server-core GO_TEST_FLAGS=-json` completes vet and all83package
+results with the identical15476pass/33skip/28fail test population hash above.
+Make exits2 on the known Clout failure; subsequent generation/boundary dependencies
+do not run in that failed aggregate. No owned databases, marker tables or temporary
+executables remain. The complete batch awaits independent corrective review in
+the owning log. After review, continue CI latency repair and reconcile hosted
+evidence when publication is authorized. The local isolated comparison itself
+exceeds five minutes before hosted setup; accounting/history/five-minute/whole-CI
+gates remain open. Multi-database restore profiles remain explicitly refused.
 
 ## Current hosted evidence — 2026-11-11
 

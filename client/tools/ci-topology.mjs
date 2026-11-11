@@ -98,6 +98,8 @@ export function verifyCITopology(ciSource, maintenanceSource, makeSource, browse
     ["schema", "verify-schema"],
   ];
   for (const [job, target] of blocking) requireExactMakeCommand(ciSource, job, target);
+  requireLine(jobSection(ciSource, "server"), /^      TEST_DATABASE_URL: postgres:\/\/\S+\s*$/,
+    "server job must supply a nonempty declared Postgres URL; native SQL skips cannot stand in for CI");
   requireExactMakeDependencies(makeSource, "verify-push", blocking.map(([, target]) => target));
   requireColdGoRecipes(makeSource);
 

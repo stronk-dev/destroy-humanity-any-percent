@@ -213,13 +213,21 @@ worker health; no extra unbounded SQL diagnostic runs after expiry. This guard
 is not a product verification-latency SLO. RP-770's intermittent healthy-worker
 timeout remains open; scoped observer controls do not make the full lane green.
 
-The default SQL targets share a database within their Compose project, and several
+The serial SQL targets share a database within their Compose project, and several
 fixtures truncate accounts, catalogs and epochs. Run these targets serially across
 implementers and reviewers unless the project and database are explicitly isolated.
 Changing `SAVE_TEST_HOST_PORT` alone changes the host binding, not the database namespace.
 
-`make test-go-isolated-ci` is a manual prototype for concurrent SQL packages;
-the blocking workflow and existing serial targets do not use it. It builds
+`make test-go-core`, used by the hosted server job and `verify-server-ci`, now
+runs two packages concurrently when `TEST_DATABASE_URL` is set. It compiles a
+temporary adapter for the current Go platform, uses Go's standard `-exec` option,
+and removes that executable on success or failure. Without a database URL, the
+native target retains serial execution and its existing explicit SQL skips; that
+is not CI database evidence. The topology check refuses a missing/empty hosted
+database URL. Package discovery must succeed before any tests start; the complete
+non-harness population, flags, cold count, diagnostics and nonzero results remain.
+
+`make test-go-isolated-ci` remains a manual package/concurrency selector. It builds
 `server/cmd/test-postgres-exec` in the declared Linux/amd64 test service, then
 uses Go's standard `-exec` option with `-p 2`. `CI_TEST_PACKAGES`, `CI_TEST_FLAGS`
 and `CI_TEST_COUNT` retain their normal meaning; `CI_TEST_PARALLEL` controls this

@@ -5120,3 +5120,54 @@ root. Editorial evidence checkpoint, not independent CI integration approval.
 Next: a separate server-target integration batch and independent review under
 accepted D2, retaining all tests/errors and local/hosted command parity. Continue
 other latency work from measurement; do not widen budgets or conceal red lanes.
+
+## 2026-11-11 — Integrate the reviewed isolation into the actual CI server leaf
+
+Under accepted D2, `test-go-core` now builds a unique temporary adapter for the
+current Go platform and runs two isolated packages when `TEST_DATABASE_URL` is set.
+Actions and `verify-server-ci` already call this same leaf; their workflow/wrapper
+commands and six-job topology are unchanged. Native no-URL execution stays serial.
+Complete non-harness selection, count1 default, explicit repeat flags, streams
+and nonzero results remain. Build or test failure removes the temporary executable.
+The topology guard rejects a missing/empty hosted DB URL rather than accepting
+native-style SQL skips as hosted evidence. Canonical CI docs describe the behavior.
+
+RP-791 is a confirmed old orchestration defect: a `go list` double emits partial
+packages and exits37, yet old actual Make still runs tests and exits0. The new
+actual Make fixture stops before tests and returns2. Discovery/filter assignments
+now fail before building/testing. Committed controls execute actual Make, checking
+native/SQL branches, true omitted-count cold default, explicit2 repetition, literal
+argument/stream forwarding, list/build/test failures, empty filtered populations
+and temporary-executable cleanup. They are orchestration doubles, not SQL proof.
+`make verify-ci-topology` passes all29 topology negatives plus these controls.
+
+Final fixtures also pass in cached Playwright image's Linux Node24.18.0/GNU Make4.3.
+The initial bare-image attempt fails earlier because Make is absent(confirmed
+spawn ENOENT), not because the new assertions passed. Installing the repository's
+normal Make prerequisite in a disposable container allows the unchanged suite to
+execute; after strengthening default/empty-population cases, the final suite is
+run again and passes. No assertion, test population, budget or cache-policy waiver.
+
+Actual subject command: `docker compose -p cloud-clicker-ci-isolation -f compose.save-test.yml -f compose.ci-test.yml -f .cache/ci-isolation-comparison/compose.resources.yml run --rm test sh -c 'cd /workspace && make verify-server-core GO_TEST_FLAGS=-json'`. The retained
+override assigns4CPUs/cpuset0-3; declared Postgres and Linux/amd64 are real. Full
+vet completes, then all83packages terminate(65pass/17no-test-files/1fail). All
+15476pass/33skip/28failed test/subtest identities equal the preceding comparison,
+hash `b7981a44c6e1d27fcc47aa4fce7177fd096fed0e0055582fd32a42860446999c`.
+Failures are exactly27 known Clout cases plus their parent. Make honestly exits2
+on underlying Go1, so subsequent generation/boundary dependencies do not execute
+in this aggregate. No green full-server/whole-workflow/five-minute claim follows.
+Final catalog has only base/postgres non-template DBs and no markers; no temporary
+adapter remains. Fixture retained only for the serial independent-review lease.
+
+Raw ignored logs and SHA256:
+`ci-core-old-make.log` a3d07cc7290fc2750b0b26a24fc117af5ed048f9c7d37e05046002eca09908a7;
+`ci-core-new-make.log` ccc7f2839f93196eef757a5212e86875ac339d1c11d170a06cbeef83797f7e6e;
+`ci-core-node-linux.log` fee83b70dc06c9e93902042cbdd4ab7019b49ac20c16fc92932f266e47bacaab;
+`ci-core-node-linux-ready.log` 614a825bb6dac9261ae88e24eeb6e1de6e18ecb1f85c85e70ceefe406bf72674;
+`ci-core-integrated.log` 380ceb0a15f40a45d6acde4b6d48fdf3b794fa97b325f5de01bfbdc5e3df6eb4.
+Review by: Codex root(implementer verification, not designated approval).
+Recorded by: Codex root. Full batch after `fa8d5c90` through this containing commit
+awaits fresh independent corrective review; RP-791 remains review-pending. No
+product/schema/kernel/formula/acceptance-floor change or publication. Next: exact
+range review, then further measured latency repair while existing accounting,
+history, hosted and full-nine-tier1.0 obligations remain open.

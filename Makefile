@@ -80,7 +80,19 @@ test-go:
 # harness lane while allowing hosted CI to run the remaining server suite in
 # parallel; the expensive beam is manual-only and is not part of either lane.
 test-go-core:
-	cd server && go test -p 1 $(GO_TEST_FLAGS) $$(go list ./... | grep -v '^cloud-clicker/server/harness$$') -count=$(CORE_TEST_COUNT)
+	set -eu; \
+	cd server; \
+	packages=$$(go list ./...); \
+	packages=$$(printf '%s\n' "$$packages" | grep -v '^cloud-clicker/server/harness$$'); \
+	set -- -p 1; \
+	if [ -n "$${TEST_DATABASE_URL:-}" ]; then \
+		mkdir -p "$(CURDIR)/.cache/bin"; \
+		executor=$$(mktemp "$(CURDIR)/.cache/bin/test-postgres-exec.XXXXXX"); \
+		trap 'rm -f "$$executor"' EXIT; \
+		go build -o "$$executor" ./cmd/test-postgres-exec; \
+		set -- -p 2 -exec "$$executor"; \
+	fi; \
+	go test "$$@" $(GO_TEST_FLAGS) $$packages -count=$(CORE_TEST_COUNT)
 
 test-harness:
 	cd server && go test -p 1 $(GO_TEST_FLAGS) ./harness -count=$(HARNESS_TEST_COUNT)
