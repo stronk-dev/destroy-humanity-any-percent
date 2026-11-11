@@ -28,6 +28,9 @@ combat, Tier3–8 and ending construction ahead. No new tier or release is compl
   approval and packages the reviewed RP-787 reader/RP-788 Offer Sheet fixes.
   Its exact-package natural journey and populated restore have independent
   terminal-evidence approval over `1d81edbd..de82f5f7` in the Deployment log.
+  Later RP-789/RP-790 helper-reader corrections are independently approved in
+  source and must enter the next necessary package before R-006; the current
+  artifact is retained unchanged.
   The previous `22fed6be` natural-play/restore verdicts remain historical.
   RP-786 is closed.
   Supported-host R-006 and predecessor compatibility remain open.

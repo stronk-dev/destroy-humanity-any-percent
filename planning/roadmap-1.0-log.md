@@ -6096,3 +6096,16 @@ miss the unchanged five-minute floor. CI log owns exact jobs/logs and pending
 accounting/history adoption routes. No push/rerun or altered assertion/budget by
 this agent. Continue accepted construction and named owner decisions toward the
 unchanged full nine-tier1.0 goal, which remains ACTIVE.
+
+## 2026-11-11 — Release proof readers now require actual recorded values
+
+Independent corrective approvals cover RP-78954f2b6d0..5d9aa85a and
+RP-7903c175dcb..7bc04b8e. Private scenario inputs reject ambiguous members;
+nested proof readers cannot turn absent guard/measurement/finding fields into
+successful false/zero values. Actual old-source regressions and corrected
+consumers discriminate; the owning Deployment log retains full execution and
+review provenance. This improves the reliability of the release gate, not a new
+playable tier or completed R-006. Retained candidate3a209466 stays unchanged;
+include both helper corrections in the next necessary package. Accounting/
+history, owner decisions, supported-host/predecessor, privacy/accessibility,
+later tiers/endings and the full nine-tier1.0 goal remain open and ACTIVE.

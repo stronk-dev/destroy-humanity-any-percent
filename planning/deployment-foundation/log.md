@@ -13633,3 +13633,26 @@ Independent corrective review pending for complete range after3c175dcb. The
 reviewed3a209466 package predates this and RP-789: batch inclusion at the next
 necessary build before R-006 rather than rebuild for records. Full nine-tier1.0,
 native/clean-host/predecessor, owner decisions and release approval remain open.
+
+## 2026-11-11 — Independent approval of required proof observations
+
+APPROVED complete15-path `3c175dcb..7bc04b8e`.
+Review by: fresh independent Codex `/root/required_observations_corrective_review`.
+Recorded by: Codex root.
+
+Independent full seven-package cold tests/vet pass. Exact3c production-source
+overlay reproduces all43 admissions, including four rebound dossier cases;
+corrected regressions and complete controls pass. Separate old/current Linux
+builds and four actual offline CLI cases confirm both readers accept the exact
+retained3a build record, while only the correction refuses the missing guard
+(exit1/invalid_evidence). Reviewer containers are absent. Optional historical
+build/recovery DTO compatibility and the complete code/docs/records range were
+inspected; no findings. An initial Docker sandbox denial executed no control;
+the later permitted executions supplied this verdict. Own evidence is under
+.cache/review-rp790-members; CLI results SHA256
+`c85977327801d30c6815c23e52a47406e22054e1c86a7066bbc10566168a5d92`.
+
+RP-790 closes in source. The retained3a209466 candidate remains unchanged and
+predates RP-789/RP-790; batch both into the next necessary package before R-006.
+No new producer, policy/spec adoption, database/native clean-host proof, original
+feature acceptance, archival, push or release approval.

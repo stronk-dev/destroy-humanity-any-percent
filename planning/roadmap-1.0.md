@@ -22,6 +22,9 @@ terminal-evidence approval over `1d81edbd..de82f5f7`; older runtime observations
 stay tied to their original manifest. Fresh hosted CI at `1d81edbd` passes
 browser/composed/harness/schema and retains the known history/27-Clout failures
 and timing-floor misses, as recorded in the [CI plan](scaffolding-and-ci/plan.md).
+The later RP-789/RP-790 helper-reader corrections are independently approved in
+source; include them in the next necessary package before R-006, keeping the
+retained candidate's historical proof intact.
 Supported-host R-006, predecessor compatibility and the release decision
 remain open. [Deployment evidence](deployment-foundation/plan.md)
 Founder-age label adoption is requested; no answer or authored content is inferred.

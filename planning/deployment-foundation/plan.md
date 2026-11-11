@@ -14,7 +14,9 @@ The corrected shared decoder checks required members recursively while retaining
 declared optional historical build fields. All regressions/controls, affected
 readers/CLIs, vet and Linux helper build pass. Old/new actual Linux consumers
 accept the intact retained candidate; only the corrected helper rejects its
-missing guard. Independent corrective review pending. The `3a209466` artifact
+missing guard. Fresh independent Codex review APPROVES complete
+`3c175dcb..7bc04b8e` with its own full tests/vet, all43 old/current regressions,
+old/current Linux builds and actual four-case CLI comparison. The `3a209466` artifact
 remains unchanged and predates RP-789/RP-790; batch both helper corrections in
 the next necessary package before R-006. No native/feature/release claim follows.
 
