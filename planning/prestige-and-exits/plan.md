@@ -55,9 +55,9 @@ This ordinary-value correction is independent of RP-771's pending capacity choic
 Wind Down fails at the admitted Route Knowledge maximum, including a companion
 owning every hint. Full state/revision/history rollback holds; the original six
 matrix rows still pass. [Retained red regression and contract boundary](route-knowledge-capacity.md).
-Resolve counter capacity/preview/grant semantics before repair; do not infer
-Route Knowledge saturation from Reputation P2c, narrow valid states or claim
-universal AC5 from the older bounded matrix. No code change is adopted here.
+The [capacity draft](../../rfc/route-knowledge-capacity.md) frames the owner
+decision and its compatibility work. Technical review and owner direction
+remain prerequisites to settling the repair contract.
 
 1. [x] Add save v7 Company/Founder state, validation, migrations, and corpus fixtures.
 2. [x] Implement cross-runtime prestige arithmetic and declarative Phase-0 policy.

@@ -88,3 +88,37 @@ the valid-state case, narrow save validity or call hint spending a universal esc
 After the contract is resolved, integrate the retained regression with the
 implementation, exercise real persistence/replay and both runtimes, and obtain
 independent review. RP-038/full acceptance and RP-771 remain open.
+
+## 2026-11-11 — Positive stored offer and projection boundaries
+
+At source `d66e4ca1`, the existing Wind Down/scripted Exit and projection capacity
+populations passed cold on real Postgres, including the projector's current
+overflow refusal. Production passed in 1.043s and Route Projection in 0.274s.
+The [draft remedy](../../rfc/route-knowledge-capacity.md) preserves the distinction
+between the Exit's saved balance and the projector's independently summed facts.
+
+An overlay of `TestPrestigeWindDownAndScriptedExitIntegration` used the existing
+offer-age population. After decoding its stored offer and before writing the
+progressed Company, set `stored.PayoutPreview.RouteKnowledge = 10` and marshal
+`stored` back into `offered.State.OfferState.TermsJSON`. In the `fresh` case,
+load and write the Founder with balance `9007199254740989` using the new revision
+for `accept_exit_offer`. Leave the `one_millisecond` Founder's balance unchanged.
+Run just those subtests using the Compose Go overlay mechanism above. The fresh
+offer failed with `invalid production engine state`. The control applied and
+the original committed-payout assertion verified the positive floor. This is
+admitted stored input. Newly generated acquisition/acquihire offers carry zero.
+The raw overlay and result remain in ignored `.cache/rp771-offer-capacity/`.
+
+- Unmodified suite log SHA-256: `60d1f112b43ef488400780cfcfafe0ea8e9d9986f26deddee3682fa679565f3f`.
+- Overlay source SHA-256: `97a7d0ac86992a3adf51b4ae83f12e01d333bf428e56aec1ba3a186112c36546`.
+- Overlay result SHA-256: `0ebc2140501e12e37684df7ebf973f61bc8d732f466703720d4b4f36863e8847`.
+
+With maximum `M = 9007199254740991`, a Node `BigInt` model started at `M−2`
+and applied a credit of 10 and debit of 50 in both orders. Exact addition yields
+`9007199254740949` in both. Clipping each arriving credit at `M` yields
+`9007199254740941` credit-first and `9007199254740949` debit-first. This rules
+out clipping callbacks as an implementation of a deterministic cap. In the
+same model `M+M` is `18014398509481982`, and JavaScript `Number` aliases `M+1`
+with `M+2`. These are arithmetic checks. The acceptance population still needs
+an actual scripted Exit whose combined grant exceeds `M` and actual replayers
+and SQL consumers that preserve the amount.

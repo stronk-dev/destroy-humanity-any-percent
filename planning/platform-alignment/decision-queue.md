@@ -10,14 +10,11 @@ including when every hint is already owned. AC5 requires the Exit; Routes D5/C6
 does not settle reward overflow, and P2c's Reputation saturation is not a Route
 Knowledge ruling. A typed refusal alone would leave the AC5 failure intact.
 
-Resolve whether Route Knowledge preserves complete grants through wider exact
-representation, or has an explicit visible finite cap with defined reward and
-preview rules. The latter cannot silently break P3's preview promise; the former
-must own versioned state/wire/projection/replay compatibility and all producers,
-including curriculum bonuses. This is a concrete contract choice, not permission
-to narrow valid states, discard rewards or select a convenient clamp. No direction
-has been requested/adopted by this record; prepare the bounded remedy contract
-before implementation. It blocks this repair/full AC5, not unrelated accepted work.
+The [draft](../../rfc/route-knowledge-capacity.md) recommends preserving every
+earned grant with wider exact integers. A visible cap would discard excess and
+needs a further ruling on positive stored offers. The Postgres offer control
+confirms P3's guarantee can already hit the same capacity defect. Technical review
+and owner direction are pending. This choice blocks the repair and full AC5.
 
 ## Kernel-neutral versioning — RP-131 direction requested2026-10-15
 

@@ -817,3 +817,15 @@ producer/decoder defect only; age rendering/copy/full AC7, RP-771, original
 feature acceptance, public-profile adoption and release remain open. Current
 kernel227/migration87 now needs later coherent artifact refresh; no relabel of
 the approved kernel226 `c5130acf` package. No push/archive/goal pause.
+
+## 2026-11-11 — Route Knowledge capacity decision prepared (RP-771)
+
+The [capacity draft](../../rfc/route-knowledge-capacity.md) recommends exact
+accumulation while preserving the promise and all existing grant producers.
+A visible discard cap needs a separate promise and event-order ruling. On
+real Postgres at `d66e4ca1`, unmodified Exit and projection controls passed;
+a valid stored positive offer failed at two points of headroom and passed with
+ordinary headroom. The [evidence](route-knowledge-capacity.md#2026-11-11--positive-stored-offer-and-projection-boundaries)
+binds the overlay and both results. Exact activation and reader rollout still
+need specification before construction. Technical review and owner direction
+pending. The runtime and AC5 status remain unchanged.
