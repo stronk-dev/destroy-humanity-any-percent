@@ -13377,3 +13377,38 @@ and left no test containers, volumes or networks. Cold native package tests
 and vet passed. The reviewer inspected the packaged repeat's digest and
 observations. The developer integration test is approved, while RP-143's
 shipped producer and supported-host R-006 execution remain open.
+
+## 2026-11-11 — Packaged browser recovers an interrupted purchase (RP-143)
+
+The exact `22fed6be` release served the checked HTML, CSS, entry JavaScript
+and prediction worker through its shipped Caddy configuration over fixture
+TLS. Chromium ran on the local host and the bundle's exact gameserver,
+Caddy and Postgres images ran on Docker Desktop. A fresh player started at
+Company 1, clicked Fix Computer 12 times, and reached revision 13. No save or
+game clock was seeded. The browser used the visible Beige Tower **Buy 1**
+control to submit the purchase.
+
+The fixture held the receipt insert and observed the blocked Postgres backend
+holding write locks on the save, events and run log. SIGKILL exited 137.
+Caddy returned HTTP 502 to the in-flight purchase; SQL confirmed no receipt,
+event, replay command, revision or generator from it. The page disabled the
+purchase while the service was down. The original WebSocket closed with 1006
+and a reconnect attempt failed during the outage. No courtesy frame arrived.
+
+After restarting the same container, the same page reopened its WebSocket
+and completed state recovery. The purchase was still disabled when the socket
+first opened, then became actionable. One new **Buy 1** click with a distinct
+intent ID committed revision 14 and exactly one generator. The original
+interrupted intent remained absent. All observed state reads returned 200,
+the page never reloaded, and no page exception or external browser request was
+observed. The prior HTTP experiment separately covers resubmitting the same
+intent ID and byte-identical receipts.
+
+Private fixture and evidence remain under ignored
+`.cache/rp143-packaged-browser/`. Orchestrator SHA-256
+`21cc273d0c8697f2a6d0fdc7c2b783dc9edef29ce613d27d42ac4c2d6a403359`, browser
+fixture SHA-256 `9b60bdf5453fd3a7601b90884324454481cd8435e9eec2f2545fc6d03b00c94c`,
+aggregate SHA-256 `6a32bc089eaccdd27a9963fb944e7aa139e573d73b3a05a9f06730125130f965`.
+All disposable Docker resources were removed. This is local packaged-player
+evidence for an interrupted purchase. The shipped R-006 producer, supported
+clean-host run and formal AC4 closeout remain open.

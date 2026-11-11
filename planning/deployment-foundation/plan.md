@@ -993,6 +993,9 @@ persisted-result checks when constructing the supported rehearsal producer.
 `make test-deployment-release` now repeats those checks with real Caddy and
 Postgres and a killable gameserver child. The compiled R-006 population still
 lacks that producer.
+The [packaged browser run](log.md#2026-11-11--packaged-browser-recovers-an-interrupted-purchase-rp-143)
+also showed the same page disables buying during the outage, reconnects
+and commits a fresh visible purchase after recovering state.
 
 **Safety corrective review checkpoint, 2026-11-01:** fresh independent Codex
 approves complete RP-466 atomic backup commit, RP-544 live-writer cleanup,
