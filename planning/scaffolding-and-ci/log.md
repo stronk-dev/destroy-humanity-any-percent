@@ -5225,3 +5225,38 @@ Approval covers this bounded CI integration and RP-791 correction. It does not
 make the known-red server aggregate green, establish hosted five-minute timing,
 close accounting/history obligations, accept the full feature or authorize a
 release/publication. Existing downstream gates remain open.
+
+## 2026-11-11 — Attribute the unchanged cosmetics property before further repair
+
+Full actual CI-leaf timing identifies cosmetics isolation70.33s and the Snake odd
+board content gate54.12s as material costs. Inspect their actual bodies: cosmetics
+still requires200seeds/24simulated hours/288steps/two arms and every receipt/state/
+Founder/next-run check; Snake still observes1024seeds and exact emitted corpus.
+No population, transition bound or oracle is narrowed.
+
+At clean sourceb07d9928 execute exactly one focused cosmetics CPU profile through
+the declared four-CPU/cpuset0-3 Linux/amd64 test service, ordinary count1/default Go
+timeout. The complete named property passes57.02s(package57.110s). This is a pure
+engine property, not SQL/browser evidence. Profile duration57.03s, sampled CPU
+69.27s; compiled binary confirms go1.26.10/linux-amd64. `go tool pprof -top` and
+`-top -cum` read that same retained profile without repeating the test.
+
+Cumulative `save.EncodeState` accounts24.35s/35.15% of sampled CPU and
+`save.RestoreState`15.07s/21.76%. JSON unmarshal/marshal/GC costs overlap these call
+trees; do not sum percentages or call them wall-time savings. This attributes
+serialization cost, not a defect or an optimization authority. Reusing Company
+bytes across a Founder transition could hide alias/mutation effects, so removing
+the existing observation is not a valid shortcut. No production/codec, fixture,
+kernel, balance, CI default or limit changed during this diagnostic.
+
+[Small profile record](observations/cosmetics-cpu-b07d9928.json) binds exact command,
+population, source/profile/binary/top-output hashes and interpretation. Ignored
+`.cache/ci-cosmetics{.pprof,-profile.log,-top.log,-cumulative.log}` and
+`.cache/bin/ci-cosmetics-profile.test` retain raw data. Owned containers/network
+removed; normal cache, images and profile artifacts preserved. Review by: Codex
+root(executed diagnostic/read actual CPU samples). Recorded by: Codex root.
+Editorial measurement checkpoint, not designated optimization/feature approval.
+Next: bounded full-population scheduling experiment driven by the measured long
+packages, with resources/order/known failures fixed first. Preserve all tests and
+the accounting/history/five-minute/full1.0 holds; no worker sweep or blind codec
+rewrite. The full nine-tier goal remains active.

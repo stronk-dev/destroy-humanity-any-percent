@@ -114,7 +114,7 @@ is authorized. The local isolated comparison itself
 exceeds five minutes before hosted setup; accounting/history/five-minute/whole-CI
 gates remain open. Multi-database restore profiles remain explicitly refused.
 
-Next bounded diagnostic: existing full-run timings attribute70.33s to the unchanged
+Completed bounded diagnostic: existing full-run timings attribute70.33s to the unchanged
 200-seed/24-hour cosmetics isolation property and54.12s to the unchanged1024-seed
 Snake content gate. Read the actual bodies; do not reduce either population,
 transition/restore/oracle coverage or limits. Run one focused cosmetics CPU profile
@@ -122,6 +122,21 @@ on the declared four-CPU Linux service with the ordinary200 seeds/288steps/two a
 and cold count1. Profile only to attribute cost; retain the profile/binary identity
 and passing result, then choose a conformance repair from measured hotspots. This
 does not itself authorize a contract change or prove a hosted timing improvement.
+
+At sourceb07d9928, that exact property/profile passes57.02s. Profile69.27sampled CPU
+seconds: `save.EncodeState`24.35s/35.15%, `save.RestoreState`15.07s/21.76%
+cumulatively. These overlapping CPU totals are not additive wall-time savings.
+[Profile identity/result](observations/cosmetics-cpu-b07d9928.json). No codec or
+fixture observation is changed; cached Company bytes across a Founder transition
+could mask alias/mutation effects and cannot simply replace the existing oracle.
+
+Next: evaluate scheduling from the measured long-package costs, keeping Go's own
+test runner and the full83-package/test identity population. A bounded four-package
+arm that starts the measured long packages earlier can test overlap of real wait
+windows and CPU work before another production/codec change is considered. Fix its
+order/resources/expected failures before executing, compare with the retained
+two-package result, stop on new failure/incomplete evidence, and do not sweep
+workers or promote a default without the complete result and independent review.
 
 ## Current hosted evidence — 2026-11-11
 

@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "source": "b07d9928c77bcafae5b69974b7eff412f184d910",
+  "purpose": "Attribute CPU cost of the unchanged cosmetics isolation property; no optimization or acceptance change",
+  "command": [
+    "docker",
+    "compose",
+    "-p",
+    "cloud-clicker-ci-isolation",
+    "-f",
+    "compose.save-test.yml",
+    "-f",
+    "compose.ci-test.yml",
+    "-f",
+    ".cache/ci-isolation-comparison/compose.resources.yml",
+    "run",
+    "--rm",
+    "test",
+    "go",
+    "test",
+    "-p",
+    "1",
+    "./production",
+    "-run",
+    "^TestCosmeticsAreMechanicallyIsolated$",
+    "-count=1",
+    "-v",
+    "-cpuprofile",
+    "/workspace/.cache/ci-cosmetics.pprof",
+    "-o",
+    "/workspace/.cache/bin/ci-cosmetics-profile.test"
+  ],
+  "population": {
+    "seeds": 200,
+    "simulated_hours": 24,
+    "steps_per_seed": 288,
+    "arms": 2,
+    "source_test": "TestCosmeticsAreMechanicallyIsolated",
+    "assertions_changed": false
+  },
+  "environment": {
+    "go_version": "go1.26.10",
+    "target": "linux/amd64",
+    "configured_cpus": 4,
+    "configured_cpuset": "0-3",
+    "execution": "local Apple Silicon emulation; declared CI Compose override"
+  },
+  "result": {
+    "exit_code": 0,
+    "test_seconds": 57.02,
+    "package_seconds": 57.11,
+    "profile_duration_seconds": 57.03,
+    "cpu_samples_seconds": 69.27,
+    "build_id": "aa8f28d610421720d400a217b73fc3d240263817"
+  },
+  "cumulative_cpu": [
+    {
+      "function": "save.EncodeState",
+      "seconds": 24.35,
+      "percent": 35.15
+    },
+    {
+      "function": "save.RestoreState",
+      "seconds": 15.07,
+      "percent": 21.76
+    },
+    {
+      "function": "encoding/json.Unmarshal",
+      "seconds": 16.87,
+      "percent": 24.35
+    },
+    {
+      "function": "encoding/json.Marshal",
+      "seconds": 14.07,
+      "percent": 20.31
+    }
+  ],
+  "interpretation": "Serialization/restore is material sampled CPU cost. Cumulative call rows overlap; percentages are neither additive nor elapsed-time savings.",
+  "limits": [
+    "One profiled local run, not a speed comparison or hosted timing evidence.",
+    "No transition, restore, byte comparison, seed or negative oracle is removed.",
+    "No production codec/cache/mechanics or CI budget is changed."
+  ],
+  "sha256": {
+    ".cache/ci-cosmetics-profile.log": "67ba52affcab5be663cc949edcdab5eb4eacdf11d4f8751ccd423ce90246ff11",
+    ".cache/ci-cosmetics.pprof": "dfea07b58f8404bb5a43f70b959b34f965620c8b30f47eedc88ca03582b8fb57",
+    ".cache/bin/ci-cosmetics-profile.test": "3f1f138fb44b831c0a9c7b6b3dac8c5021a48a27d9cff88382700cf152da46bc",
+    ".cache/ci-cosmetics-top.log": "5b8736c51f91367e7e0946334875961557b74dc2c6e2c9ed5bc33d4dbdf044e8",
+    ".cache/ci-cosmetics-cumulative.log": "1c6114bed5470ba7be4d768c0e430dea7fb38ffa1eecc71f9eaa07ad9f6cb7e7",
+    ".cache/ci-isolation-comparison/compose.resources.yml": "c8dc348f2a603fb0fc8868506b1d16c902b535e87a34834f97a8962af2b400d4",
+    "server/production/cosmetic_isolation_test.go": "0e840405365bcdfb7cb2e3f6ca500010e79c8976fdaf66d3347ba3ecd3d494e9",
+    "server/save/state.go": "a78c38276ad92c0dcfda414f16286a04f493fc837b22a12ae2fda8ae537d80d4"
+  },
+  "cleanup": "Owned containers/network removed; images, normal Go cache and ignored profile/binary retained."
+}
