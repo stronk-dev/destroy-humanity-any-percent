@@ -11,7 +11,9 @@
 require each original decoded member exactly once and non-null before selecting
 runtime paths. All five actual mode-0600 old-reader regressions fail; corrected
 cases and valid/plain/escaped controls pass. Full affected Rehearsal/CLI checks,
-vet and Linux helper build pass. Independent corrective review is pending.
+vet and Linux helper build pass. Fresh independent Codex review APPROVES complete
+`54f2b6d0..5d9aa85a`, with its own exact-old overlay failures, affected tests/vet
+and byte-identical Linux helper rebuild.
 The reviewed `3a209466` package remains unchanged and predates this helper-only
 correction; include it in the next necessary package before R-006 evidence.
 No gameplay/kernel/native-supervisor policy or release criterion is changed.

@@ -13573,3 +13573,18 @@ next necessary package build before R-006, not an editorial rebuild now.
 Review by: Codex root(implementer checks). Recorded by: Codex root.
 Independent corrective review pending for the complete range after54f2b6d0.
 No external publication or original feature/release acceptance.
+
+## 2026-11-11 — Independent approval of unambiguous scenario inputs
+
+APPROVED complete six-path `54f2b6d0..5d9aa85a`.
+Review by: independent Codex `/root/scenario_input_corrective_review`.
+Recorded by: Codex root.
+
+The reviewer independently reproduces all five failures using exact old reader
+source through a Go overlay, executes corrected full Rehearsal/CLI tests and vet,
+and builds a Linux helper byte-identical to the root build. Complete plain and
+legally escaped-name controls preserve the full config. No findings. Verdict
+.cache/review-rp789-scenario/verdict.json SHA256
+`d214ecf853d2cb1b2b8f57a8ed4a51bb984a33076c8e093753444ba77c5fda19`.
+RP-789 closes in source; the reviewed3a209466 package predates this helper-only
+change. No database, native clean-host/R-006 or feature/release approval follows.
