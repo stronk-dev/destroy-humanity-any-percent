@@ -604,8 +604,12 @@ its revision instead of disappearing. When Gate is committed before the WebSocke
 ready, the HTTP command path also fetches the authoritative snapshot; the same-revision
 `gate_crossed` event can still record its split when it arrives.
 Declining an exit offer likewise holds the action boundary through an authoritative snapshot, so
-the next player intent cannot reuse the revision consumed by the decline. Terminal actions still
-rely on ordered event delivery so an eager snapshot cannot suppress `run_ended`: Wind Down and
+the next player intent cannot reuse the revision consumed by the decline. A matching Company
+decline or expiry event closes the Offer Sheet. If it was visible, the Desk replaces it and focus
+moves from the removed sheet to the Desk heading. A player already on another surface stays there.
+When the event is ahead of the current snapshot, the host requests the authoritative revision
+before another action. An accepted offer continues through the ordered Run End event.
+Terminal actions rely on ordered event delivery so an eager snapshot cannot suppress `run_ended`. Wind Down and
 offer acceptance remain disabled until the player subscription reports `transport_recovered`, and
 disable again on close, drain, or resync. Once `run_ended` arrives, the trailing command receipt
 does not itself refresh into the server-created next run. The HTTP applied-action

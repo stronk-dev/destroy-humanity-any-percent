@@ -9153,3 +9153,22 @@ Independent Cosmetic and N5 log SHA-256 values, respectively:
 `282bb8e35c2fa32596a580b127a68431c02fa186deb224cb360a80d63c40f240` and
 `e65a5aacbd23887f8f6b8ca95484b8bb35683201cc1031a5bdf119508d1c4fc9`.
 RP-783 is closed. The hosted job and supported-host R-006 remain open.
+
+## 2026-11-11 — Return to the Desk when an Exit offer closes (RP-788)
+
+A matching Company decline or expiry removed the Offer Sheet content but
+left the empty surface selected. The mounted regression failed on both
+resolutions in Chromium, Firefox and WebKit. The unrelated-offer, other-surface
+and accepted-then-Run-End controls remained intact. The correction applies
+Game UI GU-C3/GU-C11 and Garage GS0.2/GS0.6. It returns the visible sheet to
+Desk, preserves focus outside the removed sheet, and starts the existing
+authoritative refresh when the resolution is ahead of the snapshot.
+The next native action verifies the refreshed Company revision.
+
+The full affected Linux functional browser file passed 336 tests across
+three engines, with 15 performance-only cases skipped by the focused lane.
+Strict TypeScript, Svelte diagnostics, production client build and client
+boundary checks passed. The mounted test uses ordered runtime events and a
+controlled snapshot response. It does not exercise real server offer
+production or constitute full Prestige acceptance. Independent corrective
+review pending. The retained local release bundle predates the UI fix.

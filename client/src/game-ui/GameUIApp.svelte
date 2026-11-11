@@ -472,7 +472,24 @@
       timer?.terminal(value.payload.rta_ms);
       if (snapshot) writeLocalRunTiming(localTimingStorage(), { category: snapshot.run.category, founder_id: value.payload.founder_id, pb_rta_ms: value.payload.rta_ms, run_seq: value.payload.run_id.run_seq, splits });
       preemptLifecycle(value.cursor, "run_end");
-    } else if (value.kind === "exit_offer_resolved" && value.payload.offer_id === offer?.payload.offer_id) offer = undefined;
+    } else if (message.scope === "company" && value.kind === "exit_offer_resolved" && value.payload.offer_id === offer?.payload.offer_id) {
+      const focused = document.activeElement;
+      offer = undefined;
+      // Acceptance is followed by run_ended. Only the nonterminal
+      // resolutions return the visible sheet to the running Company.
+      if (value.payload.resolution === "accepted") return;
+      if (surface === "offer_sheet") {
+        show("desk");
+        const resolvedSelection = selectionGeneration;
+        const sheet = root?.querySelector('section[aria-labelledby="offer-heading"]');
+        if (focused && sheet?.contains(focused)) void afterDOMUpdate().then(() => {
+          if (disposed || selectionGeneration !== resolvedSelection || surface !== "desk" || focused.isConnected ||
+              (document.activeElement !== focused && document.activeElement !== document.body)) return;
+          root?.querySelector<HTMLElement>("#desk-heading")?.focus();
+        });
+      }
+      if (snapshot && message.revision > snapshot.revision) void refresh();
+    }
   }
 
   function estimatedServerNowMS(): number {

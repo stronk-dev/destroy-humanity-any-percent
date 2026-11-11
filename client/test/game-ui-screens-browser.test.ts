@@ -57,6 +57,13 @@ const crossed: GateCrossedEvent = { cursor: 2, kind: "gate_crossed", occurred_at
   run_id: { company_stream_id: ended.payload.run_id.company_stream_id, run_seq: 1 },
 } };
 
+function offerResolution(resolution: "accepted" | "declined" | "expired", offerID = offer.payload.offer_id, revision = 3): GameUIRuntimeMessage {
+  return { kind: "event", revision, scope: "company", value: {
+    kind: "exit_offer_resolved", cursor: revision, occurred_at_ms: offer.payload.expires_at_ms,
+    payload: { offer_id: offerID, resolution, run_seq: resolution === "declined" ? 1 : null },
+  } };
+}
+
 class FixtureRuntime implements GameUIRuntime {
   readonly requests: Readonly<Record<string, unknown>>[] = [];
   listener: ((message: GameUIRuntimeMessage) => void) | undefined;
@@ -583,6 +590,75 @@ it.skipIf(typeof document === "undefined")("keeps Exit offer precedence over a p
       expect(document.activeElement).toBe(target.querySelector("#offer-heading"));
     } finally { await unmount(app); target.remove(); }
   }
+});
+
+it.skipIf(typeof document === "undefined").each(["declined", "expired"] as const)(
+  "returns to the Desk after the current offer is %s and uses the new revision", async (resolution) => {
+    const { userEvent } = await import("vitest/browser");
+    const runtime = new FixtureRuntime(true);
+    const target = document.createElement("div"); document.body.append(target);
+    const app = mount(GameUIApp, { target, props: { runtime } });
+    try {
+      await settleIntentState();
+      runtime.listener?.({ kind: "event", revision: 2, scope: "company", value: offer });
+      await settleIntentState();
+      const decline = [...target.querySelectorAll<HTMLButtonElement>("section[aria-labelledby='offer-heading'] button")]
+        .find((button) => button.textContent?.trim() === t("screen.offer_sheet.decline", {}, "era_1995"))!;
+      decline.focus();
+      runtime.listener?.(offerResolution(resolution, "01985555-3333-7333-8333-333333333334"));
+      await settleIntentState();
+      expect(target.querySelector("main")?.dataset.surface).toBe("offer_sheet");
+      expect(document.activeElement).toBe(decline);
+      expect(runtime.snapshotCalls).toBe(1);
+
+      runtime.current = { ...snapshot, revision: 3 };
+      runtime.listener?.(offerResolution(resolution));
+      await settleIntentState();
+      expect(target.querySelector("main")?.dataset.surface).toBe("desk");
+      expect(target.querySelector("#offer-heading")).toBeNull();
+      expect(document.activeElement).toBe(target.querySelector("#desk-heading"));
+      expect(runtime.snapshotCalls).toBe(2);
+
+      const manual = [...target.querySelectorAll<HTMLButtonElement>(".manual button")]
+        .find((button) => button.textContent?.trim() === "Fix Computer")!;
+      manual.focus();
+      await userEvent.keyboard("{Enter}");
+      await settleIntentState();
+      expect(runtime.requests).toHaveLength(1);
+      expect(runtime.requests[0]).toMatchObject({ kind: "perform_manual_batch", expected_revision: 3 });
+    } finally { await unmount(app); target.remove(); }
+  });
+
+it.skipIf(typeof document === "undefined")("keeps current navigation on offer resolution and defers accepted offers to Run End", async () => {
+  const { userEvent } = await import("vitest/browser");
+  const runtime = new FixtureRuntime(true);
+  const target = document.createElement("div"); document.body.append(target);
+  const app = mount(GameUIApp, { target, props: { runtime } });
+  try {
+    await settleIntentState();
+    runtime.listener?.({ kind: "event", revision: 2, scope: "company", value: offer });
+    await settleIntentState();
+    const settings = [...target.querySelectorAll<HTMLButtonElement>("nav button")]
+      .find((button) => button.textContent?.trim() === t("surface.settings.title", {}, "era_1995"))!;
+    settings.focus();
+    await userEvent.keyboard("{Enter}");
+    await settleIntentState();
+    runtime.current = { ...snapshot, revision: 3 };
+    runtime.listener?.(offerResolution("expired"));
+    await settleIntentState();
+    expect(target.querySelector("main")?.dataset.surface).toBe("settings");
+    expect(document.activeElement).toBe(settings);
+
+    runtime.listener?.({ kind: "event", revision: 4, scope: "company", value: { ...offer, cursor: 4 } });
+    await settleIntentState();
+    const readsBeforeAcceptance = runtime.snapshotCalls;
+    runtime.listener?.(offerResolution("accepted", offer.payload.offer_id, 5));
+    runtime.listener?.({ kind: "event", revision: 5, scope: "company", value: { ...ended, cursor: 6 } });
+    await settleIntentState();
+    expect(target.querySelector("main")?.dataset.surface).toBe("run_end");
+    expect(document.activeElement).toBe(target.querySelector("#run-end-heading"));
+    expect(runtime.snapshotCalls).toBe(readsBeforeAcceptance);
+  } finally { await unmount(app); target.remove(); }
 });
 
 it.skipIf(typeof document === "undefined")("renders only server-projected transition controls and submits their existing intents", async () => {
