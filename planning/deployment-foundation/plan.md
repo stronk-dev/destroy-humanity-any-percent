@@ -983,6 +983,15 @@ unsupported admitted-work row with exit2. The log owns full hashes and limits;
 original R9/R22, real crash-during-write, exact-release/clean-host and full
 Deployment acceptance remain open. These corrective scopes no longer await Claude.
 
+**Packaged crash evidence, 2026-11-11 (RP-143):** the exact local `22fed6be`
+gameserver rolled back an in-flight purchase after SIGKILL. The existing
+session retried the same request after restart and bought exactly one
+generator, with identical receipt bytes on duplicate. The
+[owning log](log.md#2026-11-11--packaged-crash-during-an-admitted-purchase-rp-143)
+binds the fixture and observations. Reuse the transaction checkpoint and
+persisted-result checks when constructing the supported rehearsal producer.
+The compiled R-006 population still lacks that producer.
+
 **Safety corrective review checkpoint, 2026-11-01:** fresh independent Codex
 approves complete RP-466 atomic backup commit, RP-544 live-writer cleanup,
 RP-545 shipped-copy attribution and RP-481/RP-482 rehearsal-baseline ranges.

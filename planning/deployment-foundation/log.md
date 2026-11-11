@@ -13278,3 +13278,46 @@ review evidence is in ignored `.cache/rp787-independent-review/`.
 The root also cross-compiled both updated helpers with the packaging Make
 targets and verified their Linux/amd64 ELF format. RP-787 is closed in source.
 The builds alone do not refresh `22fed6be` or execute R-006.
+
+## 2026-11-11 — Packaged crash during an admitted purchase (RP-143)
+
+Executed the Deployment AC4 interruption case locally against bundle source
+`22fed6be` (manifest `sha256:f9438412fe23a5ec0f382dac968791ecdf7fb2889b3d16f4931800c2d3a35843`).
+The running gameserver used exact image
+`sha256:a7b820a2e8f27ae81614a1c814131b2f32076172cbd7232d395be9be6456dd16`.
+The shipped Caddy configuration served the API over fixture-CA-validated TLS.
+The private Compose override selected cached Linux/amd64 image configs, bound
+Caddy to loopback, used JSON logging and disabled automatic gameserver restart
+to observe the interruption. Postgres started empty. No production or shared
+database was used.
+
+Bootstrapped a Founder and earned 12 cash with an ordinary manual batch.
+The fixture took a Postgres ShareLock on `intent_records` and submitted an
+authenticated one-generator purchase through Caddy. `pg_blocking_pids` tied
+the gameserver's blocked `INSERT INTO intent_records` to the fixture backend.
+The real intent transaction reaches that insert after writing the new save
+revision, events and run-log entry, before committing any of them.
+
+SIGKILL exited 137 and the outstanding HTTP call returned 502. With the
+fixture lock released and the killed connection gone, SQL still observed
+revision 2 and zero new generators, intent rows, events, run-log entries
+or receipt outbox entries. Restarted the same container and confirmed that
+the original session could still read its Founder state. Repeating the
+identical purchase request returned an applied receipt and left revision 3,
+one generator, one intent row, two events (exactly one purchase event), one
+run-log entry and one receipt outbox entry. Another identical request returned
+HTTP 200 with byte-identical receipt and the same persisted state and counts.
+
+The first attempt incorrectly waited for the killed client's Postgres backend
+to exit while the fixture still held its blocker. It expired and yielded no
+complete result. The successful run checks rollback visibility while holding
+the lock, then releases only the fixture blocker and waits for the old backend
+to leave before restarting. No matching containers, networks or volumes remain.
+
+Private executable fixture and aggregate evidence are in ignored
+`.cache/rp143-packaged-crash/`. Script SHA-256
+`9b267f7c3803b08cce4ad311bbfcf9401cf9c9600aff5694a2ec40c99a28f4a0`,
+aggregate SHA-256 `c090a7e8ad1e5e651ab1f2e8ea0dd026b2147f7fcec675862c47afa5b56f5b86`.
+This is a local Caddy/HTTP/Postgres observation under Docker Desktop emulation.
+The shipped R-006 command still needs a real producer for this population,
+and the supported-host rehearsal, backup objectives and AC4 closeout remain open.
