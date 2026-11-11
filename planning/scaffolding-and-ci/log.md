@@ -5510,3 +5510,45 @@ hosted five-minute, whole-CI, reliability or full-nine-tier1.0 claim follows.
 Known Clout/history and broader release gates remain open. SQL/browser lease
 released explicitly before root removed its owned container/network; no reviewer
 source edits, commit, publication or archival.
+
+
+## 2026-11-11 — Full local Linux composed reproduction
+
+Under accepted CI D2/D3 and RFC-0000, add `make test-game-ui-composed-ci` so
+local verification can exercise the whole composed job on Linux Go/Node/browser,
+rather than only native macOS journeys and Linux control doubles. The target
+builds the declared Go1.26/Playwright1.62 image, installs frozen client dependencies
+in fresh anonymous volumes, then executes the unchanged full composed target.
+A UUID-scoped Compose project and shared disposable Postgres namespace preserve
+the existing loopback DB URLs with no published host ports. Normal local Go caches
+remain; the runner keeps the existing10m containment, including client setup.
+Image construction precedes that guard. No Actions job/default/cache-policy change.
+
+Execute the ignored Linux prototype, then the public command against the real
+subject: both terminate0 on Linux/amd64 Go1.26.10, Node24.18.0, Postgres16 and
+Chromium, emulated on this ARM64 Mac. Each retains43Node controls,8/8 refresh,
+all10 persisted parents once, all3 replay witnesses, main/Recovery/process-loss,
+both Cosmetic variants plus Reputation/Clout, both payment-prohibition negatives,
+Garden and Tier2/SQL/reload. Public command automatically removes its project;
+actual label queries find zero containers, networks and dependency volumes.
+The initial prototype compiles cold local inputs; the public alias reuses compiler
+cache. This pair is not a speed comparison or clean-hosted timing proof.
+[Bound observation](observations/composed-linux-622e4250.json) holds populations,
+source/raw hashes and limits; ignored raw recipes/logs live in its named directory.
+
+Fresh independent reviewer /root/composed_linux_local_review catches an
+intermediate launcher bug: export masks failed Node UUID generation and permits
+Docker under a shared prefix. Add actual-Make regression first: it fails exit1.
+Separate the UUID assignment before export under set-e: all8 controls now pass,
+including zero Docker calls after failed generation, build/run/cleanup failures
+and actual process-group termination. Full topology also passes29 negatives and
+its existing controls. The public successful run began before this isolated
+failure-guard correction; healthy UUID/export/recipe behavior and every journey
+input are unchanged. The reviewer will independently execute the corrected real
+failed-runner/cleanup boundary and Node24 controls, with explicit lease ownership.
+
+Complete range after622e4250 needs designated approval including all source,
+fixtures and records. No product/schema/kernel/copy change, omitted population,
+raised guard, five-minute/hosted/whole-CI or full-nine-tier1.0 claim. Known accounting/
+history, other accepted construction, owner decisions and release gates remain.
+No push, publication, deployment or archival.

@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "base": "622e4250",
+  "scope": "Local full Linux composed-job reproduction; no hosted workflow or runtime change",
+  "command": "make test-game-ui-composed-ci",
+  "environment": {
+    "os": "Linux",
+    "architecture": "amd64 emulated on macOS ARM64",
+    "go": "1.26.10",
+    "node": "24.18.0",
+    "playwright": "1.62.0",
+    "postgres": "16-alpine",
+    "runner_cpus": 4,
+    "runner_containment": "10m, including client dependency setup; image build precedes guard",
+    "browser": "Chromium",
+    "client_dependencies": "fresh anonymous volumes, frozen pnpm11.15.1 install",
+    "go_cache": "normal local compiler/module caches; tests count1"
+  },
+  "outcomes": {
+    "run.log": {
+      "exit": 0,
+      "persisted_parent_pass_counts": {
+        "TestSessionRequestSchemaAdmissionIntegration": 1,
+        "TestSoulRecoveryErrorRegistryIntegration": 1,
+        "TestFiscalProjectionMatchesPersistedHarvestIntegration": 1,
+        "TestFirstContentEpochPersistedBoundaryIntegration": 1,
+        "TestResolveMinigameSessionIntegrationAtomicReplayAndFaults": 1,
+        "TestPublicBoardRankingAndPagesIntegration": 1,
+        "TestPublicRunEvidenceIntegration": 1,
+        "TestComposedGameserverPostgresSocketClearingAndGCIntegration": 1,
+        "TestComposedMinigameAPILifecycleUsesPinnedTenantResolverIntegration": 1,
+        "TestComposedGameserverExitVerificationAndBoardIntegration": 1
+      },
+      "refresh_8_of_8": 1,
+      "node_43": true,
+      "main": true,
+      "cosmetic_journeys": 2,
+      "n5_negative_executions": 2,
+      "garden": true,
+      "tier2": true,
+      "public_sdk_replay": true,
+      "historical_replay": true,
+      "guild_replay": true
+    },
+    "final-alias.log": {
+      "exit": 0,
+      "persisted_parent_pass_counts": {
+        "TestSessionRequestSchemaAdmissionIntegration": 1,
+        "TestSoulRecoveryErrorRegistryIntegration": 1,
+        "TestFiscalProjectionMatchesPersistedHarvestIntegration": 1,
+        "TestFirstContentEpochPersistedBoundaryIntegration": 1,
+        "TestResolveMinigameSessionIntegrationAtomicReplayAndFaults": 1,
+        "TestPublicBoardRankingAndPagesIntegration": 1,
+        "TestPublicRunEvidenceIntegration": 1,
+        "TestComposedGameserverPostgresSocketClearingAndGCIntegration": 1,
+        "TestComposedMinigameAPILifecycleUsesPinnedTenantResolverIntegration": 1,
+        "TestComposedGameserverExitVerificationAndBoardIntegration": 1
+      },
+      "refresh_8_of_8": 1,
+      "node_43": true,
+      "main": true,
+      "cosmetic_journeys": 2,
+      "n5_negative_executions": 2,
+      "garden": true,
+      "tier2": true,
+      "public_sdk_replay": true,
+      "historical_replay": true,
+      "guild_replay": true
+    }
+  },
+  "launcher_controls": {
+    "native_pass": 8,
+    "skipped": 0,
+    "intermediate_uuid_mask_regression_exit": 1,
+    "topology_exit": 0
+  },
+  "successful_project_cleanup": {
+    "project": "cloud-clicker-composed-ci-c2131d7c-773a-4ba6-b6e9-3d122ff00ab9",
+    "containers_remaining": 0,
+    "networks_remaining": 0,
+    "project_volumes_remaining": 0
+  },
+  "source_sha256": {
+    "Makefile": "6135276939a895c8f0afc8b264319797b6b156d1137e3b6a6dde2a2946167f24",
+    "compose.game-ui-ci.yml": "39dc98f065bbc73abf33ec4c75c13778597c2d42c7a77855554c604e057de6b1",
+    "client/tools/Dockerfile.game-ui-ci": "aff312c7bda5208a947079a4cf0b2ccf6967e36facb740f9aedec4c1da30d9dc",
+    "client/tools/test-game-ui-ci.sh": "c4d98d2e54420ea926bd54380672aacd77637e88672aeef0c28691bdfd8d9a22",
+    "client/tools/composed-ci.fixtures.mjs": "b8b854a04f1e9fc4fe25460cea9d4e29ef73e34873bc3fa8325f6fb924ae0766"
+  },
+  "raw_directory": ".cache/composed-linux-prototype",
+  "raw_sha256": {
+    "Dockerfile": "aff312c7bda5208a947079a4cf0b2ccf6967e36facb740f9aedec4c1da30d9dc",
+    "compose.yml": "9a271be05640b9c58dcb59da499837724937dab742197402a203fa11924a2405",
+    "build.log": "7737b433b9526e3e003d8d5f17b6c1bfac3588fc1da52112f469d3232bd710e7",
+    "run.log": "c3c373b84f8ca71244c69b51521702c399327492f6a2d154b5ad62a7414e33e0",
+    "final-alias.log": "bf01be21d1d5126038c54ba11759cc56206b925f95a394406a0da8d3686821e0",
+    "uuid-before.log": "8188649cf6a3221538e0a4d4ab31498d0d033afc8b59944e5a44ef7abe3eafeb",
+    "controls-final.log": "2ac82cb34191e60c20e0f3ab29caeb3d8e8e3360cda0a84cebc46bd5947e5521",
+    "topology-final.log": "0c4d953e565d007fce0f3bdb35e2640d446a19ee3be7a58d03cd8e5789b8091c"
+  },
+  "review_finding": "Intermediate export masked UUID command failure; old regression fired, assignment separated before export so set-e stops before Docker.",
+  "limits": [
+    "The successful public alias started before the isolated UUID-failure guard correction; valid UUID/export/recipe behavior and full journey inputs are unchanged. Final eight controls test the correction; designated reviewer exercises a real failed runner on the corrected outer recipe.",
+    "Initial prototype has cold local compilation; final alias reuses compiler cache. This is not a speed comparison or clean hosted timing proof.",
+    "No new tier, native clean-host/R-006, whole CI, five-minute floor, accounting/history or release acceptance."
+  ]
+}

@@ -121,6 +121,30 @@ make verify-push
 broader developer aggregate, `make verify`, retains the exhaustive server harness but does not
 stand in for the composed browser job and must not be cited as push-workflow parity.
 
+For the complete composed job on Linux rather than the host Go/Node/browser runtime:
+
+```sh
+make test-game-ui-composed-ci
+```
+
+This builds a local Go1.26/Playwright1.62 image with Node24, installs the frozen
+client dependencies in fresh anonymous volumes, then runs the unchanged
+`make test-game-ui-composed`. Each invocation generates its own Compose project.
+The runner shares that project's Postgres network namespace; no host ports are
+published and the existing loopback URLs remain unchanged. Docker CLI/Compose
+inside the runner use the mounted local Docker socket to reset that fixture.
+The checkout is mounted at its actual host path so those commands resolve the
+same files. Run it on a trusted checkout with Docker available.
+
+The target removes its own containers/network on success, failure and handled
+termination, propagates test/setup/cleanup failures, and retains the normal
+`cloud-clicker_go-cache` and repository compiler cache. It uses four runner CPUs.
+The runner's ten-minute containment includes client dependency setup; image
+building precedes that guard. On ARM Macs
+Linux/amd64 is emulated. Neither its elapsed time nor its warm local compiler
+cache establishes clean hosted timing or the five-minute workflow floor. This
+is local reproduction, not a new Actions job or self-hosted CI runner.
+
 ### Kernel correction review evidence
 
 Existing kernel history corrections must bind to a completed independent review
@@ -179,6 +203,7 @@ make verify-schema
 make formulas-check
 make test-browser
 make test-browser-ci
+make test-game-ui-composed-ci
 make test-browser-ci-focused BROWSER_TEST_FLAGS='test/numeric-monotonicity.test.ts'
 make test-game-ui-performance
 make test-game-ui-performance-ci

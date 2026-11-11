@@ -192,6 +192,28 @@ log holds the exact verdict. Owned fixture container/network are removed; images
 and unrelated resources remain. Native proof does not close hosted timing or
 full1.0. No gameplay, authored copy, schema, population or timeout change.
 
+**Current Linux composed reproduction,2026-11-11:** exercise the unchanged full
+aggregate on declared Linux/amd64 Go1.26 and Playwright/Node24 with real Postgres.
+The disposable prototype shares only its own Postgres network namespace, using
+the existing loopback DB URL without publishing host ports. Keep all populations,
+fresh client dependencies and the existing ten-minute containment; stop on an
+actual failure or guard, rather than rerun until green. Success can support a
+reusable local reproduction command, not native-hosted timing equivalence or
+the five-minute floor. Prototype completes exit0 with all43 controls,
+8refresh/10persisted parents, three replay witnesses and every browser/N5/Garden/
+Tier2 completion. Runtime source622e4250 is unchanged. Raw recipe/logs remain
+ignored and bound in the batch observation. A reusable
+`make test-game-ui-composed-ci` now owns isolated project/cleanup and the same
+full target. Its actual public execution also completes exit0 with the same full
+populations and zero owned containers/network/dependency volumes after automatic
+cleanup. Eight actual-Make failure/termination controls and topology pass.
+Independent review caught an intermediate export masking UUID-generation failure;
+the regression fails before correction and now refuses before any Docker call.
+The valid-UUID successful path is unchanged; the reviewer is executing the final
+failed-container/cleanup boundary and Linux Node24 controls. Exact-range approval
+remains pending. No change to hosted jobs, gameplay, populations, caches in
+Actions or guards; this is compatibility evidence, not a hosted speed claim.
+
 ## Current hosted evidence — 2026-11-11
 
 [CI42942631238](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/42942631238)

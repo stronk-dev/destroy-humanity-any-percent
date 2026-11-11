@@ -461,6 +461,20 @@ test-game-ui-composed:
 	$(MAKE) test-garden-harvest-composed
 	node client/tools/game-ui-composed-journey.mjs --tier2-fixture
 
+.PHONY: test-game-ui-composed-ci
+# Keep the entire hosted population on Linux; each invocation owns its fixture.
+test-game-ui-composed-ci:
+	@set -eu; \
+	project_uuid=$$(node -p 'require("node:crypto").randomUUID()'); \
+	export COMPOSE_PROJECT_NAME="cloud-clicker-composed-ci-$$project_uuid"; \
+	export COMPOSE_REPOSITORY_ROOT="$(CURDIR)"; \
+	cleanup() { status=$$?; trap - EXIT HUP INT TERM; \
+	  docker compose -f compose.game-ui-test.yml -f compose.game-ui-ci.yml down --remove-orphans || { [ "$$status" -ne 0 ] || status=1; }; \
+	  exit "$$status"; }; \
+	trap cleanup EXIT; trap 'exit 129' HUP; trap 'exit 130' INT; trap 'exit 143' TERM; \
+	docker compose -f compose.game-ui-test.yml -f compose.game-ui-ci.yml build composed-linux; \
+	docker compose -f compose.game-ui-test.yml -f compose.game-ui-ci.yml run --rm composed-linux
+
 verify-game-ui: verify-client test-browser test-game-ui-composed
 
 test-game-ui-performance:
@@ -877,6 +891,7 @@ verify-kernel-version:
 verify-ci-topology:
 	node client/tools/verify-ci-topology.mjs
 	node client/tools/verify-ci-topology-fixtures.mjs
+	node --test client/tools/composed-ci.fixtures.mjs
 
 verify-combat-boundary:
 	node client/tools/verify-combat-boundaries.mjs

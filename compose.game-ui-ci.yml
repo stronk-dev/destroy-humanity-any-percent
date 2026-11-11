@@ -1,0 +1,44 @@
+# Local reproduction of the hosted composed job. The root Make target supplies
+# an isolated project and the host checkout path required by sibling Docker execs.
+services:
+  game-ui-postgres:
+    platform: linux/amd64
+    command: ["postgres", "-p", "55433"]
+    environment:
+      PGPORT: "55433"
+    ports: !reset []
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -p 55433 -U cloud_clicker -d cloud_clicker_game_ui_test"]
+  composed-linux:
+    platform: linux/amd64
+    image: cloud-clicker-composed-ci:local
+    build:
+      context: client/tools
+      dockerfile: Dockerfile.game-ui-ci
+    cpus: 4
+    ipc: host
+    working_dir: ${COMPOSE_REPOSITORY_ROOT:?use make test-game-ui-composed-ci}
+    # The existing drivers use loopback URLs. Sharing this disposable Postgres
+    # namespace preserves those URLs without host networking or published ports.
+    network_mode: service:game-ui-postgres
+    depends_on:
+      game-ui-postgres:
+        condition: service_healthy
+    environment:
+      CI: "true"
+      COMPOSE_PROJECT_NAME: ${COMPOSE_PROJECT_NAME:?use make test-game-ui-composed-ci}
+      COMPOSE_REPOSITORY_ROOT: ${COMPOSE_REPOSITORY_ROOT:?use make test-game-ui-composed-ci}
+      GAME_UI_COMPOSE_FILES: -f compose.game-ui-test.yml -f compose.game-ui-ci.yml
+      GOMODCACHE: /go-cache/mod
+    volumes:
+      - type: bind
+        source: .
+        target: ${COMPOSE_REPOSITORY_ROOT:?use make test-game-ui-composed-ci}
+      - ${COMPOSE_REPOSITORY_ROOT}/client/node_modules
+      - ${COMPOSE_REPOSITORY_ROOT}/.pnpm-store
+      - /var/run/docker.sock:/var/run/docker.sock
+      - go-cache:/go-cache
+    entrypoint: ["timeout", "--verbose", "--signal=KILL", "10m", "bash", "client/tools/test-game-ui-ci.sh"]
+volumes:
+  go-cache:
+    name: cloud-clicker_go-cache
