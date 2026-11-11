@@ -13,8 +13,11 @@ Knowledge ruling. A typed refusal alone would leave the AC5 failure intact.
 The [draft](../../rfc/route-knowledge-capacity.md) recommends preserving every
 earned grant with wider exact integers. A visible cap would discard excess and
 needs a further ruling on positive stored offers. The Postgres offer control
-confirms P3's guarantee can already hit the same capacity defect. Technical review
-and owner direction are pending. This choice blocks the repair and full AC5.
+confirms P3's guarantee can already hit the same capacity defect. The direction
+proposal is independently technically approved through `ed26a17c`. On 2026-11-11
+Marco was asked to choose exact accumulation or a visible discard cap. This
+chooses the gameplay direction. The implementation contract still needs the
+explicit activation and rollout rule. This choice blocks the repair and full AC5.
 
 ## Kernel-neutral versioning — RP-131 direction requested2026-10-15
 

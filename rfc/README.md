@@ -23,7 +23,7 @@ Active implementation specifications. Process: `0000-rfc-process.md`. New RFCs s
 | [Leaderboards & Balance Epochs](leaderboards-and-epochs.md) | implementing | Production Engine / Gate Predicates / Prestige |
 | [Leaderboard Readers & Player Surface](leaderboard-readers-and-player-surface.md) | draft — not implementation authority | Leaderboards / API Foundation / Game UI / Route Registry |
 | [Prestige & Exits](prestige-and-exits.md) | implementing | Production Engine / Save Layer / Account Bootstrap |
-| [Route Knowledge Capacity](route-knowledge-capacity.md) | draft — RP-771; owner direction and technical review pending | Prestige & Exits / Gate Predicates and Routes |
+| [Route Knowledge Capacity](route-knowledge-capacity.md) | draft — RP-771; technical direction proposal independently approved, owner choice requested | Prestige & Exits / Gate Predicates and Routes / Minigame Platform |
 | [API Foundation](api-foundation.md) | accepted — C1–C20 ruled; implementing | Account API / Transport / Gameserver Composition |
 | [Public Company Replay Evidence](public-company-replay-evidence.md) | draft — RP-606; original proposal and explicit input13 amendment technically approved; owner adoption/body authority pending; not implementation authority | API C2/C14/C19 / Server Garden SG8/AC10/OD-12 / Run Genesis & Replay |
 | [Artifact Schema Ownership & Kernel-neutral Delivery](api-artifact-schema-ownership.md) | draft — independently technically approved 2026-11-04; owner adoption/history-scope prerequisite remain; not implementation authority | API C17/C18 / Route C2 / Kernel History Guard Integrity |

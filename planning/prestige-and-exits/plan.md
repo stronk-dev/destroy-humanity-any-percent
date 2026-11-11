@@ -56,8 +56,9 @@ Wind Down fails at the admitted Route Knowledge maximum, including a companion
 owning every hint. Full state/revision/history rollback holds; the original six
 matrix rows still pass. [Retained red regression and contract boundary](route-knowledge-capacity.md).
 The [capacity draft](../../rfc/route-knowledge-capacity.md) frames the owner
-decision and its compatibility work. Technical review and owner direction
-remain prerequisites to settling the repair contract.
+decision and its compatibility work. The direction proposal is independently
+technically approved through `ed26a17c`. After the owner chooses, specify the
+activation and reader rollout before construction.
 
 1. [x] Add save v7 Company/Founder state, validation, migrations, and corpus fixtures.
 2. [x] Implement cross-runtime prestige arithmetic and declarative Phase-0 policy.

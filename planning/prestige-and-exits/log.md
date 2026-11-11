@@ -829,3 +829,22 @@ ordinary headroom. The [evidence](route-knowledge-capacity.md#2026-11-11--positi
 binds the overlay and both results. Exact activation and reader rollout still
 need specification before construction. Technical review and owner direction
 pending. The runtime and AC5 status remain unchanged.
+
+## 2026-11-11 — Capacity direction proposal independently reviewed
+
+**CHANGES REQUIRED** on `d66e4ca1..799831b3` for missing Minigame C24/C28 and
+both pacing consumers. **APPROVED** on the corrected seven-path
+`d66e4ca1..ed26a17c` as a technical proposal for choosing gameplay direction.
+Review by: fresh independent Codex `/root/route_knowledge_capacity_spec_review`
+under Marco's technical-spec delegation. Recorded by: Codex root. The reviewer
+executed both cold Postgres populations, the arithmetic controls, and two native
+scaler overlays. The documented scaler overlay produced two at-limit passes
+and two above-limit failures against current code. The correction also covers
+exact copy interpolation and existing promises under the cap alternative.
+
+Marco was asked to choose exact grants or a visible discard cap. The version
+and activation specification must cover a pinned old run and live offer, a
+browser open across the upgrade with missed-event recovery, and the actual
+terminal verifier/archive and board projector. The board's current terminal
+schema gate and the frozen Founder-age decoder both only know ending v4 as
+the age-carrying version. Approval here grants no implementation or adoption.
