@@ -84,12 +84,22 @@ passes351 test/subtest cases with zero skips. Cold compilation kept those packag
 bodies from overlapping, so this is compatibility evidence, not a speed comparison;
 the dedicated two-child control proves overlap directly. Complete nine-path
 `1e3ae207..3b25015c` now has independent corrective approval with fresh SQL controls
-and actual manual-target execution; the owning log records the verdict. Next,
-compare the complete unchanged server
-population serially and with isolated concurrent execution, retaining every
-failure/skip identity and the known Clout failures. No workflow change or hosted
-floor claim follows from this prototype. Multi-database restore profiles remain
-outside its supported population and are explicitly refused.
+and actual manual-target execution; the owning log records the verdict. The
+complete unchanged server population comparison is finished at source98e46e52.
+One ordered four-CPU Linux/amd64-emulated pair, with compilation prepared equally
+and cold test results, measures550.846s serial versus329.551s isolated. Both retain
+83 package results and identical15,476passes/33skips/28failed test/subtest identities
+(the27 Clout cases plus their parent); observed package-body interval peak1→2.
+The separate final consumer rejects missing-package, same-count ID substitution,
+false-green and guard-exhaustion controls. [Bound result](observations/go-isolation-98e46e52.json)
+and owning log retain exact commands, identities, hashes and limitations.
+
+Next: integrate the independently reviewed isolation approach into the accepted
+server CI target as its own reviewable batch, preserving full population, errors
+and native/local command parity. No workflow/default has changed yet. The local
+isolated arm itself exceeds five minutes before hosted setup; full CI latency and
+known accounting/history failures remain open. Multi-database restore profiles
+remain outside the adapter's supported population and are explicitly refused.
 
 ## Current hosted evidence — 2026-11-11
 

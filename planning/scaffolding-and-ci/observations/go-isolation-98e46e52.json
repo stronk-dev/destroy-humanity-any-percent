@@ -1,0 +1,325 @@
+{
+  "schema_version": 1,
+  "status": "complete_matched_comparison_with_expected_test_failures",
+  "source": "98e46e5223b4ebc880ab1fe623c7b09b863aa0f9",
+  "implementation_review_range": "1e3ae207..3b25015c",
+  "raw_directory": ".cache/ci-isolation-comparison",
+  "population": {
+    "packages": [
+      "cloud-clicker/server/account",
+      "cloud-clicker/server/accrualhook",
+      "cloud-clicker/server/achievements",
+      "cloud-clicker/server/activeplay",
+      "cloud-clicker/server/arcade",
+      "cloud-clicker/server/cmd/assemble-release-bundle",
+      "cloud-clicker/server/cmd/balance-harness",
+      "cloud-clicker/server/cmd/check-combat-boundary",
+      "cloud-clicker/server/cmd/deployment-backup",
+      "cloud-clicker/server/cmd/deployment-browser",
+      "cloud-clicker/server/cmd/deployment-operations",
+      "cloud-clicker/server/cmd/deployment-rehearsal",
+      "cloud-clicker/server/cmd/deployment-release",
+      "cloud-clicker/server/cmd/gameserver",
+      "cloud-clicker/server/cmd/gen-api",
+      "cloud-clicker/server/cmd/gen-content-manifest",
+      "cloud-clicker/server/cmd/gen-formulas",
+      "cloud-clicker/server/cmd/gen-release-metadata",
+      "cloud-clicker/server/cmd/normalize-image-sbom",
+      "cloud-clicker/server/cmd/release-secret-scan",
+      "cloud-clicker/server/cmd/render-release-compose",
+      "cloud-clicker/server/cmd/stage-release-content",
+      "cloud-clicker/server/cmd/test-postgres-exec",
+      "cloud-clicker/server/combat",
+      "cloud-clicker/server/commons",
+      "cloud-clicker/server/commonsbinding",
+      "cloud-clicker/server/commonsprojection",
+      "cloud-clicker/server/copykeys",
+      "cloud-clicker/server/cosmetic",
+      "cloud-clicker/server/curriculum",
+      "cloud-clicker/server/decimal",
+      "cloud-clicker/server/deploymentbackup",
+      "cloud-clicker/server/deploymentbrowser",
+      "cloud-clicker/server/deploymentconfig",
+      "cloud-clicker/server/deploymentrehearsal",
+      "cloud-clicker/server/deploymentrelease",
+      "cloud-clicker/server/determinism",
+      "cloud-clicker/server/doctrine",
+      "cloud-clicker/server/economy",
+      "cloud-clicker/server/epochseed",
+      "cloud-clicker/server/faction",
+      "cloud-clicker/server/fiscal",
+      "cloud-clicker/server/fixedgrid",
+      "cloud-clicker/server/formulas",
+      "cloud-clicker/server/gameserver",
+      "cloud-clicker/server/gameui",
+      "cloud-clicker/server/garden",
+      "cloud-clicker/server/guild",
+      "cloud-clicker/server/headcount",
+      "cloud-clicker/server/httpapi",
+      "cloud-clicker/server/integer",
+      "cloud-clicker/server/internal/backupfixture",
+      "cloud-clicker/server/internal/boundaryfixtures/achievementshelper",
+      "cloud-clicker/server/internal/boundaryfixtures/achievementsroot",
+      "cloud-clicker/server/internal/boundaryfixtures/metershelper",
+      "cloud-clicker/server/internal/boundaryfixtures/metersroot",
+      "cloud-clicker/server/internal/evidencejson",
+      "cloud-clicker/server/internal/testhttp",
+      "cloud-clicker/server/kernel",
+      "cloud-clicker/server/leaderboard",
+      "cloud-clicker/server/meters",
+      "cloud-clicker/server/minigame",
+      "cloud-clicker/server/minigameapi",
+      "cloud-clicker/server/multiplier",
+      "cloud-clicker/server/operations",
+      "cloud-clicker/server/pet",
+      "cloud-clicker/server/pitch",
+      "cloud-clicker/server/prestige",
+      "cloud-clicker/server/production",
+      "cloud-clicker/server/publicapi",
+      "cloud-clicker/server/publicread",
+      "cloud-clicker/server/releasepackage",
+      "cloud-clicker/server/relevancepolicy",
+      "cloud-clicker/server/replaycatalog",
+      "cloud-clicker/server/replayverify",
+      "cloud-clicker/server/reputation",
+      "cloud-clicker/server/routeprojection",
+      "cloud-clicker/server/routes",
+      "cloud-clicker/server/runidentity",
+      "cloud-clicker/server/save",
+      "cloud-clicker/server/soul",
+      "cloud-clicker/server/transport",
+      "cloud-clicker/server/typer"
+    ],
+    "selection": "go list ./... excluding exactly cloud-clicker/server/harness",
+    "expected_failed_test_names": [
+      "TestAxisAccrualPartitionProperty",
+      "TestAxisAccrualPartitionProperty/policy_09_online_end3114_cut1553",
+      "TestAxisAccrualPartitionProperty/policy_13_online_end2045_cut443",
+      "TestAxisAccrualPartitionProperty/policy_14_offline_end2230_cut1693",
+      "TestAxisAccrualPartitionProperty/policy_15_offline_end2588_cut804",
+      "TestAxisAccrualPartitionProperty/policy_16_offline_end2249_cut1690",
+      "TestAxisAccrualPartitionProperty/policy_17_offline_end2142_cut1855",
+      "TestAxisAccrualPartitionProperty/policy_17_online_end2142_cut1855",
+      "TestAxisAccrualPartitionProperty/policy_18_offline_end3136_cut1455",
+      "TestAxisAccrualPartitionProperty/policy_24_offline_end2421_cut1933",
+      "TestAxisAccrualPartitionProperty/policy_24_online_end2421_cut1933",
+      "TestAxisAccrualPartitionProperty/policy_25_offline_end2165_cut1721",
+      "TestAxisAccrualPartitionProperty/policy_26_online_end2938_cut803",
+      "TestAxisAccrualPartitionProperty/policy_27_offline_end3958_cut59",
+      "TestAxisAccrualPartitionProperty/policy_28_online_end2594_cut685",
+      "TestAxisAccrualPartitionProperty/policy_34_online_end3223_cut2207",
+      "TestAxisAccrualPartitionProperty/policy_35_offline_end2576_cut664",
+      "TestAxisAccrualPartitionProperty/policy_37_online_end2911_cut2813",
+      "TestAxisAccrualPartitionProperty/policy_38_online_end3240_cut1511",
+      "TestAxisAccrualPartitionProperty/policy_42_offline_end2633_cut787",
+      "TestAxisAccrualPartitionProperty/policy_42_online_end2633_cut787",
+      "TestAxisAccrualPartitionProperty/policy_45_offline_end3902_cut1661",
+      "TestAxisAccrualPartitionProperty/policy_45_online_end3902_cut1661",
+      "TestAxisAccrualPartitionProperty/policy_47_online_end3229_cut1095",
+      "TestAxisAccrualPartitionProperty/policy_61_offline_end2510_cut1121",
+      "TestAxisAccrualPartitionProperty/policy_61_online_end2510_cut1121",
+      "TestAxisAccrualPartitionProperty/policy_62_offline_end3378_cut2079",
+      "TestAxisAccrualPartitionProperty/policy_62_online_end3378_cut2079"
+    ]
+  },
+  "method": {
+    "order": [
+      "serial",
+      "isolated"
+    ],
+    "cpus": 4,
+    "cpuset": "0-3",
+    "local_architecture": "Linux/amd64 under Apple Silicon emulation",
+    "cold_test_count": 1,
+    "test_timeout": "unchanged Go default",
+    "command_containment_seconds": 600,
+    "normal_compilation_cache": "warmed for both arms; preparation is not acceptance evidence",
+    "compile_preparation_seconds": 216.423807666637,
+    "fresh_postgres_each_arm": true,
+    "no_retries": true
+  },
+  "arms": [
+    {
+      "name": "serial",
+      "exit_code": 1,
+      "timed_out": false,
+      "elapsed_seconds": 550.845654708799,
+      "test_results": {
+        "pass": 15476,
+        "skip": 33,
+        "fail": 28
+      },
+      "package_results": {
+        "pass": 65,
+        "skip": 17,
+        "fail": 1
+      },
+      "population_sha256": "b7981a44c6e1d27fcc47aa4fce7177fd096fed0e0055582fd32a42860446999c",
+      "raw_log": "serial.log",
+      "raw_log_sha256": "393219ad302c4400e998fe21a2c58a2afe760539b680ae3e64d13ed2040603be",
+      "runtime": [
+        {
+          "name": "/cloud-clicker-ci-isolation-test-run-22d7872f7a35",
+          "id": "bc6ef2f147c36eac1ed571004e18c39a71e6ac19b709b63d5f788326ecc2430b",
+          "image": "sha256:593dc3550e0514c6ec0f7861c9bf7bf415aeabc9f4852f83f7469bfe06db1335",
+          "cpus": 4.0,
+          "cpuset": "0-3",
+          "started": "2026-11-11T03:26:31.160248335Z"
+        },
+        {
+          "name": "/cloud-clicker-ci-isolation-postgres-1",
+          "id": "747ad6a52145ba005f09823f10204a679a2929361aa8f80a01390834d47c3168",
+          "image": "sha256:6a2e324ebe59af6031c4c1cd96c1d5072c2ebc36563d2196365e43b8297c062d",
+          "cpus": 4.0,
+          "cpuset": "0-3",
+          "started": "2026-11-11T03:26:27.883778541Z"
+        }
+      ],
+      "command_prefix": [
+        "docker",
+        "compose",
+        "-p",
+        "cloud-clicker-ci-isolation",
+        "-f",
+        "compose.save-test.yml",
+        "-f",
+        "compose.ci-test.yml",
+        "-f",
+        "/Users/stronk/repos/cloud-clicker/.cache/ci-isolation-comparison/compose.resources.yml",
+        "run",
+        "--rm",
+        "test",
+        "go",
+        "test",
+        "-p",
+        "1",
+        "-json",
+        "-count=1"
+      ],
+      "package_arguments_from": "population.packages",
+      "raw_execution_metadata": "serial.json"
+    },
+    {
+      "name": "isolated",
+      "exit_code": 1,
+      "timed_out": false,
+      "elapsed_seconds": 329.5508849998005,
+      "test_results": {
+        "pass": 15476,
+        "skip": 33,
+        "fail": 28
+      },
+      "package_results": {
+        "skip": 17,
+        "pass": 65,
+        "fail": 1
+      },
+      "population_sha256": "b7981a44c6e1d27fcc47aa4fce7177fd096fed0e0055582fd32a42860446999c",
+      "raw_log": "isolated.log",
+      "raw_log_sha256": "da6e80ef7050e598d89d7f5d2aad701c8501c6abdbdca31085c6d35e93e82c5c",
+      "runtime": [
+        {
+          "name": "/cloud-clicker-ci-isolation-test-run-1dceffc705d2",
+          "id": "9b60212bf398c1d3d22ab00285da176a6b008369f97d8b438954ec84ab2901bf",
+          "image": "sha256:593dc3550e0514c6ec0f7861c9bf7bf415aeabc9f4852f83f7469bfe06db1335",
+          "cpus": 4.0,
+          "cpuset": "0-3",
+          "started": "2026-11-11T03:35:45.857861592Z"
+        },
+        {
+          "name": "/cloud-clicker-ci-isolation-postgres-1",
+          "id": "be1b786d59275aa8d68768e3c6fef19fe0f9d428eeaab3752479576739544880",
+          "image": "sha256:6a2e324ebe59af6031c4c1cd96c1d5072c2ebc36563d2196365e43b8297c062d",
+          "cpus": 4.0,
+          "cpuset": "0-3",
+          "started": "2026-11-11T03:35:42.556734923Z"
+        }
+      ],
+      "command_prefix": [
+        "docker",
+        "compose",
+        "-p",
+        "cloud-clicker-ci-isolation",
+        "-f",
+        "compose.save-test.yml",
+        "-f",
+        "compose.ci-test.yml",
+        "-f",
+        "/Users/stronk/repos/cloud-clicker/.cache/ci-isolation-comparison/compose.resources.yml",
+        "run",
+        "--rm",
+        "test",
+        "go",
+        "test",
+        "-p",
+        "2",
+        "-exec",
+        "/workspace/.cache/bin/test-postgres-exec-linux-amd64",
+        "-json",
+        "-count=1"
+      ],
+      "package_arguments_from": "population.packages",
+      "raw_execution_metadata": "isolated.json"
+    }
+  ],
+  "validation": {
+    "valid": true,
+    "negative_controls": [
+      {
+        "control": "missing package terminal",
+        "rejected": "missing/extra package terminal results"
+      },
+      {
+        "control": "same-count passing ID substitution",
+        "rejected": "test IDs/statuses differ"
+      },
+      {
+        "control": "false green",
+        "rejected": "incomplete measurement or unexpected exit (known failures must stay red)"
+      },
+      {
+        "control": "guard exhaustion",
+        "rejected": "incomplete measurement or unexpected exit (known failures must stay red)"
+      }
+    ],
+    "observed_package_body_interval_peak": {
+      "serial": 1,
+      "isolated": 2
+    }
+  },
+  "helper_and_source_sha256": {
+    "server/cmd/test-postgres-exec/exec.go": "fe8d577a9644f5354ee78f1e8a4d2ea784da789989eeacea5df38d58a4e1e239",
+    "server/cmd/test-postgres-exec/main.go": "e87dfbff3eabb7c8b6798a7239b3f7d1ffed48fa6335bab96fd8cd1030780df4",
+    ".cache/bin/test-postgres-exec-linux-amd64": "652627784a245087e5a95afc05c735ce671858c8571a3b275a838689e4c4e805",
+    ".cache/ci-isolation-comparison/observe.py": "3c67560b162adc81555e5737806ec6ded9845daab424b26694e01ca07839defe",
+    ".cache/ci-isolation-comparison/compose.resources.yml": "c8dc348f2a603fb0fc8868506b1d16c902b535e87a34834f97a8962af2b400d4"
+  },
+  "evidence_sha256": {
+    "plan.json": "184fbe7a67e2d92ff5a2e3f4dbdcf353c766ab5f6b0d9eefb282a71a099e612d",
+    "observe.py": "3c67560b162adc81555e5737806ec6ded9845daab424b26694e01ca07839defe",
+    "validate.py": "cb878ad39d165c96fb84598259763db7f0476e1faa00e749b60f607306684282",
+    "validation.json": "bf966ae962efcc04f120178b1d33fd654891d357945c77a9380c1bf8a41e5c5f",
+    "runtime-identities.json": "85458290e0254bc3a635ab3bbfb966c1f3c643765687a771dec2ddfe54f8bd77",
+    "runtime-serial.json": "ddb5673adc45062220bba96ac66f4d917a5733e94c9bae9675c0c404bb7de778",
+    "runtime-isolated.json": "2a6c8bc1ea17d044cc3b05bbf50298c84cf75094b4e7760ad99f1985458e7d5b",
+    "compose.resources.yml": "c8dc348f2a603fb0fc8868506b1d16c902b535e87a34834f97a8962af2b400d4",
+    "comparison.json": "0d349bab2fb177d7384f40256b4b06e3c55b54acb30bbafdbc02a0dac25905ca",
+    "compile-preparation.log": "866ea26f109d87392e1b9b02562d89951af7b9a848042f950e5f06eb97e8d8bf",
+    "serial.json": "9f9d6ab67860a1f98b4479e86652c620f00e0caf682b11f1975f959da27b407e",
+    "isolated.json": "f1f1609f1d88b10bec58db914f4c9e25a80f863b8c0c5554b0d5991285cb4cc4"
+  },
+  "result": {
+    "identical_test_identities_and_statuses": true,
+    "seconds_saved": 221.2947697089985,
+    "percent_less_elapsed": 40.1736435274205,
+    "ci_default_changed": false,
+    "hosted_or_release_gate_met": false
+  },
+  "limitations": [
+    "One ordered local emulated pair; not universal or hosted speed evidence.",
+    "Compilation preparation and hosted setup/other server-job gates are outside arm elapsed time.",
+    "Both commands remain red on the 27 Clout subcases plus their parent.",
+    "329.551 seconds exceeds five minutes before hosted setup; the accepted floor remains open.",
+    "Normal Go cache volume is retained; owned disposable containers/network removed after catalog cleanup."
+  ]
+}

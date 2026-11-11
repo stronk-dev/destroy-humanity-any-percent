@@ -5076,3 +5076,47 @@ This approves the bounded manual prototype, not a default/workflow switch,
 complete-population performance result, hosted five-minute result, feature
 acceptance or release. The matched full-population comparison and existing
 Clout/history/hosted gates retain their recorded next actions and limits.
+
+## 2026-11-11 — Complete matched server population with isolation
+
+At clean source98e46e52, fix one serial then one isolated-two-package arm across
+all83 `go list ./...` packages excluding exactly `cloud-clicker/server/harness`.
+Both use declared Linux/amd64 Go/Postgres images, actual4CPU quota/cpuset0-3,
+fresh tmpfs Postgres for each arm, identical compiled-code cache and `-count=1`.
+Compile-only preparation(`-run ^$`,216.424s) is explicitly not acceptance evidence
+and is outside arm elapsed. Ordinary Go test timeout and600s command containment
+stay fixed. No retry, narrowed population or extra cache policy. The only allowed
+failed tests are the retained27 Clout subcases plus their parent; stop on any
+other/incomplete result. Raw fixed plan/observer/commands in
+`.cache/ci-isolation-comparison`; images/helper/source hashes and actual resource
+snapshots are bound by [the small result](observations/go-isolation-98e46e52.json).
+
+Both arm commands finish exit1 without guard exhaustion. Serial550.845655s,
+isolated329.550885s:221.294770s/40.174% less elapsed in this ordered local pair.
+Each has65passing/17no-test-file/1failed package results. Both have exactly
+15,476passing/33skipped/28failed test/subtest terminal identities; population hash
+`b7981a44c6e1d27fcc47aa4fce7177fd096fed0e0055582fd32a42860446999c`.
+The28 failures are precisely the27 preexisting Clout cases and their parent.
+Actual test-event body intervals reach peak1 serial and2 isolated; concurrency
+is observed, not inferred solely from `-p2`. Both first-hour replay observations
+pass; RP-770's retained intermittent failure remains open.
+
+Separate final consumer re-reads raw logs/metadata and passes. It rejects a missing
+package terminal, a same-count passing-ID substitution with rebound log/population
+hashes, a forged green status and guard exhaustion. Serial raw log hash
+`393219ad302c4400e998fe21a2c58a2afe760539b680ae3e64d13ed2040603be`;
+isolated `da6e80ef7050e598d89d7f5d2aad701c8501c6abdbdca31085c6d35e93e82c5c`.
+Final real SQL catalog has only `cloud_clicker_test` and `postgres` non-template
+databases and zero marker tables. Owned containers/network are removed and their
+absence verified; images and the normal declared Go cache volume are preserved.
+
+This is one local emulated pair with compilation prepared, not native hosted
+job/setup evidence or a universal speed claim.329.551s itself exceeds the accepted
+five-minute floor before hosted setup/other server gates. Existing accounting,
+history, whole-workflow and full1.0 obligations remain. No workflow/default,
+timeout, gameplay, kernel, schema or acceptance status changes. Review by: Codex
+root(executed comparison and adversarial consumer controls). Recorded by: Codex
+root. Editorial evidence checkpoint, not independent CI integration approval.
+Next: a separate server-target integration batch and independent review under
+accepted D2, retaining all tests/errors and local/hosted command parity. Continue
+other latency work from measurement; do not widen budgets or conceal red lanes.
