@@ -532,6 +532,34 @@ describe("browser Game UI runtime", () => {
   });
 });
 
+it.each(["declined", "expired"] as const)("delivers the %s offer resolution after a newer snapshot without replaying unrelated old events", async (resolution) => {
+  const storage = new MemoryStorage();
+  storage.setItem("cloud-clicker.credentials.v1", JSON.stringify({ accessToken: "access", refreshToken: "refresh", accountID: "account", recoveryCode: "recover" }));
+  const socket = new FakeSocket();
+  const runtime = createBrowserGameUIRuntime(storage, async () => Response.json({ ...currentSnapshot, revision: 4 }), crypto,
+    () => socket as unknown as WebSocket, { protocol: "http:", host: "localhost" });
+  await runtime.snapshot();
+  const received: Array<{ kind: string }> = [];
+  const unsubscribe = runtime.subscribe(snapshot.run.founder_id, (message) => received.push(message));
+  try {
+    openAndConnect(socket); subscribeReplies(socket);
+    const channel = `player:${snapshot.run.founder_id}`;
+    const offerID = "01985555-3333-7333-8333-333333333333";
+    publication(socket, channel, 1, eventEnvelope(3));
+    publication(socket, channel, 2, {
+      v: 2, ch: channel, kind: "event", rev: 3, constants_hash: snapshot.constants_hash, ts: "2026-08-11T12:00:00Z",
+      payload: { event_id: "resolved-3", kind: `exit_offer_${resolution}`, scope: "company", rev: 3, cursor_effect: "advance",
+        payload: resolution === "declined" ? { offer_id: offerID, run_seq: 1 } : { offer_id: offerID } },
+    });
+    expect(received.filter((message) => message.kind === "event")).toEqual([{
+      kind: "event", revision: 3, scope: "company",
+      value: { cursor: 3, occurred_at_ms: Date.parse("2026-08-11T12:00:00Z"), kind: "exit_offer_resolved",
+        payload: { offer_id: offerID, resolution, run_seq: resolution === "declined" ? 1 : null } },
+    }]);
+    expect(socket.closeCount).toBe(0);
+  } finally { unsubscribe(); }
+});
+
 describe("GS0.3 announcement decoders", () => {
   const achievement = (revision: number, payload: Record<string, unknown> = {}) => ({
     v: 2, ch: `player:${snapshot.run.founder_id}`, kind: "event", rev: revision, constants_hash: snapshot.constants_hash, ts: "2026-08-11T12:00:00Z",

@@ -629,6 +629,43 @@ it.skipIf(typeof document === "undefined").each(["declined", "expired"] as const
     } finally { await unmount(app); target.remove(); }
   });
 
+it.skipIf(typeof document === "undefined")("waits for the offer resolution revision after an older in-flight read", async () => {
+  const { userEvent } = await import("vitest/browser");
+  const reads: (() => void)[] = [];
+  class HeldReadRuntime extends FixtureRuntime {
+    override async snapshot(): Promise<ParsedGameUISnapshot> {
+      const sample = await super.snapshot();
+      if (this.snapshotCalls > 1) await new Promise<void>((resolve) => reads.push(resolve));
+      return sample;
+    }
+  }
+  const runtime = new HeldReadRuntime(true);
+  const target = document.createElement("div"); document.body.append(target);
+  const app = mount(GameUIApp, { target, props: { runtime } });
+  try {
+    await settleIntentState();
+    runtime.listener?.({ kind: "event", revision: 2, scope: "company", value: offer });
+    runtime.listener?.({ kind: "receipt" });
+    await settleIntentState();
+    expect(reads).toHaveLength(1);
+    runtime.current = { ...snapshot, revision: 3 };
+    runtime.listener?.(offerResolution("declined"));
+    await settleIntentState();
+    reads.shift()?.();
+    await settleIntentState();
+    expect(reads).toHaveLength(1);
+    const manual = target.querySelector<HTMLButtonElement>(".manual button")!;
+    expect(manual.disabled).toBe(true);
+    reads.shift()?.();
+    await settleIntentState();
+    expect(manual.disabled).toBe(false);
+    manual.focus();
+    await userEvent.keyboard("{Enter}");
+    await settleIntentState();
+    expect(runtime.requests[0]).toMatchObject({ kind: "perform_manual_batch", expected_revision: 3 });
+  } finally { reads.splice(0).forEach((resolve) => resolve()); await unmount(app); target.remove(); }
+});
+
 it.skipIf(typeof document === "undefined")("keeps current navigation on offer resolution and defers accepted offers to Run End", async () => {
   const { userEvent } = await import("vitest/browser");
   const runtime = new FixtureRuntime(true);

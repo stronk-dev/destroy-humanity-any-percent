@@ -236,6 +236,10 @@ export function createBrowserGameUIRuntime(
           const announcement = decodeGameUIAnnouncement(envelope);
           const successorTerminal = disposition === "duplicate" && event?.kind === "run_ended" && latestSnapshot !== undefined &&
             latestSnapshot.run.founder_id === event.payload.founder_id && latestSnapshot.run.run_seq === event.payload.run_id.run_seq + 1;
+          // The snapshot has no offer state. A late decline/expiry can
+          // still close the exact offer shown by the host.
+          const lateOfferResolution = disposition === "duplicate" && envelope.payload.scope === "company" &&
+            event?.kind === "exit_offer_resolved" && event.payload.resolution !== "accepted";
           // R7's immutable carry-over summary is not present in a snapshot.
           // A newer HTTP sample may advance the cursor before the event arrives;
           // retain only the exact currently sampled run, without navigating.
@@ -244,7 +248,7 @@ export function createBrowserGameUIRuntime(
             latestSnapshot.run.run_started_at_ms === event.payload.started_at_ms;
           const repeatedRunStarted = event?.kind === "run_started" && (envelope.payload.event_id === lastRunStartedEventID ||
             envelope.payload.scope === "company" && envelope.rev <= lastCompanyStartRevision);
-          if ((disposition === "deliver" || successorTerminal || currentRunStarted) && !repeatedRunStarted) {
+          if ((disposition === "deliver" || successorTerminal || lateOfferResolution || currentRunStarted) && !repeatedRunStarted) {
             const scope = envelope.payload.scope as "company" | "founder";
             if (envelope.payload.cursor_effect === "historical") {
               listener({ kind: "historical_event", revision: envelope.rev, scope, eventID: envelope.payload.event_id as string,

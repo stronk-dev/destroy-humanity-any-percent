@@ -61,6 +61,7 @@
   // Socket readiness cannot prove that a failed HTTP read/command left our
   // revisions current. Only a successfully bound authoritative snapshot can.
   let needsAuthoritativeSnapshot = false;
+  let offerResolutionRevision = $state(0);
   let draining = $state(false);
   let resyncing = $state(false);
   let transportReady = $state(false);
@@ -488,7 +489,14 @@
           root?.querySelector<HTMLElement>("#desk-heading")?.focus();
         });
       }
-      if (snapshot && message.revision > snapshot.revision) void refresh();
+      if (!ended && snapshot && message.revision > snapshot.revision) {
+        offerResolutionRevision = Math.max(offerResolutionRevision, message.revision);
+        const readInFlight = refreshTask !== undefined;
+        void refresh().then(() => {
+          // A reused read may have sampled before the offer closed.
+          if (readInFlight && !disposed && snapshot && snapshot.revision < offerResolutionRevision) void refresh();
+        });
+      }
     }
   }
 
@@ -750,7 +758,7 @@
       });
     }
   });
-  const commandControls = $derived(transportReady && !offline && !resyncing);
+  const commandControls = $derived(transportReady && !offline && !resyncing && (snapshot?.revision ?? 0) >= offerResolutionRevision);
   const founderControls = $derived(founderRevision !== undefined && commandControls);
 
   function exitTitle(exitType: string): string { return t(requirePresentation(GAME_UI_PRESENTATION.exitTypes, exitType).title_key, {}, era); }

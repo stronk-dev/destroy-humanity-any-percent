@@ -9172,3 +9172,25 @@ boundary checks passed. The mounted test uses ordered runtime events and a
 controlled snapshot response. It does not exercise real server offer
 production or constitute full Prestige acceptance. Independent corrective
 review pending. The retained local release bundle predates the UI fix.
+
+**CHANGES REQUIRED** on `3091ae55..f5e4ccfa`. Review by: fresh independent
+Codex `/root/offer_resolution_corrective_review`. Recorded by: Codex root.
+An already running snapshot read returned revision 2 after revision-3 expiry.
+The original fix reused that read and the next Desk Enter submitted revision 2
+in each of Chromium, Firefox and WebKit. The actual socket runtime also dropped
+both older resolution events if a later snapshot had moved its revision cursor.
+Those snapshots carry no Offer Sheet state.
+
+The correction keeps an explicit Company revision floor on actions, follows
+an older in-flight read with one fresh read when needed, and forwards late
+nonterminal Company offer resolutions to the existing exact offer-ID check.
+The new tests hold the earlier read and verify the Desk stays disabled until
+the new read arrives. Socket runtime tests prove older decline and expiry reach
+the host while unrelated older events remain suppressed. The first correction's
+case-specific focus and accepted Run End behavior remain covered.
+
+The existing five offer-age cases (including exact expiry) also passed on
+Postgres as separate server-side controls. They do not join that fixture to
+the mounted browser. Strict types and production build passed. One client
+boundary run picked up an independent temporary Svelte source copy. That run
+was repeated with the copy removed. Corrected union review pending.

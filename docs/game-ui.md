@@ -607,8 +607,11 @@ Declining an exit offer likewise holds the action boundary through an authoritat
 the next player intent cannot reuse the revision consumed by the decline. A matching Company
 decline or expiry event closes the Offer Sheet. If it was visible, the Desk replaces it and focus
 moves from the removed sheet to the Desk heading. A player already on another surface stays there.
-When the event is ahead of the current snapshot, the host requests the authoritative revision
-before another action. An accepted offer continues through the ordered Run End event.
+When the event is ahead of the current snapshot, actions stay disabled until a snapshot reaches
+that revision. A read started before the event is followed by a fresh read if it returns an older
+revision. A later snapshot contains no offer state, so the runtime still delivers a delayed
+decline or expiry for the host to match by offer ID. An accepted offer continues through the
+ordered Run End event.
 Terminal actions rely on ordered event delivery so an eager snapshot cannot suppress `run_ended`. Wind Down and
 offer acceptance remain disabled until the player subscription reports `transport_recovered`, and
 disable again on close, drain, or resync. Once `run_ended` arrives, the trailing command receipt
