@@ -13181,3 +13181,50 @@ Chromium image runs in the local disposable network with an independently
 verified fixture CA and scoped leaf pin. The browser journey outcome will
 be recorded separately. Supported-host R-006 and predecessor compatibility
 remain open.
+
+## 2026-11-11 — Approve the exact build and complete natural play and local restore
+
+APPROVED build and startup binding over `22fed6be..d0b9a09f`.
+Review by: fresh independent Codex `/root/natural_package_build_review`.
+Recorded by: Codex root.
+
+The reviewer rebuilt the browser and rehearsal executables, checked all
+74 manifest bindings, both image payloads, seven SBOMs and the upstream
+inventory chains. The actual Linux helper accepted the record and intact
+bundle and rejected a removed helper with exit 3. The reviewer inspected
+the manifest-bound running driver and pinned Chromium, exact gameserver
+and Postgres images, and read-only Caddyfile and site. This verdict covers
+the build and startup bindings. The terminal result follows separately.
+
+The exact bundled driver exited 0 in 11 minutes 57 seconds from fresh
+Postgres. Its mode-0600 result binds the `f9438412` manifest, records
+1,340 successful intent responses, zero failures or page exceptions,
+and reaches the Company 2 Desk. Postgres confirms 1,340 applied intents,
+zero rejections and one each of the gate, ending and successor events.
+The verifier archived Company 1 at terminal sequence 1,340 and projected
+three rows for that one run (`any_percent`, `ethical_percent`, `valuation`).
+The browser result SHA-256 is
+`b4c89531fd238d9bb198cb0d35b474733675c3d94cd6da20317ca352683d792e`.
+The aggregate SQL SHA-256 is
+`a83ef0af98ca494774d682a72910039e4dea1efdec6ec20e5ca7fbdf96f614c6`.
+
+After the disposable gameserver exited cleanly, the manifest-bound
+`deployment-backup` created an encrypted epoch-8 backup of that database.
+The source identity before and after capture, the restored identity in a
+separate clean Postgres 16 container, and the restored identity after a
+second restore was refused all match byte for byte. The identity covers
+3,291 rows, all six semantic domains, migration 87 and three verified board
+rows. A wrong age key returned `invalid_input` with zero tables in the
+clean target. A second restore with the correct key returned
+`non_clean_target` and preserved the full target identity.
+
+Identity JSON SHA-256
+`fdd7c6d408660dad6e0ee089880201e9c8114f55ea33cc3ecc77adfd9b6def12`.
+Encrypted backup SHA-256
+`882bd4490d2750406d267853b81423d3baa292ecbf582fdbb663f3894eeb00f4`.
+The independent restore target was removed. Raw browser, aggregate SQL
+and recovery records remain in `.cache/release-browser-natural-22fed6be`.
+The browser and restore ran locally with emulated amd64 containers and a
+disposable network. The supported-host rehearsal, rollback predecessor,
+off-host backup delivery and release timing objectives remain open.
+The terminal natural-play and recovery evidence awaits independent review.
