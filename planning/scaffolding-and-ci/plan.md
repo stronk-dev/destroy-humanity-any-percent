@@ -153,9 +153,22 @@ Actual shuffled/sparse discovery controls, flags, cold/repeat defaults, failures
 and cleanup pass on native and Linux Node24. Actual updated four-CPU Linux core
 Make runs vet plus the entire83-package population with identical test identities
 and honestly exits2 on Go1/known Clout failures. No owned DBs/markers or temporary
-adapter remain. Complete batch awaits fresh independent review in the owning log.
-After review, pursue remaining measured latency and hosted reconciliation when
-publication is authorized; no cache, test, budget or full1.0 floor is waived.
+adapter remain. Complete six-path `07c0d490..c8276d77` now has independent corrective
+approval, including actual core-Make SQL controls and independent raw-data/hash/
+population consumption. The owning log holds the exact verdict. Owned fixture
+containers/network are removed; images and the normal Go cache are retained.
+Hosted reconciliation still requires authorized publication; no cache, test,
+budget or full1.0 floor is waived.
+
+Next measured boundary: the known hosted composed job403s is still over the floor.
+Its source main/Tier2 driver invocations each run the same8-case refresh population
+and same10-parent persisted population with the same explicit DB/replay flags, and
+clear the diagnostic schema before starting their browser server. The Tier2 copy
+costs about5s refresh plus59s persisted in the retained hosted log. Investigate
+one shared backend-preparation gate per aggregate Make invocation while retaining
+all named cases, failure propagation, standalone Make coverage and every independent
+browser fixture/reset/journey. Do not add a trusted skip flag or treat source
+similarity as proof; inspect callers and execute the changed full composed target.
 
 ## Current hosted evidence — 2026-11-11
 

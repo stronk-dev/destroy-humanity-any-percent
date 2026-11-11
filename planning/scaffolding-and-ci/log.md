@@ -5310,3 +5310,100 @@ awaits fresh independent corrective review. No gameplay, formula, kernel, schema
 cache-policy, timeout or acceptance-floor change; no push/publication. Accounting,
 history, other job latency, hosted and full-nine-tier1.0 gates remain open. Next:
 exact-range review, then continue measured CI/platform work without narrowing scope.
+
+## 2026-11-11 — Independent four-package core scheduling review
+
+Review by: Codex sub-agent `/root/ci_core_priority_scheduling_review`.
+Recorded by: Codex sub-agent `/root/ci_core_priority_scheduling_review`.
+Verdict: **APPROVED** for the complete six-path range
+`07c0d490..c8276d77`, including Make behavior, actual-Make fixtures, canonical
+docs, observation manifest and implementation plan/log records. Fresh independent
+corrective review under the standing delegation inspected the entire committed
+range against accepted CI D2/D3 and RFC-0000. No actionable defect found. SQL-only
+priority arguments include only discovered packages; the remainder retains its
+discovery order, native execution stays serial, and cold flags/errors/cleanup
+remain intact. `git diff --check 07c0d490..c8276d77` passes.
+
+Independently executed `make verify-ci-topology`: all29 topology negatives and
+actual Make controls pass, including shuffled/sparse membership/order, omitted
+count1, explicit2, streams, discovery/build/test failures and adapter cleanup.
+A private reconstruction executes the unchanged committed core-fixture region
+against exact-old07c0d490 Make and current Make: old fails the SQL width/order
+assertion, current passes. No tracked source was altered for that control.
+Actual native `make test-go-core GO_TEST_FLAGS='-run TestRefusesUnsafeInvocationBeforeConnecting -v'`
+terminates0 with the intended parent and14 admission subcases visibly passing;
+other discovered packages have no matching tests.
+
+After explicit lease release, independently executed:
+
+```sh
+docker compose -p cloud-clicker-ci-isolation -f compose.save-test.yml -f compose.ci-test.yml -f .cache/ci-isolation-comparison/compose.resources.yml run --rm test sh -c "cd /workspace && make test-go-core GO_TEST_FLAGS=\"-run 'TestConcurrentDatabaseIsolationIntegration|TestSharedDatabaseNegativeControlIntegration|TestFailureAndSignalDatabaseCleanupIntegration|TestCreateCollisionDoesNotDropExistingDatabaseIntegration|TestGuildFixtureRefusesOtherDatabaseIntegration' -v\""
+```
+
+The declared four-CPU/cpuset0-3 Linux/amd64/Postgres actual core target terminates0
+with the unchanged count1 default. All five named parents and both failure/signal
+subcases pass without SQL skips; adapter1.977s/Guild0.286s. Remaining discovered
+packages stay selected with no matching tests. This is focused integration, not
+a second full-population timing run. Initial sandbox socket denial ran no tests;
+the narrow Compose escalation permitted the completed run. Independent final
+SQL catalog query finds only `cloud_clicker_test`/`postgres` non-template databases
+and zero `ci_exec_%` marker tables; no temporary core adapter executable remains.
+The reviewer releases the SQL lease to the implementer for fixture removal.
+
+Independently re-parsed both full raw logs and verified all14 manifest-bound
+artifact hashes. Candidate raw SHA256
+`aecd45ee558c47c748ccd32e57da063f45c4cbfae1c12d4061e882399291961c` and actual
+integrated raw SHA256
+`aad5a7e0b6c77a99a80e81ef212018933a8cabcdf39d2d1ca6892dd10da59fca` each
+retain83 unique package terminals and15476pass/33skip/28failed test identities,
+hash `b7981a44c6e1d27fcc47aa4fce7177fd096fed0e0055582fd32a42860446999c`.
+Candidate failures equal the exact retained27 Clout cases plus their parent;
+actual integrated identity equality establishes the same failure population and
+its raw tail visibly retains Go failure/Make Error1. Independently recomputed
+candidate test-event intervals give peak4 and the four planned first packages.
+No server/balance/schema/runtime-input delta exists between baseline and candidate
+source refs. The implementer executed the full candidate/integrated commands;
+this reviewer executed the focused real core command above and independently
+consumed their raw evidence.
+
+Approval covers this bounded scheduling change. The retained-control local
+emulated comparison changes width/order together; it establishes neither causal
+attribution to either factor nor hosted five-minute completion. Known-red Clout,
+accounting/history, other latency, full CI acceptance, full nine-tier1.0 and release
+gates remain open. No publication or archival approval is supplied.
+
+## 2026-11-11 — Review consumed; ground the next composed-job boundary
+
+Consume the immediately preceding independent verdict for complete six-path
+`07c0d490..c8276d77`: four-package scheduling is approved in source, not hosted
+five-minute or full-CI acceptance. Reviewer executed actual core-Make SQL checks
+and independently verified full populations/raw hashes. After lease release,
+remove the owned project containers/network; normal cache/images remain. No
+product/version/status promotion or publication. Existing Clout/history/other-job
+timing and full-nine-tier1.0 obligations remain open.
+
+Read-only GitHub primary-source check confirms published main remains
+`1d81edbdb36f941d9a33e440db213e9a31cb8503`; these local CI changes are unpushed.
+Re-read known [run42942631238](https://github.com/stronk-dev/destroy-humanity-any-percent/actions/runs/42942631238)
+job statuses and download actual composed job130267835429 log to ignored
+`.cache/ci-42942631238-composed.log`, SHA256
+`8950c766ef9810341860c4ec6245bfe6bba28b7d70d90d80933cef9f4317f973`.
+The job is successful but403s, exceeding the
+accepted floor. Main driver begins01:58:38.557; its refresh preflight ends01:59:22.197
+and persisted preflight ends02:00:54.421. Tier2 driver begins02:03:03.462; refresh
+ends02:03:08.381 and persisted ends02:04:07.241. The second preflight therefore
+costs approximately5s plus59s through their completed output summaries.
+These observed intervals include process/compiler effects; do not call them all
+test CPU or forecast universal savings. Package results are buffered, so their
+printed log timestamps are not individual test-start times.
+
+Source inspection finds both modes execute the same8 refresh cases and10 persisted
+parents with identical TEST_DATABASE_URL/TEST_PUBLIC_REPLAY_CLIENT inputs; mode
+selection only changes later browser server setup. Schema reset separates both
+diagnostic populations and clears them again before browser launch. This suggests
+one shared backend-preparation gate in the aggregate Make dependency graph, not
+removing named checks or trusting a bypass flag. Standalone Make entry points,
+all browser fixtures/resets/DOM journeys and failure propagation must remain.
+No composed source behavior changed here; this is the next investigation, not
+a completed deduplication or adopted performance claim. Review by: Codex root
+(read actual primary log/source). Recorded by: Codex root. Editorial checkpoint.
